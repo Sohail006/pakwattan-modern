@@ -114,11 +114,11 @@ const Header = () => {
       {/* Fixed Header Container */}
       <div className="fixed top-0 left-0 right-0 z-50">
         {/* Top Bar - Mobile Optimized */}
-        <div className="bg-primary-600 text-white py-1.5">
+        <div className="bg-primary-600 text-white py-1">
           <div className="container-custom">
-            <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-2 sm:space-y-0">
+            <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-1 sm:space-y-0">
               {/* Contact Info - Stack on mobile */}
-              <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-6">
+              <div className="flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-6">
                 <div className="flex items-center space-x-1.5">
                   <Phone className="w-3 h-3" />
                   <span className="hidden xs:inline">0318 0821377</span>
@@ -153,7 +153,7 @@ const Header = () => {
           isScrolled ? 'bg-white/98 backdrop-blur-lg shadow-lg border-b border-gray-200/50' : 'bg-white/95 backdrop-blur-md'
         }`}>
         <div className="container-custom">
-          <div className="flex items-center justify-between py-2 sm:py-3">
+          <div className="flex items-center justify-between py-1.5 sm:py-2">
             {/* Enhanced Logo - Mobile Responsive */}
             <Link href="/" className="group flex items-center space-x-2 sm:space-x-3 hover:scale-105 transition-all duration-300 touch-target">
               <div className="relative">

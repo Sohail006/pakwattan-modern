@@ -89,7 +89,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <Analytics />
         <Header />
-        <main className="min-h-screen pt-24">
+        <main className="min-h-screen pt-20">
           {children}
         </main>
         <Footer />

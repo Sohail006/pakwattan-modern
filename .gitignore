@@ -102,4 +102,12 @@ out/
 # Temporary files
 tmp/
 temp/
+
+# Exclude nested repositories
+frontend/pakwattan-frontend/
+backend/
+shared/
+
+# Exclude problematic files
+public/files/
 node_modules
