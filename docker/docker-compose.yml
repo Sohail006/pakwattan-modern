@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: pakwattan-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=PakWattan@123
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - pakwattan-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: pakwattan-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - pakwattan-network
+
+  # Backend API
+  backend:
+    build:
+      context: ../backend/PakWattanAPI
+      dockerfile: Dockerfile
+    container_name: pakwattan-backend
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=PakWattanDb;User Id=sa;Password=PakWattan@123;TrustServerCertificate=true;MultipleActiveResultSets=true
+      - ConnectionStrings__Redis=redis:6379
+      - JwtSettings__SecretKey=YourSuperSecretKeyThatIsAtLeast32CharactersLong!
+      - JwtSettings__Issuer=PakWattanAPI
+      - JwtSettings__Audience=PakWattanClient
+      - JwtSettings__ExpiryInMinutes=60
+    ports:
+      - "5000:80"
+      - "5001:443"
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - pakwattan-network
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ../frontend/pakwattan-frontend
+      dockerfile: Dockerfile
+    container_name: pakwattan-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - pakwattan-network
+
+volumes:
+  sqlserver_data:
+  redis_data:
+
+networks:
+  pakwattan-network:
+    driver: bridge

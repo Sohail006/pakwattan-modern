@@ -1,0 +1,35 @@
+# Environment Variables Example for PakWattanModern
+# Copy this file to .env.local for development or .env.production for production
+
+# ===========================================
+# BASIC CONFIGURATION
+# ===========================================
+NODE_ENV=development
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_APP_NAME=Pak Wattan School & College of Sciences
+
+# ===========================================
+# YOUTUBE INTEGRATION (Optional)
+# ===========================================
+# Get this from Google Cloud Console
+YOUTUBE_API_KEY=your_youtube_api_key_here
+YOUTUBE_CHANNEL_ID=UCpakwattanSchoolCollege
+
+# ===========================================
+# ANALYTICS (Optional)
+# ===========================================
+# Get this from Google Analytics
+NEXT_PUBLIC_GA_ID=your_google_analytics_id_here
+
+# ===========================================
+# DATABASE (If using)
+# ===========================================
+# Get this from your hosting provider
+DATABASE_URL=mysql://username:password@host:port/database_name
+
+# ===========================================
+# CUSTOM SETTINGS
+# ===========================================
+# Add any other settings you need
+CUSTOM_KEY=your_custom_value_here
