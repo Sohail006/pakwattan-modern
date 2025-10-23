@@ -3,11 +3,25 @@ const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
   output: 'standalone', // For better deployment compatibility
+  
+  // Performance optimizations
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+  
+  // Enhanced compression and security
+  compress: true,
+  poweredByHeader: false,
+  generateEtags: false,
+  
+  // Image optimization
   images: {
     domains: ['localhost', 'pakwattan.edu.pk', 'www.sharkasp.net'],
     unoptimized: true
   },
-  // For production deployment
+  
+  // API rewrites for production deployment
   async rewrites() {
     return [
       {
@@ -18,16 +32,21 @@ const nextConfig = {
       }
     ]
   },
+  
   // Environment-specific configurations
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
-  // Optimize for production
-  compress: true,
-  poweredByHeader: false,
-  generateEtags: false,
-  // Static export configuration (if needed)
+  
+  // Static export configuration
   trailingSlash: false,
+  
+  // Performance optimizations
+  experimental: {
+    optimizeCss: true,
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
+  
   // Asset prefix for CDN (if using)
   assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
 }

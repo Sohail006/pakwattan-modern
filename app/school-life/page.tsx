@@ -1,19 +1,28 @@
 import SchoolLifeHero from '@/components/school-life/SchoolLifeHero'
-import SchoolLifeActivities from '@/components/school-life/SchoolLifeActivities'
-import SchoolLifeGallery from '@/components/school-life/SchoolLifeGallery'
+import AcademicSchedule from '@/components/school-life/AcademicSchedule'
+import StudentCodeOfConduct from '@/components/school-life/StudentCodeOfConduct'
+import CollegeKit from '@/components/school-life/CollegeKit'
+import AttendancePolicy from '@/components/school-life/AttendancePolicy'
+import ParentTeacherMeetings from '@/components/school-life/ParentTeacherMeetings'
+import SchoolActivities from '@/components/school-life/SchoolActivities'
+import StudentLife from '@/components/school-life/StudentLife'
 
 export const metadata = {
   title: 'School Life - Pak Wattan School & College of Sciences',
-  description: 'Experience the vibrant school life at Pak Wattan. Learn about our activities, events, and student life.',
-  keywords: 'school life, student activities, pak wattan school life, havelian school activities, student events',
+  description: 'Discover the vibrant school life at Pak Wattan School & College of Sciences. Learn about our academic schedule, student activities, code of conduct, and more.',
 }
 
 export default function SchoolLifePage() {
   return (
     <div className="min-h-screen">
       <SchoolLifeHero />
-      <SchoolLifeActivities />
-      <SchoolLifeGallery />
+      <AcademicSchedule />
+      <StudentCodeOfConduct />
+      <CollegeKit />
+      <AttendancePolicy />
+      <ParentTeacherMeetings />
+      <SchoolActivities />
+      <StudentLife />
     </div>
   )
 }

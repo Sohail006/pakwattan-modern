@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Calendar, Users, Trophy, Star } from 'lucide-react'
+import { Users, Trophy, Star } from 'lucide-react'
 
 const TalentHuntSeasons = () => {
   const seasons = [

@@ -1,113 +1,21 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Phone, Mail, Facebook, Youtube, Twitter, User, LogOut, Settings } from 'lucide-react'
+import { Menu, X, Phone, Mail, Facebook, Youtube, Twitter, User, LogOut, Settings, Play } from 'lucide-react'
+import { useScroll } from '@/hooks/useScroll'
+import { MAIN_NAVIGATION, SECONDARY_NAVIGATION, SCHOOL_INFO } from '@/lib/constants'
+import Container from '@/components/ui/Container'
+import Button from '@/components/ui/Button'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from auth context
-  const [userType, setUserType] = useState('student') // This would come from auth context
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  // Main navigation - only core links
-  const mainNavigation = [
-    { name: 'Home', href: '/' },
-    { 
-      name: 'Who We Are', 
-      href: '/about',
-      submenu: [
-        { name: 'Background & History', href: '/about#background' },
-        { name: 'Vision, Mission & Values', href: '/about#vision' },
-        { name: 'Staff Entrance Test', href: '/about#staff-test' },
-        { name: 'Prize Distribution Ceremony', href: '/about#prize-distribution' },
-        { name: 'Growth Chart', href: '/about#growth-chart' },
-        { name: 'Executive Director\'s Message', href: '/about#director-message' },
-        { name: 'Principal\'s Message', href: '/about#principal-message' },
-      ]
-    },
-    { name: 'Admission', href: '/admission' },
-    { name: 'Scholarships', href: '/scholarships' },
-    { 
-      name: 'Academic', 
-      href: '#',
-      submenu: [
-        { name: 'Academic Syllabus', href: '/academic-syllabus' },
-        { name: 'Model Papers', href: '/model-papers' },
-        { name: 'Entry Test Result', href: '/entry-test-result' },
-        { name: 'Yearly Academic Schedule', href: '/yearly-academic-schedule' },
-        { name: 'Montessori', href: '/academic/montessori' },
-        { name: 'Primary', href: '/academic/primary' },
-        { name: 'Matric', href: '/academic/matric' },
-      ]
-    },
-    { name: 'School Life', href: '/school-life' },
-    { name: 'Contact Us', href: '/contact' },
-  ]
-
-  // Secondary navigation for sidebar
-  const secondaryNavigation = [
-    { 
-      name: 'Programs', 
-      href: '#',
-      icon: '📚',
-      description: 'Educational programs and activities',
-      submenu: [
-        { name: 'Pakians Coaching Academy', href: '/pakians-coaching-academy' },
-        { name: 'Talent Hunt', href: '/talent-hunt' },
-        { name: 'Registration Form', href: '/registration-form' },
-      ]
-    },
-    { 
-      name: 'Achievements', 
-      href: '#',
-      icon: '🏆',
-      description: 'Our success stories and awards',
-      submenu: [
-        { name: 'Awards', href: '/awards' },
-        { name: 'Gold Medals', href: '/gold-medals' },
-        { name: 'Umrah Tickets', href: '/umrah-tickets' },
-        { name: 'Hajj Tickets', href: '/hajj-tickets' },
-        { name: 'Laptop Winners', href: '/laptop-winners' },
-      ]
-    },
-    { 
-      name: 'Facilities', 
-      href: '/facilities',
-      icon: '🏫',
-      description: 'Our modern facilities and infrastructure',
-      submenu: [
-        { name: 'Medical', href: '/facilities#medical' },
-        { name: 'Physical Training', href: '/facilities#physical-training' },
-        { name: 'Science Lab', href: '/facilities#science-lab' },
-        { name: 'Religious Training', href: '/facilities#religious-training' },
-        { name: 'Class Rooms', href: '/facilities#class-rooms' },
-        { name: 'Computer Lab', href: '/facilities#computer-lab' },
-        { name: 'Security System', href: '/facilities#security' },
-        { name: 'Smart Boards', href: '/facilities#smart-boards' },
-      ]
-    },
-    { 
-      name: 'Gallery', 
-      href: '#',
-      icon: '📸',
-      description: 'Photos and videos of our activities',
-      submenu: [
-        { name: 'Photo Gallery', href: '/photo-gallery' },
-        { name: 'Video Gallery', href: '/video-gallery' },
-      ]
-    },
-  ]
+  const [userType] = useState('student') // This would come from auth context
+  
+  const isScrolled = useScroll(50)
 
   return (
     <>
@@ -115,51 +23,57 @@ const Header = () => {
       <div className="fixed top-0 left-0 right-0 z-50">
         {/* Top Bar - Mobile Optimized */}
         <div className="bg-primary-600 text-white py-1">
-          <div className="container-custom">
+          <Container>
             <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-1 sm:space-y-0">
               {/* Contact Info - Stack on mobile */}
               <div className="flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-6">
                 <div className="flex items-center space-x-1.5">
                   <Phone className="w-3 h-3" />
-                  <span className="hidden xs:inline">0318 0821377</span>
+                  <span className="hidden xs:inline">{SCHOOL_INFO.contact.phone}</span>
                   <span className="xs:hidden">Call Us</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Mail className="w-3 h-3" />
-                  <span className="hidden sm:inline">pakwattan2020@gmail.com</span>
+                  <span className="hidden sm:inline">{SCHOOL_INFO.contact.email}</span>
                   <span className="sm:hidden">Email</span>
                 </div>
               </div>
               
               {/* Action Links - Responsive layout */}
               <div className="flex items-center space-x-2 sm:space-x-3">
-                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target">
+                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target flex items-center">
                   Sign In
                 </Link>
-                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target">
+                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target flex items-center">
                   Register
                 </Link>
-                <Link href="/video-gallery" className="bg-accent-500 hover:bg-accent-600 text-xs py-1 px-2 rounded transition-colors touch-target">
+                <Button 
+                  href="/video-gallery" 
+                  variant="accent" 
+                  size="sm"
+                  className="text-xs py-0.5 px-2 flex items-center gap-1.5 h-6"
+                >
+                  <Play className="w-3 h-3" />
                   <span className="hidden sm:inline">Video Gallery</span>
                   <span className="sm:hidden">Videos</span>
-                </Link>
+                </Button>
               </div>
             </div>
-          </div>
+          </Container>
         </div>
 
         {/* Enhanced Main Header - Mobile Optimized */}
         <header className={`transition-all duration-300 ${
           isScrolled ? 'bg-white/98 backdrop-blur-lg shadow-lg border-b border-gray-200/50' : 'bg-white/95 backdrop-blur-md'
         }`}>
-        <div className="container-custom">
+        <Container>
           <div className="flex items-center justify-between py-1.5 sm:py-2">
             {/* Enhanced Logo - Mobile Responsive */}
             <Link href="/" className="group flex items-center space-x-2 sm:space-x-3 hover:scale-105 transition-all duration-300 touch-target">
               <div className="relative">
                 <Image
-                  src="/images/logo/logo_150x150.png"
-                  alt="Pak Wattan School"
+                  src={SCHOOL_INFO.logo}
+                  alt={SCHOOL_INFO.name}
                   width={45}
                   height={45}
                   className="w-8 h-8 sm:w-11 sm:h-11"
@@ -168,10 +82,10 @@ const Header = () => {
               </div>
                      <div className="min-w-0 flex-text-fix">
                        <h1 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent font-josefin group-hover:from-primary-600 group-hover:to-accent-600 transition-all duration-300 leading-tight text-no-overlap">
-                         PAK WATTAN
+                         {SCHOOL_INFO.name}
                        </h1>
                        <p className="text-xs sm:text-xs text-secondary-600 font-medium group-hover:text-primary-600 transition-colors duration-300 leading-tight hidden xs:block text-no-overlap">
-                         SCHOOL & COLLEGE OF SCIENCES
+                         {SCHOOL_INFO.fullName}
                        </p>
                        <p className="text-xs text-secondary-600 font-medium group-hover:text-primary-600 transition-colors duration-300 leading-tight xs:hidden text-no-overlap">
                          SCHOOL & COLLEGE
@@ -181,7 +95,7 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1">
-              {mainNavigation.map((item) => (
+              {MAIN_NAVIGATION.map((item) => (
                 <div key={item.name} className="relative group">
                   <Link
                     href={item.href}
@@ -199,7 +113,7 @@ const Header = () => {
                   {item.submenu && (
                     <div className="absolute top-full left-0 mt-2 w-64 bg-white/98 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
                       <div className="p-1">
-                        {item.submenu.map((subItem, subIndex) => (
+                        {item.submenu.map((subItem) => (
                           <Link
                             key={subItem.name}
                             href={subItem.href}
@@ -288,14 +202,14 @@ const Header = () => {
               </div>
             </button>
           </div>
-        </div>
+        </Container>
 
         {/* Enhanced Mobile Menu - Improved UX */}
         {isMenuOpen && (
           <div className="lg:hidden bg-white/98 backdrop-blur-lg border-t border-gray-200/50 shadow-xl animate-fade-in-down max-h-[80vh] overflow-y-auto">
-            <div className="container-custom py-4">
+            <Container>
               <nav className="space-y-1">
-                {mainNavigation.map((item) => (
+                {MAIN_NAVIGATION.map((item) => (
                   <div key={item.name}>
                     <Link
                       href={item.href}
@@ -330,7 +244,7 @@ const Header = () => {
                 {/* Secondary Navigation in Mobile */}
                 <div className="mt-4 pt-4 border-t border-gray-200">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-4">Quick Links</h4>
-                  {secondaryNavigation.map((item) => (
+                  {SECONDARY_NAVIGATION.map((item) => (
                     <div key={item.name}>
                       <Link
                         href={item.href}
@@ -404,7 +318,7 @@ const Header = () => {
                   </div>
                 )}
               </nav>
-            </div>
+            </Container>
           </div>
         )}
         </header>
@@ -414,7 +328,7 @@ const Header = () => {
       <div className="fixed right-4 top-1/2 transform -translate-y-1/2 z-40 hidden md:block">
         <div className="flex flex-col space-y-2">
           <a
-            href="https://web.facebook.com/PAKWATTAN2020/"
+            href={SCHOOL_INFO.contact.socialMedia.facebook}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
@@ -426,7 +340,7 @@ const Header = () => {
             </div>
           </a>
           <a
-            href="https://youtu.be/edf2-HxPxxs?si=Az95EFwCE2cY1UJP"
+            href={SCHOOL_INFO.contact.socialMedia.youtube}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
@@ -438,7 +352,7 @@ const Header = () => {
             </div>
           </a>
           <a
-            href="https://twitter.com/WattanAnd?s=20&t=Fhqy3yMnnMGjq84gHEp5Sw"
+            href={SCHOOL_INFO.contact.socialMedia.twitter}
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"

@@ -180,7 +180,7 @@ const VideoGalleryVideos = () => {
         {/* Video Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredVideos.map((video) => (
-            <div key={video.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200">
+            <div key={video.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 hover-lift">
               <div className="relative aspect-video overflow-hidden">
                 <Image
                   src={video.thumbnail}

@@ -2,6 +2,8 @@
 
 import Link from 'next/link'
 import { GraduationCap, BookOpen, Trophy } from 'lucide-react'
+import Container from '@/components/ui/Container'
+import Card from '@/components/ui/Card'
 
 const DiscoverWonders = () => {
   const wings = [
@@ -27,7 +29,7 @@ const DiscoverWonders = () => {
 
   return (
     <section className="py-12 bg-white">
-      <div className="container-custom">
+      <Container>
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
             <span className="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
@@ -48,23 +50,25 @@ const DiscoverWonders = () => {
             <Link
               key={index}
               href={wing.href}
-              className="group card-hover p-8 text-center rounded-2xl bg-gradient-to-br from-primary-50 to-accent-50 hover:from-primary-100 hover:to-accent-100 transition-all duration-300"
+              className="group"
             >
-              <div className="w-24 h-24 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                <div className="text-primary-600 group-hover:text-primary-700 transition-colors">
-                  {wing.icon}
+              <Card className="p-8 text-center bg-gradient-to-br from-primary-50 to-accent-50 hover:from-primary-100 hover:to-accent-100 transition-all duration-300">
+                <div className="w-24 h-24 mx-auto mb-6 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
+                  <div className="text-primary-600 group-hover:text-primary-700 transition-colors">
+                    {wing.icon}
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-xl font-bold text-secondary-800 mb-4 group-hover:text-primary-700 transition-colors">
-                {wing.title}
-              </h3>
-              <p className="text-secondary-600 leading-relaxed">
-                {wing.description}
-              </p>
+                <h3 className="text-xl font-bold text-secondary-800 mb-4 group-hover:text-primary-700 transition-colors">
+                  {wing.title}
+                </h3>
+                <p className="text-secondary-600 leading-relaxed">
+                  {wing.description}
+                </p>
+              </Card>
             </Link>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

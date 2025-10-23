@@ -1,4 +1,4 @@
-import { FileText, Users, GraduationCap, CreditCard, Shield, AlertTriangle, Phone, Calendar } from 'lucide-react'
+import { FileText, Users, GraduationCap, CreditCard, Shield, AlertTriangle, Phone } from 'lucide-react'
 
 const TermsOfService = () => {
   return (

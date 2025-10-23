@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, Phone, Mail, Clock, Users, Award, BookOpen } from 'lucide-react'
+import { MapPin, Phone, Mail, Users, Award, BookOpen } from 'lucide-react'
 
 const ContactInfo = () => {
   const campuses = [

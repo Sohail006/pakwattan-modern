@@ -34,7 +34,7 @@ const ForgotPasswordForm = () => {
       // Mock successful password reset request
       setIsSubmitted(true)
       
-    } catch (error) {
+    } catch {
       setError('Failed to send reset email. Please try again.')
     } finally {
       setIsLoading(false)

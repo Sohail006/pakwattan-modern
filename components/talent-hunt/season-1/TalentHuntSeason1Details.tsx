@@ -1,6 +1,6 @@
 'use client'
 
-import { Trophy, Users, Calendar, Award, Star, Target } from 'lucide-react'
+import { Trophy, Users, Award, Star, Target } from 'lucide-react'
 
 const TalentHuntSeason1Details = () => {
   const achievements = [

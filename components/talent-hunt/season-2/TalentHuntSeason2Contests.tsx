@@ -16,7 +16,7 @@ import {
   Calendar,
   Users,
   Trophy,
-  Award
+  // Award
 } from 'lucide-react'
 
 const TalentHuntSeason2Contests = () => {

@@ -14,7 +14,7 @@ const LatestVideos = () => {
   const [error, setError] = useState<string | null>(null)
   const [selectedVideo, setSelectedVideo] = useState<YouTubeVideo | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  // const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const LatestVideos = () => {
 
   // Search and filter functionality
   const handleSearch = (query: string) => {
-    setSearchQuery(query)
+    // setSearchQuery(query)
     if (!query.trim()) {
       setFilteredVideos(videos)
       return
@@ -61,7 +61,7 @@ const LatestVideos = () => {
     } else {
       const filtered = videos.filter(video => {
         const title = video.title.toLowerCase()
-        const description = video.description.toLowerCase()
+        // const description = video.description.toLowerCase()
         
         switch (category) {
           case 'events':

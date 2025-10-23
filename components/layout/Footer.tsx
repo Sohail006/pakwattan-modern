@@ -1,18 +1,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone, Mail, MapPin, Facebook, Youtube, Twitter } from 'lucide-react'
+import { SCHOOL_INFO, MAIN_NAVIGATION } from '@/lib/constants'
+import Container from '@/components/ui/Container'
 
 const Footer = () => {
   return (
     <footer className="bg-secondary-800 text-white">
-      <div className="container-custom py-16">
+      <Container className="py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* School Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
               <Image
-                src="/images/logo/logo_150x150.png"
-                alt="Pak Wattan School"
+                src={SCHOOL_INFO.logo}
+                alt={SCHOOL_INFO.name}
                 width={50}
                 height={50}
                 className="w-12 h-12"
@@ -20,20 +22,19 @@ const Footer = () => {
               />
               <div>
                 <h3 className="text-xl font-bold text-white font-josefin">
-                  PAK WATTAN
+                  {SCHOOL_INFO.name}
                 </h3>
                 <p className="text-sm text-secondary-300">
-                  School & College of Sciences
+                  {SCHOOL_INFO.fullName}
                 </p>
               </div>
             </div>
             <p className="text-secondary-300 text-sm leading-relaxed">
-              Established in 2020, Pak Wattan School & College of Sciences is committed to providing 
-              quality education with affordable expenses in Havelian, KPK.
+              {SCHOOL_INFO.description}
             </p>
             <div className="flex space-x-4">
               <a
-                href="https://web.facebook.com/PAKWATTAN2020/"
+                href={SCHOOL_INFO.contact.socialMedia.facebook}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center hover:bg-primary-700 transition-colors"
@@ -41,7 +42,7 @@ const Footer = () => {
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="https://youtu.be/edf2-HxPxxs?si=Az95EFwCE2cY1UJP"
+                href={SCHOOL_INFO.contact.socialMedia.youtube}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-red-600 text-white rounded-full flex items-center justify-center hover:bg-red-700 transition-colors"
@@ -49,7 +50,7 @@ const Footer = () => {
                 <Youtube className="w-5 h-5" />
               </a>
               <a
-                href="https://twitter.com/WattanAnd?s=20&t=Fhqy3yMnnMGjq84gHEp5Sw"
+                href={SCHOOL_INFO.contact.socialMedia.twitter}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 bg-blue-400 text-white rounded-full flex items-center justify-center hover:bg-blue-500 transition-colors"
@@ -63,31 +64,13 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold text-white">Quick Links</h4>
             <ul className="space-y-2">
-              <li>
-                <Link href="/about" className="text-secondary-300 hover:text-white transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/admission" className="text-secondary-300 hover:text-white transition-colors">
-                  Admission
-                </Link>
-              </li>
-              <li>
-                <Link href="/scholarships" className="text-secondary-300 hover:text-white transition-colors">
-                  Scholarships
-                </Link>
-              </li>
-              <li>
-                <Link href="/facilities" className="text-secondary-300 hover:text-white transition-colors">
-                  Facilities
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-secondary-300 hover:text-white transition-colors">
-                  Contact Us
-                </Link>
-              </li>
+              {MAIN_NAVIGATION.slice(0, 5).map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-secondary-300 hover:text-white transition-colors">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -131,27 +114,26 @@ const Footer = () => {
                 <MapPin className="w-5 h-5 text-primary-400 mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-secondary-300 text-sm">
-                    Azam Khan road, beside Mubarak Plaza,<br />
-                    Havelian, Abbottabad, KPK, Pakistan
+                    {SCHOOL_INFO.contact.address}
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a 
-                  href="tel:+923180821377" 
+                  href={`tel:${SCHOOL_INFO.contact.phone.replace(/\s/g, '')}`}
                   className="text-secondary-300 hover:text-white transition-colors"
                 >
-                  0318 0821377
+                  {SCHOOL_INFO.contact.phone}
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a 
-                  href="mailto:pakwattan2020@gmail.com" 
+                  href={`mailto:${SCHOOL_INFO.contact.email}`}
                   className="text-secondary-300 hover:text-white transition-colors"
                 >
-                  pakwattan2020@gmail.com
+                  {SCHOOL_INFO.contact.email}
                 </a>
               </div>
             </div>
@@ -174,7 +156,7 @@ const Footer = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </footer>
   )
 }

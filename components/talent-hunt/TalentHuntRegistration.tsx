@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Phone, Mail, School, Calendar, Upload, CheckCircle } from 'lucide-react'
+import { User, Phone, School, Upload, CheckCircle, Calendar } from 'lucide-react'
 
 const TalentHuntRegistration = () => {
   const [formData, setFormData] = useState({
@@ -147,7 +147,7 @@ const TalentHuntRegistration = () => {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     placeholder="Enter student's full name"
                   />
                 </div>
@@ -163,7 +163,7 @@ const TalentHuntRegistration = () => {
                     value={formData.fatherName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     placeholder="Enter father's full name"
                   />
                 </div>
@@ -179,7 +179,7 @@ const TalentHuntRegistration = () => {
                     value={formData.gender}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                   >
                     <option value="">Select Gender</option>
                     {genderOptions.map(option => (
@@ -199,7 +199,7 @@ const TalentHuntRegistration = () => {
                     value={formData.grade}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                   >
                     <option value="">Select Grade</option>
                     {gradeOptions.map(option => (
@@ -222,7 +222,7 @@ const TalentHuntRegistration = () => {
                     required
                     min="5"
                     max="18"
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     placeholder="Enter age"
                   />
                 </div>
@@ -258,7 +258,7 @@ const TalentHuntRegistration = () => {
                     value={formData.mobileNumber}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     placeholder="Enter mobile number"
                   />
                 </div>
@@ -273,7 +273,7 @@ const TalentHuntRegistration = () => {
                     name="whatsAppNumber"
                     value={formData.whatsAppNumber}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     placeholder="Enter WhatsApp number"
                   />
                 </div>
@@ -331,7 +331,7 @@ const TalentHuntRegistration = () => {
                       name="paymentAttachment"
                       onChange={handleFileChange}
                       accept="image/*,.pdf"
-                      className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300"
+                      className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
                     />
                     <p className="text-sm text-secondary-600 mt-1">
                       Upload payment receipt (Image or PDF)

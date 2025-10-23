@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, Clock, Mountain, Factory } from 'lucide-react'
+import { MapPin, Mountain, Factory } from 'lucide-react'
 
 const BackgroundHistory = () => {
   return (

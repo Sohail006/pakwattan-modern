@@ -112,7 +112,7 @@ const RegisterForm = () => {
         window.location.href = '/login?registered=true'
       }, 2000)
       
-    } catch (error) {
+    } catch {
       setErrors({ general: 'Registration failed. Please try again.' })
     } finally {
       setIsLoading(false)

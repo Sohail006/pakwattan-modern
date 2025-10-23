@@ -1,7 +1,6 @@
 'use client'
 
-import Image from 'next/image'
-import { Trophy, Calendar, Users, Award, Sparkles, Clock } from 'lucide-react'
+import { Trophy, Calendar, Users, Sparkles } from 'lucide-react'
 
 const TalentHuntSeason2Hero = () => {
   return (

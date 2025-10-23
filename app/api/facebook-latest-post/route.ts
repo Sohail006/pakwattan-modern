@@ -48,7 +48,7 @@ export async function GET() {
           }
         }
       }
-    } catch (fetchError) {
+    } catch {
       console.log('Direct page fetch not available, using fallback')
     }
     

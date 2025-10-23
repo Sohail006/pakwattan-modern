@@ -1,31 +1,19 @@
 'use client'
 
 import Link from 'next/link'
-import { GraduationCap, Trophy, BookOpen, Award, Users, Heart } from 'lucide-react'
+import { Trophy, BookOpen, Award } from 'lucide-react'
+import { HERO_QUICK_LINKS } from '@/lib/constants'
+import Container from '@/components/ui/Container'
+import Button from '@/components/ui/Button'
 
 const HeroSection = () => {
-  const quickLinks = [
-    {
-      icon: <Award className="w-6 h-6" />,
-      title: 'Scholarships',
-      href: '/scholarships'
-    },
-    {
-      icon: <Trophy className="w-6 h-6" />,
-      title: 'Talent Hunt',
-      href: '/talent-hunt'
-    },
-    {
-      icon: <BookOpen className="w-6 h-6" />,
-      title: 'Pakians Coaching Academy (PCA)',
-      href: '/pakians-coaching-academy'
-    },
-    {
-      icon: <Trophy className="w-6 h-6" />,
-      title: 'Awards',
-      href: '/awards'
+  const quickLinks = HERO_QUICK_LINKS.map((link, index) => {
+    const IconComponent = [Award, Trophy, BookOpen, Trophy][index]
+    return {
+      ...link,
+      icon: IconComponent ? <IconComponent className="w-6 h-6" /> : null
     }
-  ]
+  })
 
   return (
     <section className="relative h-[70vh] sm:h-[75vh] lg:h-[80vh] flex items-center overflow-hidden">
@@ -45,7 +33,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
       </div>
 
-      <div className="container-custom relative z-10 py-8 sm:py-12">
+      <Container className="relative z-10 py-8 sm:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-center">
           {/* Main Content - Mobile Optimized */}
           <div className="lg:col-span-2">
@@ -72,13 +60,23 @@ const HeroSection = () => {
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <Link href="/admission" className="group relative inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-semibold text-white bg-gradient-to-r from-accent-500 to-accent-600 rounded-xl shadow-2xl hover:shadow-accent-500/25 hover:scale-105 transition-all duration-300 touch-target">
+                <Button 
+                  href="/admission" 
+                  variant="accent" 
+                  size="lg"
+                  className="group relative shadow-2xl hover:shadow-accent-500/25 hover:scale-105 touch-target focus-ring"
+                >
                   <span className="relative z-10">Apply Now</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </Link>
-                <Link href="/about" className="group relative inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-semibold text-white bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl hover:bg-white/20 hover:scale-105 transition-all duration-300 touch-target">
+                </Button>
+                <Button 
+                  href="/about" 
+                  variant="outline"
+                  size="lg"
+                  className="group relative bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:scale-105 touch-target focus-ring"
+                >
                   Learn More
-                </Link>
+                </Button>
               </div>
             </div>
           </div>
@@ -91,7 +89,7 @@ const HeroSection = () => {
                   <Link
                     key={index}
                     href={link.href}
-                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:scale-[1.02] hover:shadow-md touch-target"
+                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:scale-[1.02] hover:shadow-md touch-target focus-ring"
                     title={link.title}
                   >
                     {/* Icon with colored background */}
@@ -120,7 +118,7 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

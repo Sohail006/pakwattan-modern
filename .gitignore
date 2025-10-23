@@ -103,10 +103,11 @@ out/
 tmp/
 temp/
 
-# Exclude nested repositories
-frontend/pakwattan-frontend/
+# Exclude nested repositories and old files
+frontend/
 backend/
 shared/
+src/
 
 # Exclude problematic files
 public/files/

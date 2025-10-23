@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Trophy, Star, Users, Target, Award, Sparkles } from 'lucide-react'
+import { Trophy, Users, Target, Award, Sparkles } from 'lucide-react'
 
 const TalentHuntOverview = () => {
   return (

@@ -1,6 +1,6 @@
 'use client'
 
-import { Award, Users, BookOpen, Heart, Star, GraduationCap } from 'lucide-react'
+import { Award, BookOpen, Heart, Star } from 'lucide-react'
 
 const ScholarshipsHero = () => {
   const scholarshipTypes = [
@@ -46,8 +46,10 @@ const ScholarshipsHero = () => {
               </p>
               <p className="text-lg text-white/80 leading-relaxed">
                 PWSCS gives scholarships to students every year, including Pakians Scholarship, 
-                merit-based, orphan, special child, and Hafiz e Quran scholarships. The scholarship 
-                test has always been conducted on <strong>March 23rd</strong> in the girl's campus Havelian.
+                merit-based, orphan, special child, and Hafiz e Quran scholarships. Our 
+                <strong> 15 Lacs Scholarship Program</strong> supports deserving students. 
+                The scholarship test has always been conducted on <strong>March 23rd</strong> 
+                in the girl's campus Havelian.
               </p>
             </div>
 

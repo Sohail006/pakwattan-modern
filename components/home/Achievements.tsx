@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { Users, Trophy, GraduationCap, Building } from 'lucide-react'
+import { ACHIEVEMENTS_DATA } from '@/lib/constants'
+import Container from '@/components/ui/Container'
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
 const Achievements = () => {
   const [counts, setCounts] = useState({
@@ -11,77 +14,47 @@ const Achievements = () => {
     campuses: 0
   })
 
-  const achievements = [
-    {
-      icon: <Users className="w-8 h-8" />,
-      count: 1750,
-      label: 'STUDENTS',
-      color: 'text-blue-600'
-    },
-    {
-      icon: <Trophy className="w-8 h-8" />,
-      count: 1100,
-      label: 'AWARDS',
-      color: 'text-yellow-600'
-    },
-    {
-      icon: <GraduationCap className="w-8 h-8" />,
-      count: 525,
-      label: 'ALUMNI',
-      color: 'text-green-600'
-    },
-    {
-      icon: <Building className="w-8 h-8" />,
-      count: 3,
-      label: 'CAMPUSES',
-      color: 'text-purple-600'
+  const [ref, entry] = useIntersectionObserver({
+    threshold: 0.5,
+    freezeOnceVisible: true
+  })
+
+  const achievements = ACHIEVEMENTS_DATA.map((achievement, index) => {
+    const IconComponent = [Users, Trophy, GraduationCap, Building][index]
+    return {
+      ...achievement,
+      icon: <IconComponent className="w-8 h-8" />
     }
-  ]
+  })
 
   useEffect(() => {
-    const animateCounts = () => {
-      achievements.forEach((achievement, index) => {
-        const duration = 2000
-        const steps = 60
-        const increment = achievement.count / steps
-        let current = 0
+    if (entry?.isIntersecting) {
+      const animateCounts = () => {
+        ACHIEVEMENTS_DATA.forEach((achievement, index) => {
+          const duration = 2000
+          const steps = 60
+          const increment = achievement.count / steps
+          let current = 0
 
-        const timer = setInterval(() => {
-          current += increment
-          if (current >= achievement.count) {
-            current = achievement.count
-            clearInterval(timer)
-          }
-          setCounts(prev => ({
-            ...prev,
-            [Object.keys(prev)[index]]: Math.floor(current)
-          }))
-        }, duration / steps)
-      })
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            animateCounts()
-            observer.disconnect()
-          }
+          const timer = setInterval(() => {
+            current += increment
+            if (current >= achievement.count) {
+              current = achievement.count
+              clearInterval(timer)
+            }
+            setCounts(prev => ({
+              ...prev,
+              [Object.keys(prev)[index]]: Math.floor(current)
+            }))
+          }, duration / steps)
         })
-      },
-      { threshold: 0.5 }
-    )
-
-    const element = document.getElementById('achievements-section')
-    if (element) {
-      observer.observe(element)
+      }
+      animateCounts()
     }
-
-    return () => observer.disconnect()
-  }, [])
+  }, [entry?.isIntersecting])
 
   return (
-    <section id="achievements-section" className="relative bg-gradient-to-br from-secondary-900 via-primary-900 to-accent-900 text-white py-16 overflow-hidden">
+    <section ref={ref} className="relative bg-gradient-to-br from-secondary-900 via-primary-900 to-accent-900 text-white py-16 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-72 h-72 bg-accent-500/10 rounded-full blur-3xl"></div>
@@ -89,7 +62,7 @@ const Achievements = () => {
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat opacity-5"></div>
       </div>
       
-      <div className="container-custom relative z-10">
+      <Container className="relative z-10">
         <div className="text-center mb-20">
           <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-6 py-3 text-sm font-medium text-white/90 mb-6">
             <div className="w-2 h-2 bg-accent-400 rounded-full animate-pulse"></div>
@@ -127,7 +100,7 @@ const Achievements = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

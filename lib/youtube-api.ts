@@ -254,7 +254,7 @@ export async function getLatestVideos(maxResults: number = 10): Promise<YouTubeV
     
     if (data.items && data.items.length > 0) {
       // Get video details for each video
-      const videoIds = data.items.map((item: any) => item.id.videoId).join(',')
+      const videoIds = data.items.map((item: Record<string, unknown>) => (item.id as Record<string, unknown>).videoId).join(',')
       const detailsResponse = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_API_KEY}`
       )
@@ -262,15 +262,15 @@ export async function getLatestVideos(maxResults: number = 10): Promise<YouTubeV
       if (detailsResponse.ok) {
         const detailsData = await detailsResponse.json()
         
-        return detailsData.items.map((video: any) => ({
+        return detailsData.items.map((video: Record<string, unknown>) => ({
           id: video.id,
-          title: video.snippet.title,
-          description: video.snippet.description,
-          thumbnail: video.snippet.thumbnails.high?.url || video.snippet.thumbnails.default?.url,
-          duration: formatDuration(video.contentDetails.duration),
-          views: formatViewCount(video.statistics.viewCount),
-          publishedAt: video.snippet.publishedAt,
-          channelTitle: video.snippet.channelTitle,
+          title: (video.snippet as Record<string, unknown>).title as string,
+          description: (video.snippet as Record<string, unknown>).description as string,
+          thumbnail: (((video.snippet as Record<string, unknown>).thumbnails as Record<string, unknown>).high as Record<string, unknown>)?.url || (((video.snippet as Record<string, unknown>).thumbnails as Record<string, unknown>).default as Record<string, unknown>)?.url,
+          duration: formatDuration((video.contentDetails as Record<string, unknown>).duration as string),
+          views: formatViewCount((video.statistics as Record<string, unknown>).viewCount as string),
+          publishedAt: (video.snippet as Record<string, unknown>).publishedAt as string,
+          channelTitle: (video.snippet as Record<string, unknown>).channelTitle as string,
           videoUrl: `https://www.youtube.com/watch?v=${video.id}`
         }))
       }
@@ -304,7 +304,7 @@ export async function searchVideos(query: string, maxResults: number = 10): Prom
     const data = await response.json()
     
     if (data.items && data.items.length > 0) {
-      const videoIds = data.items.map((item: any) => item.id.videoId).join(',')
+      const videoIds = data.items.map((item: Record<string, unknown>) => (item.id as Record<string, unknown>).videoId).join(',')
       const detailsResponse = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails,statistics&id=${videoIds}&key=${YOUTUBE_API_KEY}`
       )
@@ -312,15 +312,15 @@ export async function searchVideos(query: string, maxResults: number = 10): Prom
       if (detailsResponse.ok) {
         const detailsData = await detailsResponse.json()
         
-        return detailsData.items.map((video: any) => ({
+        return detailsData.items.map((video: Record<string, unknown>) => ({
           id: video.id,
-          title: video.snippet.title,
-          description: video.snippet.description,
-          thumbnail: video.snippet.thumbnails.high?.url || video.snippet.thumbnails.default?.url,
-          duration: formatDuration(video.contentDetails.duration),
-          views: formatViewCount(video.statistics.viewCount),
-          publishedAt: video.snippet.publishedAt,
-          channelTitle: video.snippet.channelTitle,
+          title: (video.snippet as Record<string, unknown>).title as string,
+          description: (video.snippet as Record<string, unknown>).description as string,
+          thumbnail: (((video.snippet as Record<string, unknown>).thumbnails as Record<string, unknown>).high as Record<string, unknown>)?.url || (((video.snippet as Record<string, unknown>).thumbnails as Record<string, unknown>).default as Record<string, unknown>)?.url,
+          duration: formatDuration((video.contentDetails as Record<string, unknown>).duration as string),
+          views: formatViewCount((video.statistics as Record<string, unknown>).viewCount as string),
+          publishedAt: (video.snippet as Record<string, unknown>).publishedAt as string,
+          channelTitle: (video.snippet as Record<string, unknown>).channelTitle as string,
           videoUrl: `https://www.youtube.com/watch?v=${video.id}`
         }))
       }
@@ -349,7 +349,7 @@ export function getVideoCategories(): string[] {
 // Categorize video based on title and description
 export function categorizeVideo(video: YouTubeVideo): string {
   const title = video.title.toLowerCase()
-  const description = video.description.toLowerCase()
+  // const description = video.description.toLowerCase()
   
   if (title.includes('sports') || title.includes('athletic') || title.includes('game')) {
     return 'sports'

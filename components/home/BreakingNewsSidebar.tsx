@@ -1,17 +1,21 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect } from 'react'
 
 // Facebook SDK types
 declare global {
   interface Window {
-    FB: any
+    FB: {
+      init: (config: Record<string, unknown>) => void
+      api: (path: string, callback: (response: Record<string, unknown>) => void) => void
+    }
   }
 }
 
 const BreakingNewsSidebar = () => {
-  const [latestPost, setLatestPost] = useState<any>(null)
+  const [latestPost, setLatestPost] = useState<Record<string, unknown> | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
@@ -233,7 +237,7 @@ const BreakingNewsSidebar = () => {
         
         {/* Column 1: News & Events - Mobile Optimized */}
         <div className="lg:border-r border-gray-200">
-          <div className="p-4 sm:p-6">
+          <div className="p-3 sm:p-4">
             <div className="mb-4 sm:mb-6">
               <h3 className="text-base sm:text-lg font-bold text-primary-800 mb-2 flex items-center">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
@@ -244,9 +248,9 @@ const BreakingNewsSidebar = () => {
               <p className="text-gray-600 text-xs sm:text-sm ml-8 sm:ml-11">Latest announcements and updates</p>
             </div>
             
-            <div className="space-y-2 sm:space-y-3 max-h-60 sm:max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
+            <div className="space-y-1 sm:space-y-2 max-h-48 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
               {newsItems.slice(0, 4).map((item, index) => (
-                <div key={index} className="group border-l-4 border-primary-500 pl-3 sm:pl-4 py-3 sm:py-4 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 rounded-r-lg hover:shadow-sm">
+                <div key={index} className="group border-l-4 border-primary-500 pl-3 sm:pl-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 rounded-r-lg hover:shadow-sm">
                   <div className="flex items-start space-x-2 sm:space-x-3">
                     <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-100 rounded-full flex items-center justify-center mt-1 group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
                       <span className="text-primary-600 text-xs sm:text-sm">📢</span>
@@ -269,7 +273,7 @@ const BreakingNewsSidebar = () => {
 
         {/* Column 2: Facebook Latest Post - Mobile Optimized */}
         <div className="lg:border-r border-gray-200">
-          <div className="p-4 sm:p-6">
+          <div className="p-3 sm:p-4">
             <div className="mb-4 sm:mb-6">
               <div className="flex items-center justify-between mb-2 sm:mb-3">
                 <h3 className="text-base sm:text-lg font-bold text-primary-800 flex items-center">
@@ -365,9 +369,9 @@ const BreakingNewsSidebar = () => {
                       <span className="text-white font-bold text-xs sm:text-sm">PW</span>
                     </div>
                            <div className="flex-1 min-w-0 flex-text-fix">
-                             <h4 className="font-semibold text-gray-900 text-xs sm:text-sm text-no-overlap">{latestPost.from.name}</h4>
+                              <h4 className="font-semibold text-gray-900 text-xs sm:text-sm text-no-overlap">{(latestPost.from as Record<string, unknown>).name as string}</h4>
                              <p className="text-xs text-gray-500 text-no-overlap">
-                               {new Date(latestPost.created_time).toLocaleDateString('en-US', {
+                                {new Date(latestPost.created_time as string).toLocaleDateString('en-US', {
                                  month: 'short',
                                  day: 'numeric',
                                  hour: '2-digit',
@@ -390,18 +394,20 @@ const BreakingNewsSidebar = () => {
                          {/* Post Content - Mobile Optimized */}
                          <div className="p-3 sm:p-4">
                            <p className="text-gray-800 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 mobile-text-container">
-                             {latestPost.message}
+                              {latestPost.message as string}
                            </p>
                     
                     {/* Post Image/Reel - Mobile Responsive */}
-                    {latestPost.full_picture && (
+                    {(latestPost.full_picture as string) && (
                       <div className="mb-3 sm:mb-4 rounded-lg overflow-hidden relative group/image">
-                        <img
-                          src={latestPost.full_picture}
+                        <Image
+                          src={latestPost.full_picture as string}
                           alt="Facebook post"
-                          className="w-full h-32 sm:h-48 object-cover group-hover/image:scale-105 transition-transform duration-500"
+                          width={400}
+                          height={144}
+                          className="w-full h-24 sm:h-36 object-cover group-hover/image:scale-105 transition-transform duration-500"
                         />
-                        {latestPost.isReel && (
+                        {(latestPost.isReel as boolean) && (
                           <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-1 sm:px-3 sm:py-1.5 rounded-full text-xs font-bold flex items-center space-x-1 sm:space-x-1.5 shadow-lg">
                             <span className="text-xs sm:text-sm">🎬</span>
                             <span className="hidden sm:inline">REEL</span>
@@ -427,26 +433,26 @@ const BreakingNewsSidebar = () => {
                           <div className="w-4 h-4 sm:w-5 sm:h-5 bg-blue-50 rounded-full flex items-center justify-center">
                             <span className="text-blue-500 text-xs">👍</span>
                           </div>
-                          <span className="font-medium text-xs sm:text-sm">{latestPost.likes?.count || 0}</span>
+                          <span className="font-medium text-xs sm:text-sm">{((latestPost.likes as Record<string, unknown>)?.count as number) || 0}</span>
                         </span>
                         <span className="flex items-center space-x-1 sm:space-x-1.5 hover:text-gray-700 transition-colors duration-200 cursor-pointer touch-target">
                           <div className="w-4 h-4 sm:w-5 sm:h-5 bg-gray-50 rounded-full flex items-center justify-center">
                             <span className="text-gray-500 text-xs">💬</span>
                           </div>
-                          <span className="font-medium text-xs sm:text-sm">{latestPost.comments?.count || 0}</span>
+                          <span className="font-medium text-xs sm:text-sm">{((latestPost.comments as Record<string, unknown>)?.count as number) || 0}</span>
                         </span>
                         <span className="flex items-center space-x-1 sm:space-x-1.5 hover:text-green-600 transition-colors duration-200 cursor-pointer touch-target">
                           <div className="w-4 h-4 sm:w-5 sm:h-5 bg-green-50 rounded-full flex items-center justify-center">
                             <span className="text-green-500 text-xs">🔄</span>
                           </div>
-                          <span className="font-medium text-xs sm:text-sm">{latestPost.shares?.count || 0}</span>
+                          <span className="font-medium text-xs sm:text-sm">{((latestPost.shares as Record<string, unknown>)?.count as number) || 0}</span>
                         </span>
                       </div>
                     </div>
                     
                     {/* Action Button - Mobile Optimized */}
-                    <a
-                      href={latestPost.permalink_url}
+                      <a
+                        href={latestPost.permalink_url as string}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold text-center transition-all duration-300 flex items-center justify-center space-x-1 sm:space-x-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 touch-target"
@@ -485,7 +491,7 @@ const BreakingNewsSidebar = () => {
 
         {/* Column 3: Quick Links - Mobile Optimized */}
         <div>
-          <div className="p-4 sm:p-6">
+          <div className="p-3 sm:p-4">
             <div className="mb-4 sm:mb-6">
               <h3 className="text-base sm:text-lg font-bold text-primary-800 mb-2 flex items-center">
                 <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-accent-500 to-primary-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
@@ -496,12 +502,12 @@ const BreakingNewsSidebar = () => {
               <p className="text-gray-600 text-xs sm:text-sm ml-8 sm:ml-11">Navigate quickly to key sections</p>
             </div>
             
-            <div className="space-y-1 sm:space-y-2 max-h-60 sm:max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
+            <div className="space-y-1 sm:space-y-2 max-h-48 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
               {secondaryNavigation.map((item, index) => (
                 <div key={index} className="group">
                   <Link
                     href={item.href}
-                    className="flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3 rounded-lg sm:rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:shadow-sm touch-target"
+                    className="flex items-center space-x-2 sm:space-x-3 p-2 sm:p-2.5 rounded-lg sm:rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:shadow-sm touch-target"
                   >
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-100 to-accent-100 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300 group-hover:scale-105 flex-shrink-0">
                       <span className="text-sm sm:text-lg">{item.icon}</span>

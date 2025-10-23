@@ -1,38 +1,28 @@
 'use client'
 
-import { Users, Heart, BookOpen, Trophy, Music, Camera } from 'lucide-react'
+import { Users, BookOpen, Trophy, Heart } from 'lucide-react'
 
 const SchoolLifeHero = () => {
-  const lifeAspects = [
+  const features = [
     {
       icon: <Users className="w-8 h-8" />,
-      title: 'Community',
-      description: 'Strong sense of belonging and friendship'
-    },
-    {
-      icon: <Heart className="w-8 h-8" />,
-      title: 'Values',
-      description: 'Character development and moral education'
+      title: 'Vibrant Community',
+      description: 'A diverse community of scholars and learners committed to serving humanity'
     },
     {
       icon: <BookOpen className="w-8 h-8" />,
-      title: 'Learning',
-      description: 'Engaging and interactive education'
+      title: 'Academic Excellence',
+      description: 'Nationally recognized institute providing outstanding education'
     },
     {
       icon: <Trophy className="w-8 h-8" />,
-      title: 'Achievements',
-      description: 'Recognition and celebration of success'
+      title: 'Student Activities',
+      description: 'Rich extracurricular activities and student life programs'
     },
     {
-      icon: <Music className="w-8 h-8" />,
-      title: 'Arts & Culture',
-      description: 'Creative expression and cultural activities'
-    },
-    {
-      icon: <Camera className="w-8 h-8" />,
-      title: 'Memories',
-      description: 'Lifelong friendships and experiences'
+      icon: <Heart className="w-8 h-8" />,
+      title: 'Character Building',
+      description: 'Focus on developing well-rounded individuals with strong values'
     }
   ]
 
@@ -49,15 +39,18 @@ const SchoolLifeHero = () => {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-6xl font-bold font-josefin leading-tight">
-                <span className="text-gradient">School Life</span>
+                School{' '}
+                <span className="text-gradient">
+                  Life
+                </span>
               </h1>
               <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
-                A Vibrant Learning Community
+                A Vibrant Community of Scholars and Learners
               </p>
               <p className="text-lg text-white/80 leading-relaxed">
-                At Pak Wattan School & College of Sciences, school life is more than just academics. 
-                It's about building lasting friendships, developing character, and creating memories 
-                that will last a lifetime.
+                PAK WATTAN School & College of Sciences Havelian is a nationally recognized 
+                institute providing academic excellence, and a vibrant community of scholars 
+                and learners committed to serve the nation and humanity across the world.
               </p>
             </div>
 
@@ -66,26 +59,26 @@ const SchoolLifeHero = () => {
                 Explore Activities
               </button>
               <button className="btn-secondary text-center">
-                View Gallery
+                View Schedule
               </button>
             </div>
           </div>
 
-          {/* Life Aspects Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {lifeAspects.map((aspect, index) => (
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/20 transition-all duration-300 group text-center"
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 group hover-lift"
               >
-                <div className="text-white mb-3 group-hover:scale-110 transition-transform duration-300">
-                  {aspect.icon}
+                <div className="text-white mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
                 </div>
-                <h3 className="text-sm font-semibold text-white mb-1">
-                  {aspect.title}
+                <h3 className="text-lg font-semibold text-white mb-2">
+                  {feature.title}
                 </h3>
-                <p className="text-xs text-white/80">
-                  {aspect.description}
+                <p className="text-white/80 leading-relaxed">
+                  {feature.description}
                 </p>
               </div>
             ))}

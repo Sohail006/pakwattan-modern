@@ -1,7 +1,6 @@
 'use client'
 
-import Image from 'next/image'
-import { MapPin, Calendar, Users, Award } from 'lucide-react'
+import { Calendar, Users, Award, MapPin } from 'lucide-react'
 
 const AboutHero = () => {
   const stats = [
@@ -71,7 +70,7 @@ const AboutHero = () => {
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300 group"
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300 group hover-lift"
               >
                 <div className="text-white mb-4 group-hover:scale-110 transition-transform duration-300">
                   {stat.icon}

@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+// import Image from 'next/image'
 import { Trophy, Star, Users, Award } from 'lucide-react'
 
 const TalentHuntHero = () => {

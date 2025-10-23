@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Mail, Phone, Calendar, BookOpen, Award, CheckCircle } from 'lucide-react'
+import { User, Mail, Phone, BookOpen, CheckCircle, Award } from 'lucide-react'
 
 const TalentHuntSeason2Registration = () => {
   const [formData, setFormData] = useState({

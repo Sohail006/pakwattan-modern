@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Clock, Trophy, Play, Pause } from 'lucide-react'
+import { Trophy } from 'lucide-react'
 
 const TalentHuntSeason2Video = () => {
   const [isPlaying, setIsPlaying] = useState(false)
 
-  const handlePlayPause = () => {
-    setIsPlaying(!isPlaying)
-  }
+  // const handlePlayPause = () => {
+  //   setIsPlaying(!isPlaying)
+  // }
 
   return (
     <section className="py-16 bg-gradient-to-br from-primary-800 to-accent-800">

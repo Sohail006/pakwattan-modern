@@ -87,12 +87,12 @@ export default function RootLayout({
         <script src="https://www.youtube.com/player_api" async></script>
       </head>
       <body className={`${inter.className} antialiased`}>
-        <Analytics />
         <Header />
-        <main className="min-h-screen pt-20">
+        <main className="min-h-screen pt-16">
           {children}
         </main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )

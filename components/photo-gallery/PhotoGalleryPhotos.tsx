@@ -137,7 +137,7 @@ const PhotoGalleryPhotos = () => {
         {/* Photo Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredPhotos.map((photo) => (
-            <div key={photo.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 cursor-pointer"
+            <div key={photo.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 cursor-pointer hover-lift"
                  onClick={() => setSelectedPhoto(photo)}>
               <div className="relative aspect-square overflow-hidden">
                 <Image

@@ -9,6 +9,7 @@ import WithdrawalPolicy from '@/components/about/WithdrawalPolicy'
 import GrowthChart from '@/components/about/GrowthChart'
 import DirectorMessage from '@/components/about/DirectorMessage'
 import PrincipalMessage from '@/components/about/PrincipalMessage'
+import YouTubeVideo from '@/components/about/YouTubeVideo'
 
 export const metadata = {
   title: 'About Us - Pak Wattan School & College of Sciences',
@@ -28,6 +29,7 @@ export default function AboutPage() {
       <Admissions />
       <WithdrawalPolicy />
       <GrowthChart />
+      <YouTubeVideo />
       <DirectorMessage />
       <PrincipalMessage />
     </div>

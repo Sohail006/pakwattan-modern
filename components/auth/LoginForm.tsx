@@ -79,7 +79,7 @@ const LoginForm = () => {
         window.location.href = `/dashboard/${formData.userType}`
       }, 1500)
       
-    } catch (error) {
+    } catch {
       setErrors({ general: 'Login failed. Please check your credentials and try again.' })
     } finally {
       setIsLoading(false)
