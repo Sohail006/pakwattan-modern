@@ -5,12 +5,12 @@ import Container from '@/components/ui/Container'
 
 const TopNewsMarquee = () => {
   return (
-    <div className="bg-gradient-to-r from-red-500 via-red-600 to-red-500 text-white py-1 pt-14 text-base font-bold shadow-lg relative overflow-hidden">
+    <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 text-base font-bold shadow-lg relative overflow-hidden">
       <Container className="text-center">
         <div className="overflow-hidden relative">
           {/* Enhanced gradient overlays for smooth edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-red-500 to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-red-500 to-transparent z-10"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-accent-400 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-accent-400 to-transparent z-10"></div>
           
           {/* Pause on hover for better UX */}
           <div className="hover:pause-animation">
