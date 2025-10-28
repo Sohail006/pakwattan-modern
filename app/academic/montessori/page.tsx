@@ -43,9 +43,9 @@ const MontessoriPage = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
       {/* Hero Section */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
         <Container>
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -76,32 +76,32 @@ const MontessoriPage = () => {
                 independence, and a love for learning that will last a lifetime.
               </p>
               
-              <div className="grid grid-cols-2 gap-4">
-                <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-2xl font-bold text-blue-600">3-5</div>
-                  <div className="text-sm text-gray-600">Age Range</div>
-                </div>
-                <div className="text-center p-4 bg-white rounded-lg shadow-sm">
-                  <div className="text-2xl font-bold text-blue-600">2</div>
-                  <div className="text-sm text-gray-600">Years Duration</div>
-                </div>
-              </div>
+                     <div className="grid grid-cols-2 gap-4">
+                       <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-primary-200">
+                         <div className="text-2xl font-bold text-primary-600">3-5</div>
+                         <div className="text-sm text-gray-600">Age Range</div>
+                       </div>
+                       <div className="text-center p-4 bg-white rounded-lg shadow-sm border border-primary-200">
+                         <div className="text-2xl font-bold text-primary-600">2</div>
+                         <div className="text-sm text-gray-600">Years Duration</div>
+                       </div>
+                     </div>
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Program Features</h3>
               <div className="space-y-4">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="text-blue-600 mt-1">
-                      {feature.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900">{feature.title}</h4>
-                      <p className="text-gray-600 text-sm">{feature.description}</p>
-                    </div>
-                  </div>
-                ))}
+                       {features.map((feature, index) => (
+                         <div key={index} className="flex items-start space-x-4">
+                           <div className="text-primary-600 mt-1">
+                             {feature.icon}
+                           </div>
+                           <div>
+                             <h4 className="font-semibold text-gray-900">{feature.title}</h4>
+                             <p className="text-gray-600 text-sm">{feature.description}</p>
+                           </div>
+                         </div>
+                       ))}
               </div>
             </div>
           </div>
@@ -132,25 +132,25 @@ const MontessoriPage = () => {
       </section>
 
       {/* Admission Info */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+      <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
         <Container>
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-6">
               Ready to Start Your Child&apos;s Educational Journey?
             </h2>
-            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
               Join our Montessori program and give your child the best foundation for future learning and success.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="/admission" 
-                className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+                className="bg-white text-primary-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
               >
                 Apply Now
               </a>
               <a 
                 href="/contact" 
-                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+                className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors"
               >
                 Contact Us
               </a>
