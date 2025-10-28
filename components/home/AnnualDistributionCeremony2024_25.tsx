@@ -52,7 +52,7 @@ const AnnualDistributionCeremony2024_25 = () => {
               <div 
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
                 style={{
-                  backgroundImage: 'url(/images/animatedfireworks.gif)',
+                  backgroundImage: 'url(/images/pakians-coaching-academy/pca-hero.jpg/animatedfireworks.gif)',
                   borderRadius: '8px'
                 }}
               />

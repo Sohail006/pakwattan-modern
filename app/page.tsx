@@ -21,10 +21,14 @@ import HeroSection from '@/components/home/HeroSection'
 import SSCBISE2024_25Detailed from '@/components/home/SSCBISE2024_25Detailed'
 import AnnualDistributionCeremony2024_25 from '@/components/home/AnnualDistributionCeremony2024_25'
 import BISEHSSCTopers from '@/components/home/BISEHSSCTopers'
+import ErrorDiagnostic from '@/components/ErrorDiagnostic'
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      {/* Error Diagnostic - Temporary */}
+      <ErrorDiagnostic />
+      
       {/* Top News Marquee */}
       <TopNewsMarquee />
 
