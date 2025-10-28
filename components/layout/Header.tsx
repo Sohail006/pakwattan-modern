@@ -64,7 +64,7 @@ const Header = () => {
 
         {/* Enhanced Main Header - Mobile Optimized */}
         <header className={`transition-all duration-300 ${
-          isScrolled ? 'bg-white/98 backdrop-blur-lg shadow-lg border-b border-gray-200/50' : 'bg-white/95 backdrop-blur-md'
+          isScrolled ? 'bg-white shadow-lg border-b border-gray-200' : 'bg-white/99 backdrop-blur-sm'
         }`}>
         <Container>
           <div className="flex items-center justify-between py-1.5 sm:py-2">
@@ -99,7 +99,7 @@ const Header = () => {
                 <div key={item.name} className="relative group">
                   <Link
                     href={item.href}
-                    className="relative text-secondary-700 hover:text-primary-600 font-semibold text-sm transition-all duration-300 flex items-center space-x-1 group/nav px-4 py-2.5 rounded-lg hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50"
+                    className="relative text-secondary-700 hover:text-primary-600 font-semibold text-sm transition-all duration-300 flex items-center space-x-1 group/nav px-4 py-2.5 rounded-lg hover:bg-white hover:shadow-sm"
                   >
                     <span className="relative z-10">{item.name}</span>
                     {item.submenu && (
@@ -111,13 +111,13 @@ const Header = () => {
                   
                   {/* Enhanced Dropdown Menu */}
                   {item.submenu && (
-                    <div className="absolute top-full left-0 mt-2 w-64 bg-white/98 backdrop-blur-lg rounded-xl shadow-xl border border-gray-200/50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+                    <div className="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
                       <div className="p-1">
                         {item.submenu.map((subItem) => (
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className="group/sub flex items-center space-x-3 px-3 py-2.5 text-sm text-secondary-700 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 hover:text-primary-700 transition-all duration-200 rounded-lg"
+                            className="group/sub flex items-center space-x-3 px-3 py-2.5 text-sm text-secondary-700 hover:bg-primary-50 hover:text-primary-700 transition-all duration-200 rounded-lg"
                           >
                             <div className="w-1.5 h-1.5 bg-primary-500 rounded-full opacity-0 group-hover/sub:opacity-100 transition-opacity duration-200"></div>
                             <span className="flex-1 font-medium">{subItem.name}</span>
@@ -206,7 +206,7 @@ const Header = () => {
 
         {/* Enhanced Mobile Menu - Improved UX */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white/98 backdrop-blur-lg border-t border-gray-200/50 shadow-xl animate-fade-in-down max-h-[80vh] overflow-y-auto">
+          <div className="lg:hidden bg-white border-t border-gray-200 shadow-xl animate-fade-in-down max-h-[80vh] overflow-y-auto">
             <Container>
               <nav className="space-y-1">
                 {MAIN_NAVIGATION.map((item) => (
