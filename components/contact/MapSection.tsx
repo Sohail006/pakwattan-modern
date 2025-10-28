@@ -75,7 +75,7 @@ const MapSection = () => {
       const map = new window.google.maps.Map(mapRef.current, {
         zoom: 15,
         center: { lat: 34.053221, lng: 73.152673 },
-        mapTypeId: window.google.maps.MapTypeId.ROADMAP,
+        mapTypeId: 'roadmap' as any,
         styles: [
           {
             featureType: 'poi',
