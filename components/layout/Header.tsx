@@ -64,7 +64,7 @@ const Header = () => {
 
         {/* Enhanced Main Header - Mobile Optimized */}
         <header className={`transition-all duration-300 ${
-          isScrolled ? 'bg-white shadow-lg border-b border-gray-200' : 'bg-white/99 backdrop-blur-sm'
+          isScrolled ? 'bg-white shadow-lg border-b border-gray-200' : 'bg-white border-b border-gray-200'
         }`}>
         <Container>
           <div className="flex items-center justify-between py-1.5 sm:py-2">
