@@ -75,7 +75,7 @@ const MapSection = () => {
       const map = new window.google.maps.Map(mapRef.current, {
         zoom: 15,
         center: { lat: 34.053221, lng: 73.152673 },
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeId: window.google.maps.MapTypeId.ROADMAP,
         styles: [
           {
             featureType: 'poi',
@@ -98,8 +98,8 @@ const MapSection = () => {
                 <path d="M20 8c-4.4 0-8 3.6-8 8 0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8zm0 11c-1.7 0-3-1.3-3-3s1.3-3 3-3 3 1.3 3 3-1.3 3-3 3z" fill="#fff"/>
               </svg>
             `)}`,
-            scaledSize: new window.google.maps.Size(40, 40),
-            anchor: new window.google.maps.Point(20, 40)
+            scaledSize: { width: 40, height: 40 },
+            anchor: { x: 20, y: 40 }
           }
         })
 
