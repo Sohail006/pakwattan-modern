@@ -1,0 +1,60 @@
+==========================================
+SharkASP.net Deployment Instructions
+==========================================
+
+STEP 1: UPLOAD ALL FILES
+-------------------------
+1. Upload ALL contents of the 'sharkasp-final' folder
+2. Upload to your domain root directory (/public_html/)
+3. Make sure these folders are uploaded:
+   - .next/
+   - node_modules/
+   - public/
+   
+STEP 2: CONFIGURE NODE.JS APPLICATION
+-------------------------------------
+1. Go to SharkASP.net control panel
+2. Navigate to "Node.js Applications"
+3. Create or edit your Node.js application:
+   
+   Application Name: pakwattan-modern
+   Startup File: server.js
+   Node.js Version: 18+ (latest available)
+   Port: Use process.env.PORT (auto-assigned)
+   
+STEP 3: SET ENVIRONMENT VARIABLES
+----------------------------------
+In your Node.js application settings:
+NODE_ENV=production
+PORT=process.env.PORT
+HOSTNAME=0.0.0.0
+
+STEP 4: START APPLICATION
+--------------------------
+1. Click "Start Application"
+2. Wait for status to show "Running"
+3. Check logs for any errors
+
+STEP 5: TEST YOUR WEBSITE
+---------------------------
+1. Visit your domain
+2. Homepage should load correctly
+3. All pages should work
+
+TROUBLESHOOTING
+---------------
+If you still see errors:
+1. Check application logs in control panel
+2. Verify all files are uploaded correctly
+3. Check file permissions
+4. Make sure server.js exists and is readable
+
+SUCCESS INDICATORS
+------------------
+✅ No 403 Forbidden error
+✅ Website loads correctly
+✅ All pages accessible
+✅ Navigation works
+✅ Images load properly
+
+==========================================

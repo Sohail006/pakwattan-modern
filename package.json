@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "@types/google.maps": "^3.58.1",
-    "eslint": "^8.0.0",
+    "eslint": "^8.57.1",
     "eslint-config-next": "^14.0.0"
   }
 }

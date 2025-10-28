@@ -1,0 +1,19 @@
+﻿
+//var ResultServicespath = "https://localhost:7172/api/";
+var ResultServicespath = "https://websiteapi.pakwattan.edu.pk/api/";
+//var ResultServicespath = "https://resultapi.pakwattan.edu.pk/api/";
+//var ResultServicespath = "https://admissionsapi.pakwattan.edu.pk/api/";
+
+var pakansApp = angular.module('pakansApp', ['angular-loading-bar', 'angular.filter']);
+pakansApp.controller('mainController', function ($scope, $http, cfpLoadingBar)
+{
+    $scope.start = function ()
+    {
+        cfpLoadingBar.start();
+    };
+    $scope.complete = function ()
+    {
+        cfpLoadingBar.complete();
+    }
+   
+});
