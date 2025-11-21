@@ -23,7 +23,7 @@ Environment variables are **configuration values** that your application uses to
 ### **API URLs**
 ```env
 # Development (your local computer)
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=https://localhost:7210/api
 
 # Production (SharkASP.net)
 NEXT_PUBLIC_API_URL=https://www.sharkasp.net/api
@@ -58,7 +58,7 @@ Create these files in your project root:
 ```env
 # Development Environment Variables
 NODE_ENV=development
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=https://localhost:7210/api
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 YOUTUBE_API_KEY=your_development_youtube_key_here
 ```

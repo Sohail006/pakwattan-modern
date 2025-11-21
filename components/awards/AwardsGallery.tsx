@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Trophy, Award, Star, Medal, Laptop, Plane, GraduationCap } from 'lucide-react'
+import { Star, Medal, Laptop, Plane, GraduationCap } from 'lucide-react'
 
 const AwardsGallery = () => {
   const awards = [
@@ -75,7 +75,7 @@ const AwardsGallery = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {awards.map((award, index) => (
+          {awards.map((award) => (
             <div
               key={award.id}
               className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
@@ -133,11 +133,11 @@ const AwardsGallery = () => {
               '/images/achievements/Laptops/2.jpg',
               '/images/achievements/Laptops/3.jpg',
               '/images/achievements/Laptops/4.jpg'
-            ].map((image, index) => (
-              <div key={index} className="relative h-32 rounded-lg overflow-hidden group">
+            ].map((image, idx) => (
+              <div key={idx} className="relative h-32 rounded-lg overflow-hidden group">
                 <Image
                   src={image}
-                  alt={`Award ceremony ${index + 1}`}
+                  alt={`Award ceremony ${idx + 1}`}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-300"
                 />

@@ -12,7 +12,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Formats a phone number for display
+ * Formats a phone number for display (US format)
  */
 export function formatPhoneNumber(phone: string): string {
   const cleaned = phone.replace(/\D/g, '')
@@ -31,9 +31,79 @@ export function formatPhoneLink(phone: string): string {
 }
 
 /**
+ * Masks Pakistan phone number as user types (format: 03XX-XXXXXXX)
+ * @param value - The input value
+ * @returns Formatted phone number string
+ */
+export function maskPakistanPhoneNumber(value: string): string {
+  // Remove all non-digit characters
+  const cleaned = value.replace(/\D/g, '')
+  
+  // Limit to 11 digits (Pakistan mobile number length)
+  const limited = cleaned.slice(0, 11)
+  
+  // Format: 03XX-XXXXXXX
+  if (limited.length <= 4) {
+    return limited
+  } else {
+    return `${limited.slice(0, 4)}-${limited.slice(4)}`
+  }
+}
+
+/**
+ * Validates Pakistan phone number format
+ * @param phone - The phone number to validate (can be formatted or clean)
+ * @param required - Whether the phone number is required (default: false)
+ * @returns Object with validation result and optional error message
+ */
+export function validatePakistanPhoneNumber(phone: string, required: boolean = false): { valid: boolean; error?: string } {
+  // If empty and not required, it's valid
+  if (!phone || phone.trim() === '') {
+    if (required) {
+      return { valid: false, error: 'Phone number is required' }
+    }
+    return { valid: true }
+  }
+  
+  // Remove all non-digit characters for validation
+  const cleaned = phone.replace(/\D/g, '')
+  
+  // Must be exactly 11 digits
+  if (cleaned.length !== 11) {
+    return { valid: false, error: 'Phone number must be 11 digits (format: 03XX-XXXXXXX)' }
+  }
+  
+  // Must start with 03
+  if (!cleaned.startsWith('03')) {
+    return { valid: false, error: 'Phone number must start with 03' }
+  }
+  
+  // Check if it's a valid Pakistan mobile prefix (03XX where XX is 00-99)
+  const prefix = cleaned.substring(0, 4)
+  const prefixNumber = parseInt(prefix)
+  
+  // Valid prefixes: 0300-0399
+  if (prefixNumber < 300 || prefixNumber > 399) {
+    return { valid: false, error: 'Invalid phone number prefix. Must be between 0300-0399' }
+  }
+  
+  return { valid: true }
+}
+
+/**
+ * Cleans phone number for storage (removes formatting, keeps only digits)
+ * @param phone - The formatted phone number
+ * @returns Clean phone number with only digits
+ */
+export function cleanPhoneNumber(phone: string): string {
+  return phone.replace(/\D/g, '')
+}
+
+/**
  * Debounce function to limit the rate of function calls
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function debounce<T extends (...args: any[]) => any>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -109,12 +179,103 @@ export function safeJsonStringify(obj: unknown): string {
  */
 export function formatDate(date: Date | string, options?: Intl.DateTimeFormatOptions): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date
-  return dateObj.toLocaleDateString('en-US', {
+  return dateObj.toLocaleDateString('en-GB', {
     year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
     ...options
   })
+}
+
+/**
+ * Formats a date-time for display (e.g., "Nov 6, 2025, 4:12 PM")
+ * Handles UTC dates properly by converting to local timezone
+ */
+export function formatDateTime(date: Date | string, options?: Intl.DateTimeFormatOptions): string {
+  let dateObj: Date
+  
+  if (typeof date === 'string') {
+    let dateString = date.trim()
+    
+    // Check if it's already a valid ISO 8601 string with timezone indicator
+    const hasTimezone = dateString.endsWith('Z') || dateString.match(/[+-]\d{2}:\d{2}$/)
+    
+    if (!hasTimezone) {
+      // If no timezone indicator, assume it's UTC and append 'Z'
+      // This ensures JavaScript parses it as UTC, not local time
+      if (dateString.includes('T')) {
+        // Has time component, just append 'Z'
+        // Handle milliseconds: "2025-11-06T16:32:00.000" -> "2025-11-06T16:32:00.000Z"
+        dateString = `${dateString}Z`
+      } else {
+        // Just a date, add time component with UTC indicator
+        dateString = `${dateString}T00:00:00Z`
+      }
+    }
+    
+    dateObj = new Date(dateString)
+  } else {
+    dateObj = date
+  }
+  
+  // Validate the date
+  if (isNaN(dateObj.getTime())) {
+    console.warn('Invalid date:', date)
+    return 'Invalid Date'
+  }
+  
+  // toLocaleString automatically converts UTC to local timezone
+  // The Date object stores time in UTC internally, and toLocaleString converts it
+  return dateObj.toLocaleString('en-GB', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    ...options,
+    hour12: true
+  })
+}
+
+/**
+ * Formats a time string or Date to 12-hour format (HH:MM AM/PM)
+ */
+export function formatTime(time: Date | string | null | undefined): string {
+  if (!time) return ''
+
+  // Handle Date input directly
+  if (time instanceof Date) {
+    if (isNaN(time.getTime())) return ''
+    return convertTo12Hour(time.getHours(), time.getMinutes())
+  }
+
+  const trimmed = time.trim()
+  if (!trimmed) return ''
+
+  const lower = trimmed.toLowerCase()
+  if (lower.includes('am') || lower.includes('pm')) {
+    // Normalize AM/PM casing
+    return trimmed.replace(/am|pm/gi, match => match.toUpperCase())
+  }
+
+  const parts = trimmed.split(':')
+  const hours = parseInt(parts[0] ?? '', 10)
+  const minutes = parseInt(parts[1] ?? '0', 10)
+
+  if (Number.isNaN(hours)) {
+    return trimmed
+  }
+
+  const safeMinutes = Number.isNaN(minutes) ? 0 : minutes
+  return convertTo12Hour(hours, safeMinutes)
+}
+
+function convertTo12Hour(hours: number, minutes: number): string {
+  const period = hours >= 12 ? 'PM' : 'AM'
+  const normalizedHour = hours % 12 === 0 ? 12 : hours % 12
+  const hourString = String(normalizedHour).padStart(2, '0')
+  const minuteString = String(minutes).padStart(2, '0')
+  return `${hourString}:${minuteString} ${period}`
 }
 
 /**

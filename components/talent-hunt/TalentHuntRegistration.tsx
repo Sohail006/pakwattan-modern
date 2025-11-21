@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { API_CONFIG } from '@/lib/config'
 import { User, Phone, School, Upload, CheckCircle, Calendar } from 'lucide-react'
 
 const TalentHuntRegistration = () => {
@@ -72,11 +73,39 @@ const TalentHuntRegistration = () => {
     e.preventDefault()
     setIsSubmitting(true)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    try {
+      const form = new FormData()
+      form.append('Name', formData.name)
+      form.append('FatherName', formData.fatherName)
+      form.append('Age', String(parseInt(formData.age)))
+      form.append('GenderID', String(formData.gender === 'male' ? 1 : 2))
+      form.append('GradeID', String(parseInt(formData.grade)))
+      form.append('SchoolName', formData.schoolName)
+      form.append('MobileNumber', formData.mobileNumber)
+      form.append('WhatsAppNumber', formData.whatsAppNumber)
+      form.append('EventToParticiPate', formData.eventToParticipate)
+      form.append('IsOnlinePayment', String(formData.isOnlinePayment))
+      if (formData.paymentAttachment) form.append('PaymentAttachment', formData.paymentAttachment)
+      form.append('CreationDate', new Date().toISOString())
+
+      const response = await fetch(`${API_CONFIG.BASE_URL}/api/TalentHunt`, {
+        method: 'POST',
+        body: form
+      })
+
+      if (response.ok) {
+        const result = await response.json()
+        console.log('Talent Hunt registration successful:', result)
+        setIsSubmitted(true)
+      } else {
+        throw new Error('Unable to complete registration. Please check your information and try again.')
+      }
+    } catch (error) {
+      console.error('Talent Hunt registration error:', error)
+      alert(error instanceof Error ? error.message : 'Unable to complete registration. Please check your information and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (isSubmitted) {
@@ -97,7 +126,7 @@ const TalentHuntRegistration = () => {
               </p>
               <div className="bg-primary-50 rounded-lg p-4 mb-6">
                 <p className="text-primary-800 font-semibold">
-                  <strong>Note:</strong> To access our School's Scholarship Test syllabus and model papers, please visit our school.
+                  <strong>Note:</strong> To access our School&apos;s Scholarship Test syllabus and model papers, please visit our school.
                 </p>
               </div>
               <button
@@ -121,7 +150,7 @@ const TalentHuntRegistration = () => {
             Register for <span className="text-gradient">Talent Hunt Season-II</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto leading-relaxed">
-            Join the district's most exciting talent hunt program and showcase your unique abilities.
+            Join the district&apos;s most exciting talent hunt program and showcase your unique abilities.
           </p>
         </div>
 
@@ -148,14 +177,14 @@ const TalentHuntRegistration = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
-                    placeholder="Enter student's full name"
+                    placeholder="Enter student&apos;s full name"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-semibold text-secondary-700 mb-2">
                     <User className="w-4 h-4 inline mr-2" />
-                    Father's Name *
+                    Father&apos;s Name *
                   </label>
                   <input
                     type="text"
@@ -164,7 +193,7 @@ const TalentHuntRegistration = () => {
                     onChange={handleInputChange}
                     required
                     className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
-                    placeholder="Enter father's full name"
+                    placeholder="Enter father&apos;s full name"
                   />
                 </div>
               </div>

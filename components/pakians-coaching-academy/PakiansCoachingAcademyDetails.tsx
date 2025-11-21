@@ -1,34 +1,36 @@
 'use client'
 
+import Image from 'next/image'
+
 const PakiansCoachingAcademyDetails = () => {
   const features = [
     {
-      icon: "🎓",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/book.png",
       title: "Expert Faculty",
       description: "Experienced and qualified teachers dedicated to student success"
     },
     {
-      icon: "📚",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/book.png",
       title: "Comprehensive Curriculum",
       description: "Well-structured syllabus covering all essential topics"
     },
     {
-      icon: "🏆",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/ScholarshipTopPicture.jpg",
       title: "Proven Results",
       description: "Consistent track record of student achievements"
     },
     {
-      icon: "💡",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/seminar-bg.jpg",
       title: "Modern Teaching Methods",
       description: "Interactive and engaging learning approaches"
     },
     {
-      icon: "📊",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/TopPositionsInHavelian.jpg",
       title: "Regular Assessments",
       description: "Continuous evaluation and feedback system"
     },
     {
-      icon: "🎯",
+      icon: "/images/pakians-coaching-academy/pca-hero.jpg/PWPSC_BannerImage.jpg",
       title: "Goal-Oriented Approach",
       description: "Focused preparation for academic excellence"
     }
@@ -52,8 +54,15 @@ const PakiansCoachingAcademyDetails = () => {
           {features.map((feature, index) => (
             <div key={index} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-primary-200">
               <div className="text-center">
-                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-primary-100 to-accent-100 rounded-2xl flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
-                  {feature.icon}
+                <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-primary-100 to-accent-100 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 overflow-hidden p-2">
+                  <Image
+                    src={feature.icon}
+                    alt={feature.title}
+                    width={48}
+                    height={48}
+                    className="object-contain w-full h-full"
+                    style={{ minWidth: '32px', minHeight: '32px' }}
+                  />
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-primary-700 transition-colors duration-300">
                   {feature.title}

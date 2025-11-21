@@ -9,7 +9,7 @@ const PrincipalMessage = () => {
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
-            <span className="text-gradient">Principal's Message</span>
+            <span className="text-gradient">Principal&apos;s Message</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
             A message from our Principal about our educational approach and student development.
@@ -61,13 +61,13 @@ const PrincipalMessage = () => {
                       <Quote className="w-8 h-8 text-accent-600 flex-shrink-0 mt-1" />
                       <div className="space-y-4">
                         <p className="text-lg text-secondary-800 font-medium italic leading-relaxed">
-                          "Since, PAK WATTAN came into being on 2nd November 2020 striding on the way of 
+                          &ldquo;Since, PAK WATTAN came into being on 2nd November 2020 striding on the way of 
                           rapid growth in leaps and bounds. I feel proud to be the principal of such a 
                           prestigious, glorious and miraculous institute which provides great benefits and 
                           opportunities to the future doctors, engineers, professors and to the people of 
                           every field, it is also a great source of preparing of students for the life and 
                           the future and life also, character, academics, creativity, confidence, dedication 
-                          and enthusiasm for education"
+                          and enthusiasm for education&rdquo;
                         </p>
                       </div>
                     </div>
@@ -81,7 +81,7 @@ const PrincipalMessage = () => {
                   </p>
 
                   <p className="text-lg text-secondary-700 leading-relaxed">
-                    We always advise our students that don't ever let yourself to be agree on less knowledge 
+                    We always advise our students that don&apos;t ever let yourself to be agree on less knowledge 
                     always strive for more and more so you can find the real knowledge, the real soul of the 
                     knowledge; the real thirst of the knowledge and the real world of the knowledge.
                   </p>

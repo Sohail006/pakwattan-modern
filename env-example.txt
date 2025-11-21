@@ -1,3 +1,5 @@
+# Backend API base URL
+NEXT_PUBLIC_BACKEND_BASE_URL=http://localhost:5000
 # Environment Variables Example for PakWattanModern
 # Copy this file to .env.local for development or .env.production for production
 
@@ -6,7 +8,7 @@
 # ===========================================
 NODE_ENV=development
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_API_URL=https://localhost:7210/api
 NEXT_PUBLIC_APP_NAME=Pak Wattan School & College of Sciences
 
 # ===========================================

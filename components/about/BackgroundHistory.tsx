@@ -20,7 +20,7 @@ const BackgroundHistory = () => {
               with affordable expenses. PWSCS gives scholarships to students every year, including 
               Pakians Scholarship, merit-based, orphan, special child, and Hafiz e Quran scholarships. 
               The scholarship test has always been conducted on <strong>March 23rd</strong> in the 
-              girl's campus Havelian.
+              girl&apos;s campus Havelian.
             </p>
           </div>
 

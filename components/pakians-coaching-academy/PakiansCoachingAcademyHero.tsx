@@ -44,10 +44,11 @@ const PakiansCoachingAcademyHero = () => {
           <div className="relative">
             <div className="aspect-video rounded-2xl overflow-hidden shadow-2xl">
               <Image
-                src="/images/pakians-coaching-academy/pca-hero.jpg"
+                src="/images/pakians-coaching-academy/pca-hero.jpg/BannerImage1.jpg"
                 alt="Pakians Coaching Academy"
                 fill
-                className="object-cover"
+                className="object-cover w-full h-full"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl"></div>

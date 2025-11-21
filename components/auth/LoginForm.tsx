@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, Lock, Mail, User, Shield, AlertCircle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import FormField from '@/components/ui/FormField'
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const LoginForm = () => {
     { value: 'student', label: 'Student', icon: '🎓', description: 'Access your academic records and assignments' },
     { value: 'parent', label: 'Parent', icon: '👨‍👩‍👧‍👦', description: 'Monitor your child\'s progress and activities' },
     { value: 'teacher', label: 'Teacher', icon: '👨‍🏫', description: 'Manage classes, grades, and student information' },
+    { value: 'staff', label: 'Administration Staff', icon: '👨‍💼', description: 'Access administrative portal' },
     { value: 'admin', label: 'Administrator', icon: '⚙️', description: 'Full system access and management' }
   ]
 
@@ -67,20 +69,82 @@ const LoginForm = () => {
     if (!validateForm()) return
 
     setIsLoading(true)
+    setErrors({})
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Import dynamically to avoid SSR issues
+      const { login } = await import('@/lib/api/auth')
       
-      // Mock successful login
+      // Debug: Log what we're sending
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Login form - userType selected:', formData.userType)
+      }
+      
+      const response = await login({
+        email: formData.email,
+        password: formData.password,
+        userType: formData.userType, // Send userType to API for validation
+      })
+      
+      // Debug: Log response
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Login response - user roles:', response.user.roles)
+      }
+      
+      // Additional frontend validation (backup to backend validation)
+      const userRoles = response.user.roles.map(r => r.toLowerCase()) || []
+      const selectedRole = formData.userType.toLowerCase()
+      
+      // Normalize role names for comparison
+      const roleMap: Record<string, string> = {
+        'admin': 'admin',
+        'administrator': 'admin',
+        'staff': 'staff',
+        'teacher': 'teacher',
+        'student': 'student',
+        'parent': 'parent',
+      }
+      
+      const normalizedSelectedRole = roleMap[selectedRole] || selectedRole
+      const normalizedUserRoles = userRoles.map(role => roleMap[role] || role)
+      
+      // Check if user has the selected role (handles multiple roles)
+      const hasMatchingRole = normalizedUserRoles.includes(normalizedSelectedRole)
+      
+      // Validate role match (double-check even if backend validated)
+      if (userRoles.length > 0 && !hasMatchingRole) {
+        // Logout immediately if role mismatch
+        const { logout } = await import('@/lib/api/auth')
+        logout()
+        
+        const primaryRole = response.user.roles[0] || 'Unknown'
+        const roleMessage = userRoles.length > 1 
+          ? `Your account has roles: ${response.user.roles.join(', ')}`
+          : `Your account is "${primaryRole}"`
+        
+        setErrors({
+          general: `You selected "${formData.userType}" but ${roleMessage}. Please select the correct role or use different credentials.`
+        })
+        setIsLoading(false)
+        return
+      }
+      
+      // Login successful
       setSuccess(true)
       setTimeout(() => {
-        // Redirect to dashboard based on user type
-        window.location.href = `/dashboard/${formData.userType}`
+        // Redirect based on user role (use first role or selected role as fallback)
+        const redirectRole = response.user.roles[0]?.toLowerCase() || formData.userType.toLowerCase()
+        window.location.href = `/dashboard/${redirectRole}`
       }, 1500)
       
-    } catch {
-      setErrors({ general: 'Login failed. Please check your credentials and try again.' })
+    } catch (error: unknown) {
+      // Debug: Log error details
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Login error caught:', error)
+      }
+      
+      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials and try again.'
+      setErrors({ general: message })
     } finally {
       setIsLoading(false)
     }
@@ -121,9 +185,21 @@ const LoginForm = () => {
           </div>
 
           {errors.general && (
-            <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg flex items-center space-x-2 sm:space-x-3">
-              <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0" />
-              <p className="text-red-700 text-xs sm:text-sm">{errors.general}</p>
+            <div className={`mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg flex items-start space-x-2 sm:space-x-3 ${
+              errors.general.includes('You selected') || errors.general.includes('but your account is')
+                ? 'bg-amber-50 border border-amber-200'
+                : 'bg-red-50 border border-red-200'
+            }`}>
+              <AlertCircle className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 mt-0.5 ${
+                errors.general.includes('You selected') || errors.general.includes('but your account is')
+                  ? 'text-amber-600'
+                  : 'text-red-500'
+              }`} />
+              <p className={`text-xs sm:text-sm ${
+                errors.general.includes('You selected') || errors.general.includes('but your account is')
+                  ? 'text-amber-800'
+                  : 'text-red-700'
+              }`}>{errors.general}</p>
             </div>
           )}
 
@@ -137,10 +213,10 @@ const LoginForm = () => {
                 {userTypes.map((type) => (
                   <label
                     key={type.value}
-                    className={`relative flex items-center p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl cursor-pointer transition-all duration-200 touch-target ${
+                    className={`relative flex items-center p-3 sm:p-4 border-2 rounded-lg sm:rounded-xl cursor-pointer transition-all duration-200 touch-target focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 ${
                       formData.userType === type.value
                         ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
+                        : 'border-gray-300 hover:border-primary-300 hover:bg-gray-50'
                     }`}
                   >
                     <input
@@ -169,10 +245,7 @@ const LoginForm = () => {
             </div>
 
             {/* Email Field - Mobile Optimized */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 mobile-form-label">
-                Email Address
-              </label>
+            <FormField label="Email Address" required error={errors.email} htmlFor="email">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
@@ -183,25 +256,19 @@ const LoginForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`mobile-form-input pl-9 sm:pl-10 ${
+                  required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  className={`w-full pl-9 sm:pl-10 pr-4 py-2 sm:py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your email address"
                 />
               </div>
-              {errors.email && (
-                <p className="mt-2 text-xs sm:text-sm text-red-600 flex items-center space-x-1">
-                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{errors.email}</span>
-                </p>
-              )}
-            </div>
+            </FormField>
 
             {/* Password Field - Mobile Optimized */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2 mobile-form-label">
-                Password
-              </label>
+            <FormField label="Password" required error={errors.password} htmlFor="password">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
@@ -212,7 +279,10 @@ const LoginForm = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className={`mobile-form-input pl-9 sm:pl-10 pr-10 sm:pr-12 ${
+                  required
+                  aria-invalid={!!errors.password}
+                  aria-describedby={errors.password ? 'password-error' : undefined}
+                  className={`w-full pl-9 sm:pl-10 pr-10 sm:pr-12 py-2 sm:py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your password"
@@ -220,18 +290,13 @@ const LoginForm = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 touch-target"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 rounded transition-all duration-200"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" /> : <Eye className="h-4 w-4 sm:h-5 sm:w-5" />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="mt-2 text-xs sm:text-sm text-red-600 flex items-center space-x-1">
-                  <AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{errors.password}</span>
-                </p>
-              )}
-            </div>
+            </FormField>
 
             {/* Remember Me & Forgot Password - Mobile Optimized */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
@@ -239,9 +304,11 @@ const LoginForm = () => {
                 <input
                   type="checkbox"
                   name="rememberMe"
+                  id="rememberMe"
                   checked={formData.rememberMe}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 border-gray-300 rounded transition-all duration-200"
+                  aria-label="Remember me"
                 />
                 <span className="ml-2 text-xs sm:text-sm text-gray-700">Remember me</span>
               </label>
@@ -257,7 +324,8 @@ const LoginForm = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-primary-600 to-accent-600 text-white py-3 sm:py-3 px-4 rounded-lg sm:rounded-xl font-semibold hover:from-primary-700 hover:to-accent-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-target text-sm sm:text-base"
+              className="w-full bg-gradient-to-r from-primary-600 to-accent-600 text-white py-3 sm:py-3 px-4 rounded-lg sm:rounded-xl font-semibold hover:from-primary-700 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-target text-sm sm:text-base shadow-md hover:shadow-lg"
+              aria-label={isLoading ? 'Signing in...' : 'Sign in'}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">
@@ -273,7 +341,7 @@ const LoginForm = () => {
           {/* Sign Up Link - Mobile Optimized */}
           <div className="mt-6 sm:mt-8 text-center">
             <p className="text-xs sm:text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link href="/register" className="text-primary-600 hover:text-primary-700 font-semibold touch-target">
                 Create one here
               </Link>

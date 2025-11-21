@@ -227,8 +227,8 @@ const TalentHuntContests = () => {
                    Ready to Showcase Your Talent?
                  </h3>
                  <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto px-4 mobile-text-container">
-                   Join us in this exciting journey where talent meets opportunity. 
-                   Let's inspire the stars of tomorrow—one stream, one talent at a time.
+                  Join us in this exciting journey where talent meets opportunity. 
+                  Let&apos;s inspire the stars of tomorrow—one stream, one talent at a time.
                  </p>
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
             <button className="bg-primary-600 hover:bg-primary-700 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg sm:rounded-xl font-semibold transition-colors duration-200 touch-target text-sm sm:text-base">

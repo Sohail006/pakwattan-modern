@@ -106,9 +106,9 @@ const VideoSearch = ({ onSearch, onCategoryChange, categories, activeCategory }:
       <div className="mt-6 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl p-4">
         <h4 className="font-semibold text-primary-800 mb-2">💡 Search Tips</h4>
         <ul className="text-sm text-gray-600 space-y-1">
-          <li>• Try searching for "graduation", "sports", "competition", or "ceremony"</li>
-          <li>• Use specific years like "2024" or "2023" to find recent videos</li>
-          <li>• Search by event type: "debate", "science fair", "cultural day"</li>
+          <li>• Try searching for &ldquo;graduation&rdquo;, &ldquo;sports&rdquo;, &ldquo;competition&rdquo;, or &ldquo;ceremony&rdquo;</li>
+          <li>• Use specific years like &ldquo;2024&rdquo; or &ldquo;2023&rdquo; to find recent videos</li>
+          <li>• Search by event type: &ldquo;debate&rdquo;, &ldquo;science fair&rdquo;, &ldquo;cultural day&rdquo;</li>
           <li>• Use category filters to narrow down results</li>
         </ul>
       </div>

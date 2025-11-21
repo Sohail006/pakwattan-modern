@@ -23,7 +23,7 @@ const ParentTeacherMeetings = () => {
                 <h3 className="text-3xl font-bold text-white">Building Strong Partnerships</h3>
               </div>
               <p className="text-white/90 text-lg text-center max-w-3xl mx-auto">
-                It is needless to say that the first learning institute for a child is a mother's lap whereas; a teacher not only flourishes the mind but also uplifts a child spiritually. Therefore, the combination of parents and teacher's edification for the child reaches to the climax of understanding and development.
+                It is needless to say that the first learning institute for a child is a mother&apos;s lap whereas; a teacher not only flourishes the mind but also uplifts a child spiritually. Therefore, the combination of parents and teacher&apos;s edification for the child reaches to the climax of understanding and development.
               </p>
             </div>
 
@@ -93,7 +93,7 @@ const ParentTeacherMeetings = () => {
                 <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl p-8 text-white">
                   <h4 className="text-2xl font-bold mb-4">Ready to Schedule a Meeting?</h4>
                   <p className="text-lg mb-6">
-                    Contact us to schedule a parent-teacher meeting or for any inquiries about your child's progress.
+                    Contact us to schedule a parent-teacher meeting or for any inquiries about your child&apos;s progress.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="tel:+92-999-123-4567" className="btn-secondary inline-flex items-center justify-center">

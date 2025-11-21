@@ -210,7 +210,7 @@ export async function getChannelInfo(): Promise<YouTubeChannel | null> {
     )
     
     if (!response.ok) {
-      throw new Error('Failed to fetch channel info')
+      throw new Error('Unable to fetch YouTube channel information. Please try again later.')
     }
     
     const data = await response.json()
@@ -247,7 +247,7 @@ export async function getLatestVideos(maxResults: number = 10): Promise<YouTubeV
     )
     
     if (!response.ok) {
-      throw new Error('Failed to fetch videos')
+      throw new Error('Unable to fetch YouTube videos. Please try again later.')
     }
     
     const data = await response.json()
@@ -298,7 +298,7 @@ export async function searchVideos(query: string, maxResults: number = 10): Prom
     )
     
     if (!response.ok) {
-      throw new Error('Failed to search videos')
+      throw new Error('Unable to search YouTube videos. Please try again later.')
     }
     
     const data = await response.json()

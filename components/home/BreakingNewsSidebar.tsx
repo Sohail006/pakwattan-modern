@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
+import { formatDateTime, formatTime } from '@/lib/utils'
 
 // Facebook SDK types
 declare global {
@@ -37,12 +38,12 @@ const BreakingNewsSidebar = () => {
         setLastUpdated(new Date())
         setError(null)
       } else {
-        throw new Error('API request failed')
+        throw new Error('Unable to fetch the latest Facebook post. Please try again later.')
       }
       
     } catch (error) {
       console.error('Error fetching latest Facebook reel:', error)
-      setError('Unable to load latest reel')
+      setError('Unable to load the latest Facebook post. Please try again later.')
       
       // Fallback: Show a sample latest reel
       const fallbackReel = {
@@ -310,7 +311,7 @@ const BreakingNewsSidebar = () => {
                 </p>
                 {lastUpdated && (
                   <p className="text-xs text-gray-400">
-                    Updated {lastUpdated.toLocaleTimeString()}
+                    Updated {lastUpdated ? formatTime(lastUpdated) : ''}
                   </p>
                 )}
               </div>
@@ -371,12 +372,7 @@ const BreakingNewsSidebar = () => {
                            <div className="flex-1 min-w-0 flex-text-fix">
                               <h4 className="font-semibold text-gray-900 text-xs sm:text-sm text-no-overlap">{(latestPost.from as Record<string, unknown>).name as string}</h4>
                              <p className="text-xs text-gray-500 text-no-overlap">
-                                {new Date(latestPost.created_time as string).toLocaleDateString('en-US', {
-                                 month: 'short',
-                                 day: 'numeric',
-                                 hour: '2-digit',
-                                 minute: '2-digit'
-                               })}
+                                {formatDateTime(latestPost.created_time as string, { hour: '2-digit', minute: '2-digit' })}
                              </p>
                            </div>
                     <div className="flex items-center space-x-1 sm:space-x-2">
@@ -571,7 +567,7 @@ const BreakingNewsSidebar = () => {
                      <p className="text-xs text-gray-400 text-no-overlap">
                        <span className="hidden sm:inline">Last updated: </span>
                        <span className="sm:hidden">Updated: </span>
-                       {lastUpdated.toLocaleTimeString()}
+                       {lastUpdated ? formatTime(lastUpdated) : ''}
                      </p>
             )}
           </div>

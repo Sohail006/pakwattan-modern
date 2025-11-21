@@ -140,7 +140,7 @@ const TalentHuntSeasons = () => {
               Ready to Showcase Your Talent?
             </h3>
             <p className="text-lg text-secondary-600 mb-6">
-              Join us in Season-II and be part of the district's most exciting talent hunt program.
+              Join us in Season-II and be part of the district&apos;s most exciting talent hunt program.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link

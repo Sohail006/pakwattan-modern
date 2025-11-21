@@ -27,11 +27,11 @@ export default function Error({
 
           {/* Error Content */}
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Oops! Something went wrong
+            Oops! An Error Occurred
           </h1>
           
           <p className="text-gray-600 mb-8">
-            We&apos;re sorry, but something unexpected happened. Our team has been notified and is working to fix this issue.
+            We encountered an issue while processing your request. This may be a temporary problem. Please try refreshing the page or contact support if the issue persists.
           </p>
 
           {/* Error Details (only in development) */}

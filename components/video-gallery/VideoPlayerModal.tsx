@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, ExternalLink, Share2, ThumbsUp, Eye } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 
 interface VideoPlayerModalProps {
   isOpen: boolean
@@ -126,7 +127,7 @@ const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => 
               </div>
               <div className="flex items-center space-x-1">
                 <span>📅</span>
-                <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
+                <span>{formatDate(video.publishedAt)}</span>
               </div>
               <div className="flex items-center space-x-1">
                 <span>⏱️</span>

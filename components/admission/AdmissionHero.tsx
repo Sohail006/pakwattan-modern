@@ -3,6 +3,31 @@
 import { GraduationCap, Users, Calendar, Award } from 'lucide-react'
 
 const AdmissionHero = () => {
+  const scrollToForm = () => {
+    const nameField = document.getElementById('name')
+    if (nameField) {
+      const offset = 120 // Offset for sticky headers/navigation
+      const elementPosition = nameField.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - offset
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      })
+      
+      // Focus the input field after scrolling
+      setTimeout(() => {
+        nameField.focus()
+      }, 500) // Wait for scroll animation to complete
+    }
+  }
+
+  const scrollToProcess = () => {
+    const processElement = document.getElementById('admission-process')
+    if (processElement) {
+      processElement.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
   const admissionInfo = [
     {
       icon: <GraduationCap className="w-8 h-8" />,
@@ -48,17 +73,25 @@ const AdmissionHero = () => {
                 Admissions Open for Academic Year 2025-26
               </p>
               <p className="text-lg text-white/80 leading-relaxed">
-                Become part of Pakistan's leading educational institution. We welcome 
+                Become part of Pakistan&apos;s leading educational institution. We welcome 
                 students from all backgrounds and provide quality education with 
                 affordable expenses.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="btn-accent text-center">
+              <button 
+                onClick={scrollToForm}
+                className="btn-accent text-center"
+                aria-label="Scroll to student name field in admission form"
+              >
                 Apply Now
               </button>
-              <button className="btn-secondary text-center">
+              <button 
+                onClick={scrollToProcess}
+                className="btn-secondary text-center"
+                aria-label="Learn more about admission process"
+              >
                 Learn More
               </button>
             </div>

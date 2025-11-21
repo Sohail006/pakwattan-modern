@@ -46,7 +46,7 @@ const SSCBISE2024_25 = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            5th time in a row - SSC Havelian Circle's top achiever!
+            5th time in a row - SSC Havelian Circle&apos;s top achiever!
           </p>
         </div>
 

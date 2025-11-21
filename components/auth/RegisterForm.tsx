@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Eye, EyeOff, Lock, Mail, User, Shield, AlertCircle, CheckCircle, Phone, Calendar } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import FormField from '@/components/ui/FormField'
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const RegisterForm = () => {
     phone: '',
     password: '',
     confirmPassword: '',
-    userType: 'student',
+    userType: 'teacher',
     dateOfBirth: '',
     agreeToTerms: false
   })
@@ -24,10 +25,9 @@ const RegisterForm = () => {
   const [success, setSuccess] = useState(false)
 
   const userTypes = [
-    { value: 'student', label: 'Student', icon: '🎓', description: 'Create account to access academic records' },
-    { value: 'parent', label: 'Parent', icon: '👨‍👩‍👧‍👦', description: 'Monitor your child\'s progress and activities' },
     { value: 'teacher', label: 'Teacher', icon: '👨‍🏫', description: 'Manage classes and student information' },
-    { value: 'staff', label: 'Staff', icon: '👨‍💼', description: 'Access staff portal and resources' }
+    { value: 'staff', label: 'Administration Staff', icon: '👨‍💼', description: 'Access administrative portal' },
+    { value: 'parent', label: 'Parent', icon: '👨‍👩‍👧‍👦', description: 'Monitor your child\'s progress and activities' }
   ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -101,19 +101,31 @@ const RegisterForm = () => {
     if (!validateForm()) return
 
     setIsLoading(true)
+    setErrors({})
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Import dynamically to avoid SSR issues
+      const { register } = await import('@/lib/api/auth')
       
-      // Mock successful registration
+      await register({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+        userType: formData.userType,
+        dateOfBirth: formData.dateOfBirth || undefined,
+      })
+      
+      // Registration successful
       setSuccess(true)
       setTimeout(() => {
         window.location.href = '/login?registered=true'
       }, 2000)
       
-    } catch {
-      setErrors({ general: 'Registration failed. Please try again.' })
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Unable to complete registration. Please check your information and try again.'
+      setErrors({ general: message })
     } finally {
       setIsLoading(false)
     }
@@ -135,7 +147,16 @@ const RegisterForm = () => {
             <CheckCircle className="w-10 h-10 text-green-600" />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Registration Successful!</h2>
-          <p className="text-gray-600 mb-6">Your account has been created. Redirecting to login...</p>
+          <p className="text-gray-600 mb-4">
+            Your account has been created and is <strong>pending admin approval</strong>.
+            You&apos;ll receive an email notification when your account is activated.
+          </p>
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+            <p className="text-sm text-amber-800">
+              <strong>Note:</strong> You won&apos;t be able to login until an administrator activates your account.
+            </p>
+          </div>
+          <p className="text-sm text-gray-500">Redirecting to login page...</p>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div className="bg-green-600 h-2 rounded-full animate-pulse" style={{ width: '100%' }}></div>
           </div>
@@ -174,10 +195,10 @@ const RegisterForm = () => {
                 {userTypes.map((type) => (
                   <label
                     key={type.value}
-                    className={`relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 ${
+                    className={`relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 ${
                       formData.userType === type.value
                         ? 'border-primary-500 bg-primary-50'
-                        : 'border-gray-200 hover:border-primary-300 hover:bg-gray-50'
+                        : 'border-gray-300 hover:border-primary-300 hover:bg-gray-50'
                     }`}
                   >
                     <input
@@ -207,10 +228,7 @@ const RegisterForm = () => {
 
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-2">
-                  First Name
-                </label>
+              <FormField label="First Name" required error={errors.firstName} htmlFor="firstName">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-5 w-5 text-gray-400" />
@@ -221,24 +239,18 @@ const RegisterForm = () => {
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                    required
+                    aria-invalid={!!errors.firstName}
+                    aria-describedby={errors.firstName ? 'firstName-error' : undefined}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Enter your first name"
                   />
                 </div>
-                {errors.firstName && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>{errors.firstName}</span>
-                  </p>
-                )}
-              </div>
+              </FormField>
 
-              <div>
-                <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Last Name
-                </label>
+              <FormField label="Last Name" required error={errors.lastName} htmlFor="lastName">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <User className="h-5 w-5 text-gray-400" />
@@ -249,26 +261,20 @@ const RegisterForm = () => {
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                    required
+                    aria-invalid={!!errors.lastName}
+                    aria-describedby={errors.lastName ? 'lastName-error' : undefined}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Enter your last name"
                   />
                 </div>
-                {errors.lastName && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>{errors.lastName}</span>
-                  </p>
-                )}
-              </div>
+              </FormField>
             </div>
 
             {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                Email Address
-              </label>
+            <FormField label="Email Address" required error={errors.email} htmlFor="email">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
@@ -279,25 +285,19 @@ const RegisterForm = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                  required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your email address"
                 />
               </div>
-              {errors.email && (
-                <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{errors.email}</span>
-                </p>
-              )}
-            </div>
+            </FormField>
 
             {/* Phone Field */}
-            <div>
-              <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
-                Phone Number
-              </label>
+            <FormField label="Phone Number" required error={errors.phone} htmlFor="phone">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Phone className="h-5 w-5 text-gray-400" />
@@ -308,25 +308,19 @@ const RegisterForm = () => {
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                  required
+                  aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your phone number"
                 />
               </div>
-              {errors.phone && (
-                <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{errors.phone}</span>
-                </p>
-              )}
-            </div>
+            </FormField>
 
             {/* Date of Birth */}
-            <div>
-              <label htmlFor="dateOfBirth" className="block text-sm font-semibold text-gray-700 mb-2">
-                Date of Birth
-              </label>
+            <FormField label="Date of Birth" required error={errors.dateOfBirth} htmlFor="dateOfBirth">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Calendar className="h-5 w-5 text-gray-400" />
@@ -337,25 +331,19 @@ const RegisterForm = () => {
                   name="dateOfBirth"
                   value={formData.dateOfBirth}
                   onChange={handleInputChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                  required
+                  aria-invalid={!!errors.dateOfBirth}
+                  aria-describedby={errors.dateOfBirth ? 'dateOfBirth-error' : undefined}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.dateOfBirth ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
               </div>
-              {errors.dateOfBirth && (
-                <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{errors.dateOfBirth}</span>
-                </p>
-              )}
-            </div>
+            </FormField>
 
             {/* Password Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Password
-                </label>
+              <FormField label="Password" required error={errors.password} htmlFor="password">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-5 w-5 text-gray-400" />
@@ -366,7 +354,10 @@ const RegisterForm = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                    required
+                    aria-invalid={!!errors.password}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Create a password"
@@ -374,23 +365,15 @@ const RegisterForm = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded transition-all duration-200"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>{errors.password}</span>
-                  </p>
-                )}
-              </div>
+              </FormField>
 
-              <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
-                  Confirm Password
-                </label>
+              <FormField label="Confirm Password" required error={errors.confirmPassword} htmlFor="confirmPassword">
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <Lock className="h-5 w-5 text-gray-400" />
@@ -401,7 +384,10 @@ const RegisterForm = () => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors ${
+                    required
+                    aria-invalid={!!errors.confirmPassword}
+                    aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Confirm your password"
@@ -409,18 +395,13 @@ const RegisterForm = () => {
                   <button
                     type="button"
                     onClick={toggleConfirmPasswordVisibility}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                    aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-primary-500 rounded transition-all duration-200"
                   >
                     {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                   </button>
                 </div>
-                {errors.confirmPassword && (
-                  <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
-                    <AlertCircle className="w-4 h-4" />
-                    <span>{errors.confirmPassword}</span>
-                  </p>
-                )}
-              </div>
+              </FormField>
             </div>
 
             {/* Terms and Conditions */}
@@ -428,10 +409,13 @@ const RegisterForm = () => {
               <label className="flex items-start space-x-3">
                 <input
                   type="checkbox"
+                  id="agreeToTerms"
                   name="agreeToTerms"
                   checked={formData.agreeToTerms}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded mt-1"
+                  className="h-4 w-4 text-primary-600 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 border-gray-300 rounded mt-1 transition-all duration-200"
+                  aria-invalid={!!errors.agreeToTerms}
+                  aria-describedby={errors.agreeToTerms ? 'agreeToTerms-error' : undefined}
                 />
                 <span className="text-sm text-gray-700">
                   I agree to the{' '}
@@ -445,7 +429,7 @@ const RegisterForm = () => {
                 </span>
               </label>
               {errors.agreeToTerms && (
-                <p className="mt-2 text-sm text-red-600 flex items-center space-x-1">
+                <p id="agreeToTerms-error" className="mt-2 text-sm text-red-600 flex items-center space-x-1" role="alert">
                   <AlertCircle className="w-4 h-4" />
                   <span>{errors.agreeToTerms}</span>
                 </p>
@@ -456,7 +440,8 @@ const RegisterForm = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-primary-600 to-accent-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-primary-700 hover:to-accent-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-primary-600 to-accent-600 text-white py-3 px-4 rounded-xl font-semibold hover:from-primary-700 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg"
+              aria-label={isLoading ? 'Registering...' : 'Register'}
             >
               {isLoading ? (
                 <div className="flex items-center justify-center space-x-2">

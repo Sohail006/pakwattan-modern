@@ -1,5 +1,7 @@
 'use client'
 
+import Image from 'next/image'
+
 const PakiansCoachingAcademyPrograms = () => {
   const programs = [
     {
@@ -7,28 +9,32 @@ const PakiansCoachingAcademyPrograms = () => {
       description: "Comprehensive preparation for Matriculation examinations",
       subjects: ["Mathematics", "Physics", "Chemistry", "Biology", "English", "Urdu"],
       duration: "1 Year",
-      level: "Grade 9-10"
+      level: "Grade 9-10",
+      image: "/images/pakians-coaching-academy/pca-hero.jpg/course.jpg"
     },
     {
       title: "FSC Pre-Medical",
       description: "Specialized coaching for Pre-Medical students",
       subjects: ["Biology", "Chemistry", "Physics", "English", "Pakistan Studies"],
       duration: "2 Years",
-      level: "FSC Part I & II"
+      level: "FSC Part I & II",
+      image: "/images/pakians-coaching-academy/pca-hero.jpg/h-about.jpg"
     },
     {
       title: "FSC Pre-Engineering",
       description: "Focused preparation for Pre-Engineering stream",
       subjects: ["Mathematics", "Physics", "Chemistry", "English", "Pakistan Studies"],
       duration: "2 Years",
-      level: "FSC Part I & II"
+      level: "FSC Part I & II",
+      image: "/images/pakians-coaching-academy/pca-hero.jpg/h-res.jpg"
     },
     {
       title: "ICS/IT",
       description: "Computer Science and Information Technology coaching",
       subjects: ["Computer Science", "Mathematics", "Physics", "English", "Pakistan Studies"],
       duration: "2 Years",
-      level: "FSC Part I & II"
+      level: "FSC Part I & II",
+      image: "/images/pakians-coaching-academy/pca-hero.jpg/h-cam.jpg"
     }
   ]
 
@@ -48,8 +54,20 @@ const PakiansCoachingAcademyPrograms = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {programs.map((program, index) => (
-            <div key={index} className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-primary-200 group">
-              <div className="space-y-6">
+            <div key={index} className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 group">
+              {/* Program Image */}
+              <div className="relative h-48 w-full">
+                <Image
+                  src={program.image}
+                  alt={program.title}
+                  fill
+                  className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
+              
+              <div className="p-8 space-y-6">
                 <div>
                   <h3 className="text-2xl font-bold text-primary-800 mb-3 group-hover:text-primary-600 transition-colors duration-300">
                     {program.title}

@@ -46,11 +46,35 @@ const TalentHuntSeason2Registration = () => {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
-    console.log('Registration data:', formData)
-    setIsSubmitted(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:5000'}/api/TalentHunt/season2`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          studentName: formData.studentName,
+          fatherName: formData.fatherName,
+          motherName: formData.motherName,
+          email: formData.email,
+          phone: formData.phone,
+          grade: formData.grade,
+          school: formData.school,
+          contestCategory: formData.contestCategory,
+          address: formData.address,
+          emergencyContact: formData.emergencyContact,
+        })
+      })
+
+      if (!response.ok) throw new Error('Unable to submit registration. Please check your information and try again.')
+      setIsSubmitted(true)
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Unable to submit registration. Please check your information and try again.')
+      // eslint-disable-next-line no-console
+      console.error('Season-II registration error:', err)
+    }
   }
 
   if (isSubmitted) {
@@ -68,7 +92,7 @@ const TalentHuntSeason2Registration = () => {
               </p>
               <div className="space-y-4">
                 <div className="bg-primary-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-primary-800 mb-2">What's Next?</h3>
+                  <h3 className="font-semibold text-primary-800 mb-2">What&apos;s Next?</h3>
                   <ul className="text-sm text-primary-700 space-y-1">
                     <li>• You will receive a confirmation email</li>
                     <li>• Contest details will be shared closer to the date</li>
@@ -129,15 +153,15 @@ const TalentHuntSeason2Registration = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Enter student's full name"
+                      placeholder="Enter student&apos;s full name"
                     />
                   </div>
                 </div>
 
-                {/* Father's Name */}
+                {/* Father&apos;s Name */}
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">
-                    Father's Name *
+                    Father&apos;s Name *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -148,15 +172,15 @@ const TalentHuntSeason2Registration = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Enter father's name"
+                      placeholder="Enter father&apos;s name"
                     />
                   </div>
                 </div>
 
-                {/* Mother's Name */}
+                {/* Mother&apos;s Name */}
                 <div className="space-y-2">
                   <label className="block text-sm font-semibold text-gray-700">
-                    Mother's Name *
+                    Mother&apos;s Name *
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -167,7 +191,7 @@ const TalentHuntSeason2Registration = () => {
                       onChange={handleInputChange}
                       required
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Enter mother's name"
+                      placeholder="Enter mother&apos;s name"
                     />
                   </div>
                 </div>

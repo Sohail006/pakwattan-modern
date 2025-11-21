@@ -26,7 +26,7 @@ const HajjTicketsHero = () => {
               </p>
               <p className="text-lg text-white/80 leading-relaxed">
                 We honor our exceptional staff members who have shown outstanding dedication 
-                and commitment to the school's mission with Hajj tickets as a token of appreciation.
+                and commitment to the school&apos;s mission with Hajj tickets as a token of appreciation.
               </p>
             </div>
 

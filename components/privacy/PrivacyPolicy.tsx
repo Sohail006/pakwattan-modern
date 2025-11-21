@@ -1,4 +1,5 @@
 import { Shield, Users, Database, Lock, Eye, Mail, Calendar } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 
 const PrivacyPolicy = () => {
   return (
@@ -16,9 +17,7 @@ const PrivacyPolicy = () => {
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
               Pak Wattan School & College of Sciences, Havelian
             </p>
-            <p className="text-sm text-white/80 mt-2">
-              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
+            <p className="text-sm text-white/80 mt-2">Last updated: {formatDate(new Date())}</p>
           </div>
         </div>
       </section>

@@ -152,7 +152,7 @@ const Faculty = () => {
         <div className="bg-white rounded-2xl p-8 shadow-xl">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold text-secondary-800 mb-4">
-              Our Faculty's Commitment
+              Our Faculty&apos;s Commitment
             </h3>
             <p className="text-lg text-secondary-600 max-w-4xl mx-auto">
               Our faculty members are not just teachers; they are mentors, guides, and role models 

@@ -15,6 +15,7 @@ const WelcomeMessage = () => {
                 height={60}
                 className="w-15 h-15"
                 priority
+                unoptimized
               />
             <h1 className="text-2xl md:text-3xl font-bold font-josefin blink">
               <strong>

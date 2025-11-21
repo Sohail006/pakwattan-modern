@@ -1,6 +1,6 @@
 'use client'
 
-import { FileText, User, Calendar, Award, CheckCircle, AlertCircle } from 'lucide-react'
+import { FileText, User, Award, CheckCircle } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 
@@ -69,7 +69,7 @@ const AdmissionRequirements = () => {
   ]
 
   return (
-    <section className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
+    <section id="admission-requirements" className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
       <Container>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
@@ -80,9 +80,9 @@ const AdmissionRequirements = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-12 lg:mb-16">
           {/* Initial Documents */}
-          <Card className="p-8">
+          <Card className="p-6 sm:p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <FileText className="w-6 h-6 text-primary-600 mr-3" />
               Initial Documents Required
@@ -106,9 +106,9 @@ const AdmissionRequirements = () => {
           </Card>
 
           {/* Post-Admission Documents */}
-          <Card className="p-8">
+          <Card className="p-6 sm:p-8">
             <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Award className="w-6 h-6 text-accent-600 mr-3" />
+              <Award className="w-6 h-6 text-primary-600 mr-3" />
               Post-Admission Documents
             </h3>
             <p className="text-gray-600 mb-6">
@@ -117,7 +117,7 @@ const AdmissionRequirements = () => {
             <div className="space-y-4">
               {postAdmissionDocuments.map((doc, index) => (
                 <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="text-accent-600 mt-1">
+                  <div className="text-primary-600 mt-1">
                     {doc.icon}
                   </div>
                   <div>
@@ -131,15 +131,15 @@ const AdmissionRequirements = () => {
         </div>
 
         {/* Eligibility Criteria */}
-        <Card className="p-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <CheckCircle className="w-6 h-6 text-blue-600 mr-3" />
-            Eligibility Criteria
-          </h3>
+        <Card className="p-6 sm:p-8 bg-gradient-to-r from-primary-50 to-accent-50 border-l-4 border-primary-400">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+              <CheckCircle className="w-6 h-6 text-primary-600 mr-3" />
+              Eligibility Criteria
+            </h3>
           <ul className="space-y-4">
             {eligibilityCriteria.map((criteria, index) => (
               <li key={index} className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-blue-600 mt-0.5 mr-3 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-primary-600 mt-0.5 mr-3 flex-shrink-0" />
                 <span className="text-gray-700">{criteria}</span>
               </li>
             ))}

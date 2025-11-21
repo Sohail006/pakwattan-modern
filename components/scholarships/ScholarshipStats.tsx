@@ -85,7 +85,7 @@ const ScholarshipStats = ({ stats }: ScholarshipStatsProps) => {
               </div>
               <p className="text-white/90 text-lg">
                 The scholarship test has always been conducted on <strong>{stats.testDate}</strong> 
-                in the girl's campus Havelian. This ensures fair and transparent evaluation 
+                in the girl&apos;s campus Havelian. This ensures fair and transparent evaluation 
                 of all applicants.
               </p>
             </div>

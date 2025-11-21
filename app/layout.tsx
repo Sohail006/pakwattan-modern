@@ -1,9 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter, Josefin_Sans } from 'next/font/google'
 import './globals.css'
-import Header from '@/components/layout/Header'
-import Footer from '@/components/layout/Footer'
+import ConditionalLayout from '@/components/layout/ConditionalLayout'
+import { NotificationProvider } from '@/components/notifications/NotificationProvider'
+import ToastContainer from '@/components/ui/ToastContainer'
 import Analytics from '@/components/Analytics'
+// Initialize token refresh service
+import '@/lib/services/tokenRefresh'
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -86,13 +89,14 @@ export default function RootLayout({
         <meta name="theme-color" content="#24744f" />
         <script src="https://www.youtube.com/player_api" async></script>
       </head>
-      <body className={`${inter.className} antialiased`}>
-        <Header />
-        <main className="min-h-screen pt-16">
-          {children}
-        </main>
-        <Footer />
-        <Analytics />
+      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+        <NotificationProvider>
+          <ConditionalLayout>
+            {children}
+          </ConditionalLayout>
+          <ToastContainer />
+          <Analytics />
+        </NotificationProvider>
       </body>
     </html>
   )

@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { User, Mail, Phone, MessageSquare, Send, CheckCircle } from 'lucide-react'
+import { createContact } from '@/lib/api/contact'
+import { User, Mail, Phone, MessageSquare, Send, CheckCircle, AlertCircle } from 'lucide-react'
+import FormField from '@/components/ui/FormField'
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ const ContactForm = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -25,12 +28,25 @@ const ContactForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError(null)
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+    try {
+      await createContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || undefined,
+        subject: formData.subject,
+        message: formData.message,
+      })
+      
+      setIsSubmitted(true)
+    } catch (err: unknown) {
+      console.error('Contact form error:', err)
+      const message = err instanceof Error ? err.message : 'Unable to send your message. Please check your connection and try again.'
+      setError(message)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (isSubmitted) {
@@ -46,7 +62,7 @@ const ContactForm = () => {
                 Message Sent Successfully!
               </h2>
               <p className="text-lg text-secondary-600 mb-6">
-                Thank you for contacting us. We'll get back to you as soon as possible.
+                Thank you for contacting us. We&apos;ll get back to you as soon as possible.
               </p>
               <button
                 onClick={() => {
@@ -59,7 +75,8 @@ const ContactForm = () => {
                     message: ''
                   })
                 }}
-                className="btn-primary"
+                className="btn-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                aria-label="Send another message"
               >
                 Send Another Message
               </button>
@@ -78,7 +95,7 @@ const ContactForm = () => {
             Send us a <span className="text-gradient">Message</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-            Have questions or want to learn more about our programs? We'd love to hear from you.
+            Have questions or want to learn more about our programs? We&apos;d love to hear from you.
           </p>
         </div>
 
@@ -91,66 +108,92 @@ const ContactForm = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
+              {error && (
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    <User className="w-4 h-4 inline mr-2" />
-                    Full Name *
-                  </label>
+                <FormField 
+                  label={
+                    <span className="flex items-center">
+                      <User className="w-4 h-4 inline mr-2" />
+                      Full Name
+                    </span>
+                  }
+                  required
+                  htmlFor="name"
+                >
                   <input
                     type="text"
+                    id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
+                    aria-invalid={false}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your full name"
                   />
-                </div>
+                </FormField>
 
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    <Mail className="w-4 h-4 inline mr-2" />
-                    Email Address *
-                  </label>
+                <FormField 
+                  label={
+                    <span className="flex items-center">
+                      <Mail className="w-4 h-4 inline mr-2" />
+                      Email Address
+                    </span>
+                  }
+                  required
+                  htmlFor="email"
+                >
                   <input
                     type="email"
+                    id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
+                    aria-invalid={false}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your email address"
                   />
-                </div>
+                </FormField>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    <Phone className="w-4 h-4 inline mr-2" />
-                    Phone Number
-                  </label>
+                <FormField 
+                  label={
+                    <span className="flex items-center">
+                      <Phone className="w-4 h-4 inline mr-2" />
+                      Phone Number
+                    </span>
+                  }
+                  htmlFor="phone"
+                >
                   <input
                     type="tel"
+                    id="phone"
                     name="phone"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
+                    aria-invalid={false}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                     placeholder="Enter your phone number"
                   />
-                </div>
+                </FormField>
 
-                <div>
-                  <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                    Subject *
-                  </label>
+                <FormField label="Subject" required htmlFor="subject">
                   <select
+                    id="subject"
                     name="subject"
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 mobile-form-input focus-ring"
+                    aria-invalid={false}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
                   >
                     <option value="">Select a subject</option>
                     <option value="admission">Admission Inquiry</option>
@@ -159,30 +202,38 @@ const ContactForm = () => {
                     <option value="general">General Information</option>
                     <option value="other">Other</option>
                   </select>
-                </div>
+                </FormField>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-secondary-700 mb-2">
-                  <MessageSquare className="w-4 h-4 inline mr-2" />
-                  Message *
-                </label>
+              <FormField 
+                label={
+                  <span className="flex items-center">
+                    <MessageSquare className="w-4 h-4 inline mr-2" />
+                    Message
+                  </span>
+                }
+                required
+                htmlFor="message"
+              >
                 <textarea
+                  id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 resize-none"
+                  aria-invalid={false}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-y"
                   placeholder="Tell us how we can help you..."
                 />
-              </div>
+              </FormField>
 
               <div className="text-center">
                 <button
                   type="submit"
                   disabled={isSubmitting}
                   className={`btn-primary ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  aria-label={isSubmitting ? 'Sending message...' : 'Send message'}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center space-x-2">

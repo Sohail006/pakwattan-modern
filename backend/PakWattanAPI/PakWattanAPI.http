@@ -1,6 +1,0 @@
-@PakWattanAPI_HostAddress = http://localhost:5267
-
-GET {{PakWattanAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

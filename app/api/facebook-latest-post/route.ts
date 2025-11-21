@@ -78,7 +78,7 @@ export async function GET() {
   } catch (error) {
     console.error('Error in Facebook API route:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch latest post' },
+      { error: 'Unable to fetch the latest Facebook post. Please try again later.' },
       { status: 500 }
     )
   }

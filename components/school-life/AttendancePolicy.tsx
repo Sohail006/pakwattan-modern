@@ -86,7 +86,7 @@ const AttendancePolicy = () => {
             <span className="text-gradient">ATTENDANCE</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-4xl mx-auto">
-            Punctuality is the backbone of any field of life; achievement and accomplishment is the product of regularity. Observing the gravity of the major offence of missing the classes, the education code, as well as the Board's Calendar (BISE Abbottabad) have laid down that a student who has less than 75% of possible attendance, counted from the date of the commencement of the academic session, or the date of his/her admission to the school/college, in case of new admission, may not be allowed to take the annual examination. Therefore, we consider that complete class attendance is primary to learning and punctuality is the bedrock of discipline. On our part, the School and College have taken further strict measures to curb absenteeism.
+            Punctuality is the backbone of any field of life; achievement and accomplishment is the product of regularity. Observing the gravity of the major offence of missing the classes, the education code, as well as the Board&apos;s Calendar (BISE Abbottabad) have laid down that a student who has less than 75% of possible attendance, counted from the date of the commencement of the academic session, or the date of his/her admission to the school/college, in case of new admission, may not be allowed to take the annual examination. Therefore, we consider that complete class attendance is primary to learning and punctuality is the bedrock of discipline. On our part, the School and College have taken further strict measures to curb absenteeism.
           </p>
         </div>
 

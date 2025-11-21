@@ -49,7 +49,7 @@ const ScholarshipsHero = () => {
                 merit-based, orphan, special child, and Hafiz e Quran scholarships. Our 
                 <strong> 15 Lacs Scholarship Program</strong> supports deserving students. 
                 The scholarship test has always been conducted on <strong>March 23rd</strong> 
-                in the girl's campus Havelian.
+                in the girl&apos;s campus Havelian.
               </p>
             </div>
 

@@ -46,7 +46,7 @@ const SSCBISE2024_25Detailed = () => {
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4">
             <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-4 py-2 rounded-lg">
-              5th time in a row - SSC Havelian Circle's top achiever!
+              5th time in a row - SSC Havelian Circle&apos;s top achiever!
             </span>
           </h2>
         </div>

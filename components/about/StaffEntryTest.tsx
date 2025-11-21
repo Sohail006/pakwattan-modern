@@ -150,8 +150,8 @@ const StaffEntryTest = () => {
               <div>
                 <h4 className="text-lg font-semibold text-secondary-800 mb-2">Our Philosophy</h4>
                 <p className="text-secondary-700 italic">
-                  "Every organization is dependent on its staff. If staff is cooperative, passionate, 
-                  enthusiastic, creative and loyal to the particular institute, then that institute is surely successful."
+                  &ldquo;Every organization is dependent on its staff. If staff is cooperative, passionate, 
+                  enthusiastic, creative and loyal to the particular institute, then that institute is surely successful.&rdquo;
                 </p>
               </div>
             </div>

@@ -1,4 +1,5 @@
 import { FileText, Users, GraduationCap, CreditCard, Shield, AlertTriangle, Phone } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 
 const TermsOfService = () => {
   return (
@@ -16,9 +17,7 @@ const TermsOfService = () => {
             <p className="text-xl text-white/90 max-w-3xl mx-auto">
               Pak Wattan School & College of Sciences, Havelian
             </p>
-            <p className="text-sm text-white/80 mt-2">
-              Last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
+            <p className="text-sm text-white/80 mt-2">Last updated: {formatDate(new Date())}</p>
           </div>
         </div>
       </section>
@@ -57,7 +56,7 @@ const TermsOfService = () => {
                   </h2>
                   <div className="prose prose-gray max-w-none">
                     <p className="text-gray-700 leading-relaxed mb-4">
-                      Welcome to Pak Wattan School & College of Sciences, Havelian. These Terms and Service ("Terms") govern your use of our educational services, website, and all related activities. By enrolling your child, using our services, or accessing our website, you agree to be bound by these Terms.
+                      Welcome to Pak Wattan School & College of Sciences, Havelian. These Terms and Service (&ldquo;Terms&rdquo;) govern your use of our educational services, website, and all related activities. By enrolling your child, using our services, or accessing our website, you agree to be bound by these Terms.
                     </p>
                     <p className="text-gray-700 leading-relaxed">
                       These Terms apply to all students, parents, guardians, staff members, and website visitors associated with Pak Wattan School & College of Sciences.
@@ -246,7 +245,7 @@ const TermsOfService = () => {
                       <h3 className="text-lg font-semibold text-purple-800 mb-3">Responsibilities</h3>
                       <ul className="text-gray-700 space-y-2">
                         <li>• Ensure regular attendance and punctuality</li>
-                        <li>• Support child's academic progress at home</li>
+                        <li>• Support child&apos;s academic progress at home</li>
                         <li>• Attend parent-teacher meetings</li>
                         <li>• Provide necessary school supplies and materials</li>
                         <li>• Maintain communication with school administration</li>
@@ -260,7 +259,7 @@ const TermsOfService = () => {
                         <li>• Respond promptly to emergency notifications</li>
                         <li>• Provide accurate medical information</li>
                         <li>• Authorize emergency medical treatment if needed</li>
-                        <li>• Ensure child's safety during transportation</li>
+                        <li>• Ensure child&apos;s safety during transportation</li>
                       </ul>
                     </div>
                   </div>

@@ -48,7 +48,7 @@ EOF
 # Create production environment file
 cat > sharkasp-deployment/.env.production << 'EOF'
 NODE_ENV=production
-NEXT_PUBLIC_API_URL=https://www.sharkasp.net/api
+NEXT_PUBLIC_API_URL=https://localhost:7210/api
 NEXT_PUBLIC_SITE_URL=https://www.sharkasp.net
 NEXT_PUBLIC_APP_NAME=Pak Wattan School & College of Sciences
 EOF

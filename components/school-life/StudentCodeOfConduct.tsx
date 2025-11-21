@@ -130,7 +130,7 @@ const StudentCodeOfConduct = () => {
             <div className="bg-white rounded-xl p-6 shadow-sm">
               <h4 className="font-semibold text-gray-900 mb-3">For Parents</h4>
               <ul className="space-y-2 text-gray-600">
-                <li>• Support the school's disciplinary policies</li>
+                <li>• Support the school&apos;s disciplinary policies</li>
                 <li>• Communicate regularly with teachers</li>
                 <li>• Ensure your child follows the uniform policy</li>
                 <li>• Attend parent-teacher meetings</li>

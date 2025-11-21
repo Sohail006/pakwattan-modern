@@ -35,7 +35,7 @@ const ForgotPasswordForm = () => {
       setIsSubmitted(true)
       
     } catch {
-      setError('Failed to send reset email. Please try again.')
+      setError('Unable to send password reset email. Please verify your email address and try again.')
     } finally {
       setIsLoading(false)
     }
@@ -50,12 +50,12 @@ const ForgotPasswordForm = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Check Your Email</h2>
           <p className="text-gray-600 mb-6">
-            We've sent a password reset link to <strong>{email}</strong>
+            We&apos;ve sent a password reset link to <strong>{email}</strong>
           </p>
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
             <p className="text-blue-800 text-sm">
               <strong>Note:</strong> The email may take a few minutes to arrive. 
-              Please check your spam folder if you don't see it in your inbox.
+              Please check your spam folder if you don&apos;t see it in your inbox.
             </p>
           </div>
           <div className="space-y-3">
@@ -90,7 +90,7 @@ const ForgotPasswordForm = () => {
               <Shield className="w-8 h-8 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Forgot Password?</h1>
-            <p className="text-gray-600">No worries! Enter your email and we'll send you a reset link.</p>
+            <p className="text-gray-600">No worries! Enter your email and we&apos;ll send you a reset link.</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -178,7 +178,7 @@ const ForgotPasswordForm = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">Email Verification</h3>
-                  <p className="text-white/80 text-sm">We'll send a secure reset link to your registered email</p>
+                  <p className="text-white/80 text-sm">We&apos;ll send a secure reset link to your registered email</p>
                 </div>
               </div>
 
@@ -206,7 +206,7 @@ const ForgotPasswordForm = () => {
             <div className="mt-8 p-4 bg-white/10 rounded-xl">
               <h4 className="font-semibold mb-2">Need Help?</h4>
               <p className="text-white/80 text-sm mb-3">
-                If you're having trouble accessing your account, contact our support team
+                If you&apos;re having trouble accessing your account, contact our support team
               </p>
               <div className="flex items-center space-x-2 text-sm">
                 <span>📧</span>

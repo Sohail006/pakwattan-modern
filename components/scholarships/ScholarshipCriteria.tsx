@@ -156,7 +156,7 @@ const ScholarshipCriteria = ({ criteria, scholarshipTypes }: ScholarshipCriteria
               <h4 className="text-lg font-semibold text-yellow-800 mb-2">Important Notice</h4>
               <p className="text-yellow-700 leading-relaxed">
                 Every year scholarship scheme can be revised and there will be no alteration in this scheme 
-                on the request of parents. Students will be drawn from scholarship if they don't fulfill 
+                on the request of parents. Students will be drawn from scholarship if they don&apos;t fulfill 
                 the criteria announced by the institution every year.
               </p>
             </div>

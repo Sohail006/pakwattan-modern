@@ -64,7 +64,7 @@ const AdmissionProcess = () => {
   ]
 
   return (
-    <section className="section-padding bg-white">
+    <section id="admission-process" className="section-padding bg-white">
       <Container>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
@@ -76,7 +76,7 @@ const AdmissionProcess = () => {
         </div>
 
         {/* Process Steps */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 lg:mb-16">
           {processSteps.map((step, index) => (
             <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
               <div className="flex justify-center mb-4">
@@ -90,7 +90,7 @@ const AdmissionProcess = () => {
               <ul className="text-sm text-gray-600 space-y-1">
                 {step.details.map((detail, detailIndex) => (
                   <li key={detailIndex} className="flex items-start">
-                    <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+                    <CheckCircle className="w-4 h-4 text-primary-600 mt-0.5 mr-2 flex-shrink-0" />
                     <span>{detail}</span>
                   </li>
                 ))}
@@ -100,15 +100,15 @@ const AdmissionProcess = () => {
         </div>
 
         {/* Important Notes */}
-        <Card className="p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400">
+        <Card className="p-6 sm:p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400">
           <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <Award className="w-6 h-6 text-yellow-600 mr-3" />
+            <Award className="w-6 h-6 text-primary-600 mr-3" />
             Important Notes
           </h3>
           <ul className="space-y-3">
             {importantNotes.map((note, index) => (
               <li key={index} className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-yellow-600 mt-0.5 mr-3 flex-shrink-0" />
+                <CheckCircle className="w-5 h-5 text-primary-600 mt-0.5 mr-3 flex-shrink-0" />
                 <span className="text-gray-700">{note}</span>
               </li>
             ))}

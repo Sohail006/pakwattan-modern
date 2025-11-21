@@ -1,13 +1,5 @@
-import RegistrationFormHero from '@/components/registration-form/RegistrationFormHero'
-import RegistrationFormDetails from '@/components/registration-form/RegistrationFormDetails'
-import RegistrationFormForm from '@/components/registration-form/RegistrationFormForm'
+import StudentRegistrationForm from '@/components/registration-form/StudentRegistrationForm'
 
 export default function RegistrationForm() {
-  return (
-    <div className="min-h-screen">
-      <RegistrationFormHero />
-      <RegistrationFormDetails />
-      <RegistrationFormForm />
-    </div>
-  )
+  return <StudentRegistrationForm />
 }

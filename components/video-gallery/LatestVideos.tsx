@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { getLatestVideos, getChannelInfo, YouTubeVideo, YouTubeChannel } from '@/lib/youtube-api'
 import VideoSearch from './VideoSearch'
 import VideoPlayerModal from './VideoPlayerModal'
+import { formatDate } from '@/lib/utils'
 
 const LatestVideos = () => {
   const [videos, setVideos] = useState<YouTubeVideo[]>([])
@@ -29,7 +30,7 @@ const LatestVideos = () => {
         setFilteredVideos(videosData)
         setChannelInfo(channelData)
       } catch (err) {
-        setError('Failed to load videos')
+        setError('Unable to load videos. Please refresh the page and try again.')
         console.error('Error fetching videos:', err)
       } finally {
         setLoading(false)
@@ -211,7 +212,7 @@ const LatestVideos = () => {
                       <span>👁️</span>
                       <span>{video.views}</span>
                     </span>
-                    <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
+                    <span>{formatDate(video.publishedAt)}</span>
                   </div>
                   <a
                     href={video.videoUrl}

@@ -39,7 +39,7 @@ const GrowthChart = () => {
             <span className="text-gradient">Growth Chart of Pak Wattan</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-            Visual representation of our school's remarkable growth and achievements since establishment.
+            Visual representation of our school&apos;s remarkable growth and achievements since establishment.
           </p>
         </div>
 

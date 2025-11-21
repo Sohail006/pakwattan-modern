@@ -166,7 +166,7 @@ const PrizeDistribution = () => {
             <p className="text-lg text-secondary-600 max-w-4xl mx-auto">
               Our annual prize distribution ceremony is a prestigious event that recognizes and celebrates 
               the achievements of our students. The ceremony is held every year on March 23rd at the 
-              girl's campus in Havelian.
+              girl&apos;s campus in Havelian.
             </p>
           </div>
 
@@ -183,7 +183,7 @@ const PrizeDistribution = () => {
                 <Users className="w-8 h-8 text-accent-600" />
               </div>
               <h4 className="font-semibold text-secondary-800 mb-2">Location</h4>
-              <p className="text-secondary-600">Girl's Campus, Havelian</p>
+              <p className="text-secondary-600">Girl&apos;s Campus, Havelian</p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">

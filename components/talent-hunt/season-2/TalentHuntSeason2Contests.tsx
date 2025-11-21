@@ -241,7 +241,7 @@ const TalentHuntSeason2Contests = () => {
           </h3>
           <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
             Join us in this exciting journey where talent meets opportunity. 
-            Let's inspire the stars of tomorrow—one stream, one talent at a time.
+            Let&apos;s inspire the stars of tomorrow—one stream, one talent at a time.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors duration-200">

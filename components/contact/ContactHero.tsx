@@ -45,11 +45,11 @@ const ContactHero = () => {
                 </span>
               </h1>
               <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
-                We'd love to hear from you
+                We&apos;d love to hear from you
               </p>
               <p className="text-lg text-white/80 leading-relaxed">
                 Have questions about our programs, admissions, or want to learn more about 
-                Pak Wattan School & College of Sciences? We're here to help!
+                Pak Wattan School & College of Sciences? We&apos;re here to help!
               </p>
             </div>
 

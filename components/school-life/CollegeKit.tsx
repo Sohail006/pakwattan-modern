@@ -37,7 +37,7 @@ const CollegeKit = () => {
             <span className="text-gradient">COLLEGE KIT</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-            Every student is required to have a complete college kit as specified below. The kit should be purchased from the authorized supplier and all items must be clearly marked with the student's name.
+            Every student is required to have a complete college kit as specified below. The kit should be purchased from the authorized supplier and all items must be clearly marked with the student&apos;s name.
           </p>
         </div>
 
@@ -81,9 +81,9 @@ const CollegeKit = () => {
               </div>
               
               <div className="bg-white rounded-xl p-6 shadow-sm">
-                <h4 className="font-semibold text-gray-900 mb-3">Marking & Responsibility</h4>
+                <h4 className="font-semibold text-gray-900 mb-3">Marking &amp; Responsibility</h4>
                 <p className="text-gray-700 leading-relaxed">
-                  While every precaution is taken, the college is not responsible for any loss or damage. It will be of great help, if all articles of clothing are clearly marked showing the body's brief name in indelible ink.
+                  While every precaution is taken, the college is not responsible for any loss or damage. It will be of great help, if all articles of clothing are clearly marked showing the body&apos;s brief name in indelible ink.
                 </p>
               </div>
             </div>

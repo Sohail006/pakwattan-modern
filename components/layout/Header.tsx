@@ -7,6 +7,7 @@ import { Menu, X, Phone, Mail, Facebook, Youtube, Twitter, User, LogOut, Setting
 import { useScroll } from '@/hooks/useScroll'
 import { MAIN_NAVIGATION, SECONDARY_NAVIGATION, SCHOOL_INFO } from '@/lib/constants'
 import Container from '@/components/ui/Container'
+import NotificationCenter from '@/components/notifications/NotificationCenter'
 import Button from '@/components/ui/Button'
 
 const Header = () => {
@@ -132,6 +133,11 @@ const Header = () => {
                 </div>
               ))}
             </nav>
+
+            {/* Notifications */}
+            <div className="hidden lg:flex items-center ml-3">
+              <NotificationCenter />
+            </div>
 
             {/* User Authentication Menu */}
             {isLoggedIn && (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { submitRegistration } from '@/lib/api/registrations'
 
 const RegistrationFormForm = () => {
   const [formData, setFormData] = useState({
@@ -50,11 +51,80 @@ const RegistrationFormForm = () => {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    // Handle form submission
-    console.log('Form submitted:', formData)
-    alert('Registration form submitted successfully!')
+    
+    // Validate grade selection
+    if (!formData.grade) {
+      alert('Please select a grade')
+      return
+    }
+
+    // Map grade string to grade ID
+    const gradeMap: Record<string, number> = {
+      'montessori': 1,
+      'nursery': 2,
+      'prep': 3,
+      '1': 4,
+      '2': 5,
+      '3': 6,
+      '4': 7,
+      '5': 8,
+      '6': 9,
+      '7': 10,
+      '8': 11,
+      '9': 12,
+      '10': 13,
+      '11': 14,
+      '12': 15,
+    }
+
+    const gradeId = gradeMap[formData.grade] || parseInt(formData.grade) || 0
+    
+    if (gradeId === 0) {
+      alert('Please select a valid grade')
+      return
+    }
+
+    // Map gender to number (0: Male, 1: Female, 2: Other)
+    const genderMap: Record<string, number> = {
+      'male': 0,
+      'female': 1,
+    }
+    const gender = genderMap[formData.gender] ?? 0
+    
+    try {
+      await submitRegistration({
+        name: `${formData.firstName} ${formData.lastName}`,
+        fatherName: formData.fatherName,
+        dob: formData.dateOfBirth,
+        gender: gender,
+        gradeId: gradeId,
+        mobile: formData.phone,
+        email: formData.email || undefined,
+        formBorCNIC: formData.cnicBForm || undefined,
+        address1: formData.address || undefined,
+        previousSchoolName: formData.previousSchool || undefined,
+        motherName: formData.motherName || undefined,
+        fatherOccupation: formData.fatherOccupation || undefined,
+        phone: formData.fatherPhone || undefined,
+        applyForScholarship: false,
+        boarderDayScholar: 1, // Default to DayScholar
+        paymentMethod: 0, // Default to EasyPaisa
+      })
+      alert('Registration form submitted successfully!')
+      setFormData({
+        firstName: '', lastName: '', dateOfBirth: '', gender: '', cnicBForm: '',
+        phone: '', email: '', address: '', previousSchool: '', grade: '', academicYear: '',
+        fatherName: '', fatherOccupation: '', fatherPhone: '', motherName: '',
+        motherOccupation: '', motherPhone: '', guardianName: '', guardianRelation: '',
+        guardianPhone: '', medicalConditions: '', allergies: '', emergencyContact: '',
+        emergencyPhone: '', specialNeeds: '', transportation: '', comments: ''
+      })
+    } catch (error) {
+      console.error('Registration error:', error)
+      alert(error instanceof Error ? error.message : 'Unable to submit registration. Please check your information and try again.')
+    }
   }
 
   return (
@@ -226,7 +296,7 @@ const RegistrationFormForm = () => {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father's Name *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father&apos;s Name *</label>
                     <input
                       type="text"
                       name="fatherName"
@@ -237,7 +307,7 @@ const RegistrationFormForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father's Occupation</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father&apos;s Occupation</label>
                     <input
                       type="text"
                       name="fatherOccupation"
@@ -247,7 +317,7 @@ const RegistrationFormForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father's Phone *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Father&apos;s Phone *</label>
                     <input
                       type="tel"
                       name="fatherPhone"
@@ -258,7 +328,7 @@ const RegistrationFormForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother's Name *</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother&apos;s Name *</label>
                     <input
                       type="text"
                       name="motherName"
@@ -269,7 +339,7 @@ const RegistrationFormForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother's Occupation</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother&apos;s Occupation</label>
                     <input
                       type="text"
                       name="motherOccupation"
@@ -279,7 +349,7 @@ const RegistrationFormForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother's Phone</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Mother&apos;s Phone</label>
                     <input
                       type="tel"
                       name="motherPhone"

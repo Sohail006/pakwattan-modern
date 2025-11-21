@@ -167,7 +167,7 @@ const StudentLife = () => {
                   <p className="text-sm text-gray-600">{testimonial.grade}</p>
                 </div>
                 <blockquote className="text-gray-600 italic text-center">
-                  "{testimonial.quote}"
+                  &ldquo;{testimonial.quote}&rdquo;
                 </blockquote>
               </div>
             ))}

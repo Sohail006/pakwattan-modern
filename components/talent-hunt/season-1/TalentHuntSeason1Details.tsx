@@ -81,7 +81,7 @@ const TalentHuntSeason1Details = () => {
               <Target className="w-6 h-6 mr-3" />
               Contest Categories Performance
             </h3>
-            <p className="text-white/90 mt-2">Detailed breakdown of each category's performance</p>
+            <p className="text-white/90 mt-2">Detailed breakdown of each category&apos;s performance</p>
           </div>
           
           <div className="p-6">

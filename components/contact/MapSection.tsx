@@ -75,7 +75,7 @@ const MapSection = () => {
       const map = new window.google.maps.Map(mapRef.current, {
         zoom: 15,
         center: { lat: 34.053221, lng: 73.152673 },
-        mapTypeId: 'roadmap' as any,
+        mapTypeId: 'roadmap' as google.maps.MapTypeId,
         styles: [
           {
             featureType: 'poi',
@@ -86,7 +86,7 @@ const MapSection = () => {
       })
 
       // Add markers for each campus
-      campuses.forEach((campus, index) => {
+      campuses.forEach((campus) => {
         const marker = new window.google.maps.Marker({
           position: { lat: campus.lat, lng: campus.lng },
           map: map,
