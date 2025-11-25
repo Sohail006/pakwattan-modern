@@ -1,6 +1,6 @@
 # API URL Test Report
 **Date:** November 25, 2025  
-**API URL:** `http://sohailghsno4-001-site8.rtempurl.com`
+**API URL:** `https://sohailghsno4-001-site8.rtempurl.com`
 
 ## ✅ Test Results Summary
 
@@ -27,7 +27,7 @@ The main API health endpoint (`/api/health`) is responding correctly with:
 
 The frontend application is correctly configured to use:
 ```
-http://sohailghsno4-001-site8.rtempurl.com
+https://sohailghsno4-001-site8.rtempurl.com
 ```
 
 ## 📋 Configuration Verified
@@ -55,7 +55,7 @@ node scripts/test-api.js
 
 ### Option 3: Manual Browser Test
 1. Open browser console
-2. Run: `fetch('http://sohailghsno4-001-site8.rtempurl.com/api/health').then(r => r.json()).then(console.log)`
+2. Run: `fetch('https://sohailghsno4-001-site8.rtempurl.com/api/health').then(r => r.json()).then(console.log)`
 3. Should return: `{status: "healthy", timestamp: "...", service: "PakWattanAPI"}`
 
 ## ⚠️ Notes
