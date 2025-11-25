@@ -1,10 +1,7 @@
-import EnvTest from '@/components/EnvTest'
-import { Metadata } from 'next'
+'use client'
 
-export const metadata: Metadata = {
-  title: 'Debug - Pak Wattan School & College of Sciences',
-  description: 'Debug page for development and testing purposes.',
-}
+import EnvTest from '@/components/EnvTest'
+import ApiTest from '@/components/ApiTest'
 
 export default function DebugPage() {
   return (
@@ -14,6 +11,8 @@ export default function DebugPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Debug Information</h1>
           
           <div className="space-y-6">
+            <ApiTest />
+            
             <EnvTest />
             
             <div className="bg-white rounded-lg shadow-md p-6">
@@ -34,7 +33,7 @@ export default function DebugPage() {
                 <div className="flex justify-between items-center py-2 border-b border-gray-100">
                   <span className="font-mono text-sm text-gray-600">Platform:</span>
                   <span className="font-mono text-sm text-gray-900">
-                    {process.platform || 'Unknown'}
+                    {typeof window !== 'undefined' ? navigator.platform : 'Server'}
                   </span>
                 </div>
               </div>

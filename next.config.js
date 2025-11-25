@@ -23,7 +23,7 @@ const nextConfig = {
   
   // Image optimization
   images: {
-    domains: ['localhost', 'pakwattan.edu.pk', 'www.sharkasp.net'],
+    domains: ['localhost', 'pakwattan.edu.pk', 'www.sharkasp.net', 'sohailghsno4-001-site8.rtempurl.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -32,6 +32,10 @@ const nextConfig = {
       {
         protocol: 'http',
         hostname: 'localhost',
+      },
+      {
+        protocol: 'http',
+        hostname: 'sohailghsno4-001-site8.rtempurl.com',
       },
     ],
     unoptimized: true
@@ -43,7 +47,7 @@ const nextConfig = {
       {
         source: '/api/:path*',
         destination: process.env.NODE_ENV === 'production' 
-          ? 'https://www.sharkasp.net/api/:path*' 
+          ? 'http://sohailghsno4-001-site8.rtempurl.com/api/:path*' 
           : 'https://localhost:7210/api/:path*'
       }
     ]
@@ -53,6 +57,12 @@ const nextConfig = {
       rewrites.push({
         source: '/uploads/:path*',
         destination: 'https://localhost:7210/uploads/:path*'
+      })
+    } else {
+      // In production, rewrite /uploads to the deployed API
+      rewrites.push({
+        source: '/uploads/:path*',
+        destination: 'http://sohailghsno4-001-site8.rtempurl.com/uploads/:path*'
       })
     }
     

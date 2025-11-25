@@ -11,6 +11,7 @@
     "start:server": "node server.js",
     "start:prod": "NODE_ENV=production node .next/standalone/server.js",
     "lint": "next lint",
+    "test:api": "node scripts/test-api.js",
     "pm2:start": "pm2 start ecosystem.config.js",
     "pm2:stop": "pm2 stop pakwattan-modern",
     "pm2:restart": "pm2 restart pakwattan-modern",

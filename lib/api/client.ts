@@ -2,15 +2,23 @@
 // Centralized API service layer with JWT authentication support
 
 const API_BASE_URL = (() => {
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) return process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+  // Priority 1: Use environment variable if set (highest priority)
+  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+  }
+  
+  // Priority 2: Check if running on localhost and no env var is set
   if (typeof window !== 'undefined') {
-    // Default to API HTTPS port if running locally
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    const hostname = window.location.hostname;
+    // Only use localhost API if explicitly running on localhost AND no env var is set
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      // Default to localhost API for local development
       return 'https://localhost:7210';
     }
   }
-  // Fallback
-  return 'http://localhost:5000';
+  
+  // Priority 3: Production fallback - deployed API
+  return 'http://sohailghsno4-001-site8.rtempurl.com';
 })();
 
 export interface ApiResponse<T> {

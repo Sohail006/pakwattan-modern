@@ -12,8 +12,8 @@ const HUB_URL = (() => {
       return 'https://localhost:7210/notificationHub';
     }
   }
-  // Fallback
-  return 'http://localhost:5000/notificationHub';
+  // Production fallback - deployed API
+  return 'http://sohailghsno4-001-site8.rtempurl.com/notificationHub';
 })();
 
 let connection: signalR.HubConnection | null = null;

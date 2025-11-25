@@ -41,7 +41,7 @@ export const YOUTUBE_SETUP_INSTRUCTIONS = {
 
 // Backend API configuration
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:5000',
+  BASE_URL: process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'http://sohailghsno4-001-site8.rtempurl.com',
 }
 
 // Fallback configuration when API is not available
