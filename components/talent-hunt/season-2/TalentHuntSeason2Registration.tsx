@@ -49,7 +49,7 @@ const TalentHuntSeason2Registration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'http://localhost:5000'}/api/TalentHunt/season2`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://sohailghsno4-001-site8.rtempurl.com'}/api/TalentHunt/season2`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

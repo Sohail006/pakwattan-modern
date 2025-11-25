@@ -15,7 +15,8 @@ const getApiBaseUrl = (): string => {
       return 'https://localhost:7210'
     }
   }
-  return 'http://localhost:5000'
+  // Production fallback - deployed API
+  return 'https://sohailghsno4-001-site8.rtempurl.com'
 }
 
 interface ProfileImageUploadProps {
