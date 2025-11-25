@@ -6,7 +6,7 @@
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
-  'http://sohailghsno4-001-site8.rtempurl.com';
+  'https://sohailghsno4-001-site8.rtempurl.com';
 
 const tests = [
   {

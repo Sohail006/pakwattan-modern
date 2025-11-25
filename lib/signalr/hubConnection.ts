@@ -13,7 +13,7 @@ const HUB_URL = (() => {
     }
   }
   // Production fallback - deployed API
-  return 'http://sohailghsno4-001-site8.rtempurl.com/notificationHub';
+  return 'https://sohailghsno4-001-site8.rtempurl.com/notificationHub';
 })();
 
 let connection: signalR.HubConnection | null = null;

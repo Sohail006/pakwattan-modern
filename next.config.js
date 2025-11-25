@@ -34,7 +34,7 @@ const nextConfig = {
         hostname: 'localhost',
       },
       {
-        protocol: 'http',
+        protocol: 'https',
         hostname: 'sohailghsno4-001-site8.rtempurl.com',
       },
     ],
@@ -47,7 +47,7 @@ const nextConfig = {
       {
         source: '/api/:path*',
         destination: process.env.NODE_ENV === 'production' 
-          ? 'http://sohailghsno4-001-site8.rtempurl.com/api/:path*' 
+          ? 'https://sohailghsno4-001-site8.rtempurl.com/api/:path*' 
           : 'https://localhost:7210/api/:path*'
       }
     ]
@@ -62,7 +62,7 @@ const nextConfig = {
       // In production, rewrite /uploads to the deployed API
       rewrites.push({
         source: '/uploads/:path*',
-        destination: 'http://sohailghsno4-001-site8.rtempurl.com/uploads/:path*'
+        destination: 'https://sohailghsno4-001-site8.rtempurl.com/uploads/:path*'
       })
     }
     

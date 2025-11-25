@@ -32,7 +32,7 @@ function getApiBaseUrl(): string {
     }
   }
   // Production fallback - deployed API
-  return 'http://sohailghsno4-001-site8.rtempurl.com'
+  return 'https://sohailghsno4-001-site8.rtempurl.com'
 }
 
 /**

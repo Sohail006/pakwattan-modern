@@ -18,7 +18,7 @@ const API_BASE_URL = (() => {
   }
   
   // Priority 3: Production fallback - deployed API
-  return 'http://sohailghsno4-001-site8.rtempurl.com';
+  return 'https://sohailghsno4-001-site8.rtempurl.com';
 })();
 
 export interface ApiResponse<T> {
@@ -225,13 +225,22 @@ class ApiClient {
       if (error instanceof TypeError) {
         // CORS errors or connection refused
         const errorMessage = error.message.toLowerCase();
-        if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('cors')) {
+        const isCorsError = errorMessage.includes('cors') || 
+                           errorMessage.includes('access-control') ||
+                           (errorMessage.includes('failed to fetch') && typeof window !== 'undefined' && window.location.protocol === 'https:');
+        
+        if (errorMessage.includes('fetch') || errorMessage.includes('network') || isCorsError) {
           let message = `Unable to connect to server at ${this.baseUrl}`;
-          if (errorMessage.includes('cors')) {
-            message += '. This might be a CORS issue. Please check the API server CORS configuration.';
+          
+          if (isCorsError || (typeof window !== 'undefined' && window.location.protocol === 'https:' && this.baseUrl.startsWith('http:'))) {
+            message += '\n\nPossible issues:';
+            message += '\n1. CORS: The API server needs to allow requests from ' + (typeof window !== 'undefined' ? window.location.origin : 'your domain');
+            message += '\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.';
+            message += '\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.';
           } else {
-            message += '. Please ensure the API server is running.';
+            message += '. Please ensure the API server is running and accessible.';
           }
+          
           throw {
             message,
             statusCode: 0,
@@ -266,13 +275,22 @@ class ApiClient {
       if (error instanceof TypeError) {
         // CORS errors or connection refused
         const errorMessage = error.message.toLowerCase();
-        if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('cors')) {
+        const isCorsError = errorMessage.includes('cors') || 
+                           errorMessage.includes('access-control') ||
+                           (errorMessage.includes('failed to fetch') && typeof window !== 'undefined' && window.location.protocol === 'https:');
+        
+        if (errorMessage.includes('fetch') || errorMessage.includes('network') || isCorsError) {
           let message = `Unable to connect to server at ${this.baseUrl}`;
-          if (errorMessage.includes('cors')) {
-            message += '. This might be a CORS issue. Please check the API server CORS configuration.';
+          
+          if (isCorsError || (typeof window !== 'undefined' && window.location.protocol === 'https:' && this.baseUrl.startsWith('http:'))) {
+            message += '\n\nPossible issues:';
+            message += '\n1. CORS: The API server needs to allow requests from ' + (typeof window !== 'undefined' ? window.location.origin : 'your domain');
+            message += '\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.';
+            message += '\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.';
           } else {
-            message += '. Please ensure the API server is running.';
+            message += '. Please ensure the API server is running and accessible.';
           }
+          
           throw {
             message,
             statusCode: 0,

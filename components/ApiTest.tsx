@@ -22,7 +22,7 @@ export default function ApiTest() {
       const url = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
         (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
           ? 'https://localhost:7210'
-          : 'http://sohailghsno4-001-site8.rtempurl.com')
+          : 'https://sohailghsno4-001-site8.rtempurl.com')
       setApiBaseUrl(url)
     }
   }, [])
