@@ -286,6 +286,8 @@ const BreakingNewsSidebar = () => {
                   disabled={isRefreshing}
                   className="p-2 sm:p-1.5 text-gray-400 hover:text-primary-600 hover:bg-primary-50 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-target"
                   title="Refresh latest reel"
+                  aria-label="Refresh latest Facebook reel"
+                  aria-busy={isRefreshing}
                 >
                   <svg 
                     className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} 

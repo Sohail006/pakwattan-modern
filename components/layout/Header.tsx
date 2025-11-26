@@ -338,6 +338,7 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
+            aria-label="Follow us on Facebook"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-700 to-blue-800 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <Facebook className="w-4 h-4 relative z-10" />
@@ -350,6 +351,7 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-red-600 to-red-700 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
+            aria-label="Watch our videos on YouTube"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-red-700 to-red-800 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <Youtube className="w-4 h-4 relative z-10" />
@@ -362,6 +364,7 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="group relative w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-lg flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-md hover:shadow-lg"
+            aria-label="Follow us on Twitter"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <Twitter className="w-4 h-4 relative z-10" />

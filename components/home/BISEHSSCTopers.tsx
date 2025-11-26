@@ -84,6 +84,7 @@ const BISEHSSCTopers = () => {
                                 width={400}
                                 height={400}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                               />
                             </div>
                           </div>

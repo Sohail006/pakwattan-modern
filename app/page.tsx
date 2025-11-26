@@ -1,102 +1,207 @@
-import WelcomeMessage from '@/components/home/WelcomeMessage'
-import NewsAndEvents from '@/components/home/NewsAndEvents'
-import DiscoverWonders from '@/components/home/DiscoverWonders'
-import HSSCToppers from '@/components/home/HSSCToppers'
-import UmrahTickets from '@/components/home/UmrahTickets'
-import HajjTickets from '@/components/home/HajjTickets'
-import LaptopDistribution from '@/components/home/LaptopDistribution'
-import HonorableFounders from '@/components/home/HonorableFounders'
-import GrowthOverYears from '@/components/home/GrowthOverYears'
-import FooterCTA from '@/components/home/FooterCTA'
-import Achievements from '@/components/home/Achievements'
-import VideoMessages from '@/components/home/VideoMessages'
-import AnnualDistribution from '@/components/home/AnnualDistribution'
-import AnnualDistributionCeremony from '@/components/home/AnnualDistributionCeremony'
-import BiseResults from '@/components/home/BiseResults'
-import SSCBISE2024_25 from '@/components/home/SSCBISE2024_25'
-import TopersHSSC from '@/components/home/TopersHSSC'
-import BreakingNewsSidebar from '@/components/home/BreakingNewsSidebar'
+// Above-fold components - load immediately
 import TopNewsMarquee from '@/components/home/TopNewsMarquee'
 import HeroSection from '@/components/home/HeroSection'
-import SSCBISE2024_25Detailed from '@/components/home/SSCBISE2024_25Detailed'
-import AnnualDistributionCeremony2024_25 from '@/components/home/AnnualDistributionCeremony2024_25'
-import BISEHSSCTopers from '@/components/home/BISEHSSCTopers'
+import BreakingNewsSidebar from '@/components/home/BreakingNewsSidebar'
+import WelcomeMessage from '@/components/home/WelcomeMessage'
+
+// Below-fold components - lazy load for better performance
+import dynamic from 'next/dynamic'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import SkeletonLoader from '@/components/ui/SkeletonLoader'
+
+const DiscoverWonders = dynamic(() => import('@/components/home/DiscoverWonders'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const SSCBISE2024_25Detailed = dynamic(() => import('@/components/home/SSCBISE2024_25Detailed'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const AnnualDistributionCeremony2024_25 = dynamic(() => import('@/components/home/AnnualDistributionCeremony2024_25'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const BISEHSSCTopers = dynamic(() => import('@/components/home/BISEHSSCTopers'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const Achievements = dynamic(() => import('@/components/home/Achievements'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const VideoMessages = dynamic(() => import('@/components/home/VideoMessages'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const BiseResults = dynamic(() => import('@/components/home/BiseResults'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const SSCBISE2024_25 = dynamic(() => import('@/components/home/SSCBISE2024_25'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const TopersHSSC = dynamic(() => import('@/components/home/TopersHSSC'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const HSSCToppers = dynamic(() => import('@/components/home/HSSCToppers'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const UmrahTickets = dynamic(() => import('@/components/home/UmrahTickets'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const HajjTickets = dynamic(() => import('@/components/home/HajjTickets'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const LaptopDistribution = dynamic(() => import('@/components/home/LaptopDistribution'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const AnnualDistribution = dynamic(() => import('@/components/home/AnnualDistribution'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const AnnualDistributionCeremony = dynamic(() => import('@/components/home/AnnualDistributionCeremony'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const HonorableFounders = dynamic(() => import('@/components/home/HonorableFounders'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const GrowthOverYears = dynamic(() => import('@/components/home/GrowthOverYears'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const NewsAndEvents = dynamic(() => import('@/components/home/NewsAndEvents'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const FooterCTA = dynamic(() => import('@/components/home/FooterCTA'), {
+  loading: () => <SkeletonLoader variant="card" height="h-32" className="my-8" />
+})
 export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Top News Marquee */}
-      <TopNewsMarquee />
+      <ErrorBoundary>
+        <TopNewsMarquee />
+      </ErrorBoundary>
 
       {/* Hero Section with Video Background and Quick Links */}
-      <HeroSection />
+      <ErrorBoundary>
+        <HeroSection />
+      </ErrorBoundary>
 
       
       {/* Breaking News Sidebar */}
-      <BreakingNewsSidebar />
+      <ErrorBoundary>
+        <BreakingNewsSidebar />
+      </ErrorBoundary>
       
       {/* Welcome Message */}
-      <WelcomeMessage />
+      <ErrorBoundary>
+        <WelcomeMessage />
+      </ErrorBoundary>
       
       {/* Discover the Wonders of Pak Wattan */}
-      <DiscoverWonders />
+      <ErrorBoundary>
+        <DiscoverWonders />
+      </ErrorBoundary>
       
       {/* SSC BISE Results 2024-25 Detailed */}
-      <SSCBISE2024_25Detailed />
+      <ErrorBoundary>
+        <SSCBISE2024_25Detailed />
+      </ErrorBoundary>
       
       {/* Annual Distribution Ceremony 2024-25 */}
-      <AnnualDistributionCeremony2024_25 />
+      <ErrorBoundary>
+        <AnnualDistributionCeremony2024_25 />
+      </ErrorBoundary>
       
       {/* BISE HSSC Toppers */}
-      <BISEHSSCTopers />
+      <ErrorBoundary>
+        <BISEHSSCTopers />
+      </ErrorBoundary>
       
       {/* Our Achievements */}
-      <Achievements />
+      <ErrorBoundary>
+        <Achievements />
+      </ErrorBoundary>
       
       {/* Video Messages */}
-      <VideoMessages />
+      <ErrorBoundary>
+        <VideoMessages />
+      </ErrorBoundary>
       
       {/* BISE Results */}
-      <BiseResults />
+      <ErrorBoundary>
+        <BiseResults />
+      </ErrorBoundary>
       
       {/* SSC BISE Results 2024-25 */}
-      <SSCBISE2024_25 />
+      <ErrorBoundary>
+        <SSCBISE2024_25 />
+      </ErrorBoundary>
       
       {/* Topers HSSC */}
-      <TopersHSSC />
+      <ErrorBoundary>
+        <TopersHSSC />
+      </ErrorBoundary>
       
       {/* HSSC Toppers */}
-      <HSSCToppers />
+      <ErrorBoundary>
+        <HSSCToppers />
+      </ErrorBoundary>
       
       {/* Umrah Tickets */}
-      <UmrahTickets />
+      <ErrorBoundary>
+        <UmrahTickets />
+      </ErrorBoundary>
       
       {/* Hajj Tickets */}
-      <HajjTickets />
+      <ErrorBoundary>
+        <HajjTickets />
+      </ErrorBoundary>
       
       {/* Laptop Distribution */}
-      <LaptopDistribution />
+      <ErrorBoundary>
+        <LaptopDistribution />
+      </ErrorBoundary>
       
       {/* Annual Distribution */}
-      <AnnualDistribution />
+      <ErrorBoundary>
+        <AnnualDistribution />
+      </ErrorBoundary>
       
       {/* Annual Distribution Ceremony */}
-      <AnnualDistributionCeremony />
+      <ErrorBoundary>
+        <AnnualDistributionCeremony />
+      </ErrorBoundary>
       
       {/* Our Honorable Founders */}
-      <HonorableFounders />
+      <ErrorBoundary>
+        <HonorableFounders />
+      </ErrorBoundary>
       
       {/* Growth Over Years */}
-      <GrowthOverYears />
+      <ErrorBoundary>
+        <GrowthOverYears />
+      </ErrorBoundary>
       
       {/* News and Events */}
-      <NewsAndEvents />
+      <ErrorBoundary>
+        <NewsAndEvents />
+      </ErrorBoundary>
       
-     
-      
-     
-                 
       {/* Footer CTA */}
-      <FooterCTA />
+      <ErrorBoundary>
+        <FooterCTA />
+      </ErrorBoundary>
     </div>
   )
 }

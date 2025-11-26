@@ -24,7 +24,9 @@ const HeroSection = () => {
           muted
           loop
           playsInline
+          preload="metadata"
           className="w-full h-full object-cover"
+          aria-label="Pak Wattan School background video"
         >
           <source src="/files/bannerImage.mp4" type="video/mp4" />
         </video>
@@ -91,6 +93,7 @@ const HeroSection = () => {
                     href={link.href}
                     className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:scale-[1.02] hover:shadow-md touch-target focus-ring"
                     title={link.title}
+                    aria-label={`Navigate to ${link.title}`}
                   >
                     {/* Icon with colored background */}
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300 flex-shrink-0">

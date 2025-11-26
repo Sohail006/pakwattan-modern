@@ -6,7 +6,7 @@ const nextConfig = {
   
   // Performance optimizations
   experimental: {
-    optimizeCss: true,
+    // optimizeCss: true, // Disabled - critters is deprecated, Next.js 14 requires it internally
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
   

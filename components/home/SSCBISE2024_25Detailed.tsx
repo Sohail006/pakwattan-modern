@@ -77,6 +77,7 @@ const SSCBISE2024_25Detailed = () => {
                                 width={400}
                                 height={400}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                               />
                             </div>
                           </div>
@@ -90,6 +91,7 @@ const SSCBISE2024_25Detailed = () => {
                                 width={400}
                                 height={400}
                                 className="w-full h-full object-cover"
+                                loading="lazy"
                               />
                             </div>
                           </div>
