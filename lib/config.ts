@@ -52,7 +52,7 @@ export const YOUTUBE_SETUP_INSTRUCTIONS = {
 //   - Local: 'https://localhost:7210'
 //   - Production: 'https://sohailghsno4-001-site8.rtempurl.com'
 
-const DEFAULT_API_BASE_URL = 'https://localhost:7210'; // Change this for hardcoded URL
+const DEFAULT_API_BASE_URL = 'https://sohailghsno4-001-site8.rtempurl.com'; // Change this for hardcoded URL
 
 /**
  * Get the API base URL
