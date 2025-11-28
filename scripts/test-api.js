@@ -5,8 +5,7 @@
  * Usage: node scripts/test-api.js
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
-  'https://sohailghsno4-001-site8.rtempurl.com';
+const API_BASE_URL = (process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://localhost:7210').replace(/\/$/, '');
 
 const tests = [
   {

@@ -1,25 +1,8 @@
 // API Client for PakWattanAPI Backend
 // Centralized API service layer with JWT authentication support
+import { getApiBaseUrl } from '@/lib/config';
 
-const API_BASE_URL = (() => {
-  // Priority 1: Use environment variable if set (highest priority)
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
-  }
-  
-  // Priority 2: Check if running on localhost and no env var is set
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    // Only use localhost API if explicitly running on localhost AND no env var is set
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      // Default to localhost API for local development
-      return 'https://localhost:7210';
-    }
-  }
-  
-  // Priority 3: Production fallback - deployed API
-  return 'https://sohailghsno4-001-site8.rtempurl.com';
-})();
+const API_BASE_URL = getApiBaseUrl();
 
 export interface ApiResponse<T> {
   data?: T;

@@ -1,20 +1,9 @@
 // SignalR Hub Connection Service
 import * as signalR from '@microsoft/signalr';
+import { getApiBaseUrl } from '@/lib/config';
 
-// Use the same URL logic as API client
-const HUB_URL = (() => {
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    return `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL.replace(/\/$/, '')}/notificationHub`;
-  }
-  if (typeof window !== 'undefined') {
-    // Default to API HTTPS port if running locally
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'https://localhost:7210/notificationHub';
-    }
-  }
-  // Production fallback - deployed API
-  return 'https://sohailghsno4-001-site8.rtempurl.com/notificationHub';
-})();
+// Use the centralized API base URL
+const HUB_URL = `${getApiBaseUrl()}/notificationHub`;
 
 let connection: signalR.HubConnection | null = null;
 

@@ -11,20 +11,7 @@ import StatusBadge from '@/components/ui/StatusBadge'
 import StudentModal from './StudentModal'
 import { exportStudentsToExcel } from '@/lib/utils/excelExport'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
-
-// Helper to get API base URL
-const getApiBaseUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BACKEND_BASE_URL
-  }
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'https://localhost:7210'
-    }
-  }
-  // Production fallback - deployed API
-  return 'https://sohailghsno4-001-site8.rtempurl.com'
-}
+import { getApiBaseUrl } from '@/lib/config'
 
 // Helper to construct full image URL
 const getImageUrl = (imageUrl: string | null | undefined): string | null => {

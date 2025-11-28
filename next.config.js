@@ -42,29 +42,24 @@ const nextConfig = {
   },
   
   // API rewrites for production deployment
+  // Uses NEXT_PUBLIC_BACKEND_BASE_URL environment variable or defaults
   async rewrites() {
+    // Get API base URL from environment or use defaults
+    const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
+      (process.env.NODE_ENV === 'production' 
+        ? 'https://sohailghsno4-001-site8.rtempurl.com' 
+        : 'https://localhost:7210');
+    
     const rewrites = [
       {
         source: '/api/:path*',
-        destination: process.env.NODE_ENV === 'production' 
-          ? 'https://sohailghsno4-001-site8.rtempurl.com/api/:path*' 
-          : 'https://localhost:7210/api/:path*'
+        destination: `${apiBaseUrl}/api/:path*`
+      },
+      {
+        source: '/uploads/:path*',
+        destination: `${apiBaseUrl}/uploads/:path*`
       }
     ]
-    
-    // In development, also rewrite /uploads to the backend API
-    if (process.env.NODE_ENV !== 'production') {
-      rewrites.push({
-        source: '/uploads/:path*',
-        destination: 'https://localhost:7210/uploads/:path*'
-      })
-    } else {
-      // In production, rewrite /uploads to the deployed API
-      rewrites.push({
-        source: '/uploads/:path*',
-        destination: 'https://sohailghsno4-001-site8.rtempurl.com/uploads/:path*'
-      })
-    }
     
     return rewrites
   },

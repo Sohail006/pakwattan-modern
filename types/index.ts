@@ -30,6 +30,17 @@ export interface Event {
   time: string
 }
 
+export interface NewsItem {
+  id: string
+  title: string
+  description: string
+  date: string
+  category?: 'event' | 'announcement' | 'competition' | 'ceremony' | 'test' | 'general'
+  slug?: string
+  featured?: boolean
+  createdAt?: string // ISO date string for sorting
+}
+
 export interface VideoConfig {
   id: string
   title: string

@@ -17,13 +17,12 @@ export default function ApiTest() {
   const [isRunning, setIsRunning] = useState(false)
 
   useEffect(() => {
-    // Get the API base URL from the client
+    // Get the API base URL from the centralized config
     if (typeof window !== 'undefined') {
-      const url = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
-        (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-          ? 'https://localhost:7210'
-          : 'https://sohailghsno4-001-site8.rtempurl.com')
-      setApiBaseUrl(url)
+      // Dynamic import to avoid SSR issues
+      import('@/lib/config').then(({ getApiBaseUrl }) => {
+        setApiBaseUrl(getApiBaseUrl())
+      })
     }
   }, [])
 

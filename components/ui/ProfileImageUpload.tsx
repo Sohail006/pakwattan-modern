@@ -4,20 +4,7 @@ import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
 import { Upload, X, Loader2, Image as ImageIcon, AlertCircle } from 'lucide-react'
 import imageCompression from 'browser-image-compression'
 import { cn } from '@/lib/utils'
-
-// Helper to get API base URL
-const getApiBaseUrl = (): string => {
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BACKEND_BASE_URL
-  }
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'https://localhost:7210'
-    }
-  }
-  // Production fallback - deployed API
-  return 'https://sohailghsno4-001-site8.rtempurl.com'
-}
+import { getApiBaseUrl } from '@/lib/config'
 
 interface ProfileImageUploadProps {
   value?: string | null

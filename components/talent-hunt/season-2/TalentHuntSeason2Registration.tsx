@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { User, Mail, Phone, BookOpen, CheckCircle, Award } from 'lucide-react'
+import { API_CONFIG } from '@/lib/config'
 
 const TalentHuntSeason2Registration = () => {
   const [formData, setFormData] = useState({
@@ -49,7 +50,7 @@ const TalentHuntSeason2Registration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://sohailghsno4-001-site8.rtempurl.com'}/api/TalentHunt/season2`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/api/TalentHunt/season2`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

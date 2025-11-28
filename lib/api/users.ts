@@ -1,6 +1,7 @@
 // User Management API endpoints
 
 import { api, ApiError } from './client';
+import { getApiBaseUrl } from '@/lib/config';
 
 export interface User {
   id: string;
@@ -162,7 +163,7 @@ export async function assignRole(userId: string, role: string): Promise<{ messag
 export async function removeRole(userId: string, role: string): Promise<{ message: string }> {
   try {
     // DELETE with body - need custom fetch since delete doesn't support body in standard API
-    const baseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://localhost:7210'
+    const baseUrl = getApiBaseUrl()
     const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
     
     const response = await fetch(`${baseUrl}/api/users/${userId}/roles`, {

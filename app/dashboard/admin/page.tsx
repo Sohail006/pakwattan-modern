@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Users, ClipboardList, FileText, TrendingUp, ArrowRight } from 'lucide-react'
+import { getApiBaseUrl } from '@/lib/config'
 
 type Kpi = { 
   label: string
@@ -38,7 +39,7 @@ export default function AdminDashboardPage() {
     async function loadKpis() {
       setLoading(true)
       try {
-        const base = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://localhost:7210'
+        const base = getApiBaseUrl()
         const [studentsRes, regsRes, admRes] = await Promise.all([
           fetch(`${base}/api/students`),
           fetch(`${base}/api/registrations`),

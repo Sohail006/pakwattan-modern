@@ -39,9 +39,53 @@ export const YOUTUBE_SETUP_INSTRUCTIONS = {
   ]
 }
 
-// Backend API configuration
+// ============================================
+// BACKEND API CONFIGURATION - SINGLE SOURCE OF TRUTH
+// ============================================
+// This is the ONLY file you need to change when switching between local and production
+// 
+// Option 1 (Recommended): Set environment variable NEXT_PUBLIC_BACKEND_BASE_URL
+//   - Local: Create .env.local with NEXT_PUBLIC_BACKEND_BASE_URL=https://localhost:7210
+//   - Production: Set NEXT_PUBLIC_BACKEND_BASE_URL=https://sohailghsno4-001-site8.rtempurl.com
+//
+// Option 2: Change the default URL below if you prefer hardcoding
+//   - Local: 'https://localhost:7210'
+//   - Production: 'https://sohailghsno4-001-site8.rtempurl.com'
+
+const DEFAULT_API_BASE_URL = 'https://localhost:7210'; // Change this for hardcoded URL
+
+/**
+ * Get the API base URL
+ * Priority:
+ * 1. Environment variable NEXT_PUBLIC_BACKEND_BASE_URL (highest priority)
+ * 2. Default URL (DEFAULT_API_BASE_URL)
+ */
+export function getApiBaseUrl(): string {
+  // Priority 1: Environment variable (recommended for production)
+  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
+    const envUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL.replace(/\/$/, '');
+    // Log in development to help debug
+    if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+      console.log('[API Config] Using environment variable:', envUrl);
+    }
+    return envUrl;
+  }
+  
+  // Priority 2: Default URL (from DEFAULT_API_BASE_URL constant)
+  const defaultUrl = DEFAULT_API_BASE_URL.replace(/\/$/, '');
+  // Log in development to help debug
+  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+    console.log('[API Config] Using default URL:', defaultUrl);
+  }
+  return defaultUrl;
+}
+
+// Backend API configuration (for backward compatibility)
+// Note: This is evaluated at module load time, use getApiBaseUrl() function instead
 export const API_CONFIG = {
-  BASE_URL: process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 'https://sohailghsno4-001-site8.rtempurl.com',
+  get BASE_URL() {
+    return getApiBaseUrl();
+  }
 }
 
 // Fallback configuration when API is not available

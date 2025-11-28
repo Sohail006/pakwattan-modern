@@ -4,6 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { formatDateTime, formatTime } from '@/lib/utils'
+import { NEWS_ITEMS } from '@/lib/constants'
+import { ChevronRight, Filter } from 'lucide-react'
 
 // Facebook SDK types
 declare global {
@@ -138,98 +140,24 @@ const BreakingNewsSidebar = () => {
     },
   ]
 
-  const newsItems = [
-    {
-      title: 'SPELL BEE CONTEST',
-      description: 'Get ready to showcase your spelling skills and compete in our upcoming Spell Bee Contest.',
-      date: '27th September 2025 (Saturday)'
-    },
-    {
-      title: 'Free Speech in Pakistan: Illusion or Reality?',
-      description: 'Join us for an exciting speech competition at Pak Wattan, aimed at discovering young orators and bold thinkers.',
-      date: '23rd August 2025 (Saturday)'
-    },
-    {
-      title: 'Qirat & Naat Competition',
-      description: 'We warmly invite you to the Qirat & Naat competition at Pak Wattan — an inspiring event to showcase the beautiful voices and spiritual talents of our youth.',
-      date: '12th July 2025 (Saturday)'
-    },
-    {
-      title: 'Singing (National, Folk, Patriotic)',
-      description: 'Join us at Pak Wattan for a vibrant Singing Competition featuring National, Folk, and Patriotic songs. Let the voices of our talented youth echo with pride and passion!',
-      date: '15th November 2025 (Saturday)'
-    },
-    {
-      title: 'Instrumental Music (Individual or Team)',
-      description: 'Experience the rhythm and harmony at Pak Wattan\'s Instrumental Music Competition! Whether solo or in a team, showcase your musical talent in a celebration of creativity and sound.',
-      date: '15th November 2025 (Saturday)'
-    },
-    {
-      title: 'Quiz Competition',
-      description: 'Get ready to challenge your knowledge! Separate syllabi have been prepared for Grades 6–7 and Grades 8–10. Participate individually or in teams and put your minds to the test in this exciting Quiz Competition at Pak Wattan.',
-      date: '18th October 2025 (Saturday)'
-    },
-    {
-      title: 'Spelling Bee Competition',
-      description: 'Sharpen your spelling skills and join the exciting Spelling Bee Competition at Pak Wattan! A vocabulary list will be provided in advance to help participants prepare confidently.',
-      date: '18th October 2025 (Saturday)'
-    },
-    {
-      title: 'Handicrafts / DIY Crafts Competition',
-      description: 'Unleash your creativity at Pak Wattan\'s Handicrafts & DIY Crafts Competition! Showcase your artistic talent through handmade creations and innovative do-it-yourself projects.',
-      date: '13th December 2025 (Saturday)'
-    },
-    {
-      title: 'Creative Writing (Story, Essay, Poem)',
-      description: 'Let your imagination flow at Pak Wattan\'s Creative Writing Competition! Whether it\'s a story, an essay, or a poem, this is your chance to express your thoughts and creativity through words.',
-      date: '13th September 2025 (Saturday)'
-    },
-    {
-      title: 'Painting / Sketching / Calligraphy',
-      description: 'Let your creativity shine at Pak Wattan\'s Art Competition! Whether you love painting, sketching, or calligraphy, this is the perfect opportunity to showcase your artistic talent and imagination.',
-      date: '13th September 2025 (Saturday)'
-    },
-    {
-      title: 'Career Counseling Seminar',
-      description: 'Students get ready for the Career Counseling Seminar which is going to be held in Pak Wattan',
-      date: '1st May, 2025 (Thursday)'
-    },
-    {
-      title: 'Scholarship/ Entry Test (Grade XI)',
-      description: 'Great opportunity for students to secure scholarship and fullfil their dreams.',
-      date: '10th May, 2025 (Saturday)'
-    },
-    {
-      title: 'Dastar Bandi',
-      description: 'A significant milestone for our young students as they receive their Dastar Bandi.',
-      date: '14th December, 2024 (Saturday)'
-    },
-    {
-      title: 'Montessori Sports Gala',
-      description: 'Get ready for an action-packed weekend of sports, fun, and friendship.',
-      date: '18th & 19th November, 2024'
-    },
-    {
-      title: 'Montessori Graduation Ceremony',
-      description: 'Montessori Graduation Ceremony will be held on.',
-      date: 'On January, 2025'
-    },
-    {
-      title: 'Board Result Ceremony',
-      description: 'Celebrating academic excellence and honoring outstanding achievements.',
-      date: '15th February, 2025 (Saturday)'
-    },
-    {
-      title: 'Scholarship Test',
-      description: 'An opportunity for deserving students to secure scholarships and pursue their dreams.',
-      date: '23rd March, 2025 (Sunday)'
-    },
-    {
-      title: 'Annual Distribution Ceremony',
-      description: 'Recognizing and rewarding outstanding performances and achievements.',
-      date: '20th April, 2025 (Sunday)'
+  // News & Events state
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [showAll, setShowAll] = useState(false)
+  const [displayCount, setDisplayCount] = useState(4)
+
+  // Get unique categories
+  const categories = Array.from(new Set(NEWS_ITEMS.map(item => item.category).filter(Boolean))) as string[]
+
+  // Filter and sort news items
+  const filteredNewsItems = NEWS_ITEMS.filter(item => {
+    if (selectedCategory) {
+      return item.category === selectedCategory
     }
-  ]
+    return true
+  })
+
+  // Get items to display
+  const displayedItems = showAll ? filteredNewsItems : filteredNewsItems.slice(0, displayCount)
 
   return (
     <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
@@ -240,34 +168,133 @@ const BreakingNewsSidebar = () => {
         <div className="lg:border-r border-gray-200">
           <div className="p-3 sm:p-4">
             <div className="mb-4 sm:mb-6">
-              <h3 className="text-base sm:text-lg font-bold text-primary-800 mb-2 flex items-center">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
-                  <span className="text-white text-xs sm:text-sm">📢</span>
-                </div>
-                News & Events
-              </h3>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-primary-800 flex items-center">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3">
+                    <span className="text-white text-xs sm:text-sm">📢</span>
+                  </div>
+                  News & Events
+                </h3>
+                {categories.length > 0 && (
+                  <button
+                    onClick={() => setSelectedCategory(selectedCategory ? null : categories[0])}
+                    className={`p-1.5 rounded-full transition-all duration-200 ${
+                      selectedCategory
+                        ? 'text-primary-600 bg-primary-50'
+                        : 'text-gray-400 hover:text-primary-600 hover:bg-primary-50'
+                    }`}
+                    title="Toggle category filter"
+                    aria-label="Toggle category filter"
+                  >
+                    <Filter className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
               <p className="text-gray-600 text-xs sm:text-sm ml-8 sm:ml-11">Latest announcements and updates</p>
+              
+              {/* Category Filter */}
+              {categories.length > 0 && (
+                <div className="mt-2 ml-8 sm:ml-11 flex flex-wrap gap-1.5">
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    className={`px-2 py-0.5 text-xs rounded-full transition-colors ${
+                      !selectedCategory
+                        ? 'bg-primary-600 text-white'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`px-2 py-0.5 text-xs rounded-full transition-colors capitalize ${
+                        selectedCategory === cat
+                          ? 'bg-primary-600 text-white'
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             
             <div className="space-y-1 sm:space-y-2 max-h-48 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
-              {newsItems.slice(0, 4).map((item, index) => (
-                <div key={index} className="group border-l-4 border-primary-500 pl-3 sm:pl-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 rounded-r-lg hover:shadow-sm">
-                  <div className="flex items-start space-x-2 sm:space-x-3">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-100 rounded-full flex items-center justify-center mt-1 group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                      <span className="text-primary-600 text-xs sm:text-sm">📢</span>
+              {displayedItems.length > 0 ? (
+                displayedItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/news/${item.slug || item.id}`}
+                    className="block group border-l-4 border-primary-500 pl-3 sm:pl-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 rounded-r-lg hover:shadow-sm"
+                  >
+                    <div className="flex items-start space-x-2 sm:space-x-3">
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-100 rounded-full flex items-center justify-center mt-1 group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                        <span className="text-primary-600 text-xs sm:text-sm">📢</span>
+                      </div>
+                      <div className="flex-1 min-w-0 flex-text-fix">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm group-hover:text-primary-700 transition-colors duration-300 mobile-card-text">
+                            {item.title}
+                          </h4>
+                          {item.category && (
+                            <span className="px-1.5 py-0.5 bg-accent-100 text-accent-700 text-[10px] font-semibold rounded uppercase flex-shrink-0">
+                              {item.category}
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-gray-600 mb-2 sm:mb-3 leading-relaxed text-xs mobile-text-container">
+                          {item.description}
+                        </p>
+                        <div className="flex items-center space-x-2">
+                          <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full group-hover:bg-primary-200 transition-colors duration-200 text-no-overlap">
+                            📅 {item.date}
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors flex-shrink-0 mt-1" />
                     </div>
-                           <div className="flex-1 min-w-0 flex-text-fix">
-                             <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm group-hover:text-primary-700 transition-colors duration-300 mobile-card-text">{item.title}</h4>
-                             <p className="text-gray-600 mb-2 sm:mb-3 leading-relaxed text-xs mobile-text-container">{item.description}</p>
-                             <div className="flex items-center space-x-2">
-                               <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full group-hover:bg-primary-200 transition-colors duration-200 text-no-overlap">
-                                 📅 {item.date}
-                               </span>
-                             </div>
-                           </div>
-                  </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500 text-sm">
+                  No news items found
                 </div>
-              ))}
+              )}
+            </div>
+            
+            {/* View All / Show More Button */}
+            {filteredNewsItems.length > displayCount && (
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    if (showAll) {
+                      setShowAll(false)
+                      setDisplayCount(4)
+                    } else {
+                      setShowAll(true)
+                      setDisplayCount(filteredNewsItems.length)
+                    }
+                  }}
+                  className="w-full flex items-center justify-center space-x-2 px-3 py-2 text-xs sm:text-sm font-semibold text-primary-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-all duration-200"
+                >
+                  <span>{showAll ? 'Show Less' : `View All (${filteredNewsItems.length})`}</span>
+                  <ChevronRight className={`w-4 h-4 transition-transform duration-200 ${showAll ? 'rotate-90' : ''}`} />
+                </button>
+              </div>
+            )}
+            
+            {/* View All News Link */}
+            <div className="mt-2">
+              <Link
+                href="/news"
+                className="flex items-center justify-center space-x-1 text-xs sm:text-sm font-medium text-primary-600 hover:text-primary-700 hover:underline transition-colors"
+              >
+                <span>View All News & Events</span>
+                <ChevronRight className="w-3 h-3" />
+              </Link>
             </div>
           </div>
         </div>

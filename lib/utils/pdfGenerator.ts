@@ -4,6 +4,7 @@ import { RegistrationResponse } from '@/lib/api/registrations'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { getActiveAdmissionSetting } from '@/lib/api/admissionSettings'
 import { formatDate, formatTime } from '@/lib/utils'
+import { getApiBaseUrl } from '@/lib/config'
 
 /**
  * Convert hex color to RGB array for jsPDF
@@ -17,22 +18,6 @@ function hexToRgb(hex: string): [number, number, number] {
         parseInt(result[3], 16),
       ]
     : [0, 0, 0]
-}
-
-/**
- * Get API base URL
- */
-function getApiBaseUrl(): string {
-  if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BACKEND_BASE_URL
-  }
-  if (typeof window !== 'undefined') {
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-      return 'https://localhost:7210'
-    }
-  }
-  // Production fallback - deployed API
-  return 'https://sohailghsno4-001-site8.rtempurl.com'
 }
 
 /**
