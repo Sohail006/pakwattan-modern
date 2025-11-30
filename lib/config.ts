@@ -59,11 +59,27 @@ const DEFAULT_API_BASE_URL = 'https://sohailghsno4-001-site8.rtempurl.com'; // C
  * Priority:
  * 1. Environment variable NEXT_PUBLIC_BACKEND_BASE_URL (highest priority)
  * 2. Default URL (DEFAULT_API_BASE_URL)
+ * 
+ * Note: In production, ensure the API server is accessible and CORS is configured.
+ * If using HTTPS frontend, the API must also use HTTPS to avoid mixed content errors.
  */
 export function getApiBaseUrl(): string {
   // Priority 1: Environment variable (recommended for production)
   if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
-    const envUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL.replace(/\/$/, '');
+    let envUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL.replace(/\/$/, '');
+    
+    // Ensure HTTPS in production if frontend is HTTPS
+    if (typeof window !== 'undefined' && 
+        window.location.protocol === 'https:' && 
+        envUrl.startsWith('http://') &&
+        !envUrl.includes('localhost')) {
+      // Convert HTTP to HTTPS for production
+      envUrl = envUrl.replace('http://', 'https://');
+      if (process.env.NODE_ENV === 'development') {
+        console.warn('[API Config] Converted HTTP to HTTPS to avoid mixed content:', envUrl);
+      }
+    }
+    
     // Log in development to help debug
     if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
       console.log('[API Config] Using environment variable:', envUrl);
@@ -72,7 +88,20 @@ export function getApiBaseUrl(): string {
   }
   
   // Priority 2: Default URL (from DEFAULT_API_BASE_URL constant)
-  const defaultUrl = DEFAULT_API_BASE_URL.replace(/\/$/, '');
+  let defaultUrl = DEFAULT_API_BASE_URL.replace(/\/$/, '');
+  
+  // Ensure HTTPS in production if frontend is HTTPS
+  if (typeof window !== 'undefined' && 
+      window.location.protocol === 'https:' && 
+      defaultUrl.startsWith('http://') &&
+      !defaultUrl.includes('localhost')) {
+    // Convert HTTP to HTTPS for production
+    defaultUrl = defaultUrl.replace('http://', 'https://');
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[API Config] Converted HTTP to HTTPS to avoid mixed content:', defaultUrl);
+    }
+  }
+  
   // Log in development to help debug
   if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
     console.log('[API Config] Using default URL:', defaultUrl);
