@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getMarqueeNews, News } from '@/lib/api/news'
+import { getMarqueeNews } from '@/lib/api/news'
 import Container from '@/components/ui/Container'
 import { Loader2 } from 'lucide-react'
 

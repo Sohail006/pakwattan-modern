@@ -431,6 +431,14 @@ export const BREAKPOINTS = {
   '2xl': '1536px'
 }
 
+// Developer Information
+export const DEVELOPER_INFO = {
+  name: 'Developer',
+  url: '/developer', // Developer information page
+  text: 'Developed by', // Optional: customize the text
+  showIcon: true
+}
+
 // Common CSS Classes
 export const COMMON_CLASSES = {
   container: 'container-custom',

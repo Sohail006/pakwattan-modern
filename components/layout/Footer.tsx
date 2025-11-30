@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone, Mail, MapPin, Facebook, Youtube, Twitter } from 'lucide-react'
-import { SCHOOL_INFO, MAIN_NAVIGATION } from '@/lib/constants'
+import { Phone, Mail, MapPin, Facebook, Youtube, Twitter, Code } from 'lucide-react'
+import { SCHOOL_INFO, MAIN_NAVIGATION, DEVELOPER_INFO } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 
 const Footer = () => {
@@ -146,13 +146,27 @@ const Footer = () => {
             <p className="text-secondary-400 text-sm">
               © 2024 Pak Wattan School & College of Sciences. All rights reserved.
             </p>
-            <div className="flex space-x-6 text-sm">
-              <Link href="/privacy" className="text-secondary-400 hover:text-white transition-colors">
-                Privacy Policy
+            <div className="flex flex-col md:flex-row items-center space-y-3 md:space-y-0 md:space-x-6">
+              {/* Developer Credit - Prominent */}
+              <Link
+                href={DEVELOPER_INFO.url}
+                className="flex items-center space-x-2 text-primary-400 hover:text-primary-300 transition-colors font-medium text-sm group"
+              >
+                {DEVELOPER_INFO.showIcon && (
+                  <Code className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                )}
+                <span>
+                  {DEVELOPER_INFO.text} <span className="text-white font-semibold">{DEVELOPER_INFO.name}</span>
+                </span>
               </Link>
-              <Link href="/terms" className="text-secondary-400 hover:text-white transition-colors">
-                Terms and Service
-              </Link>
+              <div className="flex space-x-6 text-sm">
+                <Link href="/privacy" className="text-secondary-400 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link href="/terms" className="text-secondary-400 hover:text-white transition-colors">
+                  Terms and Service
+                </Link>
+              </div>
             </div>
           </div>
         </div>

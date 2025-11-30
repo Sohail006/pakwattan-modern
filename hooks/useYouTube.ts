@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { YouTubePlayerConfig } from '@/types'
+import { YouTubePlayerConfig, YouTubePlayer } from '@/types'
 
 declare global {
   interface Window {
@@ -12,7 +12,7 @@ declare global {
 
 export const useYouTube = () => {
   const [isLoaded, setIsLoaded] = useState(false)
-  const [players, setPlayers] = useState<Map<string, any>>(new Map())
+  const [players, setPlayers] = useState<Map<string, YouTubePlayer>>(new Map())
 
   useEffect(() => {
     // Set up YouTube API ready callback
@@ -54,8 +54,8 @@ export const useYouTube = () => {
       events: config.events
     })
 
-    setPlayers(prev => new Map(prev).set(elementId, player))
-    return player
+    setPlayers(prev => new Map(prev).set(elementId, player as YouTubePlayer))
+    return player as YouTubePlayer
   }, [isLoaded])
 
   const destroyPlayer = useCallback((elementId: string) => {

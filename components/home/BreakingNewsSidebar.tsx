@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { formatDateTime, formatTime, formatDate } from '@/lib/utils'
-import { getFeaturedNews, getNews, News } from '@/lib/api/news'
+import { getFeaturedNews, News } from '@/lib/api/news'
 import { ChevronRight, Filter, Loader2 } from 'lucide-react'
 
 // Facebook SDK types

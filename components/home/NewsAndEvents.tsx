@@ -6,16 +6,15 @@ import { getEvents, Event } from '@/lib/api/events'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { useYouTube } from '@/hooks/useYouTube'
-import { formatDate } from '@/lib/utils'
-import { YouTubePlayerConfig } from '@/types'
+import { YouTubePlayerConfig, YouTubePlayer } from '@/types'
 import { YOUTUBE_VIDEOS } from '@/lib/constants'
 
 const NewsAndEvents = () => {
   const { isLoaded, createPlayer } = useYouTube()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
-  const [mdMessagePlayer, setMdMessagePlayer] = useState<any>(null)
-  const [graduationPlayer, setGraduationPlayer] = useState<any>(null)
+  const [mdMessagePlayer, setMdMessagePlayer] = useState<YouTubePlayer | null>(null)
+  const [graduationPlayer, setGraduationPlayer] = useState<YouTubePlayer | null>(null)
 
   // Fetch events from API
   useEffect(() => {
@@ -63,7 +62,7 @@ const NewsAndEvents = () => {
             fs: 1
           },
           events: {
-            onReady: (event: any) => {
+            onReady: (event) => {
               // Ensure video plays and is muted
               event.target.playVideo()
               event.target.setVolume(0)
@@ -95,7 +94,7 @@ const NewsAndEvents = () => {
             fs: 1
           },
           events: {
-            onReady: (event: any) => {
+            onReady: (event) => {
               // Ensure video plays and is muted
               event.target.playVideo()
               event.target.setVolume(0)

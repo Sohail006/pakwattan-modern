@@ -53,6 +53,19 @@ export interface VideoConfig {
   videoUrl: string
 }
 
+export interface YouTubePlayerEvent {
+  target: {
+    playVideo: () => void
+    setVolume: (volume: number) => void
+    pauseVideo?: () => void
+    stopVideo?: () => void
+    getCurrentTime?: () => number
+    getDuration?: () => number
+    [key: string]: unknown
+  }
+  data?: unknown
+}
+
 export interface YouTubePlayerConfig {
   height: string
   width: string
@@ -69,8 +82,17 @@ export interface YouTubePlayerConfig {
     fs: number
   }
   events: {
-    onReady: (event: any) => void
+    onReady: (event: YouTubePlayerEvent) => void
   }
+}
+
+export interface YouTubePlayer {
+  destroy: () => void
+  playVideo: () => void
+  pauseVideo: () => void
+  stopVideo: () => void
+  setVolume: (volume: number) => void
+  [key: string]: unknown
 }
 
 export interface User {
