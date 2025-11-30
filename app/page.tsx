@@ -29,10 +29,6 @@ const Achievements = dynamic(() => import('@/components/home/Achievements'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
 
-const VideoMessages = dynamic(() => import('@/components/home/VideoMessages'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
-})
-
 const BiseResults = dynamic(() => import('@/components/home/BiseResults'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
@@ -131,11 +127,6 @@ export default function Home() {
       {/* Our Achievements */}
       <ErrorBoundary>
         <Achievements />
-      </ErrorBoundary>
-      
-      {/* Video Messages */}
-      <ErrorBoundary>
-        <VideoMessages />
       </ErrorBoundary>
       
       {/* BISE Results */}

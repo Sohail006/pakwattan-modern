@@ -138,25 +138,25 @@ export const HERO_QUICK_LINKS: QuickLink[] = [
 export const ACHIEVEMENTS_DATA: Achievement[] = [
   {
     icon: null, // Will be set in component
-    count: 1750,
+    count: 2775,
     label: 'STUDENTS',
     color: 'text-blue-600'
   },
   {
     icon: null,
-    count: 1100,
+    count: 2000,
     label: 'AWARDS',
     color: 'text-yellow-600'
   },
   {
     icon: null,
-    count: 525,
+    count: 1353,
     label: 'ALUMNI',
     color: 'text-green-600'
   },
   {
     icon: null,
-    count: 3,
+    count: 4,
     label: 'CAMPUSES',
     color: 'text-purple-600'
   }

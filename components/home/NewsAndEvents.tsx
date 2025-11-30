@@ -1,73 +1,115 @@
 'use client'
 
-import { useEffect } from 'react'
-import { Calendar, Clock, Play } from 'lucide-react'
-import { EVENTS_DATA } from '@/lib/constants'
+import { useEffect, useState } from 'react'
+import { Calendar, Clock, Play, Loader2 } from 'lucide-react'
+import { getEvents, Event } from '@/lib/api/events'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { useYouTube } from '@/hooks/useYouTube'
-// import { YouTubePlayerConfig } from '@/types'
+import { formatDate } from '@/lib/utils'
+import { YouTubePlayerConfig } from '@/types'
+import { YOUTUBE_VIDEOS } from '@/lib/constants'
 
 const NewsAndEvents = () => {
   const { isLoaded, createPlayer } = useYouTube()
-  // const [mdMessagePlayer, setMdMessagePlayer] = useState<any>(null)
-  // const [graduationPlayer, setGraduationPlayer] = useState<any>(null)
+  const [events, setEvents] = useState<Event[]>([])
+  const [loading, setLoading] = useState(true)
+  const [mdMessagePlayer, setMdMessagePlayer] = useState<any>(null)
+  const [graduationPlayer, setGraduationPlayer] = useState<any>(null)
+
+  // Fetch events from API
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setLoading(true)
+        // Get all published events, sorted by date (most recent first)
+        // This shows both upcoming and recent events
+        const response = await getEvents({
+          page: 1,
+          pageSize: 5,
+          isPublished: true,
+          sortBy: 'date',
+          sortOrder: 'desc'
+        })
+        setEvents(response.data || [])
+      } catch (error) {
+        console.error('Error fetching events:', error)
+        setEvents([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   useEffect(() => {
-    if (isLoaded) {
-      // Initialize MD Message Player
-      // const mdPlayerConfig: YouTubePlayerConfig = {
-      //   height: '315',
-      //   width: '100%',
-      //   videoId: YOUTUBE_VIDEOS.MD_MESSAGE,
-      //   playerVars: {
-      //     controls: 0,
-      //     showinfo: 0,
-      //     modestbranding: 1,
-      //     loop: 1,
-      //     playlist: YOUTUBE_VIDEOS.MD_MESSAGE,
-      //     autoplay: 1,
-      //     mute: 1,
-      //     rel: 0,
-      //     fs: 0
-      //   },
-      //   events: {
-      //     onReady: (event: any) => {
-      //       event.target.playVideo()
-      //       event.target.setVolume(0)
-      //     }
-      //   }
-      // }
-      // const mdPlayer = createPlayer('md-message-player', mdPlayerConfig) 
-      // setMdMessagePlayer(mdPlayer)
+    if (isLoaded && createPlayer) {
+      // Initialize MD Message Player (only if not already created)
+      if (!mdMessagePlayer && document.getElementById('md-message-player')) {
+        const mdPlayerConfig: YouTubePlayerConfig = {
+          height: '315',
+          width: '100%',
+          videoId: YOUTUBE_VIDEOS.MD_MESSAGE,
+          playerVars: {
+            controls: 1,
+            showinfo: 0,
+            modestbranding: 1,
+            loop: 1,
+            playlist: YOUTUBE_VIDEOS.MD_MESSAGE,
+            autoplay: 1,
+            mute: 1,
+            rel: 0,
+            fs: 1
+          },
+          events: {
+            onReady: (event: any) => {
+              // Ensure video plays and is muted
+              event.target.playVideo()
+              event.target.setVolume(0)
+              console.log('MD Message video player ready - autoplay muted')
+            }
+          }
+        }
+        const mdPlayer = createPlayer('md-message-player', mdPlayerConfig)
+        if (mdPlayer) {
+          setMdMessagePlayer(mdPlayer)
+        }
+      }
 
-      // Initialize Graduation Ceremony Player
-      // const gradPlayerConfig: YouTubePlayerConfig = {
-      //   height: '315',
-      //   width: '100%',
-      //   videoId: YOUTUBE_VIDEOS.GRADUATION_CEREMONY,
-      //   playerVars: {
-      //     controls: 0,
-      //     showinfo: 0,
-      //     modestbranding: 1,
-      //     loop: 1,
-      //     playlist: YOUTUBE_VIDEOS.GRADUATION_CEREMONY,
-      //     autoplay: 1,
-      //     mute: 1,
-      //     rel: 0,
-      //     fs: 0
-      //   },
-      //   events: {
-      //     onReady: (event: any) => {
-      //       event.target.playVideo()
-      //       event.target.setVolume(0)
-      //     }
-      //   }
-      // }
-      // const gradPlayer = createPlayer('graduation-player', gradPlayerConfig)
-      // setGraduationPlayer(gradPlayer)
+      // Initialize Graduation Ceremony Player (only if not already created)
+      if (!graduationPlayer && document.getElementById('graduation-player')) {
+        const gradPlayerConfig: YouTubePlayerConfig = {
+          height: '315',
+          width: '100%',
+          videoId: YOUTUBE_VIDEOS.GRADUATION_CEREMONY,
+          playerVars: {
+            controls: 1,
+            showinfo: 0,
+            modestbranding: 1,
+            loop: 1,
+            playlist: YOUTUBE_VIDEOS.GRADUATION_CEREMONY,
+            autoplay: 1,
+            mute: 1,
+            rel: 0,
+            fs: 1
+          },
+          events: {
+            onReady: (event: any) => {
+              // Ensure video plays and is muted
+              event.target.playVideo()
+              event.target.setVolume(0)
+              console.log('Graduation Ceremony video player ready - autoplay muted')
+            }
+          }
+        }
+        const gradPlayer = createPlayer('graduation-player', gradPlayerConfig)
+        if (gradPlayer) {
+          setGraduationPlayer(gradPlayer)
+        }
+      }
     }
-  }, [isLoaded, createPlayer])
+  }, [isLoaded, createPlayer, mdMessagePlayer, graduationPlayer])
 
   return (
     <section className="py-12 bg-gradient-to-br from-primary-50 to-accent-50">
@@ -150,30 +192,45 @@ const NewsAndEvents = () => {
               </h3>
             </div>
             <div className="p-6">
-              <div className="space-y-4 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
-                {EVENTS_DATA.map((event, index) => (
-                  <div key={index} className="flex space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-primary-50 transition-colors group">
-                    <div className="flex-shrink-0">
-                      <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 text-white rounded-lg flex flex-col items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <span className="text-sm font-bold">{event.date}</span>
-                        <span className="text-xs">{event.month.split(',')[0]}</span>
+              {loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 animate-spin text-primary-600" />
+                </div>
+              ) : events.length > 0 ? (
+                <div className="space-y-4 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
+                  {events.map((event) => {
+                    const eventDate = new Date(event.date)
+                    return (
+                      <div key={event.id} className="flex space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-primary-50 transition-colors group">
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 text-white rounded-lg flex flex-col items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <span className="text-sm font-bold">{eventDate.getDate()}</span>
+                            <span className="text-xs">{eventDate.toLocaleDateString('en-US', { month: 'short' })}</span>
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-800 mb-1 group-hover:text-primary-700 transition-colors">
+                            {event.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 mb-1">
+                            {event.description}
+                          </p>
+                          {event.time && (
+                            <div className="flex items-center text-xs text-primary-600">
+                              <Clock className="w-3 h-3 mr-1" />
+                              {event.time.substring(0, 5)}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-800 mb-1 group-hover:text-primary-700 transition-colors">
-                        {event.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-1">
-                        {event.description}
-                      </p>
-                      <div className="flex items-center text-xs text-primary-600">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {event.time}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+                    )
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p className="text-sm">No upcoming events</p>
+                </div>
+              )}
             </div>
           </Card>
         </div>

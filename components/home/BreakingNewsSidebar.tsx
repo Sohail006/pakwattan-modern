@@ -3,9 +3,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
-import { formatDateTime, formatTime } from '@/lib/utils'
-import { NEWS_ITEMS } from '@/lib/constants'
-import { ChevronRight, Filter } from 'lucide-react'
+import { formatDateTime, formatTime, formatDate } from '@/lib/utils'
+import { getFeaturedNews, getNews, News } from '@/lib/api/news'
+import { ChevronRight, Filter, Loader2 } from 'lucide-react'
 
 // Facebook SDK types
 declare global {
@@ -144,12 +144,32 @@ const BreakingNewsSidebar = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
   const [displayCount, setDisplayCount] = useState(4)
+  const [newsItems, setNewsItems] = useState<News[]>([])
+  const [loadingNews, setLoadingNews] = useState(true)
+
+  // Fetch featured news from API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoadingNews(true)
+        const data = await getFeaturedNews(20) // Get more items for filtering
+        setNewsItems(data)
+      } catch (error) {
+        console.error('Error fetching featured news:', error)
+        setNewsItems([])
+      } finally {
+        setLoadingNews(false)
+      }
+    }
+
+    fetchNews()
+  }, [])
 
   // Get unique categories
-  const categories = Array.from(new Set(NEWS_ITEMS.map(item => item.category).filter(Boolean))) as string[]
+  const categories = Array.from(new Set(newsItems.map(item => item.category).filter(Boolean))) as string[]
 
   // Filter and sort news items
-  const filteredNewsItems = NEWS_ITEMS.filter(item => {
+  const filteredNewsItems = newsItems.filter(item => {
     if (selectedCategory) {
       return item.category === selectedCategory
     }
@@ -223,11 +243,15 @@ const BreakingNewsSidebar = () => {
             </div>
             
             <div className="space-y-1 sm:space-y-2 max-h-48 sm:max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-primary-300 scrollbar-track-gray-100">
-              {displayedItems.length > 0 ? (
+              {loadingNews ? (
+                <div className="flex items-center justify-center py-4">
+                  <Loader2 className="w-4 h-4 animate-spin text-primary-600" />
+                </div>
+              ) : displayedItems.length > 0 ? (
                 displayedItems.map((item) => (
                   <Link
                     key={item.id}
-                    href={`/news/${item.slug || item.id}`}
+                    href={`/news/${item.slug}`}
                     className="block group border-l-4 border-primary-500 pl-3 sm:pl-4 py-2 sm:py-3 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 rounded-r-lg hover:shadow-sm"
                   >
                     <div className="flex items-start space-x-2 sm:space-x-3">
@@ -250,7 +274,7 @@ const BreakingNewsSidebar = () => {
                         </p>
                         <div className="flex items-center space-x-2">
                           <span className="inline-flex items-center px-2 sm:px-3 py-1 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full group-hover:bg-primary-200 transition-colors duration-200 text-no-overlap">
-                            📅 {item.date}
+                            📅 {formatDate(item.date)}
                           </span>
                         </div>
                       </div>

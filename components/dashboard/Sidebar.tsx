@@ -20,6 +20,8 @@ import {
   CreditCard,
   BarChart3,
   Sliders,
+  Newspaper,
+  Calendar,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { logout } from '@/lib/api/auth'
@@ -114,6 +116,18 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       href: '/dashboard/contacts',
       icon: <Mail className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],
+    },
+    {
+      name: 'News',
+      href: '/dashboard/news',
+      icon: <Newspaper className="w-5 h-5" />,
+      roles: ['Admin', 'Staff', 'ManagerialStaff'],
+    },
+    {
+      name: 'Events',
+      href: '/dashboard/events',
+      icon: <Calendar className="w-5 h-5" />,
+      roles: ['Admin', 'Staff', 'ManagerialStaff'],
     },
     {
       name: 'User Management',

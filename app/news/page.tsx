@@ -1,29 +1,57 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
-import { NEWS_ITEMS } from '@/lib/constants'
-import { NewsItem } from '@/types'
+import { getNews, News } from '@/lib/api/news'
 import Container from '@/components/ui/Container'
-import { Calendar, ChevronRight, Search } from 'lucide-react'
+import { Calendar, ChevronRight, Search, Loader2 } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [newsItems, setNewsItems] = useState<News[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  // Get unique categories
-  const categories = Array.from(new Set(NEWS_ITEMS.map(item => item.category).filter(Boolean))) as string[]
+  // Fetch news from API
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const response = await getNews({
+          page: 1,
+          pageSize: 100,
+          isPublished: true,
+          category: selectedCategory || undefined,
+          search: searchQuery || undefined,
+          sortBy: 'date',
+          sortOrder: 'desc'
+        })
+        setNewsItems(response.data || [])
+      } catch (err) {
+        console.error('Error fetching news:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load news')
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  // Filter news items
-  const filteredNewsItems = useMemo(() => {
-    return NEWS_ITEMS.filter(item => {
-      const matchesCategory = !selectedCategory || item.category === selectedCategory
-      const matchesSearch = !searchQuery || 
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase())
-      return matchesCategory && matchesSearch
-    })
+    fetchNews()
   }, [selectedCategory, searchQuery])
+
+  // Get unique categories from fetched news
+  const categories = Array.from(new Set(newsItems.map(item => item.category).filter(Boolean))) as string[]
+
+  // Filter news items (client-side filtering for search)
+  const filteredNewsItems = useMemo(() => {
+    if (!searchQuery) return newsItems
+    return newsItems.filter(item => {
+      return item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase())
+    })
+  }, [newsItems, searchQuery])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
@@ -88,14 +116,42 @@ export default function NewsPage() {
             </p>
           </div>
 
+          {/* Loading State */}
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+              <span className="ml-3 text-gray-600">Loading news...</span>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search className="w-8 h-8 text-red-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Error loading news</h3>
+              <p className="text-gray-600 mb-4">{error}</p>
+              <button
+                onClick={() => window.location.reload()}
+                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
           {/* News Grid */}
-          {filteredNewsItems.length > 0 ? (
+          {!loading && !error && filteredNewsItems.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredNewsItems.map((item) => (
                 <NewsCard key={item.id} item={item} />
               ))}
             </div>
-          ) : (
+          )}
+
+          {/* Empty State */}
+          {!loading && !error && filteredNewsItems.length === 0 && (
             <div className="text-center py-12">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Search className="w-8 h-8 text-gray-400" />
@@ -121,10 +177,10 @@ export default function NewsPage() {
   )
 }
 
-function NewsCard({ item }: { item: NewsItem }) {
+function NewsCard({ item }: { item: News }) {
   return (
     <Link
-      href={`/news/${item.slug || item.id}`}
+      href={`/news/${item.slug}`}
       className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
     >
       <div className="p-6">
@@ -150,7 +206,7 @@ function NewsCard({ item }: { item: NewsItem }) {
         {/* Date */}
         <div className="flex items-center text-sm text-gray-500">
           <Calendar className="w-4 h-4 mr-2" />
-          <span>{item.date}</span>
+          <span>{formatDate(item.date)}</span>
         </div>
 
         {/* Read More */}

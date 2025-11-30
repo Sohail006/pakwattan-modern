@@ -22,7 +22,7 @@ const ContactHero = () => {
     {
       icon: <Clock className="w-6 h-6" />,
       title: 'Hours',
-      details: 'Monday - Friday: 8:00 AM - 4:00 PM'
+      details: 'Monday - Friday: 8:00 AM - 4:00 PM | Saturday: 8:00 AM - 1:00 PM'
     }
   ]
 
@@ -54,12 +54,22 @@ const ContactHero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="btn-accent text-center">
+              <a 
+                href="tel:03180821377"
+                className="btn-accent text-center"
+              >
                 Call Now
-              </button>
-              <button className="btn-secondary text-center">
+              </a>
+              <a 
+                href="#contact-form"
+                className="btn-secondary text-center"
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })
+                }}
+              >
                 Send Message
-              </button>
+              </a>
             </div>
           </div>
 

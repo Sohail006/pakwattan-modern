@@ -23,8 +23,11 @@ export const useYouTube = () => {
     // Load YouTube API if not already loaded
     if (!window.YT) {
       const script = document.createElement('script')
-      script.src = 'https://www.youtube.com/player_api'
+      script.src = 'https://www.youtube.com/iframe_api'
       script.async = true
+      script.onload = () => {
+        // The API will call onYouTubeIframeAPIReady when ready
+      }
       document.head.appendChild(script)
     } else {
       setIsLoaded(true)

@@ -2,22 +2,73 @@
 
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { NEWS_ITEMS } from '@/lib/constants'
+import { useState, useEffect } from 'react'
+import { getNewsBySlug, getNews, News } from '@/lib/api/news'
 import Container from '@/components/ui/Container'
-import { Calendar, ArrowLeft, Share2, Tag } from 'lucide-react'
+import { Calendar, ArrowLeft, Share2, Tag, Loader2 } from 'lucide-react'
+import { formatDate } from '@/lib/utils'
 
 export default function NewsDetailPage() {
   const params = useParams()
   const slug = params?.slug as string
-  const newsItem = NEWS_ITEMS.find(item => item.slug === slug || item.id === slug)
-  
-  if (!newsItem) {
+  const [newsItem, setNewsItem] = useState<News | null>(null)
+  const [relatedNews, setRelatedNews] = useState<News[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const item = await getNewsBySlug(slug)
+        setNewsItem(item)
+
+        // Fetch related news (same category, excluding current)
+        if (item) {
+          const related = await getNews({
+            page: 1,
+            pageSize: 3,
+            isPublished: true,
+            category: item.category,
+            sortBy: 'date',
+            sortOrder: 'desc'
+          })
+          setRelatedNews((related.data || []).filter(n => n.id !== item.id).slice(0, 3))
+        }
+      } catch (err) {
+        console.error('Error fetching news:', err)
+        setError(err instanceof Error ? err.message : 'Failed to load news')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (slug) {
+      fetchNews()
+    }
+  }, [slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50 flex items-center justify-center">
+        <Container>
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-4" />
+            <p className="text-gray-600">Loading news...</p>
+          </div>
+        </Container>
+      </div>
+    )
+  }
+
+  if (error || !newsItem) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50 flex items-center justify-center">
         <Container>
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">News Not Found</h1>
-            <p className="text-gray-600 mb-6">The news item you&apos;re looking for doesn&apos;t exist.</p>
+            <p className="text-gray-600 mb-6">{error || "The news item you're looking for doesn't exist."}</p>
             <Link
               href="/news"
               className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
@@ -30,11 +81,6 @@ export default function NewsDetailPage() {
       </div>
     )
   }
-
-  // Get related news (same category, excluding current)
-  const relatedNews = NEWS_ITEMS
-    .filter(item => item.category === newsItem.category && item.id !== newsItem.id)
-    .slice(0, 3)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
@@ -66,7 +112,7 @@ export default function NewsDetailPage() {
               </h1>
               <div className="flex items-center text-white/90">
                 <Calendar className="w-5 h-5 mr-2" />
-                <span className="text-sm md:text-base">{newsItem.date}</span>
+                <span className="text-sm md:text-base">{formatDate(newsItem.date)}</span>
               </div>
             </div>
 
@@ -81,7 +127,7 @@ export default function NewsDetailPage() {
                 <div className="bg-primary-50 rounded-lg p-6 my-8 border-l-4 border-primary-500">
                   <h3 className="text-xl font-semibold text-primary-800 mb-3">Event Details</h3>
                   <div className="space-y-2 text-gray-700">
-                    <p><strong>Date:</strong> {newsItem.date}</p>
+                    <p><strong>Date:</strong> {formatDate(newsItem.date)}</p>
                     {newsItem.category && (
                       <p><strong>Category:</strong> <span className="capitalize">{newsItem.category}</span></p>
                     )}
@@ -130,7 +176,7 @@ export default function NewsDetailPage() {
                 {relatedNews.map((item) => (
                   <Link
                     key={item.id}
-                    href={`/news/${item.slug || item.id}`}
+                    href={`/news/${item.slug}`}
                     className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
                   >
                     <div className="p-5">
@@ -149,7 +195,7 @@ export default function NewsDetailPage() {
                       </p>
                       <div className="flex items-center text-xs text-gray-500">
                         <Calendar className="w-3 h-3 mr-1" />
-                        <span>{item.date}</span>
+                        <span>{formatDate(item.date)}</span>
                       </div>
                     </div>
                   </Link>

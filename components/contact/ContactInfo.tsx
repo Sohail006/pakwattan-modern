@@ -1,6 +1,6 @@
 'use client'
 
-import { MapPin, Phone, Mail, Users, Award, BookOpen } from 'lucide-react'
+import { MapPin, Phone, Mail, Users, Award, BookOpen, GraduationCap } from 'lucide-react'
 
 const ContactInfo = () => {
   const campuses = [
@@ -24,27 +24,40 @@ const ContactInfo = () => {
       phone: '0318 0821377',
       email: 'pakwattan2020@gmail.com',
       description: 'Dedicated campus for female students'
+    },
+    {
+      name: 'Secondary Campus',
+      address: 'Havelian, Abbottabad, KPK, Pakistan',
+      phone: '0318 0821377',
+      email: 'pakwattan2020@gmail.com',
+      description: 'Secondary education campus for advanced studies'
     }
   ]
 
   const quickStats = [
     {
       icon: <Users className="w-8 h-8" />,
-      value: '1750+',
+      value: '2775+',
       label: 'Students',
       color: 'text-blue-600'
     },
     {
       icon: <Award className="w-8 h-8" />,
-      value: '1100+',
+      value: '2000+',
       label: 'Awards',
       color: 'text-yellow-600'
     },
     {
       icon: <BookOpen className="w-8 h-8" />,
-      value: '3',
+      value: '4',
       label: 'Campuses',
       color: 'text-green-600'
+    },
+    {
+      icon: <GraduationCap className="w-8 h-8" />,
+      value: '1353+',
+      label: 'Alumni',
+      color: 'text-purple-600'
     }
   ]
 
@@ -56,12 +69,12 @@ const ContactInfo = () => {
             <span className="text-gradient">Our Campuses</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-            Visit us at any of our three campuses located in Havelian, Abbottabad
+            Visit us at any of our four campuses located in Havelian, Abbottabad
           </p>
         </div>
 
         {/* Campus Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {campuses.map((campus, index) => (
             <div
               key={index}
@@ -116,7 +129,7 @@ const ContactInfo = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {quickStats.map((stat, index) => (
               <div
                 key={index}
