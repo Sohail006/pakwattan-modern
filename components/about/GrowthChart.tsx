@@ -8,7 +8,7 @@ const GrowthChart = () => {
     {
       icon: <Users className="w-6 h-6" />,
       title: 'Student Enrollment',
-      value: '1750+',
+      value: '3000+',
       description: 'Students enrolled across all campuses'
     },
     {

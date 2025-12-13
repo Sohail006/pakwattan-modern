@@ -37,7 +37,7 @@ const ContactInfo = () => {
   const quickStats = [
     {
       icon: <Users className="w-8 h-8" />,
-      value: '2775+',
+      value: '3000+',
       label: 'Students',
       color: 'text-blue-600'
     },

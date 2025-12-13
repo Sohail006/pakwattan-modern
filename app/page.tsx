@@ -92,7 +92,6 @@ export default function Home() {
       <ErrorBoundary>
         <HeroSection />
       </ErrorBoundary>
-
       
       {/* Breaking News Sidebar */}
       <ErrorBoundary>

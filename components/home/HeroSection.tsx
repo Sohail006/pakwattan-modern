@@ -1,14 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Trophy, BookOpen, Award } from 'lucide-react'
+import { Trophy, BookOpen, Award, GraduationCap, Calendar, Briefcase } from 'lucide-react'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 
 const HeroSection = () => {
   const quickLinks = HERO_QUICK_LINKS.map((link, index) => {
-    const IconComponent = [Award, Trophy, BookOpen, Trophy][index]
+    const IconComponent = [Briefcase, Award, Trophy, BookOpen][index]
     return {
       ...link,
       icon: IconComponent ? <IconComponent className="w-6 h-6" /> : null
@@ -41,41 +41,48 @@ const HeroSection = () => {
           <div className="lg:col-span-2">
             <div className="text-white space-y-4 sm:space-y-6 animate-fade-in-up">
               <div className="space-y-2 sm:space-y-3">
-                <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium text-white/90 mb-3 sm:mb-4">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent-400 rounded-full animate-pulse"></div>
-                  <span className="hidden xs:inline">Established 2020 • Excellence in Education</span>
-                  <span className="xs:hidden">Est. 2020 • Excellence</span>
+                {/* Session Badge - Prominent */}
+                <div className="inline-flex items-center space-x-2 bg-accent-500/90 backdrop-blur-sm rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-sm sm:text-base font-bold text-white shadow-lg mb-3 sm:mb-4 animate-pulse">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <span>Admissions Open for Session 2026-27</span>
                 </div>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin leading-tight">
                   Welcome to{' '}
-                  <span className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-600 bg-clip-text text-transparent animate-pulse">
+                  <span className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-600 bg-clip-text text-transparent">
                     Pak Wattan
                   </span>
                 </h1>
                 <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
                   School & College of Sciences
                 </p>
-                <p className="text-sm sm:text-base text-white/80 max-w-2xl leading-relaxed">
-                  Our mission is to establish a learning environment based on the principles of 
-                  self-discipline and respect where each child may develop the skills necessary 
-                  to help them succeed honorably in a rapidly changing world.
-                </p>
+                {/* Admission Content - Prominent */}
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-white/20 shadow-xl">
+                  <p className="text-base sm:text-lg md:text-xl text-white font-semibold mb-2 sm:mb-3 leading-tight">
+                    Join Pakistan&apos;s Leading Educational Institution
+                  </p>
+                  <p className="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
+                    Experience quality education with affordable expenses and comprehensive scholarship programs. 
+                    Admissions are now open for <strong className="text-accent-300">Academic Session 2026-27</strong>. 
+                    Limited seats available - Apply today!
+                  </p>
+                </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <Button 
                   href="/admission" 
                   variant="accent" 
                   size="lg"
-                  className="group relative shadow-2xl hover:shadow-accent-500/25 hover:scale-105 touch-target focus-ring"
+                  className="group relative shadow-2xl hover:shadow-accent-500/25 hover:scale-105 touch-target focus-ring bg-white text-primary-600 hover:bg-white/90 font-bold"
                 >
-                  <span className="relative z-10">Apply Now</span>
+                  <GraduationCap className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  <span className="relative z-10">Apply Now for 2026-27</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
                 <Button 
-                  href="/about" 
+                  href="/admission#process" 
                   variant="outline"
                   size="lg"
-                  className="group relative bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:scale-105 touch-target focus-ring"
+                  className="group relative bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:scale-105 touch-target focus-ring font-semibold"
                 >
                   Learn More
                 </Button>

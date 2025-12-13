@@ -11,7 +11,7 @@ const AboutHero = () => {
     },
     {
       icon: <Users className="w-6 h-6" />,
-      value: '1750+',
+      value: '3000+',
       label: 'Students'
     },
     {
@@ -21,7 +21,7 @@ const AboutHero = () => {
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      value: '3',
+      value: '4',
       label: 'Campuses'
     }
   ]

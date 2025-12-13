@@ -41,8 +41,8 @@ const GrowthOverYears = () => {
     {
       year: "2025",
       title: "Leadership",
-      description: "Leading educational institution with 1750+ students",
-      students: "1750+",
+      description: "Leading educational institution with 3000+ students",
+      students: "3000+",
       achievements: ["Educational Leadership", "Student Success", "Community Impact"]
     }
   ]
@@ -133,7 +133,7 @@ const GrowthOverYears = () => {
             </div>
             
             <div className="text-center">
-              <div className="text-4xl font-bold text-accent-600 mb-2">1750+</div>
+              <div className="text-4xl font-bold text-accent-600 mb-2">3000+</div>
               <div className="text-lg font-semibold text-gray-800 mb-1">Students</div>
               <div className="text-sm text-gray-600">Current Enrollment</div>
             </div>

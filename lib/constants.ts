@@ -52,7 +52,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     ]
   },
   { name: 'School Life', href: '/school-life' },
-  { name: 'Jobs', href: '/jobs' },
+  { name: 'Awards', href: '/awards' },
   { name: 'Contact Us', href: '/contact' },
 ]
 
@@ -114,6 +114,11 @@ export const SECONDARY_NAVIGATION: NavigationItem[] = [
 export const HERO_QUICK_LINKS: QuickLink[] = [
   {
     icon: null, // Will be set in component
+    title: 'Job opportunity 2026-27',
+    href: '/jobs'
+  },
+  {
+    icon: null,
     title: 'Scholarships',
     href: '/scholarships'
   },
@@ -126,11 +131,6 @@ export const HERO_QUICK_LINKS: QuickLink[] = [
     icon: null,
     title: 'Pakians Coaching Academy (PCA)',
     href: '/pakians-coaching-academy'
-  },
-  {
-    icon: null,
-    title: 'Awards',
-    href: '/awards'
   }
 ]
 
@@ -138,7 +138,7 @@ export const HERO_QUICK_LINKS: QuickLink[] = [
 export const ACHIEVEMENTS_DATA: Achievement[] = [
   {
     icon: null, // Will be set in component
-    count: 2775,
+    count: 3000,
     label: 'STUDENTS',
     color: 'text-blue-600'
   },
