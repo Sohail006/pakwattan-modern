@@ -61,12 +61,20 @@ export default function TeacherDashboardPage() {
         // 3. Log warning if no matches found for debugging
         
         const userIdStr = String(user.id)
-        const userIdNum = typeof user.id === 'string' ? parseInt(user.id, 10) : user.id
+        // Ensure userIdNum is always a number or NaN
+        let userIdNum: number
+        if (typeof user.id === 'string') {
+          userIdNum = parseInt(user.id, 10)
+        } else if (typeof user.id === 'number') {
+          userIdNum = user.id
+        } else {
+          userIdNum = NaN
+        }
         const userEmail = user.email as string | undefined
         
         // Filter courses by teacherId
         // Try multiple matching strategies
-        let myCourses = courses.filter((course: Course) => {
+        const myCourses = courses.filter((course: Course) => {
           // Strategy 1: Try numeric match with course.teacherId
           if (!isNaN(userIdNum) && course.teacherId === userIdNum) {
             return true
@@ -74,9 +82,14 @@ export default function TeacherDashboardPage() {
           
           // Strategy 2: If course has teacher object, try matching teacher.id
           if (course.teacher && course.teacher.id) {
-            const teacherIdNum = typeof course.teacher.id === 'string' 
-              ? parseInt(course.teacher.id, 10) 
-              : course.teacher.id
+            let teacherIdNum: number
+            if (typeof course.teacher.id === 'string') {
+              teacherIdNum = parseInt(course.teacher.id, 10)
+            } else if (typeof course.teacher.id === 'number') {
+              teacherIdNum = course.teacher.id
+            } else {
+              teacherIdNum = NaN
+            }
             
             if (!isNaN(teacherIdNum) && teacherIdNum === userIdNum) {
               return true
