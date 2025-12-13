@@ -96,7 +96,7 @@ export default function JobsPage() {
 				</div>
 			</div>
 
-			{/* Jobs Table */}
+			{/* Job Applications Table */}
 			<JobsTable />
 		</div>
 	)

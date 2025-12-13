@@ -77,7 +77,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       roles: ['Admin', 'Staff'],
     },
     {
-      name: 'Registrations',
+      name: 'New Registrations',
       href: '/dashboard/registrations',
       icon: <ClipboardList className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],
@@ -89,7 +89,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       roles: ['Admin', 'Staff'],
     },
     {
-      name: 'Jobs',
+      name: 'Job Applications',
       href: '/dashboard/jobs',
       icon: <Briefcase className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],
