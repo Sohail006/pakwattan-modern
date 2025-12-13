@@ -22,6 +22,7 @@ import {
   Sliders,
   Newspaper,
   Calendar,
+  Briefcase,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { logout } from '@/lib/api/auth'
@@ -85,6 +86,12 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       name: 'Admissions',
       href: '/dashboard/admissions',
       icon: <FileText className="w-5 h-5" />,
+      roles: ['Admin', 'Staff'],
+    },
+    {
+      name: 'Jobs',
+      href: '/dashboard/jobs',
+      icon: <Briefcase className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],
     },
     {

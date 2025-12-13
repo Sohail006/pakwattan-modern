@@ -38,7 +38,6 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     ]
   },
   { name: 'Admission', href: '/admission' },
-  { name: 'Scholarships', href: '/scholarships' },
   { 
     name: 'Academic', 
     href: '#',
@@ -53,6 +52,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     ]
   },
   { name: 'School Life', href: '/school-life' },
+  { name: 'Jobs', href: '/jobs' },
   { name: 'Contact Us', href: '/contact' },
 ]
 
