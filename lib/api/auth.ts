@@ -75,9 +75,9 @@ export interface RefreshTokenResponse {
  */
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   try {
-    // Debug: Log what we're sending
+    // Debug: Log what we're sending (only in development)
     if (process.env.NODE_ENV === 'development') {
-      console.log('Login request payload:', JSON.stringify(credentials, null, 2));
+      console.log('[Auth] Login request payload:', JSON.stringify(credentials, null, 2));
     }
     
     const response = await api.post<LoginResponse>('/api/auth/login', credentials);
@@ -102,9 +102,9 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
     // Check if it's an ApiError from the client
     if (error && typeof error === 'object' && 'message' in error) {
       const apiError = error as ApiError;
-      const errorMessage = apiError.message || 'Unable to log in. Please check your credentials and try again.';
+      const errorMessage = apiError.message || 'Unable to sign in. Please verify your email and password, then try again.';
       if (process.env.NODE_ENV === 'development') {
-        console.error('Login error:', errorMessage);
+        console.error('[Auth] Login error:', errorMessage);
       }
       throw new Error(errorMessage);
     }
@@ -112,7 +112,7 @@ export async function login(credentials: LoginRequest): Promise<LoginResponse> {
     if (error instanceof Error) {
       throw error;
     }
-    throw new Error('Login failed. Please check your credentials and try again.');
+    throw new Error('Sign in failed. Please verify your credentials and try again.');
   }
 }
 
@@ -125,7 +125,7 @@ export async function register(data: RegisterRequest): Promise<RegisterResponse>
     return response;
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to complete registration. Please check your information and try again.');
+    throw new Error(apiError.message || 'Unable to complete registration. Please review all fields and try again. If the problem persists, contact support.');
   }
 }
 
@@ -171,7 +171,7 @@ export async function refreshToken(refreshTokenValue: string): Promise<LoginResp
     return response;
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to refresh your session. Please log in again.');
+    throw new Error(apiError.message || 'Unable to refresh your session. Please sign in again to continue.');
   }
 }
 

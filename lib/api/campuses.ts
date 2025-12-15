@@ -34,7 +34,7 @@ export async function getCampuses(isActive?: boolean): Promise<Campus[]> {
     return await api.get<Campus[]>(`/api/campuses${query}`);
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to load campuses. Please refresh the page and try again.');
+    throw new Error(apiError.message || 'Unable to load campus list. Please refresh the page and try again.');
   }
 }
 
@@ -58,7 +58,7 @@ export async function createCampus(data: CreateCampusRequest): Promise<Campus> {
     return await api.post<Campus>('/api/campuses', data);
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to create campus. Please check your input and try again.');
+    throw new Error(apiError.message || 'Unable to create campus. Please review all fields and try again.');
   }
 }
 
@@ -71,7 +71,7 @@ export async function updateCampus(data: UpdateCampusRequest): Promise<void> {
     await api.put<void>(`/api/campuses/${id}`, updateData);
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to update campus information. Please check your input and try again.');
+    throw new Error(apiError.message || 'Unable to update campus information. Please review all fields and try again.');
   }
 }
 
@@ -83,7 +83,7 @@ export async function deleteCampus(id: number): Promise<void> {
     await api.delete<void>(`/api/campuses/${id}`);
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to delete campus. Please try again.');
+    throw new Error(apiError.message || 'Unable to delete campus. Please try again or contact support if the problem persists.');
   }
 }
 

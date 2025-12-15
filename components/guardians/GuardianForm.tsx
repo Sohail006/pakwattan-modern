@@ -113,7 +113,9 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
         })
       }
     } catch (error) {
-      console.error('Email check failed:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[GuardianForm] Email availability check failed:', error)
+      }
     } finally {
       setCheckingEmail(false)
     }
@@ -204,20 +206,20 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email address is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
+      newErrors.email = 'Please enter a valid email address (e.g., guardian@example.com)'
     }
 
     if (mode === 'create') {
       if (!formData.password) {
         newErrors.password = 'Password is required'
       } else if (formData.password.length < 6) {
-        newErrors.password = 'Password must be at least 6 characters'
+        newErrors.password = 'Password must be at least 6 characters long'
       }
 
       if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = 'Passwords do not match'
+        newErrors.confirmPassword = 'Passwords do not match. Please ensure both password fields are identical.'
       }
     } else if (formData.password && formData.password.length > 0) {
       // In edit mode, password is optional but if provided, must be valid
@@ -234,19 +236,19 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
     } else {
       const phoneValidation = validatePakistanPhoneNumber(formData.phone)
       if (!phoneValidation.valid) {
-        newErrors.phone = phoneValidation.error || 'Invalid phone number format'
+        newErrors.phone = phoneValidation.error || 'Please enter a valid Pakistan phone number (format: 03XX-XXXXXXX)'
       }
     }
 
     if (formData.whatsApp && formData.whatsApp.trim() !== '') {
       const whatsAppValidation = validatePakistanPhoneNumber(formData.whatsApp)
       if (!whatsAppValidation.valid) {
-        newErrors.whatsApp = whatsAppValidation.error || 'Invalid WhatsApp number format'
+        newErrors.whatsApp = whatsAppValidation.error || 'Please enter a valid WhatsApp number (format: 03XX-XXXXXXX)'
       }
     }
 
     if (!formData.relation) {
-      newErrors.relation = 'Relation is required'
+      newErrors.relation = 'Please select your relationship to the student'
     }
 
     // Final email check before submission
@@ -258,7 +260,9 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
           newErrors.email = 'This email is already registered. Please use a different email address.'
         }
       } catch (error) {
-        console.error('Email check failed:', error)
+        if (process.env.NODE_ENV === 'development') {
+        console.error('[GuardianForm] Email availability check failed:', error)
+      }
       }
     }
 
@@ -289,7 +293,7 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
           password: formData.password,
           studentId: formData.studentId,
         })
-        onSuccess('Guardian created successfully', createdGuardian)
+        onSuccess('Guardian has been created successfully', createdGuardian)
       } else if (guardian) {
         const updateData: UpdateGuardianRequest = { ...submitData }
         // Only include password if provided
@@ -298,7 +302,7 @@ export default function GuardianForm({ guardian, mode, onClose, onSuccess, stude
           // For now, we'll update without password (password reset should be separate)
         }
         await updateGuardian(guardian.id, updateData)
-        onSuccess('Guardian updated successfully')
+        onSuccess('Guardian information has been updated successfully')
       }
     } catch (err: unknown) {
       let errorMessage = 'Unable to save guardian. Please check your input and try again.'

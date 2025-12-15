@@ -48,15 +48,15 @@ const LoginForm = () => {
     const newErrors: {[key: string]: string} = {}
 
     if (!formData.email) {
-      newErrors.email = 'Email is required'
+      newErrors.email = 'Email address is required'
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
+      newErrors.email = 'Please enter a valid email address (e.g., student@example.com)'
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required'
     } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters'
+      newErrors.password = 'Password must be at least 6 characters long'
     }
 
     setErrors(newErrors)
@@ -75,9 +75,9 @@ const LoginForm = () => {
       // Import dynamically to avoid SSR issues
       const { login } = await import('@/lib/api/auth')
       
-      // Debug: Log what we're sending
+      // Debug: Log what we're sending (development only)
       if (process.env.NODE_ENV === 'development') {
-        console.log('Login form - userType selected:', formData.userType)
+        console.log('[LoginForm] User type selected:', formData.userType)
       }
       
       const response = await login({
@@ -86,9 +86,9 @@ const LoginForm = () => {
         userType: formData.userType, // Send userType to API for validation
       })
       
-      // Debug: Log response
+      // Debug: Log response (development only)
       if (process.env.NODE_ENV === 'development') {
-        console.log('Login response - user roles:', response.user.roles)
+        console.log('[LoginForm] Login successful, user roles:', response.user.roles)
       }
       
       // Additional frontend validation (backup to backend validation)
@@ -138,12 +138,12 @@ const LoginForm = () => {
       }, 1500)
       
     } catch (error: unknown) {
-      // Debug: Log error details
+      // Debug: Log error details (development only)
       if (process.env.NODE_ENV === 'development') {
-        console.error('Login error caught:', error)
+        console.error('[LoginForm] Login error:', error)
       }
       
-      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials and try again.'
+      const message = error instanceof Error ? error.message : 'Login failed. Please verify your email and password, then try again.'
       setErrors({ general: message })
     } finally {
       setIsLoading(false)

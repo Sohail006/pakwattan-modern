@@ -29,6 +29,6 @@ export async function submitAdmission(data: AdmissionRequest) {
 		return await api.post('/api/admissions', payload);
 	} catch (error) {
 		const apiError = error as ApiError;
-		throw new Error(apiError.message || 'Unable to submit admission application. Please check your information and try again.');
+		throw new Error(apiError.message || 'Unable to submit admission application. Please review all fields and try again. If the problem persists, contact support.');
 	}
 }

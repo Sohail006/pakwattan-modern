@@ -81,7 +81,9 @@ const AdmissionForm = () => {
         errorMessage = err.message
       }
       alert(errorMessage)
-      console.error('Image upload error:', err)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[AdmissionForm] Image upload error:', err)
+      }
     } finally {
       setUploadingImage(false)
     }
@@ -114,7 +116,7 @@ const AdmissionForm = () => {
         emergencyContact: formData.emergencyContact,
         profilePictureUrl: formData.profilePictureUrl || undefined,
       })
-      alert('Admission application submitted successfully!')
+      alert('Your admission application has been submitted successfully! We will contact you soon.')
       setFormData({
         studentName: '',
         fatherName: '',
@@ -131,7 +133,9 @@ const AdmissionForm = () => {
         fileInputRef.current.value = ''
       }
     } catch (error) {
-      console.error('Admission application error:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[AdmissionForm] Application submission error:', error)
+      }
       // Handle ApiError objects (from API client) and Error instances
       let errorMessage = 'Unable to submit admission application. Please check your information and try again.'
       if (error && typeof error === 'object' && 'message' in error) {

@@ -70,12 +70,12 @@ export function validatePakistanPhoneNumber(phone: string, required: boolean = f
   
   // Must be exactly 11 digits
   if (cleaned.length !== 11) {
-    return { valid: false, error: 'Phone number must be 11 digits (format: 03XX-XXXXXXX)' }
+    return { valid: false, error: 'Phone number must be exactly 11 digits (format: 03XX-XXXXXXX)' }
   }
   
   // Must start with 03
   if (!cleaned.startsWith('03')) {
-    return { valid: false, error: 'Phone number must start with 03' }
+    return { valid: false, error: 'Pakistan mobile number must start with 03 (format: 03XX-XXXXXXX)' }
   }
   
   // Check if it's a valid Pakistan mobile prefix (03XX where XX is 00-99)
@@ -84,7 +84,7 @@ export function validatePakistanPhoneNumber(phone: string, required: boolean = f
   
   // Valid prefixes: 0300-0399
   if (prefixNumber < 300 || prefixNumber > 399) {
-    return { valid: false, error: 'Invalid phone number prefix. Must be between 0300-0399' }
+    return { valid: false, error: 'Invalid phone number prefix. Pakistan mobile numbers must start with 0300-0399' }
   }
   
   return { valid: true }
@@ -220,7 +220,9 @@ export function formatDateTime(date: Date | string, options?: Intl.DateTimeForma
   
   // Validate the date
   if (isNaN(dateObj.getTime())) {
-    console.warn('Invalid date:', date)
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[Utils] Invalid date format:', date)
+    }
     return 'Invalid Date'
   }
   

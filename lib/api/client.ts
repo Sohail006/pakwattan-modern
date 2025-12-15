@@ -107,11 +107,18 @@ class ApiClient {
             const endPos = Math.min(text.length, errorPos + 100);
             const context = text.substring(startPos, endPos);
             
-            throw new Error(
-              `Invalid JSON response from server: ${parseError instanceof Error ? parseError.message : 'Unknown error'}. ` +
-              `Response length: ${text.length} characters. ` +
-              `Context around error (position ${errorPos}): ...${context}...`
-            );
+            // Only show detailed error in development
+            if (process.env.NODE_ENV === 'development') {
+              throw new Error(
+                `Invalid JSON response from server: ${parseError instanceof Error ? parseError.message : 'Unknown error'}. ` +
+                `Response length: ${text.length} characters. ` +
+                `Context around error (position ${errorPos}): ...${context}...`
+              );
+            } else {
+              throw new Error(
+                'The server returned an invalid response. Please try again or contact support if the problem persists.'
+              );
+            }
           }
         }
       } else {
@@ -124,7 +131,11 @@ class ApiClient {
         throw error;
       }
       // Otherwise, wrap it
-      throw new Error(`Unable to process server response. Please try again. Error: ${error}`);
+      if (process.env.NODE_ENV === 'development') {
+        throw new Error(`Unable to process server response. Please try again. Error: ${error}`);
+      } else {
+        throw new Error('Unable to process the server response. Please try again or contact support if the problem persists.');
+      }
     }
 
     if (!response.ok) {
@@ -143,7 +154,7 @@ class ApiClient {
           // Refresh failed - show error and let it propagate
           const body = data as { message?: string; error?: string; errors?: Record<string, string[]> };
           const error: ApiError = {
-            message: body?.message || body?.error || 'Your session has expired. Please log in again.',
+            message: body?.message || body?.error || 'Your session has expired. Please sign in again to continue.',
             statusCode: response.status,
             errors: body?.errors,
           };
@@ -158,22 +169,22 @@ class ApiClient {
       
       if (!errorMessage) {
         errorMessage = response.status === 400 
-          ? 'Invalid request. Please check your input and try again.'
+          ? 'The request was invalid. Please review your input and try again.'
           : response.status === 401
-          ? 'Your session has expired. Please log in again.'
+          ? 'Your session has expired. Please sign in again to continue.'
           : response.status === 403
-          ? 'You do not have permission to perform this action.'
+          ? 'You do not have permission to perform this action. Please contact an administrator if you believe this is an error.'
           : response.status === 404
-          ? 'The requested resource was not found.'
+          ? 'The requested resource could not be found. It may have been deleted or moved.'
           : response.status === 409
-          ? 'A conflict occurred. The resource may have been modified by another user.'
+          ? 'This resource has been modified by another user. Please refresh the page and try again.'
           : response.status === 422
-          ? 'Validation failed. Please check your input and try again.'
+          ? 'The information you provided is invalid. Please check all fields and try again.'
           : response.status === 500
-          ? 'A server error occurred. Please try again later or contact support.'
+          ? 'A server error occurred. Our team has been notified. Please try again in a few moments or contact support if the issue persists.'
           : response.status === 503
-          ? 'The service is temporarily unavailable. Please try again later.'
-          : `Request failed with status ${response.status}. Please try again.`;
+          ? 'The service is temporarily unavailable. Please try again in a few moments.'
+          : `An error occurred (${response.status}). Please try again or contact support if the problem continues.`;
       }
       
       const error: ApiError = {
@@ -213,19 +224,20 @@ class ApiClient {
                            (errorMessage.includes('failed to fetch') && typeof window !== 'undefined' && window.location.protocol === 'https:');
         
         if (errorMessage.includes('fetch') || errorMessage.includes('network') || isCorsError) {
-          let message = `Unable to connect to server at ${this.baseUrl}`;
+          let message: string;
           
           if (isCorsError || (typeof window !== 'undefined' && window.location.protocol === 'https:' && this.baseUrl.startsWith('http:'))) {
-            message += '\n\nPossible issues:';
-            message += '\n1. CORS: The API server needs to allow requests from ' + (typeof window !== 'undefined' ? window.location.origin : 'your domain');
-            message += '\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.';
-            message += '\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.';
+            if (process.env.NODE_ENV === 'development') {
+              message = `Unable to connect to server at ${this.baseUrl}\n\nPossible issues:\n1. CORS: The API server needs to allow requests from ${typeof window !== 'undefined' ? window.location.origin : 'your domain'}\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.`;
+            } else {
+              message = 'Unable to connect to the server. Please check your internet connection and try again. If the problem persists, contact support.';
+            }
           } else {
-            message += '. Please ensure the API server is running and accessible.';
+            message = 'Unable to connect to the server. Please check your internet connection and ensure the service is available.';
           }
           
           throw {
-            message,
+            message: message,
             statusCode: 0,
           } as ApiError;
         }
@@ -263,19 +275,20 @@ class ApiClient {
                            (errorMessage.includes('failed to fetch') && typeof window !== 'undefined' && window.location.protocol === 'https:');
         
         if (errorMessage.includes('fetch') || errorMessage.includes('network') || isCorsError) {
-          let message = `Unable to connect to server at ${this.baseUrl}`;
+          let message: string;
           
           if (isCorsError || (typeof window !== 'undefined' && window.location.protocol === 'https:' && this.baseUrl.startsWith('http:'))) {
-            message += '\n\nPossible issues:';
-            message += '\n1. CORS: The API server needs to allow requests from ' + (typeof window !== 'undefined' ? window.location.origin : 'your domain');
-            message += '\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.';
-            message += '\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.';
+            if (process.env.NODE_ENV === 'development') {
+              message = `Unable to connect to server at ${this.baseUrl}\n\nPossible issues:\n1. CORS: The API server needs to allow requests from ${typeof window !== 'undefined' ? window.location.origin : 'your domain'}\n2. Mixed Content: HTTPS frontend cannot call HTTP API. Consider using HTTPS for the API server.\n\nPlease check the API server CORS configuration to allow requests from your frontend domain.`;
+            } else {
+              message = 'Unable to connect to the server. Please check your internet connection and try again. If the problem persists, contact support.';
+            }
           } else {
-            message += '. Please ensure the API server is running and accessible.';
+            message = 'Unable to connect to the server. Please check your internet connection and ensure the service is available.';
           }
           
           throw {
-            message,
+            message: message,
             statusCode: 0,
           } as ApiError;
         }
@@ -309,14 +322,18 @@ class ApiClient {
         // CORS errors or connection refused
         const errorMessage = error.message.toLowerCase();
         if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('cors')) {
-          let message = `Unable to connect to server at ${this.baseUrl}`;
+          let message: string;
           if (errorMessage.includes('cors')) {
-            message += '. This might be a CORS issue. Please check the API server CORS configuration.';
+            if (process.env.NODE_ENV === 'development') {
+              message = `Unable to connect to server at ${this.baseUrl}. This might be a CORS issue. Please check the API server CORS configuration.`;
+            } else {
+              message = 'Unable to connect to the server. Please check your internet connection and try again.';
+            }
           } else {
-            message += '. Please ensure the API server is running.';
+            message = 'Unable to connect to the server. Please check your internet connection and ensure the service is available.';
           }
           throw {
-            message,
+            message: message,
             statusCode: 0,
           } as ApiError;
         }
@@ -347,14 +364,18 @@ class ApiClient {
         // CORS errors or connection refused
         const errorMessage = error.message.toLowerCase();
         if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('cors')) {
-          let message = `Unable to connect to server at ${this.baseUrl}`;
+          let message: string;
           if (errorMessage.includes('cors')) {
-            message += '. This might be a CORS issue. Please check the API server CORS configuration.';
+            if (process.env.NODE_ENV === 'development') {
+              message = `Unable to connect to server at ${this.baseUrl}. This might be a CORS issue. Please check the API server CORS configuration.`;
+            } else {
+              message = 'Unable to connect to the server. Please check your internet connection and try again.';
+            }
           } else {
-            message += '. Please ensure the API server is running.';
+            message = 'Unable to connect to the server. Please check your internet connection and ensure the service is available.';
           }
           throw {
-            message,
+            message: message,
             statusCode: 0,
           } as ApiError;
         }
@@ -410,14 +431,18 @@ class ApiClient {
         // CORS errors or connection refused
         const errorMessage = error.message.toLowerCase();
         if (errorMessage.includes('fetch') || errorMessage.includes('network') || errorMessage.includes('cors')) {
-          let message = `Unable to connect to server at ${this.baseUrl}`;
+          let message: string;
           if (errorMessage.includes('cors')) {
-            message += '. This might be a CORS issue. Please check the API server CORS configuration.';
+            if (process.env.NODE_ENV === 'development') {
+              message = `Unable to connect to server at ${this.baseUrl}. This might be a CORS issue. Please check the API server CORS configuration.`;
+            } else {
+              message = 'Unable to connect to the server. Please check your internet connection and try again.';
+            }
           } else {
-            message += '. Please ensure the API server is running.';
+            message = 'Unable to connect to the server. Please check your internet connection and ensure the service is available.';
           }
           throw {
-            message,
+            message: message,
             statusCode: 0,
           } as ApiError;
         }
@@ -432,7 +457,7 @@ export const apiClient = new ApiClient(API_BASE_URL);
 
 // Log API base URL in development for debugging
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  console.log('API Base URL:', API_BASE_URL);
+  console.log('[API Client] Base URL:', API_BASE_URL);
 }
 
 // Export convenience methods

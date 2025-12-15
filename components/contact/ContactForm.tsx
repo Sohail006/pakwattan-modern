@@ -41,8 +41,10 @@ const ContactForm = () => {
       
       setIsSubmitted(true)
     } catch (err: unknown) {
-      console.error('Contact form error:', err)
-      const message = err instanceof Error ? err.message : 'Unable to send your message. Please check your connection and try again.'
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[ContactForm] Submission error:', err)
+      }
+      const message = err instanceof Error ? err.message : 'Unable to send your message. Please check your internet connection and try again. If the problem persists, please contact us directly.'
       setError(message)
     } finally {
       setIsSubmitting(false)
@@ -62,7 +64,7 @@ const ContactForm = () => {
                 Message Sent Successfully!
               </h2>
               <p className="text-lg text-secondary-600 mb-6">
-                Thank you for contacting us. We&apos;ll get back to you as soon as possible.
+                Thank you for contacting Pak Wattan School. Your message has been received successfully. We will review your inquiry and get back to you as soon as possible.
               </p>
               <button
                 onClick={() => {

@@ -146,10 +146,10 @@ export default function EventForm({ event, mode, onClose, onSuccess }: EventForm
           ...submitData
         }
         await updateEvent(updateData)
-        onSuccess('Event updated successfully!')
+        onSuccess('Event has been updated successfully')
       } else {
         await createEvent(submitData)
-        onSuccess('Event created successfully!')
+        onSuccess('Event has been created successfully')
       }
       onClose()
     } catch (err) {

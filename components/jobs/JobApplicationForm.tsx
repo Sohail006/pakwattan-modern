@@ -50,6 +50,9 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 				if (!stringValue || (stringValue as string).trim() === '') return 'Father name is required'
 				if ((stringValue as string).trim().length < 2) return 'Father name must be at least 2 characters'
 				return null
+			case 'gender':
+				if (stringValue === undefined || stringValue === null || stringValue === '') return 'Please select your gender'
+				return null
 			case 'mobileNumber':
 				const mobileValidation = validatePakistanPhoneNumber(stringValue as string, true)
 				if (mobileValidation.error) return mobileValidation.error
@@ -61,7 +64,10 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 				}
 				return null
 			case 'fieldExperiencedInYears':
-				if (stringValue !== undefined && stringValue !== null && stringValue !== '') {
+				if (stringValue === undefined || stringValue === null || stringValue === '') {
+					return 'Please enter your teaching experience in years'
+				}
+				{
 					const years = Number(stringValue)
 					if (isNaN(years) || years < 0 || years > 50) {
 						return 'Experience must be between 0 and 50 years'
@@ -69,23 +75,43 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 				}
 				return null
 			case 'dob':
-				if (value instanceof Date) {
-					const today = new Date()
-					const age = today.getFullYear() - value.getFullYear()
-					const monthDiff = today.getMonth() - value.getMonth()
-					const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < value.getDate()) ? age - 1 : age
-					
-					if (actualAge < 18) {
-						return 'You must be at least 18 years old'
-					}
-					if (actualAge > 70) {
+				if (!value) {
+					return 'Date of birth is required'
+				}
+				{
+					const dateValue = value instanceof Date ? value : new Date(value as string)
+					if (isNaN(dateValue.getTime())) {
 						return 'Please enter a valid date of birth'
 					}
-					if (value > today) {
-						return 'Date of birth cannot be in the future'
+					const today = new Date()
+					const age = today.getFullYear() - dateValue.getFullYear()
+					const monthDiff = today.getMonth() - dateValue.getMonth()
+					const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < dateValue.getDate()) ? age - 1 : age
+					
+					if (actualAge < 18) {
+						return 'You must be at least 18 years old to apply'
+					}
+					if (actualAge > 70) {
+						return 'Please enter a valid date of birth. Age should be between 18 and 70 years.'
+					}
+					if (dateValue > today) {
+						return 'Date of birth cannot be in the future. Please enter a valid date.'
 					}
 				}
 				return null
+			case 'subjectTought':
+				if (!stringValue || (stringValue as string).trim() === '') return 'Please enter the subject(s) you can teach'
+				if ((stringValue as string).trim().length < 2) return 'Subject must be at least 2 characters'
+				return null
+			case 'packageDemand': {
+				const demand = (stringValue as string)?.trim() || ''
+				if (!demand) return 'Please enter your expected salary package'
+				const salaryPattern = /^\d[\d,]*(\s*-\s*\d[\d,]*)?$/
+				if (!salaryPattern.test(demand)) {
+					return 'Enter numbers only (e.g., 50,000 or 50,000 - 80,000)'
+				}
+				return null
+			}
 			default:
 				return null
 		}
@@ -182,7 +208,16 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 	const validateForm = (): boolean => {
 		const errors: Record<string, string> = {}
 
-		const requiredFields: (keyof JobOpportunityCreateRequest)[] = ['name', 'fatherName', 'mobileNumber']
+		const requiredFields: (keyof JobOpportunityCreateRequest)[] = [
+			'name',
+			'fatherName',
+			'gender',
+			'mobileNumber',
+			'dob',
+			'fieldExperiencedInYears',
+			'subjectTought',
+			'packageDemand',
+		]
 		requiredFields.forEach(field => {
 			const error = validateField(field, formData[field])
 			if (error) {
@@ -190,15 +225,9 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 			}
 		})
 
-		// Validate optional fields if they have values
 		if (formData.whatsAppNumber) {
 			const error = validateField('whatsAppNumber', formData.whatsAppNumber)
 			if (error) errors.whatsAppNumber = error
-		}
-
-		if (formData.fieldExperiencedInYears !== undefined) {
-			const error = validateField('fieldExperiencedInYears', formData.fieldExperiencedInYears)
-			if (error) errors.fieldExperiencedInYears = error
 		}
 
 		setFieldErrors(errors)
@@ -211,7 +240,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 		setSuccess(false)
 
 		if (!validateForm()) {
-			setError('Please fix the errors in the form')
+			setError('Please correct the errors highlighted in the form before submitting')
 			return
 		}
 
@@ -239,7 +268,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 				setSuccess(false)
 			}, 5000)
 		} catch (err) {
-			const errorMessage = err instanceof Error ? err.message : 'Unable to submit job application. Please try again.'
+			const errorMessage = err instanceof Error ? err.message : 'Unable to submit your job application. Please check your information and try again. If the problem persists, contact support.'
 			setError(errorMessage)
 		} finally {
 			setIsSubmitting(false)
@@ -272,7 +301,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 						<div className="flex-1">
 							<h3 className="font-semibold text-green-900 mb-1">Application Submitted Successfully!</h3>
 							<p className="text-green-700 text-sm">
-								Thank you for becoming a part of Pak Wattan. Your registration was successful. The School Administration will get in touch with you shortly to schedule an interview.
+								Thank you for your interest in joining Pak Wattan School. Your job application has been received successfully. The School Administration will review your application and contact you shortly to schedule an interview.
 							</p>
 						</div>
 					</div>
@@ -361,7 +390,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 
 							<div>
 								<label htmlFor="gender" className="block text-sm font-semibold text-gray-700 mb-2">
-									Gender
+									Gender <span className="text-red-500">*</span>
 								</label>
 								<select
 									id="gender"
@@ -376,11 +405,17 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 									<option value="1">Female</option>
 									<option value="2">Other</option>
 								</select>
+								{fieldErrors.gender && (
+									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+										<AlertCircle className="w-4 h-4" />
+										{fieldErrors.gender}
+									</p>
+								)}
 							</div>
 
 							<div>
 								<label htmlFor="dob" className="block text-sm font-semibold text-gray-700 mb-2">
-									Date of Birth
+									Date of Birth <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
 									<Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -394,6 +429,12 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
 									/>
 								</div>
+								{fieldErrors.dob && (
+									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+										<AlertCircle className="w-4 h-4" />
+										{fieldErrors.dob}
+									</p>
+								)}
 							</div>
 						</div>
 					</div>
@@ -530,7 +571,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 
 							<div>
 								<label htmlFor="subjectTought" className="block text-sm font-semibold text-gray-700 mb-2">
-									Subject Taught
+									Subject Taught <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
 									<BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -544,11 +585,17 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="e.g., Mathematics, English, Science"
 									/>
 								</div>
+								{fieldErrors.subjectTought && (
+									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+										<AlertCircle className="w-4 h-4" />
+										{fieldErrors.subjectTought}
+									</p>
+								)}
 							</div>
 
 							<div className="md:col-span-2">
 								<label htmlFor="packageDemand" className="block text-sm font-semibold text-gray-700 mb-2">
-									Expected Salary Package (PKR)
+									Expected Salary Package (PKR) <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
 									<Coins className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -565,6 +612,12 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="e.g., 50,000 - 80,000"
 									/>
 								</div>
+								{fieldErrors.packageDemand && (
+									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+										<AlertCircle className="w-4 h-4" />
+										{fieldErrors.packageDemand}
+									</p>
+								)}
 								<p className="mt-1 text-xs text-gray-500">Enter expected salary in Pakistani Rupees (PKR)</p>
 							</div>
 						</div>

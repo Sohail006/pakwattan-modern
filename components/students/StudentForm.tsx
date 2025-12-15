@@ -169,7 +169,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       
       // Don't auto-select guardian - user must explicitly select
     } catch (error) {
-      console.error('Failed to load dropdown options:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[StudentForm] Failed to load dropdown options:', error)
+      }
       setErrors({ general: 'Unable to load form options. Please refresh the page and try again.' })
     } finally {
       setLoadingOptions(false)
@@ -183,7 +185,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       setGuardians(guardiansData)
       return guardiansData
     } catch (error) {
-      console.error('Failed to refresh guardians list:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[StudentForm] Failed to refresh guardians list:', error)
+      }
       throw error
     }
   }, [])
@@ -215,7 +219,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       // Close the guardian form modal
       setShowGuardianForm(false)
     } catch (error) {
-      console.error('Failed to refresh guardians after creation:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[StudentForm] Failed to refresh guardians after creation:', error)
+      }
       // Still close the modal and select guardian even if refresh fails
       if (createdGuardian) {
         setFormData(prev => ({ ...prev, guardianId: createdGuardian.id }))
@@ -343,7 +349,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       }
     } catch (error) {
       // Silently fail - don't show error for check failures
-      console.error('Failed to check email:', error)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('[StudentForm] Failed to check email availability:', error)
+      }
     } finally {
       setCheckingEmail(false)
     }
@@ -412,7 +420,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
         }
       } catch (error) {
         // If check fails, still allow submission (backend will catch it)
-        console.error('Email check failed:', error)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[StudentForm] Email availability check failed:', error)
+        }
       }
     }
 
@@ -449,14 +459,14 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       if (mode === 'create') {
         await createStudent(submitData as CreateStudentRequest)
         // Call onSuccess before setting loading to false to ensure message is set
-        onSuccess('Student created successfully')
+        onSuccess('Student has been created successfully')
       } else if (student) {
         await updateStudent({ ...submitData, id: student.id } as UpdateStudentRequest)
         // Call onSuccess before setting loading to false to ensure message is set
-        onSuccess('Student updated successfully')
+        onSuccess('Student information has been updated successfully')
       }
     } catch (err: unknown) {
-      let errorMessage = 'Unable to save student. Please check your input and try again.'
+      let errorMessage = 'Unable to save student information. Please review all fields and try again. If the problem persists, contact support.'
       
       // Check if it's an ApiError with a meaningful message
       if (err && typeof err === 'object' && 'message' in err) {

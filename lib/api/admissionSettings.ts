@@ -172,7 +172,7 @@ export async function getAllAdmissionSettings(): Promise<AdmissionSetting[]> {
     return response as AdmissionSetting[];
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to fetch admission settings.');
+    throw new Error(apiError.message || 'Unable to load admission settings. Please refresh the page and try again.');
   }
 }
 
@@ -182,7 +182,7 @@ export async function getAdmissionSettingById(id: number): Promise<AdmissionSett
     return response as AdmissionSetting;
   } catch (error) {
     const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to fetch admission setting.');
+    throw new Error(apiError.message || 'Unable to load admission setting. Please try again.');
   }
 }
 
@@ -196,7 +196,7 @@ export async function getActiveAdmissionSetting(): Promise<AdmissionSetting | nu
     if (apiError.statusCode === 404) {
       return null;
     }
-    throw new Error(apiError.message || 'Unable to fetch active admission setting.');
+    throw new Error(apiError.message || 'Unable to load active admission setting. Please try again.');
   }
 }
 

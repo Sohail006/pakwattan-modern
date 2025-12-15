@@ -165,10 +165,10 @@ export default function NewsForm({ news, mode, onClose, onSuccess }: NewsFormPro
           ...submitData
         }
         await updateNews(updateData)
-        onSuccess('News item updated successfully!')
+        onSuccess('News item has been updated successfully')
       } else {
         await createNews(submitData)
-        onSuccess('News item created successfully!')
+        onSuccess('News item has been created successfully')
       }
       onClose()
     } catch (err) {

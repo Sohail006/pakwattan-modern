@@ -340,12 +340,16 @@ class TokenRefreshService {
             break;
         }
       }).catch(() => {
-        // Fallback: console log if toast service not available
-        console.log(`[${type.toUpperCase()}] ${message}`);
+        // Fallback: console log if toast service not available (development only)
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`[TokenRefresh] [${type.toUpperCase()}] ${message}`);
+        }
       });
     } catch {
-      // Fallback: console log if import fails
-      console.log(`[${type.toUpperCase()}] ${message}`);
+      // Fallback: console log if import fails (development only)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`[TokenRefresh] [${type.toUpperCase()}] ${message}`);
+      }
     }
   }
 

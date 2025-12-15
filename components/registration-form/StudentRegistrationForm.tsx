@@ -38,7 +38,7 @@ const validateEmail = (email: string): { valid: boolean; error?: string } => {
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email.trim())) {
-    return { valid: false, error: 'Please enter a valid email address' }
+    return { valid: false, error: 'Please enter a valid email address (e.g., student@example.com)' }
   }
   return { valid: true }
 }
@@ -74,10 +74,10 @@ const validateDateOfBirth = (dob: string): { valid: boolean; error?: string } =>
   const actualAge = monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate()) ? age - 1 : age
   
   if (actualAge < 3) {
-    return { valid: false, error: 'Student must be at least 3 years old' }
+    return { valid: false, error: 'Student must be at least 3 years old to register' }
   }
   if (actualAge > 25) {
-    return { valid: false, error: 'Please enter a valid date of birth' }
+    return { valid: false, error: 'Please enter a valid date of birth. Student age should be between 3 and 25 years.' }
   }
   return { valid: true }
 }
@@ -174,11 +174,11 @@ export default function StudentRegistrationForm() {
         if (value === -1) return 'Please select a gender'
         return null
       case 'gradeId':
-        if (!value || value === 0) return 'Please select a grade'
+        if (!value || value === 0) return 'Please select a grade level'
         return null
       case 'scholarshipType':
         if (formData.applyForScholarship && (value === null || value === '')) {
-          return 'Please select a scholarship type'
+          return 'Please select a scholarship type if you are applying for a scholarship'
         }
         return null
       default:
@@ -250,7 +250,9 @@ export default function StudentRegistrationForm() {
   }
 
   const handleImageError = (errorMessage: string) => {
-    console.error('[RegistrationForm] Image error:', errorMessage)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[RegistrationForm] Image error:', errorMessage)
+    }
     setError(errorMessage)
   }
 
@@ -340,7 +342,9 @@ export default function StudentRegistrationForm() {
     try {
       // Debug: Log form data before submission
       if (process.env.NODE_ENV === 'development') {
-        console.log('[RegistrationForm] Submitting with profilePictureUrl:', formData.profilePictureUrl)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[RegistrationForm] Submitting with profilePictureUrl:', formData.profilePictureUrl)
+        }
       }
 
       const response = await submitRegistration({
@@ -375,7 +379,9 @@ export default function StudentRegistrationForm() {
             })
           }
         } catch (error) {
-          console.warn('[RegistrationForm] Failed to fetch test info from admission settings:', error)
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('[RegistrationForm] Failed to fetch test info from admission settings:', error)
+          }
         }
       } else {
         setTestInfoFromSettings(null) // Clear fallback if response has test info
@@ -430,7 +436,9 @@ export default function StudentRegistrationForm() {
         setSettingsStatus(deriveRegistrationStatus(setting))
         setSettingsError(null)
       } catch (err) {
-        console.error('Unable to load admission settings', err)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[RegistrationForm] Unable to load admission settings:', err)
+        }
         setActiveSetting(null)
         setSettingsStatus(null)
         setSettingsError('Unable to load admission settings at this time.')
@@ -454,7 +462,9 @@ export default function StudentRegistrationForm() {
           .sort((a, b) => a.displayOrder - b.displayOrder)
         setScholarshipTypes(activeTypes)
       } catch (err) {
-        console.error('Unable to load scholarship types', err)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[RegistrationForm] Unable to load scholarship types:', err)
+        }
         setScholarshipsError('Unable to load scholarship types. Please refresh the page.')
         setScholarshipTypes([]) // Fallback to empty array
       } finally {
@@ -482,7 +492,9 @@ export default function StudentRegistrationForm() {
 
         // Get all admission criteria
         const allCriteria = await getAllAdmissionCriteria()
-        console.log('[RegistrationForm] Loaded all criteria:', allCriteria)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[RegistrationForm] Loaded all criteria:', allCriteria)
+        }
 
         // Filter criteria for the active admission setting
         // Match by sessionId and academicYear (or by settingId if available)
@@ -493,7 +505,9 @@ export default function StudentRegistrationForm() {
           return matchesSession && matchesYear && isActive
         })
 
-        console.log('[RegistrationForm] Filtered criteria for active setting:', activeCriteria)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('[RegistrationForm] Filtered criteria for active setting:', activeCriteria)
+        }
 
         if (activeCriteria.length === 0) {
           setGradesError('No grades have been configured for this admission cycle. Please contact the administration.')
@@ -545,11 +559,15 @@ export default function StudentRegistrationForm() {
 
           // Sort by order field
           const sortedGrades = gradesFromCriteria.sort((a, b) => a.order - b.order)
-          console.log('[RegistrationForm] Grades from admission criteria:', sortedGrades)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[RegistrationForm] Grades from admission criteria:', sortedGrades)
+          }
           setGrades(sortedGrades)
         } catch (gradeApiError) {
           // If Grade API fails, use criteria data as fallback
-          console.warn('[RegistrationForm] Failed to fetch full grade details, using criteria data:', gradeApiError)
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('[RegistrationForm] Failed to fetch full grade details, using criteria data:', gradeApiError)
+          }
           const fallbackGrades = Array.from(gradeMap.values())
             .map(g => ({
               id: g.id,
@@ -562,7 +580,9 @@ export default function StudentRegistrationForm() {
           setGrades(fallbackGrades)
         }
       } catch (err) {
-        console.error('[RegistrationForm] Unable to load grades from admission criteria', err)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[RegistrationForm] Unable to load grades from admission criteria:', err)
+        }
         setGradesError('Unable to load grades from admission settings. Please refresh the page.')
         setGrades([]) // Fallback to empty array
       } finally {
@@ -660,7 +680,9 @@ export default function StudentRegistrationForm() {
               <button
                 onClick={() => {
                   generateRollNumberSlipPDF(success).catch((error) => {
-                    console.error('Error generating PDF:', error)
+                    if (process.env.NODE_ENV === 'development') {
+                      console.error('[RegistrationForm] Error generating PDF:', error)
+                    }
                     alert('Failed to generate PDF. Please try again.')
                   })
                 }}
