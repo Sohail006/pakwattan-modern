@@ -210,7 +210,7 @@ export default function JobsTable() {
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied Date</th>
-								<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+								<th className="sticky right-0 px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
 							</tr>
 						</thead>
 						<tbody className="bg-white divide-y divide-gray-200">
@@ -222,7 +222,7 @@ export default function JobsTable() {
 								</tr>
 							) : (
 								filteredJobs.map(job => (
-									<tr key={job.id} className="hover:bg-gray-50">
+									<tr key={job.id} className="hover:bg-gray-50 group">
 										<td className="px-6 py-4 whitespace-nowrap">
 											<div className="flex items-center">
 												<User className="w-4 h-4 text-gray-400 mr-2" />
@@ -248,20 +248,22 @@ export default function JobsTable() {
 										</td>
 										<td className="px-6 py-4 text-sm text-gray-500">{job.subjectTought || '-'}</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(job.creationDate)}</td>
-										<td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+										<td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
 											<div className="flex items-center justify-end gap-2">
 												<button
 													onClick={() => setViewingJob(job)}
-													className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50"
+													className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
 													title="View Details"
+													aria-label={`View ${job.name} details`}
 												>
 													<Eye className="w-4 h-4" />
 												</button>
 												<button
 													onClick={() => handleDelete(job.id)}
 													disabled={deletingId === job.id}
-													className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50"
+													className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50 transition-colors"
 													title="Delete"
+													aria-label={`Delete ${job.name}`}
 												>
 													{deletingId === job.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
 												</button>

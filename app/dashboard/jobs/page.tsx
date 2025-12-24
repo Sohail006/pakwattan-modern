@@ -82,7 +82,7 @@ export default function JobsPage() {
 	}
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 pb-6">
 			{/* Header */}
 			<div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 text-white">
 				<div className="flex items-center gap-4">
