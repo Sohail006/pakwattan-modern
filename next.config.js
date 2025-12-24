@@ -10,6 +10,34 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
   
+  // Webpack configuration for better chunk handling
+  webpack: (config, { isServer, dev }) => {
+    // Improve chunk loading reliability in production
+    if (!isServer && !dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks?.cacheGroups,
+            default: {
+              minChunks: 2,
+              priority: -20,
+              reuseExistingChunk: true,
+            },
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              priority: -10,
+              reuseExistingChunk: true,
+            },
+          },
+        },
+      }
+    }
+    return config
+  },
+  
   // Suppress RSC prefetch warnings for non-existent routes
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,

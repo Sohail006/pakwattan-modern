@@ -5,6 +5,7 @@ import { Eye, EyeOff, Lock, Mail, User, Shield, AlertCircle, CheckCircle, Phone,
 import Link from 'next/link'
 import Image from 'next/image'
 import FormField from '@/components/ui/FormField'
+import { toastService } from '@/lib/utils/toast'
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
@@ -105,7 +106,22 @@ const RegisterForm = () => {
     
     try {
       // Import dynamically to avoid SSR issues
-      const { register } = await import('@/lib/api/auth')
+      // Add retry logic for chunk loading failures
+      let register
+      try {
+        const authModule = await import('@/lib/api/auth')
+        register = authModule.register
+      } catch (importError) {
+        // Handle chunk loading error
+        const errorMessage = importError instanceof Error ? importError.message : String(importError)
+        if (errorMessage.toLowerCase().includes('chunk') || errorMessage.toLowerCase().includes('loading')) {
+          toastService.error('A page update is available. Please refresh the page and try again.')
+          setTimeout(() => window.location.reload(), 2000)
+          setIsLoading(false)
+          return
+        }
+        throw importError
+      }
       
       await register({
         firstName: formData.firstName,

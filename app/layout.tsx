@@ -4,6 +4,7 @@ import './globals.css'
 import ConditionalLayout from '@/components/layout/ConditionalLayout'
 import { NotificationProvider } from '@/components/notifications/NotificationProvider'
 import ToastContainer from '@/components/ui/ToastContainer'
+import ChunkErrorHandler from '@/components/ui/ChunkErrorHandler'
 import Analytics from '@/components/Analytics'
 // Initialize token refresh service
 import '@/lib/services/tokenRefresh'
@@ -91,6 +92,7 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         <NotificationProvider>
+          <ChunkErrorHandler />
           <ConditionalLayout>
             {children}
           </ConditionalLayout>
