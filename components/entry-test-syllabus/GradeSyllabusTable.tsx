@@ -21,12 +21,13 @@ const GradeSyllabusTable = () => {
         setLoading(true)
         setError(null)
 
-        // Fetch all active grades
-        const grades = await getGrades(true)
-        const sortedGrades = grades.sort((a, b) => a.order - b.order)
+        // Fetch all active grades and syllabi in parallel for better performance
+        const [grades, allSyllabi] = await Promise.all([
+          getGrades(true),
+          getTestSyllabiPublic()
+        ])
 
-        // Fetch all active syllabi (no grade filter)
-        const allSyllabi = await getTestSyllabiPublic()
+        const sortedGrades = grades.sort((a, b) => a.order - b.order)
 
         // Filter only PDF syllabi with pdfUrl
         const pdfSyllabi = allSyllabi.filter(s => 
