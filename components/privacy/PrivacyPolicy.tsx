@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Shield, Users, Database, Lock, Eye, Mail, Calendar } from 'lucide-react'
+import { Shield, Users, Database, Lock, Eye, Mail, Calendar, Phone, MapPin, Clock } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import { getCampuses, Campus } from '@/lib/api/campuses'
 import { SCHOOL_INFO } from '@/lib/constants'
@@ -31,6 +31,7 @@ const PrivacyPolicy = () => {
 
   // Use main campus data if available, otherwise fallback to SCHOOL_INFO
   const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const email = mainCampus?.email || SCHOOL_INFO.contact.email || 'privacy@pakwattan.edu.pk'
   const address = mainCampus?.address || SCHOOL_INFO.contact.address
   const officeHours = mainCampus?.officeHours || 'Monday to Friday, 8:00 AM - 4:00 PM'
   return (
@@ -384,11 +385,41 @@ const PrivacyPolicy = () => {
                     <p className="text-gray-700 leading-relaxed mb-4">
                       If you have any questions about this Privacy Policy or our data practices, please contact us:
                     </p>
-                    <div className="space-y-2 text-gray-700">
-                      <p><strong>Email:</strong> privacy@pakwattan.edu.pk</p>
-                      {phone && <p><strong>Phone:</strong> {phone}</p>}
-                      {address && <p><strong>Address:</strong> {address}</p>}
-                      {officeHours && <p><strong>Office Hours:</strong> {officeHours}</p>}
+                    <div className="space-y-3 text-gray-700">
+                      {email && (
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                          <a 
+                            href={`mailto:${email}`}
+                            className="hover:text-primary-600 transition-colors"
+                          >
+                            {email}
+                          </a>
+                        </div>
+                      )}
+                      {phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                          <a 
+                            href={`tel:${phone.replace(/\s/g, '')}`}
+                            className="hover:text-primary-600 transition-colors"
+                          >
+                            {phone}
+                          </a>
+                        </div>
+                      )}
+                      {address && (
+                        <div className="flex items-start gap-2">
+                          <MapPin className="w-4 h-4 text-primary-600 mt-0.5 flex-shrink-0" />
+                          <span>{address}</span>
+                        </div>
+                      )}
+                      {officeHours && (
+                        <div className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                          <span>{officeHours}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </section>

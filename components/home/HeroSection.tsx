@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Trophy, BookOpen, Award, GraduationCap, Calendar, Briefcase } from 'lucide-react'
+import { Trophy, BookOpen, Award, GraduationCap, Calendar, Briefcase, FileText } from 'lucide-react'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
@@ -71,17 +71,26 @@ const HeroSection = () => {
                 <Button 
                   href="/admission" 
                   variant="accent" 
-                  size="lg"
-                  className="group relative shadow-2xl hover:shadow-accent-500/25 hover:scale-105 touch-target focus-ring bg-white text-primary-600 hover:bg-white/90 font-bold"
+                  size="md"
+                  className="group relative shadow-xl hover:shadow-accent-500/25 hover:scale-105 touch-target focus-ring bg-white text-primary-600 hover:bg-white/90 font-bold"
                 >
-                  <GraduationCap className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
+                  <GraduationCap className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-300" />
                   <span className="relative z-10">Apply Now for 2026-27</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
                 <Button 
+                  href="/entry-test-syllabus" 
+                  variant="secondary"
+                  size="md"
+                  className="group relative bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 hover:scale-105 touch-target focus-ring font-semibold"
+                >
+                  <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span>Test Syllabus</span>
+                </Button>
+                <Button 
                   href="/admission#process" 
                   variant="outline"
-                  size="lg"
+                  size="md"
                   className="group relative bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 hover:scale-105 touch-target focus-ring font-semibold"
                 >
                   Learn More

@@ -5,6 +5,7 @@ import { API_CONFIG } from '@/lib/config'
 import { useState, useEffect } from 'react'
 import { getCampuses, Campus } from '@/lib/api/campuses'
 import { SCHOOL_INFO } from '@/lib/constants'
+import { Phone, Mail } from 'lucide-react'
 
 const PakiansCoachingAcademyRegistration = () => {
   const [formData, setFormData] = useState({
@@ -236,8 +237,8 @@ const PakiansCoachingAcademyRegistration = () => {
               <h3 className="text-2xl font-bold text-primary-800 mb-6">Contact Information</h3>
               <div className="space-y-4">
                 {phone && (
-                  <div className="flex items-center space-x-3">
-                    <span className="text-primary-600">📞</span>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
                     <a 
                       href={`tel:${phone.replace(/\s/g, '')}`}
                       className="text-gray-700 hover:text-primary-600 transition-colors"
@@ -247,8 +248,8 @@ const PakiansCoachingAcademyRegistration = () => {
                   </div>
                 )}
                 {email && (
-                  <div className="flex items-center space-x-3">
-                    <span className="text-primary-600">📧</span>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-primary-600 flex-shrink-0" />
                     <a 
                       href={`mailto:${email}`}
                       className="text-gray-700 hover:text-primary-600 transition-colors"

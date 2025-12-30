@@ -52,31 +52,27 @@ const Header = () => {
         <div className="bg-primary-600 text-white py-1">
           <Container>
             <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-1 sm:space-y-0">
-              {/* Contact Info - Stack on mobile */}
-              <div className="flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-6">
+              {/* Contact Info - Inline with icons */}
+              <div className="flex items-center gap-4 sm:gap-6">
                 {phone && (
-                  <div className="flex items-center space-x-1.5">
-                    <Phone className="w-3 h-3" />
-                    <a 
-                      href={`tel:${phone.replace(/\s/g, '')}`}
-                      className="hidden xs:inline hover:text-accent-300 transition-colors"
-                    >
-                      {phone}
-                    </a>
+                  <a 
+                    href={`tel:${phone.replace(/\s/g, '')}`}
+                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors"
+                  >
+                    <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="hidden xs:inline">{phone}</span>
                     <span className="xs:hidden">Call Us</span>
-                  </div>
+                  </a>
                 )}
                 {email && (
-                  <div className="flex items-center space-x-1.5">
-                    <Mail className="w-3 h-3" />
-                    <a 
-                      href={`mailto:${email}`}
-                      className="hidden sm:inline hover:text-accent-300 transition-colors"
-                    >
-                      {email}
-                    </a>
+                  <a 
+                    href={`mailto:${email}`}
+                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors"
+                  >
+                    <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                    <span className="hidden sm:inline">{email}</span>
                     <span className="sm:hidden">Email</span>
-                  </div>
+                  </a>
                 )}
               </div>
               
