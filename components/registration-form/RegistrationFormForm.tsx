@@ -109,7 +109,6 @@ const RegistrationFormForm = () => {
         fatherOccupation: formData.fatherOccupation || undefined,
         phone: formData.fatherPhone || undefined,
         applyForScholarship: false,
-        boarderDayScholar: 1, // Default to DayScholar
         paymentMethod: 0, // Default to EasyPaisa
       })
       alert('Registration form submitted successfully!')

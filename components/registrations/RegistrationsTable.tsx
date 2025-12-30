@@ -720,10 +720,6 @@ export default function RegistrationsTable() {
                   <p className="text-gray-900">{viewingDetails.previousSchoolName || '-'}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-500 mb-1">Boarder/Day Scholar</p>
-                  <p className="text-gray-900">{viewingDetails.boarderDayScholar}</p>
-                </div>
-                <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Payment Method</p>
                   <p className="text-gray-900">{viewingDetails.paymentMethod}</p>
                 </div>

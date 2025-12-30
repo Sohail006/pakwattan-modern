@@ -96,7 +96,6 @@ interface FormData {
   profilePictureUrl: string | null
   applyForScholarship: boolean
   scholarshipType: number | null
-  boarderDayScholar: number
   paymentMethod: number
 }
 
@@ -115,7 +114,6 @@ export default function StudentRegistrationForm() {
     profilePictureUrl: null,
     applyForScholarship: false,
     scholarshipType: null,
-    boarderDayScholar: 1,
     paymentMethod: 0,
   })
 
@@ -204,7 +202,7 @@ export default function StudentRegistrationForm() {
         ...prev,
         [name]: value ? parseInt(value) : 0,
       }))
-    } else if (name === 'gender' || name === 'gradeId' || name === 'boarderDayScholar' || name === 'paymentMethod' || name === 'scholarshipType') {
+    } else if (name === 'gender' || name === 'gradeId' || name === 'paymentMethod' || name === 'scholarshipType') {
       // Handle numeric select fields
       setFormData(prev => ({
         ...prev,
@@ -361,7 +359,6 @@ export default function StudentRegistrationForm() {
         profilePictureUrl: formData.profilePictureUrl || undefined,
         applyForScholarship: formData.applyForScholarship,
         scholarshipType: formData.applyForScholarship && formData.scholarshipType !== null ? formData.scholarshipType : undefined,
-        boarderDayScholar: formData.boarderDayScholar,
         paymentMethod: formData.paymentMethod,
       })
 
@@ -607,7 +604,6 @@ export default function StudentRegistrationForm() {
       formData.gender >= 0 ? formData.gender : null,
       formData.gradeId > 0 ? formData.gradeId : null,
       formData.mobile,
-      formData.boarderDayScholar,
       formData.paymentMethod,
     ]
     
@@ -708,7 +704,6 @@ export default function StudentRegistrationForm() {
                     profilePictureUrl: null,
                     applyForScholarship: false,
                     scholarshipType: null,
-                    boarderDayScholar: 1,
                     paymentMethod: 0,
                   })
                 }}
@@ -1209,21 +1204,6 @@ export default function StudentRegistrationForm() {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-              <FormField label="Boarder / Day Scholar" required htmlFor="boarderDayScholar">
-                <select
-                  id="boarderDayScholar"
-                  name="boarderDayScholar"
-                  value={formData.boarderDayScholar}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-base bg-white"
-                  required
-                  aria-invalid={false}
-                >
-                  <option value={0}>Boarder</option>
-                  <option value={1}>Day Scholar</option>
-                </select>
-              </FormField>
-
               <FormField 
                 label="Registration Fee Payment Method" 
                 required 

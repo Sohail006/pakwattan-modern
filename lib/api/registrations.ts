@@ -18,7 +18,6 @@ export interface RegistrationRequest {
 	profilePictureUrl?: string;
 	applyForScholarship: boolean;
 	scholarshipType?: number; // Only if applyForScholarship is true
-	boarderDayScholar: number; // 0 Boarder, 1 DayScholar
 	paymentMethod: number; // 0 EasyPaisa, 1 BankAccount, 2 ByHandOnTestDate
 }
 
@@ -42,7 +41,6 @@ export interface RegistrationResponse {
 	profilePictureUrl?: string;
 	applyForScholarship: boolean;
 	scholarshipType?: string;
-	boarderDayScholar: string;
 	paymentMethod: string;
 	rollNumber?: string;
 	testVenue?: string;
@@ -72,7 +70,6 @@ export async function submitRegistration(data: RegistrationRequest): Promise<Reg
             profilePictureUrl: data.profilePictureUrl,
             applyForScholarship: data.applyForScholarship,
             scholarshipType: data.applyForScholarship && data.scholarshipType !== undefined ? data.scholarshipType : null,
-            boarderDayScholar: data.boarderDayScholar,
             paymentMethod: data.paymentMethod,
         };
 

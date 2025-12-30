@@ -41,7 +41,6 @@ export function exportRegistrationsToExcel(
         'Email': reg.email || '',
         'Form B/CNIC': reg.formBorCNIC || '',
         'Previous School': reg.previousSchoolName || '',
-        'Boarder/Day Scholar': reg.boarderDayScholar,
         'Apply for Scholarship': reg.applyForScholarship ? 'Yes' : 'No',
         'Scholarship Type': reg.scholarshipType || '',
         'Payment Method': reg.paymentMethod,
@@ -69,7 +68,6 @@ export function exportRegistrationsToExcel(
       { wch: 30 }, // Email
       { wch: 20 }, // Form B/CNIC
       { wch: 30 }, // Previous School
-      { wch: 15 }, // Boarder/Day Scholar
       { wch: 18 }, // Apply for Scholarship
       { wch: 20 }, // Scholarship Type
       { wch: 15 }, // Payment Method
