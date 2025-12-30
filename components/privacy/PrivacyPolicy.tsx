@@ -1,7 +1,38 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import { Shield, Users, Database, Lock, Eye, Mail, Calendar } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import { getCampuses, Campus } from '@/lib/api/campuses'
+import { SCHOOL_INFO } from '@/lib/constants'
 
 const PrivacyPolicy = () => {
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
+
+  useEffect(() => {
+    const fetchMainCampus = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Get main campus (highest priority or first one)
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          return priorityB - priorityA
+        })
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[PrivacyPolicy] Failed to load main campus:', error)
+        // Keep null on error (will use fallback from SCHOOL_INFO)
+      }
+    }
+
+    fetchMainCampus()
+  }, [])
+
+  // Use main campus data if available, otherwise fallback to SCHOOL_INFO
+  const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const address = mainCampus?.address || SCHOOL_INFO.contact.address
+  const officeHours = mainCampus?.officeHours || 'Monday to Friday, 8:00 AM - 4:00 PM'
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
       {/* Hero Section */}
@@ -355,9 +386,9 @@ const PrivacyPolicy = () => {
                     </p>
                     <div className="space-y-2 text-gray-700">
                       <p><strong>Email:</strong> privacy@pakwattan.edu.pk</p>
-                      <p><strong>Phone:</strong> 0318 0821377</p>
-                      <p><strong>Address:</strong> Pak Wattan School & College of Sciences, Havelian, Pakistan</p>
-                      <p><strong>Office Hours:</strong> Monday to Friday, 8:00 AM - 4:00 PM</p>
+                      {phone && <p><strong>Phone:</strong> {phone}</p>}
+                      {address && <p><strong>Address:</strong> {address}</p>}
+                      {officeHours && <p><strong>Office Hours:</strong> {officeHours}</p>}
                     </div>
                   </div>
                 </section>

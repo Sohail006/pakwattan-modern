@@ -1,28 +1,59 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { getCampuses, Campus } from '@/lib/api/campuses'
+import { SCHOOL_INFO } from '@/lib/constants'
 
 const ContactHero = () => {
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
+
+  useEffect(() => {
+    const fetchMainCampus = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Get main campus (highest priority or first one)
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          return priorityB - priorityA
+        })
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[ContactHero] Failed to load main campus:', error)
+        // Keep null on error (will use fallback from SCHOOL_INFO)
+      }
+    }
+
+    fetchMainCampus()
+  }, [])
+
+  // Use main campus data if available, otherwise fallback to SCHOOL_INFO
+  const address = mainCampus?.address || SCHOOL_INFO.contact.address
+  const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const email = mainCampus?.email || SCHOOL_INFO.contact.email
+  const officeHours = mainCampus?.officeHours || 'Monday - Friday: 8:00 AM - 4:00 PM | Saturday: 8:00 AM - 1:00 PM'
+
   const contactInfo = [
     {
       icon: <MapPin className="w-6 h-6" />,
       title: 'Address',
-      details: 'Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan'
+      details: address
     },
     {
       icon: <Phone className="w-6 h-6" />,
       title: 'Phone',
-      details: '0318 0821377'
+      details: phone
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: 'Email',
-      details: 'pakwattan2020@gmail.com'
+      details: email
     },
     {
       icon: <Clock className="w-6 h-6" />,
       title: 'Hours',
-      details: 'Monday - Friday: 8:00 AM - 4:00 PM | Saturday: 8:00 AM - 1:00 PM'
+      details: officeHours
     }
   ]
 
@@ -54,12 +85,14 @@ const ContactHero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <a 
-                href="tel:03180821377"
-                className="btn-accent text-center"
-              >
-                Call Now
-              </a>
+              {phone && (
+                <a 
+                  href={`tel:${phone.replace(/\s/g, '')}`}
+                  className="btn-accent text-center"
+                >
+                  Call Now
+                </a>
+              )}
               <a 
                 href="#contact-form"
                 className="btn-secondary text-center"

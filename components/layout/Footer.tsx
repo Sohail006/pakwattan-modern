@@ -1,10 +1,40 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Phone, Mail, MapPin, Facebook, Youtube, Twitter, Code } from 'lucide-react'
 import { SCHOOL_INFO, MAIN_NAVIGATION, DEVELOPER_INFO } from '@/lib/constants'
+import { getCampuses, Campus } from '@/lib/api/campuses'
 import Container from '@/components/ui/Container'
 
 const Footer = () => {
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
+
+  useEffect(() => {
+    const fetchMainCampus = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Get main campus (highest priority or first one)
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          return priorityB - priorityA
+        })
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[Footer] Failed to load main campus:', error)
+        // Keep null on error (will use fallback from SCHOOL_INFO)
+      }
+    }
+
+    fetchMainCampus()
+  }, [])
+
+  // Use main campus data if available, otherwise fallback to SCHOOL_INFO
+  const address = mainCampus?.address || SCHOOL_INFO.contact.address
+  const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const email = mainCampus?.email || SCHOOL_INFO.contact.email
   return (
     <footer className="bg-secondary-800 text-white">
       <Container className="py-16">
@@ -114,26 +144,26 @@ const Footer = () => {
                 <MapPin className="w-5 h-5 text-primary-400 mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-secondary-300 text-sm">
-                    {SCHOOL_INFO.contact.address}
+                    {address}
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a 
-                  href={`tel:${SCHOOL_INFO.contact.phone.replace(/\s/g, '')}`}
+                  href={`tel:${phone.replace(/\s/g, '')}`}
                   className="text-secondary-300 hover:text-white transition-colors"
                 >
-                  {SCHOOL_INFO.contact.phone}
+                  {phone}
                 </a>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a 
-                  href={`mailto:${SCHOOL_INFO.contact.email}`}
+                  href={`mailto:${email}`}
                   className="text-secondary-300 hover:text-white transition-colors"
                 >
-                  {SCHOOL_INFO.contact.email}
+                  {email}
                 </a>
               </div>
             </div>

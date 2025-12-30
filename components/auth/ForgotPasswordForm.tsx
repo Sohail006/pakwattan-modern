@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Mail, ArrowLeft, CheckCircle, AlertCircle, Shield } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import ITSupportContact from '@/components/shared/ITSupportContact'
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState('')
@@ -208,14 +209,12 @@ const ForgotPasswordForm = () => {
               <p className="text-white/80 text-sm mb-3">
                 If you&apos;re having trouble accessing your account, contact our support team
               </p>
-              <div className="flex items-center space-x-2 text-sm">
-                <span>📧</span>
-                <span>support@pakwattan.edu.pk</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <span>📞</span>
-                <span>+92-XXX-XXXXXXX</span>
-              </div>
+              <ITSupportContact
+                displayFormat="stacked"
+                className="text-white/90"
+                fallbackEmail="support@pakwattan.edu.pk"
+                fallbackPhone="+92-XXX-XXXXXXX"
+              />
             </div>
           </div>
         </div>

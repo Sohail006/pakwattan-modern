@@ -5,6 +5,7 @@ import { Eye, EyeOff, Lock, Mail, User, Shield, AlertCircle, CheckCircle } from 
 import Link from 'next/link'
 import Image from 'next/image'
 import FormField from '@/components/ui/FormField'
+import ITSupportContact from '@/components/shared/ITSupportContact'
 
 const LoginForm = () => {
   const [formData, setFormData] = useState({
@@ -403,14 +404,12 @@ const LoginForm = () => {
               <p className="text-white/80 text-sm mb-3">
                 Contact our IT support team for assistance with your account
               </p>
-              <div className="flex items-center space-x-2 text-sm">
-                <span>📧</span>
-                <span>support@pakwattan.edu.pk</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <span>📞</span>
-                <span>+92-XXX-XXXXXXX</span>
-              </div>
+              <ITSupportContact
+                displayFormat="stacked"
+                className="text-white/90"
+                fallbackEmail="support@pakwattan.edu.pk"
+                fallbackPhone="+92-XXX-XXXXXXX"
+              />
             </div>
           </div>
         </div>

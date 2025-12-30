@@ -2,7 +2,9 @@
 
 import Image from 'next/image'
 import { API_CONFIG } from '@/lib/config'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getCampuses, Campus } from '@/lib/api/campuses'
+import { SCHOOL_INFO } from '@/lib/constants'
 
 const PakiansCoachingAcademyRegistration = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,32 @@ const PakiansCoachingAcademyRegistration = () => {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
+
+  useEffect(() => {
+    const fetchMainCampus = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Get main campus (highest priority or first one)
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          return priorityB - priorityA
+        })
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[PakiansCoachingAcademyRegistration] Failed to load main campus:', error)
+        // Keep null on error (will use fallback from SCHOOL_INFO)
+      }
+    }
+
+    fetchMainCampus()
+  }, [])
+
+  // Use main campus data if available, otherwise fallback to SCHOOL_INFO
+  const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const email = mainCampus?.email || SCHOOL_INFO.contact.email
+  const address = mainCampus?.address || SCHOOL_INFO.contact.address
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -207,18 +235,34 @@ const PakiansCoachingAcademyRegistration = () => {
             <div className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl p-8">
               <h3 className="text-2xl font-bold text-primary-800 mb-6">Contact Information</h3>
               <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <span className="text-primary-600">📞</span>
-                  <span className="text-gray-700">0318 0821377</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="text-primary-600">📧</span>
-                  <span className="text-gray-700">pakwattan2020@gmail.com</span>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span className="text-primary-600">📍</span>
-                  <span className="text-gray-700">Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan</span>
-                </div>
+                {phone && (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-primary-600">📞</span>
+                    <a 
+                      href={`tel:${phone.replace(/\s/g, '')}`}
+                      className="text-gray-700 hover:text-primary-600 transition-colors"
+                    >
+                      {phone}
+                    </a>
+                  </div>
+                )}
+                {email && (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-primary-600">📧</span>
+                    <a 
+                      href={`mailto:${email}`}
+                      className="text-gray-700 hover:text-primary-600 transition-colors"
+                    >
+                      {email}
+                    </a>
+                  </div>
+                )}
+                {address && (
+                  <div className="flex items-center space-x-3">
+                    <span className="text-primary-600">📍</span>
+                    <span className="text-gray-700">{address}</span>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -1,25 +1,14 @@
 import type { Metadata } from 'next'
-import { Inter, Josefin_Sans } from 'next/font/google'
 import './globals.css'
 import ConditionalLayout from '@/components/layout/ConditionalLayout'
 import { NotificationProvider } from '@/components/notifications/NotificationProvider'
 import ToastContainer from '@/components/ui/ToastContainer'
 import ChunkErrorHandler from '@/components/ui/ChunkErrorHandler'
 import Analytics from '@/components/Analytics'
+import FontLoader from '@/components/layout/FontLoader'
+import YouTubeScript from '@/components/layout/YouTubeScript'
 // Initialize token refresh service
 import '@/lib/services/tokenRefresh'
-
-const inter = Inter({ 
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
-const josefin = Josefin_Sans({ 
-  subsets: ['latin'],
-  variable: '--font-josefin',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: 'Pak Wattan School & College of Sciences - Havelian',
@@ -73,6 +62,16 @@ export const metadata: Metadata = {
   verification: {
     google: 'your-google-verification-code',
   },
+  icons: {
+    icon: [
+      { url: '/favicons.ico' },
+      { url: '/favicon-16x16.jpg', sizes: '16x16', type: 'image/jpeg' },
+      { url: '/favicon-32x32.jpg', sizes: '32x32', type: 'image/jpeg' },
+    ],
+  },
+  other: {
+    'theme-color': '#24744f',
+  },
 }
 
 export default function RootLayout({
@@ -81,16 +80,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${josefin.variable}`}>
-      <head>
-        <link rel="icon" href="/favicons.ico" />
-        <link rel="icon" type="image/jpeg" sizes="16x16" href="/favicon-16x16.jpg" />
-        <link rel="icon" type="image/jpeg" sizes="32x32" href="/favicon-32x32.jpg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" content="#24744f" />
-        <script src="https://www.youtube.com/player_api" async></script>
-      </head>
-      <body className={`${inter.className} antialiased`} suppressHydrationWarning>
+    <html lang="en" className="font-sans">
+      <body className="antialiased" suppressHydrationWarning>
+        <FontLoader />
+        <YouTubeScript />
         <NotificationProvider>
           <ChunkErrorHandler />
           <ConditionalLayout>

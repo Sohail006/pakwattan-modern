@@ -1,35 +1,38 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { MapPin, Navigation, Phone, Mail } from 'lucide-react'
+import { getCampuses, Campus } from '@/lib/api/campuses'
 
 const MapSection = () => {
-  // Campus locations for information cards
-  const campuses = [
-    {
-      name: 'Main Campus (Boys Wing)',
-      address: 'Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan',
-      phone: '0318 0821377',
-      email: 'pakwattan2020@gmail.com'
-    },
-    {
-      name: 'Primary Section',
-      address: 'Gohar Market, Main Havelian City, Abbottabad, KPK, Pakistan',
-      phone: '0318 0821377',
-      email: 'pakwattan2020@gmail.com'
-    },
-    {
-      name: 'Girls Campus',
-      address: 'Havelian, Abbottabad, KPK, Pakistan',
-      phone: '0318 0821377',
-      email: 'pakwattan2020@gmail.com'
-    },
-    {
-      name: 'Secondary Campus',
-      address: 'Havelian, Abbottabad, KPK, Pakistan',
-      phone: '0318 0821377',
-      email: 'pakwattan2020@gmail.com'
+  const [campuses, setCampuses] = useState<Campus[]>([])
+  const [loading, setLoading] = useState(true)
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
+
+  useEffect(() => {
+    const fetchCampuses = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Sort by priority (highest first), then by name
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          if (priorityB !== priorityA) return priorityB - priorityA
+          return a.name.localeCompare(b.name)
+        })
+        setCampuses(sorted)
+        // Get main campus (highest priority or first one)
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[MapSection] Failed to load campuses:', error)
+        // Keep empty array on error (graceful degradation)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchCampuses()
+  }, [])
 
   return (
     <section className="section-padding bg-white">
@@ -39,7 +42,10 @@ const MapSection = () => {
             Find Us on the <span className="text-gradient">Map</span>
           </h2>
           <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
-            Visit our main campus located in Havelian, Abbottabad. View the map below for our exact location.
+            {mainCampus 
+              ? `Visit our main campus located at ${mainCampus.address || 'Havelian, Abbottabad'}. View the map below for our exact location.`
+              : 'Visit our campuses located in Havelian, Abbottabad. View the map below for our exact location.'
+            }
           </p>
         </div>
 
@@ -62,46 +68,75 @@ const MapSection = () => {
         </div>
 
         {/* Campus Information Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {campuses.map((campus) => (
-            <div key={campus.name} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100">
-              <div className="flex items-start space-x-3 mb-4">
-                <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5 text-primary-600" />
+        {loading ? (
+          <div className="text-center py-12 mb-8">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            <p className="mt-4 text-secondary-600">Loading campus information...</p>
+          </div>
+        ) : campuses.length === 0 ? (
+          <div className="text-center py-12 bg-gray-50 rounded-2xl mb-8">
+            <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600">No campus information available at the moment.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {campuses.slice(0, 3).map((campus) => (
+              <div key={campus.id} className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100">
+                <div className="flex items-start space-x-3 mb-4">
+                  <div className="w-10 h-10 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-primary-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-secondary-800 mb-1">
+                      {campus.name}
+                    </h3>
+                    {campus.address && (
+                      <p className="text-sm text-secondary-600 leading-relaxed">
+                        {campus.address}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-secondary-800 mb-1">
-                    {campus.name}
-                  </h3>
-                  <p className="text-sm text-secondary-600 leading-relaxed">
-                    {campus.address}
-                  </p>
+                
+                <div className="space-y-2">
+                  {campus.mobileNumber && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                      <a 
+                        href={`tel:${campus.mobileNumber.replace(/\s/g, '')}`}
+                        className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
+                      >
+                        {campus.mobileNumber}
+                      </a>
+                    </div>
+                  )}
+                  {!campus.mobileNumber && campus.phone && (
+                    <div className="flex items-center space-x-2">
+                      <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                      <a 
+                        href={`tel:${campus.phone.replace(/\s/g, '')}`}
+                        className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
+                      >
+                        {campus.phone}
+                      </a>
+                    </div>
+                  )}
+                  {campus.email && (
+                    <div className="flex items-center space-x-2">
+                      <Mail className="w-4 h-4 text-primary-600 flex-shrink-0" />
+                      <a 
+                        href={`mailto:${campus.email}`}
+                        className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
+                      >
+                        {campus.email}
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                  <a 
-                    href={`tel:${campus.phone}`}
-                    className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                  >
-                    {campus.phone}
-                  </a>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Mail className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                  <a 
-                    href={`mailto:${campus.email}`}
-                    className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                  >
-                    {campus.email}
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         {/* Quick Actions */}
         <div className="text-center">
@@ -122,13 +157,15 @@ const MapSection = () => {
                 <Navigation className="w-4 h-4" />
                 <span>Get Directions</span>
               </a>
-              <a
-                href="tel:03180821377"
-                className="btn-secondary inline-flex items-center space-x-2"
-              >
-                <Phone className="w-4 h-4" />
-                <span>Call Us</span>
-              </a>
+              {mainCampus && (mainCampus.mobileNumber || mainCampus.phone) && (
+                <a
+                  href={`tel:${(mainCampus.mobileNumber || mainCampus.phone || '').replace(/\s/g, '')}`}
+                  className="btn-secondary inline-flex items-center space-x-2"
+                >
+                  <Phone className="w-4 h-4" />
+                  <span>Call Us</span>
+                </a>
+              )}
             </div>
           </div>
         </div>

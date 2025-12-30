@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X, Phone, Mail, Facebook, Youtube, Twitter, User, LogOut, Settings, Play } from 'lucide-react'
 import { useScroll } from '@/hooks/useScroll'
 import { MAIN_NAVIGATION, SECONDARY_NAVIGATION, SCHOOL_INFO } from '@/lib/constants'
+import { getCampuses, Campus } from '@/lib/api/campuses'
 import Container from '@/components/ui/Container'
 import NotificationCenter from '@/components/notifications/NotificationCenter'
 import Button from '@/components/ui/Button'
@@ -15,8 +16,33 @@ const Header = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [isLoggedIn, setIsLoggedIn] = useState(false) // This would come from auth context
   const [userType] = useState('student') // This would come from auth context
+  const [mainCampus, setMainCampus] = useState<Campus | null>(null)
   
   const isScrolled = useScroll(50)
+
+  useEffect(() => {
+    const fetchMainCampus = async () => {
+      try {
+        const data = await getCampuses(true) // Get only active campuses
+        // Get main campus (highest priority or first one)
+        const sorted = data.sort((a, b) => {
+          const priorityA = a.priority || 0
+          const priorityB = b.priority || 0
+          return priorityB - priorityA
+        })
+        setMainCampus(sorted.length > 0 ? sorted[0] : null)
+      } catch (error) {
+        console.error('[Header] Failed to load main campus:', error)
+        // Keep null on error (will use fallback from SCHOOL_INFO)
+      }
+    }
+
+    fetchMainCampus()
+  }, [])
+
+  // Use main campus data if available, otherwise fallback to SCHOOL_INFO
+  const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
+  const email = mainCampus?.email || SCHOOL_INFO.contact.email
 
   return (
     <>
@@ -28,16 +54,30 @@ const Header = () => {
             <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-1 sm:space-y-0">
               {/* Contact Info - Stack on mobile */}
               <div className="flex flex-col sm:flex-row items-center space-y-0.5 sm:space-y-0 sm:space-x-6">
-                <div className="flex items-center space-x-1.5">
-                  <Phone className="w-3 h-3" />
-                  <span className="hidden xs:inline">{SCHOOL_INFO.contact.phone}</span>
-                  <span className="xs:hidden">Call Us</span>
-                </div>
-                <div className="flex items-center space-x-1.5">
-                  <Mail className="w-3 h-3" />
-                  <span className="hidden sm:inline">{SCHOOL_INFO.contact.email}</span>
-                  <span className="sm:hidden">Email</span>
-                </div>
+                {phone && (
+                  <div className="flex items-center space-x-1.5">
+                    <Phone className="w-3 h-3" />
+                    <a 
+                      href={`tel:${phone.replace(/\s/g, '')}`}
+                      className="hidden xs:inline hover:text-accent-300 transition-colors"
+                    >
+                      {phone}
+                    </a>
+                    <span className="xs:hidden">Call Us</span>
+                  </div>
+                )}
+                {email && (
+                  <div className="flex items-center space-x-1.5">
+                    <Mail className="w-3 h-3" />
+                    <a 
+                      href={`mailto:${email}`}
+                      className="hidden sm:inline hover:text-accent-300 transition-colors"
+                    >
+                      {email}
+                    </a>
+                    <span className="sm:hidden">Email</span>
+                  </div>
+                )}
               </div>
               
               {/* Action Links - Responsive layout */}

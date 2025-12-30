@@ -7,7 +7,11 @@ export interface Campus {
   address?: string;
   phone?: string;
   email?: string;
+  mobileNumber?: string;
+  whatsAppNumber?: string;
+  officeHours?: string;
   principalName?: string;
+  priority?: number;
   isActive: boolean;
   createdAt: string;
 }
@@ -17,7 +21,11 @@ export interface CreateCampusRequest {
   address?: string;
   phone?: string;
   email?: string;
+  mobileNumber?: string;
+  whatsAppNumber?: string;
+  officeHours?: string;
   principalName?: string;
+  priority?: number;
   isActive?: boolean;
 }
 

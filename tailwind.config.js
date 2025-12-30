@@ -56,6 +56,7 @@ module.exports = {
       fontFamily: {
         'sans': ['Inter', 'system-ui', 'sans-serif'],
         'display': ['Josefin Sans', 'system-ui', 'sans-serif'],
+        'josefin': ['Josefin Sans', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',
