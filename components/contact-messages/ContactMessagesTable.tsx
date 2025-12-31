@@ -16,7 +16,8 @@ import {
   Calendar,
   User,
   Send,
-  AlertCircle
+  AlertCircle,
+  FileText
 } from 'lucide-react'
 import { 
   getContacts, 
@@ -407,6 +408,14 @@ export default function ContactMessagesTable() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
+                      <button
+                        onClick={() => setViewingMessage(contact)}
+                        className="text-primary-600 hover:text-primary-900 p-2 rounded hover:bg-primary-50 transition-colors"
+                        title="View message details"
+                        aria-label={`View message from ${contact.name}`}
+                      >
+                        <FileText className="w-4 h-4" />
+                      </button>
                       <button
                         onClick={() => handleToggleRead(contact)}
                         disabled={processingId === contact.id}
