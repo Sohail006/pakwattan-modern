@@ -1,12 +1,17 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Trophy, BookOpen, Award, GraduationCap, Calendar, Briefcase, FileText } from 'lucide-react'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
 
 const HeroSection = () => {
+  const [videoError, setVideoError] = useState(false)
+  const [videoLoaded, setVideoLoaded] = useState(false)
+
   const quickLinks = HERO_QUICK_LINKS.map((link, index) => {
     const IconComponent = [Briefcase, Award, Trophy, BookOpen][index]
     return {
@@ -15,21 +20,51 @@ const HeroSection = () => {
     }
   })
 
+  const handleVideoError = () => {
+    setVideoError(true)
+  }
+
+  const handleVideoLoaded = () => {
+    setVideoLoaded(true)
+  }
+
   return (
     <section className="relative h-[70vh] sm:h-[75vh] lg:h-[80vh] flex items-center overflow-hidden">
       {/* Enhanced Background with Video and Gradient Overlay */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          className="w-full h-full object-cover"
-          aria-label="Pak Wattan School background video"
-        >
-          <source src="/files/bannerImage.mp4" type="video/mp4" />
-        </video>
+        {/* Fallback background image */}
+        {videoError && (
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-600 via-primary-700 to-accent-600">
+            <Image
+              src="/images/logo/logo_150x150.png"
+              alt="Pak Wattan School"
+              fill
+              className="object-cover opacity-20"
+              priority
+              sizes="100vw"
+            />
+          </div>
+        )}
+        
+        {/* Video background */}
+        {!videoError && (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            onError={handleVideoError}
+            onLoadedData={handleVideoLoaded}
+            className={`w-full h-full object-cover transition-opacity duration-500 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            aria-label="Pak Wattan School background video"
+          >
+            <source src="/files/bannerImage.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        )}
+        
+        {/* Gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary-900/80 via-primary-800/70 to-primary-700/80"></div>
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat opacity-10"></div>
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>

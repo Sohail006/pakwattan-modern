@@ -114,10 +114,12 @@ export default function RootLayout({
         <StructuredData data={[organizationSchema, websiteSchema]} />
         {/* Resource hints for external domains - improve connection speed */}
         {/* Google Fonts - Critical for initial render */}
+        {/* eslint-disable @next/next/google-font-preconnect */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* eslint-enable @next/next/google-font-preconnect */}
         {/* YouTube & Google APIs */}
         <link rel="preconnect" href="https://www.googleapis.com" />
         <link rel="dns-prefetch" href="https://www.googleapis.com" />
