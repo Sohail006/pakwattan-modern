@@ -288,6 +288,78 @@ export function formatNumber(num: number): string {
 }
 
 /**
+ * Formats a single test date for display (e.g., "February 15, 2026")
+ */
+export function formatTestDate(dateString: string): string {
+  try {
+    const date = new Date(dateString)
+    if (isNaN(date.getTime())) {
+      return dateString // Return original if invalid
+    }
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  } catch {
+    return dateString // Return original on error
+  }
+}
+
+/**
+ * Formats a test date range for display (e.g., "February 15 - March 15, 2026")
+ */
+export function formatTestDateRange(startDate: string, endDate: string): string {
+  try {
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return `${startDate} - ${endDate}` // Return original if invalid
+    }
+    
+    // Same date - return single date
+    if (start.getTime() === end.getTime()) {
+      return formatTestDate(startDate)
+    }
+    
+    // Same year
+    if (start.getFullYear() === end.getFullYear()) {
+      // Same month
+      if (start.getMonth() === end.getMonth()) {
+        return `${start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { day: 'numeric', year: 'numeric' })}`
+      }
+      // Different months, same year
+      return `${start.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+    }
+    
+    // Different years
+    return `${start.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} - ${end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`
+  } catch {
+    return `${startDate} - ${endDate}` // Return original on error
+  }
+}
+
+/**
+ * Formats test duration in minutes to readable format (e.g., "2 hours" or "120 minutes")
+ */
+export function formatTestDuration(minutes: number): string {
+  if (!minutes || minutes <= 0) {
+    return ''
+  }
+  
+  if (minutes >= 60) {
+    const hours = Math.floor(minutes / 60)
+    const remainingMinutes = minutes % 60
+    if (remainingMinutes === 0) {
+      return `${hours} ${hours === 1 ? 'hour' : 'hours'}`
+    }
+    return `${hours} ${hours === 1 ? 'hour' : 'hours'} ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`
+  }
+  return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`
+}
+
+/**
  * Truncates text to a specified length
  */
 export function truncateText(text: string, maxLength: number): string {

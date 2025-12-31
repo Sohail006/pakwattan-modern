@@ -3,10 +3,16 @@ import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { BookOpen, Users, Calendar, Award } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Montessori Education - PakWattan Modern School',
-  description: 'Early childhood education program focusing on holistic development for children aged 3-5 years.',
-}
+import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Montessori Education',
+  description: 'Early childhood education program at Pak Wattan School & College of Sciences focusing on holistic development for children aged 3-5 years through play-based learning and social development.',
+  keywords: 'montessori education, early childhood education, preschool, pak wattan montessori, havelian preschool, play-based learning',
+  path: '/academic/montessori',
+})
 
 const MontessoriPage = () => {
   const features = [
@@ -42,8 +48,16 @@ const MontessoriPage = () => {
     'Environmental Awareness'
   ]
 
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://pakwattan.edu.pk' },
+    { name: 'Academic', url: 'https://pakwattan.edu.pk/academic' },
+    { name: 'Montessori', url: 'https://pakwattan.edu.pk/academic/montessori' },
+  ])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
+    <>
+      <StructuredData data={breadcrumbs} />
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 to-accent-50">
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
         <Container>
@@ -159,6 +173,7 @@ const MontessoriPage = () => {
         </Container>
       </section>
     </div>
+    </>
   )
 }
 

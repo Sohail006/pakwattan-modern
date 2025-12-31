@@ -103,62 +103,77 @@ const PhotoGalleryPhotos = () => {
     : photos.filter(photo => photo.category === selectedCategory)
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 sm:py-12 lg:py-16 bg-white">
       <div className="container-custom">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold font-josefin mb-6">
+        <div className="text-center mb-8 sm:mb-12 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin mb-4 sm:mb-6">
             <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
               Photo Collection
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto break-words">
             Explore our photo collection showcasing school life, events, and achievements
           </p>
         </div>
 
         {/* Category Filter */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
+        <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-8 sm:mb-12 px-4 sm:px-0">
           {categories.map((category) => (
             <button
               key={category.id}
               onClick={() => setSelectedCategory(category.id)}
-              className={`flex items-center space-x-2 px-6 py-3 rounded-full transition-all duration-300 ${
+              className={`flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-full transition-all duration-300 text-xs sm:text-sm touch-target min-h-[44px] ${
                 selectedCategory === category.id
-                  ? 'bg-primary-600 text-white shadow-lg'
-                  : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700'
+                  ? 'bg-primary-600 text-white shadow-lg active:bg-primary-700'
+                  : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700 active:bg-primary-200'
               }`}
+              aria-label={`Filter by ${category.name}`}
+              aria-pressed={selectedCategory === category.id}
             >
-              <span>{category.icon}</span>
-              <span>{category.name}</span>
+              <span className="text-sm sm:text-base">{category.icon}</span>
+              <span className="truncate">{category.name}</span>
             </button>
           ))}
         </div>
 
         {/* Photo Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {filteredPhotos.map((photo) => (
-            <div key={photo.id} className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 cursor-pointer hover-lift"
-                 onClick={() => setSelectedPhoto(photo)}>
+            <div 
+              key={photo.id} 
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl active:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 active:border-primary-300 cursor-pointer hover-lift touch-target"
+              onClick={() => setSelectedPhoto(photo)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  setSelectedPhoto(photo)
+                }
+              }}
+              aria-label={`View ${photo.title}`}
+            >
               <div className="relative aspect-square overflow-hidden">
                 <Image
                   src={photo.image}
                   alt={photo.title}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300"></div>
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    <span className="text-white text-xl">🔍</span>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 active:bg-black/10 transition-colors duration-300"></div>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-300">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
+                    <span className="text-white text-lg sm:text-xl">🔍</span>
                   </div>
                 </div>
               </div>
               
-              <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-900 mb-2 group-hover:text-primary-700 transition-colors duration-300">
+              <div className="p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-1 sm:mb-2 group-hover:text-primary-700 transition-colors duration-300 truncate">
                   {photo.title}
                 </h3>
-                <p className="text-gray-600 text-sm mb-2">
+                <p className="text-gray-600 text-xs sm:text-sm mb-1 sm:mb-2 line-clamp-2 break-words">
                   {photo.description}
                 </p>
                 <p className="text-gray-500 text-xs">{photo.date}</p>
@@ -168,37 +183,46 @@ const PhotoGalleryPhotos = () => {
         </div>
 
         {filteredPhotos.length === 0 && (
-          <div className="text-center py-12">
-            <div className="text-6xl mb-4">📷</div>
-            <h3 className="text-2xl font-bold text-gray-700 mb-2">No photos found</h3>
-            <p className="text-gray-500">Try selecting a different category</p>
+          <div className="text-center py-8 sm:py-12 px-4">
+            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4">📷</div>
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-700 mb-2">No photos found</h3>
+            <p className="text-sm sm:text-base text-gray-500">Try selecting a different category</p>
           </div>
         )}
 
         {/* Photo Modal */}
         {selectedPhoto && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-               onClick={() => setSelectedPhoto(null)}>
-            <div className="bg-white rounded-2xl max-w-4xl max-h-[90vh] overflow-hidden"
-                 onClick={(e) => e.stopPropagation()}>
-              <div className="relative aspect-video">
+          <div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4"
+            onClick={() => setSelectedPhoto(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Viewing ${selectedPhoto.title}`}
+          >
+            <div 
+              className="bg-white rounded-xl sm:rounded-2xl max-w-4xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative aspect-video sm:aspect-video">
                 <Image
                   src={selectedPhoto.image}
                   alt={selectedPhoto.title}
                   fill
-                  className="object-cover"
+                  className="object-contain sm:object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 80vw"
                 />
                 <button
                   onClick={() => setSelectedPhoto(null)}
-                  className="absolute top-4 right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors duration-300"
+                  className="absolute top-2 right-2 sm:top-4 sm:right-4 w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-white/30 active:bg-white/40 transition-colors duration-300 touch-target"
+                  aria-label="Close photo modal"
                 >
-                  ✕
+                  <span className="text-lg sm:text-xl">✕</span>
                 </button>
               </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedPhoto.title}</h3>
-                <p className="text-gray-600 mb-4">{selectedPhoto.description}</p>
-                <p className="text-gray-500 text-sm">{selectedPhoto.date}</p>
+              <div className="p-4 sm:p-6">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 break-words">{selectedPhoto.title}</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 break-words">{selectedPhoto.description}</p>
+                <p className="text-xs sm:text-sm text-gray-500">{selectedPhoto.date}</p>
               </div>
             </div>
           </div>

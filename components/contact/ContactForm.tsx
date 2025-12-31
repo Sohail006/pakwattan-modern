@@ -56,14 +56,14 @@ const ContactForm = () => {
       <section className="section-padding bg-gradient-to-br from-green-50 to-primary-50">
         <div className="container-custom">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-2xl shadow-xl p-8">
-              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />
               </div>
-              <h2 className="text-3xl font-bold text-secondary-800 mb-4">
+              <h2 className="text-2xl sm:text-3xl font-bold text-secondary-800 mb-3 sm:mb-4">
                 Message Sent Successfully!
               </h2>
-              <p className="text-lg text-secondary-600 mb-6">
+              <p className="text-base sm:text-lg text-secondary-600 mb-4 sm:mb-6 px-2">
                 Thank you for contacting Pak Wattan School. Your message has been received successfully. We will review your inquiry and get back to you as soon as possible.
               </p>
               <button
@@ -77,7 +77,7 @@ const ContactForm = () => {
                     message: ''
                   })
                 }}
-                className="btn-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                className="btn-primary focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 touch-target min-h-[44px]"
                 aria-label="Send another message"
               >
                 Send Another Message
@@ -92,24 +92,24 @@ const ContactForm = () => {
   return (
     <section id="contact-form" className="section-padding bg-gradient-to-br from-secondary-50 to-primary-50">
       <div className="container-custom">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
             Send us a <span className="text-gradient">Message</span>
           </h2>
-          <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto px-4">
             Have questions or want to learn more about our programs? We&apos;d love to hear from you.
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto px-4 sm:px-0">
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <div className="bg-gradient-to-r from-primary-600 to-accent-600 p-6">
-              <h3 className="text-2xl font-bold text-white text-center">
+            <div className="bg-gradient-to-r from-primary-600 to-accent-600 p-4 sm:p-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-white text-center">
                 Contact Form
               </h3>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
               {error && (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-2">
                   <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
@@ -117,7 +117,7 @@ const ContactForm = () => {
                 </div>
               )}
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <FormField 
                   label={
                     <span className="flex items-center">
@@ -136,7 +136,7 @@ const ContactForm = () => {
                     onChange={handleInputChange}
                     required
                     aria-invalid={false}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 min-h-[44px]"
                     placeholder="Enter your full name"
                   />
                 </FormField>
@@ -159,13 +159,13 @@ const ContactForm = () => {
                     onChange={handleInputChange}
                     required
                     aria-invalid={false}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 min-h-[44px]"
                     placeholder="Enter your email address"
                   />
                 </FormField>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <FormField 
                   label={
                     <span className="flex items-center">
@@ -182,7 +182,7 @@ const ContactForm = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     aria-invalid={false}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 min-h-[44px]"
                     placeholder="Enter your phone number"
                   />
                 </FormField>
@@ -195,7 +195,7 @@ const ContactForm = () => {
                     onChange={handleInputChange}
                     required
                     aria-invalid={false}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                    className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 min-h-[44px]"
                   >
                     <option value="">Select a subject</option>
                     <option value="admission">Admission Inquiry</option>
@@ -225,7 +225,7 @@ const ContactForm = () => {
                   required
                   rows={6}
                   aria-invalid={false}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-y"
+                  className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-y min-h-[120px]"
                   placeholder="Tell us how we can help you..."
                 />
               </FormField>
@@ -234,7 +234,7 @@ const ContactForm = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`btn-primary ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`btn-primary touch-target min-h-[44px] ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
                   aria-label={isSubmitting ? 'Sending message...' : 'Send message'}
                 >
                   {isSubmitting ? (

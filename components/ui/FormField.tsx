@@ -28,13 +28,13 @@ export default function FormField({
       {typeof label === 'string' ? (
         <label
           htmlFor={htmlFor}
-          className="block text-sm font-semibold text-gray-700 mb-2"
+          className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       ) : (
-        <div className="block text-sm font-semibold text-gray-700 mb-2">
+        <div className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </div>
@@ -43,17 +43,17 @@ export default function FormField({
       {children}
       
       {hint && !error && (
-        <p className="mt-1 text-xs text-gray-500">{hint}</p>
+        <p className="mt-1 text-xs sm:text-sm text-gray-500 break-words">{hint}</p>
       )}
       
       {error && (
         <div
-          className="mt-1 flex items-start gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-2"
+          className="mt-1 flex items-start gap-2 text-xs sm:text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg p-2 sm:p-3"
           role="alert"
           aria-live="polite"
         >
           <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-          <span className="flex-1">{error}</span>
+          <span className="flex-1 break-words">{error}</span>
         </div>
       )}
     </div>

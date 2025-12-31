@@ -33,21 +33,21 @@ const AboutHero = () => {
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat"></div>
       </div>
 
-      <div className="container-custom relative z-10 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom relative z-10 py-8 sm:py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Content */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-6xl font-bold font-josefin leading-tight">
+          <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-josefin leading-tight break-words">
                 Welcome to the home of{' '}
                 <span className="text-gradient">
                   Pakians
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed break-words">
                 Pak Wattan School & College of Sciences
               </p>
-              <p className="text-lg text-white/80 leading-relaxed">
+              <p className="text-base sm:text-lg text-white/80 leading-relaxed break-words">
                 Established in <strong>November 2nd, 2020</strong>, with the mission of providing 
                 quality education with affordable expenses. PWSCS gives scholarships to students 
                 every year, including Pakians Scholarship, merit-based, orphan, special child, 
@@ -55,30 +55,30 @@ const AboutHero = () => {
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="btn-accent text-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button className="btn-accent text-center touch-target min-h-[44px]">
                 Learn More
               </button>
-              <button className="btn-secondary text-center">
+              <button className="btn-secondary text-center touch-target min-h-[44px]">
                 Contact Us
               </button>
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6">
             {stats.map((stat, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center hover:bg-white/20 transition-all duration-300 group hover-lift"
+                className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center hover:bg-white/20 active:bg-white/15 transition-all duration-300 group hover-lift"
               >
-                <div className="text-white mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="text-white mb-3 sm:mb-4 group-hover:scale-110 transition-transform duration-300">
                   {stat.icon}
                 </div>
-                <div className="text-3xl font-bold text-white mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-white mb-1 sm:mb-2">
                   {stat.value}
                 </div>
-                <div className="text-white/80 font-medium">
+                <div className="text-sm sm:text-base md:text-lg font-semibold text-white/80 truncate">
                   {stat.label}
                 </div>
               </div>

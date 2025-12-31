@@ -698,9 +698,54 @@ button:focus-visible {
   }
   
   /* Ensure touch targets are large enough */
-  button, a, input, select, textarea {
+  button:not(.no-touch-target),
+  a:not(.no-touch-target),
+  input:not(.no-touch-target),
+  select:not(.no-touch-target),
+  textarea:not(.no-touch-target) {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+/* Touch target utility class */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile-specific text improvements */
+@media (max-width: 640px) {
+  /* Better text wrapping on mobile */
+  p, span, div {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  /* Prevent horizontal overflow */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Better table handling */
+  table {
+    font-size: 0.875rem;
+  }
+  
+  /* Larger form inputs on mobile */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="date"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
   }
 }
 

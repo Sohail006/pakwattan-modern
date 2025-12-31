@@ -3,10 +3,16 @@ import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { BookOpen, Users, Calculator, Globe, Award, Microscope, Laptop } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Matriculation Education - PakWattan Modern School',
-  description: 'Secondary education program for students aged 14-15 years with specialization in science and arts streams.',
-}
+import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Matriculation Education',
+  description: 'Secondary education program at Pak Wattan School & College of Sciences for students aged 14-15 years with specialization in science and arts streams. Comprehensive curriculum with advanced subjects.',
+  keywords: 'matric education, secondary education, matriculation, pak wattan matric, science stream, arts stream, havelian matric',
+  path: '/academic/matric',
+})
 
 const MatricPage = () => {
   const features = [
@@ -71,8 +77,16 @@ const MatricPage = () => {
     { title: 'University Placements', value: '90%+', description: 'Students admitted to top universities' }
   ]
 
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://pakwattan.edu.pk' },
+    { name: 'Academic', url: 'https://pakwattan.edu.pk/academic' },
+    { name: 'Matric', url: 'https://pakwattan.edu.pk/academic/matric' },
+  ])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
+    <>
+      <StructuredData data={breadcrumbs} />
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-purple-600 to-indigo-700 text-white">
         <Container>
@@ -242,6 +256,7 @@ const MatricPage = () => {
         </Container>
       </section>
     </div>
+    </>
   )
 }
 

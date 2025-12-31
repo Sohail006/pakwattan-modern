@@ -66,32 +66,32 @@ const AdmissionProcess = () => {
   return (
     <section id="admission-process" className="section-padding bg-white">
       <Container>
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
             <span className="text-gradient">Admission Process</span>
           </h2>
-          <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
             Our comprehensive admission process ensures fair and transparent selection of students
           </p>
         </div>
 
         {/* Process Steps */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-12 lg:mb-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16">
           {processSteps.map((step, index) => (
-            <Card key={index} className="p-6 text-center hover:shadow-lg transition-shadow">
-              <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-primary-600 to-accent-600 rounded-full flex items-center justify-center text-white">
+            <Card key={index} className="p-4 sm:p-6 text-center hover:shadow-lg active:shadow-md transition-shadow">
+              <div className="flex justify-center mb-3 sm:mb-4">
+                <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-r from-primary-600 to-accent-600 rounded-full flex items-center justify-center text-white">
                   {step.icon}
                 </div>
               </div>
-              <div className="text-2xl font-bold text-primary-600 mb-2">Step {step.step}</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">{step.title}</h3>
-              <p className="text-gray-600 mb-4">{step.description}</p>
-              <ul className="text-sm text-gray-600 space-y-1">
+              <div className="text-xl sm:text-2xl font-bold text-primary-600 mb-1 sm:mb-2">Step {step.step}</div>
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 sm:mb-3 break-words">{step.title}</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 break-words">{step.description}</p>
+              <ul className="text-xs sm:text-sm text-gray-600 space-y-1 text-left">
                 {step.details.map((detail, detailIndex) => (
                   <li key={detailIndex} className="flex items-start">
-                    <CheckCircle className="w-4 h-4 text-primary-600 mt-0.5 mr-2 flex-shrink-0" />
-                    <span>{detail}</span>
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary-600 mt-0.5 mr-2 flex-shrink-0" />
+                    <span className="break-words">{detail}</span>
                   </li>
                 ))}
               </ul>
@@ -100,16 +100,16 @@ const AdmissionProcess = () => {
         </div>
 
         {/* Important Notes */}
-        <Card className="p-6 sm:p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-            <Award className="w-6 h-6 text-primary-600 mr-3" />
-            Important Notes
+        <Card className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+            <Award className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="break-words">Important Notes</span>
           </h3>
-          <ul className="space-y-3">
+          <ul className="space-y-2 sm:space-y-3">
             {importantNotes.map((note, index) => (
               <li key={index} className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-primary-600 mt-0.5 mr-3 flex-shrink-0" />
-                <span className="text-gray-700">{note}</span>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 mr-2 sm:mr-3 flex-shrink-0" />
+                <span className="text-sm sm:text-base text-gray-700 break-words">{note}</span>
               </li>
             ))}
           </ul>

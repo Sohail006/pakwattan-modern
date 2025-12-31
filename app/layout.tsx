@@ -7,6 +7,10 @@ import ChunkErrorHandler from '@/components/ui/ChunkErrorHandler'
 import Analytics from '@/components/Analytics'
 import FontLoader from '@/components/layout/FontLoader'
 import YouTubeScript from '@/components/layout/YouTubeScript'
+import StructuredData from '@/components/seo/StructuredData'
+import BackToTop from '@/components/ui/BackToTop'
+import { generateOrganizationSchema } from '@/lib/seo/structuredData'
+import { generateWebSiteSchema } from '@/lib/seo/structuredData'
 // Initialize token refresh service
 import '@/lib/services/tokenRefresh'
 
@@ -59,9 +63,11 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  verification: {
-    google: 'your-google-verification-code',
-  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION
+    ? {
+        google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION,
+      }
+    : undefined,
   icons: {
     icon: [
       { url: '/favicons.ico' },
@@ -79,8 +85,55 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // Organization structured data
+  const organizationSchema = generateOrganizationSchema({
+    name: 'Pak Wattan School & College of Sciences',
+    url: 'https://pakwattan.edu.pk',
+    logo: 'https://pakwattan.edu.pk/images/logo/logo_150x150.png',
+    contactPoint: {
+      telephone: '+92-318-0821377',
+      contactType: 'Customer Service',
+      email: 'pakwattan2020@gmail.com',
+    },
+    address: {
+      addressLocality: 'Havelian',
+      addressRegion: 'Khyber Pakhtunkhwa',
+      addressCountry: 'PK',
+    },
+    sameAs: [
+      'https://www.facebook.com/PAKWATTAN2020',
+    ],
+  })
+
+  // Website structured data
+  const websiteSchema = generateWebSiteSchema('https://pakwattan.edu.pk')
+
   return (
     <html lang="en" className="font-sans">
+      <head>
+        <StructuredData data={[organizationSchema, websiteSchema]} />
+        {/* Resource hints for external domains - improve connection speed */}
+        {/* Google Fonts - Critical for initial render */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* YouTube & Google APIs */}
+        <link rel="preconnect" href="https://www.googleapis.com" />
+        <link rel="dns-prefetch" href="https://www.googleapis.com" />
+        <link rel="preconnect" href="https://www.youtube.com" />
+        <link rel="dns-prefetch" href="https://www.youtube.com" />
+        <link rel="preconnect" href="https://img.youtube.com" />
+        <link rel="dns-prefetch" href="https://img.youtube.com" />
+        {/* Facebook */}
+        <link rel="preconnect" href="https://www.facebook.com" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
+        {/* Google Maps */}
+        <link rel="preconnect" href="https://maps.google.com" />
+        <link rel="dns-prefetch" href="https://maps.google.com" />
+        <link rel="preconnect" href="https://www.google.com" />
+        <link rel="dns-prefetch" href="https://www.google.com" />
+      </head>
       <body className="antialiased" suppressHydrationWarning>
         <FontLoader />
         <YouTubeScript />
@@ -91,6 +144,7 @@ export default function RootLayout({
           </ConditionalLayout>
           <ToastContainer />
           <Analytics />
+          <BackToTop />
         </NotificationProvider>
       </body>
     </html>

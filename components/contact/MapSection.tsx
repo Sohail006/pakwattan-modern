@@ -50,8 +50,8 @@ const MapSection = () => {
         </div>
 
         {/* Google Maps Embed */}
-        <div className="bg-secondary-100 rounded-2xl overflow-hidden shadow-xl mb-8">
-          <div className="aspect-video relative">
+        <div className="bg-secondary-100 rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8">
+          <div className="aspect-video relative w-full">
             <iframe
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3560.9665027710457!2d73.15231645927724!3d34.052579608411705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38de35a5c79e4a3b%3A0xe10972f181f577f5!2sPak%20Wattan%20School%20And%20College%20of%20Sciences%2CHavelian!5e1!3m2!1sen!2s!4v1764491327824!5m2!1sen!2s"
               width="100%"
@@ -139,30 +139,32 @@ const MapSection = () => {
         )}
 
         {/* Quick Actions */}
-        <div className="text-center">
-          <div className="bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-8">
-            <h3 className="text-2xl font-bold text-secondary-800 mb-4">
+        <div className="text-center px-4 sm:px-0">
+          <div className="bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-secondary-800 mb-3 sm:mb-4">
               Need Directions?
             </h3>
-            <p className="text-secondary-600 mb-6">
+            <p className="text-sm sm:text-base text-secondary-600 mb-4 sm:mb-6 break-words">
               Get turn-by-turn directions to any of our campuses
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
               <a
                 href="https://maps.google.com/?q=Havelian,Abbottabad,KPK,Pakistan"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary inline-flex items-center space-x-2"
+                className="btn-primary inline-flex items-center justify-center space-x-2 touch-target min-h-[44px]"
+                aria-label="Get directions to Pak Wattan School on Google Maps"
               >
-                <Navigation className="w-4 h-4" />
+                <Navigation className="w-4 h-4 flex-shrink-0" />
                 <span>Get Directions</span>
               </a>
               {mainCampus && (mainCampus.mobileNumber || mainCampus.phone) && (
                 <a
                   href={`tel:${(mainCampus.mobileNumber || mainCampus.phone || '').replace(/\s/g, '')}`}
-                  className="btn-secondary inline-flex items-center space-x-2"
+                  className="btn-secondary inline-flex items-center justify-center space-x-2 touch-target min-h-[44px]"
+                  aria-label={`Call ${mainCampus.mobileNumber || mainCampus.phone}`}
                 >
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-4 h-4 flex-shrink-0" />
                   <span>Call Us</span>
                 </a>
               )}

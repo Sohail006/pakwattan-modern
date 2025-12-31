@@ -43,51 +43,51 @@ const FacilitiesHero = () => {
         <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat"></div>
       </div>
 
-      <div className="container-custom relative z-10 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="container-custom relative z-10 py-8 sm:py-12 lg:py-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 items-center">
           {/* Content */}
-          <div className="space-y-8">
-            <div className="space-y-6">
-              <h1 className="text-4xl md:text-6xl font-bold font-josefin leading-tight">
+          <div className="space-y-6 sm:space-y-8">
+            <div className="space-y-4 sm:space-y-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-josefin leading-tight break-words">
                 World-Class{' '}
                 <span className="text-gradient">
                   Facilities
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl text-white/90 leading-relaxed">
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed break-words">
                 State-of-the-art infrastructure for modern education
               </p>
-              <p className="text-lg text-white/80 leading-relaxed">
+              <p className="text-base sm:text-lg text-white/80 leading-relaxed break-words">
                 At Pak Wattan School & College of Sciences, we provide comprehensive 
                 facilities to ensure our students receive the best possible education 
                 in a safe, modern, and well-equipped environment.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4">
-              <button className="btn-accent text-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <button className="btn-accent text-center touch-target min-h-[44px]">
                 Explore Facilities
               </button>
-              <button className="btn-secondary text-center">
+              <button className="btn-secondary text-center touch-target min-h-[44px]">
                 Schedule Visit
               </button>
             </div>
           </div>
 
           {/* Facility Categories Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
             {facilityCategories.map((category, index) => (
               <div
                 key={index}
-                className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 hover:bg-white/20 transition-all duration-300 group text-center"
+                className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 hover:bg-white/20 active:bg-white/15 transition-all duration-300 group text-center"
               >
-                <div className="text-white mb-3 group-hover:scale-110 transition-transform duration-300">
+                <div className="text-white mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-300">
                   {category.icon}
                 </div>
-                <h3 className="text-sm font-semibold text-white mb-1">
+                <h3 className="text-xs sm:text-sm font-semibold text-white mb-1 truncate">
                   {category.title}
                 </h3>
-                <p className="text-xs text-white/80">
+                <p className="text-xs text-white/80 line-clamp-2 break-words">
                   {category.description}
                 </p>
               </div>

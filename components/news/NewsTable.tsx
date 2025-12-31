@@ -107,11 +107,11 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
   return (
     <div className="space-y-4">
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type="text"
               placeholder="Search news..."
@@ -120,7 +120,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                 setSearchTerm(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
             />
             {searchTerm && (
               <button
@@ -128,7 +128,8 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                   setSearchTerm('')
                   setPage(1)
                 }}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 active:text-gray-700 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+                aria-label="Clear search"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -137,14 +138,14 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
 
           {/* Category Filter */}
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 pointer-events-none" />
             <select
               value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white min-h-[44px]"
             >
               <option value="">All Categories</option>
               {NEWS_CATEGORIES.map((cat) => (
@@ -156,14 +157,14 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
           </div>
 
           {/* Published Filter */}
-          <div>
+          <div className="sm:col-span-2 lg:col-span-1">
             <select
               value={publishedFilter}
               onChange={(e) => {
                 setPublishedFilter(e.target.value)
                 setPage(1)
               }}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
             >
               <option value="all">All Status</option>
               <option value="published">Published</option>
@@ -175,12 +176,13 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center space-x-3">
-          <X className="w-5 h-5 text-red-500" />
-          <p className="text-red-700">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 sm:p-4 flex items-start sm:items-center space-x-2 sm:space-x-3">
+          <X className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 flex-shrink-0 mt-0.5 sm:mt-0" />
+          <p className="text-xs sm:text-sm text-red-700 flex-1 break-words">{error}</p>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-500 hover:text-red-700"
+            className="ml-auto text-red-500 hover:text-red-700 active:text-red-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center flex-shrink-0"
+            aria-label="Dismiss error"
           >
             <X className="w-4 h-4" />
           </button>
@@ -189,114 +191,116 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
 
       {/* Table */}
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+        <div className="flex items-center justify-center py-8 sm:py-12">
+          <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-primary-600" />
         </div>
       ) : news.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-          <p className="text-gray-500">No news items found.</p>
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
+          <p className="text-sm sm:text-base text-gray-500 break-words">No news items found.</p>
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Image
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Category
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Flags
-                  </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {news.map((item) => {
-                  const imageUrl = getImageUrl(item.imageUrl)
-                  return (
-                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {imageUrl ? (
-                          <div className="w-16 h-16 relative rounded-lg overflow-hidden bg-gray-100">
-                            <Image
-                              src={imageUrl}
-                              alt={item.title}
-                              fill
-                              className="object-cover"
-                              sizes="64px"
-                            />
+          <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll">
+            <div className="min-w-[800px] sm:min-w-0">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Image
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Title
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Category
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Date
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Status
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Flags
+                    </th>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {news.map((item) => {
+                    const imageUrl = getImageUrl(item.imageUrl)
+                    return (
+                      <tr key={item.id} className="hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          {imageUrl ? (
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 relative rounded-lg overflow-hidden bg-gray-100">
+                              <Image
+                                src={imageUrl}
+                                alt={item.title}
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 640px) 48px, (max-width: 1024px) 56px, 64px"
+                              />
+                            </div>
+                          ) : (
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-400" />
+                            </div>
+                          )}
+                        </td>
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 min-w-0">
+                          <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">{item.title}</div>
+                          <div className="text-xs sm:text-sm text-gray-500 line-clamp-2 mt-1 break-words">
+                            {item.description}
                           </div>
-                        ) : (
-                          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
-                            <ImageIcon className="w-6 h-6 text-gray-400" />
+                        </td>
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          <span className="px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-800 truncate">
+                            {item.category}
+                          </span>
+                        </td>
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          <div className="flex items-center text-xs sm:text-sm text-gray-500">
+                            <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                            <span className="truncate">{formatDate(item.date)}</span>
                           </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-gray-900">{item.title}</div>
-                        <div className="text-sm text-gray-500 line-clamp-2 mt-1">
-                          {item.description}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-primary-100 text-primary-800">
-                          {item.category}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Calendar className="w-4 h-4 mr-1" />
-                          {formatDate(item.date)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                        </td>
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                         {item.isPublished ? (
-                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          <span className="px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
                             Published
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                          <span className="px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
                             Draft
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center space-x-1">
+                      <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                        <div className="flex items-center space-x-1 flex-wrap gap-1">
                           {item.isFeatured && (
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 truncate">
                               Featured
                             </span>
                           )}
                           {item.isInMarquee && (
-                            <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                            <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800 truncate">
                               Marquee
                             </span>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end space-x-2">
+                      <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div className="flex items-center justify-end space-x-1 sm:space-x-2">
                           <button
                             onClick={() => onEdit(item)}
-                            className="text-primary-600 hover:text-primary-900 p-2 rounded-lg hover:bg-primary-50 transition-colors"
+                            className="text-primary-600 hover:text-primary-900 active:text-primary-800 p-1.5 sm:p-2 rounded-lg hover:bg-primary-50 active:bg-primary-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                             title="Edit"
+                            aria-label="Edit news item"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
                           </button>
                           <button
                             onClick={() => setDeleteConfirm({
@@ -304,10 +308,11 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                               newsId: item.id,
                               newsTitle: item.title
                             })}
-                            className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                            className="text-red-600 hover:text-red-900 active:text-red-800 p-1.5 sm:p-2 rounded-lg hover:bg-red-50 active:bg-red-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                             title="Delete"
+                            aria-label="Delete news item"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                           </button>
                         </div>
                       </td>
@@ -316,29 +321,33 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                 })}
               </tbody>
             </table>
+            </div>
           </div>
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+            <div className="bg-gray-50 px-3 sm:px-4 lg:px-6 py-3 sm:py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-0">
+              <div className="text-xs sm:text-sm text-gray-700 text-center sm:text-left break-words">
                 Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, totalCount)} of {totalCount} results
               </div>
               <div className="flex items-center space-x-2">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px] text-xs sm:text-sm"
+                  aria-label="Previous page"
                 >
-                  Previous
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
                 </button>
-                <span className="px-4 py-2 text-sm text-gray-700">
+                <span className="px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 whitespace-nowrap">
                   Page {page} of {totalPages}
                 </span>
                 <button
                   onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50"
+                  className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px] text-xs sm:text-sm"
+                  aria-label="Next page"
                 >
                   Next
                 </button>

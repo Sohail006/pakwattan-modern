@@ -5,31 +5,25 @@ import { useEffect } from 'react'
 /**
  * Client component to load Google Fonts at runtime
  * This avoids build-time network requirements
+ * 
+ * Optimizations:
+ * - Preconnect hints moved to layout.tsx for earlier connection
+ * - Uses display=swap for better performance
+ * - Loads fonts asynchronously
  */
 export default function FontLoader() {
   useEffect(() => {
-    // Preconnect to Google Fonts for better performance
-    const preconnect1 = document.createElement('link')
-    preconnect1.rel = 'preconnect'
-    preconnect1.href = 'https://fonts.googleapis.com'
-    document.head.appendChild(preconnect1)
-
-    const preconnect2 = document.createElement('link')
-    preconnect2.rel = 'preconnect'
-    preconnect2.href = 'https://fonts.gstatic.com'
-    preconnect2.crossOrigin = 'anonymous'
-    document.head.appendChild(preconnect2)
-
-    // Load the font stylesheet
+    // Preconnect hints are now in layout.tsx for better performance
+    // Load the font stylesheet with display=swap for better performance
     const fontLink = document.createElement('link')
     fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Josefin+Sans:wght@100..700&display=swap'
     fontLink.rel = 'stylesheet'
-    document.head.appendChild(fontLink)
-
-    // Cleanup function (though these are meant to persist)
-    return () => {
-      // Note: We don't remove these on cleanup as they should persist
+    fontLink.media = 'print' // Load asynchronously
+    fontLink.onload = () => {
+      // Switch to all media once loaded
+      fontLink.media = 'all'
     }
+    document.head.appendChild(fontLink)
   }, [])
 
   return null

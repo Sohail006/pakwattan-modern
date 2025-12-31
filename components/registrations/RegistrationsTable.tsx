@@ -290,68 +290,68 @@ export default function RegistrationsTable() {
   return (
     <div className="space-y-6">
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Total Registrations</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalRegistrations}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Registrations</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.totalRegistrations}</p>
             </div>
-            <div className="p-3 bg-primary-100 rounded-lg">
-              <Users className="w-6 h-6 text-primary-600" />
+            <div className="p-2 sm:p-3 bg-primary-100 rounded-lg flex-shrink-0 ml-2">
+              <Users className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-primary-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Active Registrations</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeRegistrations}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Registrations</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.activeRegistrations}</p>
             </div>
-            <div className="p-3 bg-green-100 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-green-600" />
+            <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0 ml-2">
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">This Month</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.registrationsThisMonth}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">This Month</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.registrationsThisMonth}</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Calendar className="w-6 h-6 text-blue-600" />
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0 ml-2">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">With Scholarship</p>
-              <p className="text-3xl font-bold text-gray-900 mt-2">{stats.withScholarship}</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">With Scholarship</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.withScholarship}</p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-lg">
-              <GraduationCap className="w-6 h-6 text-purple-600" />
+            <div className="p-2 sm:p-3 bg-purple-100 rounded-lg flex-shrink-0 ml-2">
+              <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-purple-600" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           {/* Search */}
-          <div className="lg:col-span-2 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <div className="sm:col-span-2 lg:col-span-2 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             <input
               type="text"
               placeholder="Search by name, roll number, mobile..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
             />
           </div>
 
@@ -359,7 +359,7 @@ export default function RegistrationsTable() {
           <select
             value={filterGrade}
             onChange={(e) => setFilterGrade(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="px-3 sm:px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px] bg-white"
           >
             <option value="">All Grades</option>
             {Array.from(new Set(registrations.map(r => r.gradeId))).sort().map(gradeId => {
@@ -397,48 +397,50 @@ export default function RegistrationsTable() {
         </div>
 
         {(searchTerm || filterGrade || filterScholarship || filterPayment) && (
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700">Active Filters:</span>
+          <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2">
+            <span className="text-xs sm:text-sm font-semibold text-gray-700">Active Filters:</span>
             {searchTerm && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-sm font-medium">
-                Search: &quot;{searchTerm}&quot;
-                <button onClick={() => setSearchTerm('')} className="hover:text-primary-900">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-xs sm:text-sm font-medium">
+                Search: &quot;<span className="truncate max-w-[100px] sm:max-w-none">{searchTerm}</span>&quot;
+                <button onClick={() => setSearchTerm('')} className="hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear search filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterGrade && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                Grade: {registrations.find(r => r.gradeId.toString() === filterGrade)?.gradeName || filterGrade}
-                <button onClick={() => setFilterGrade('')} className="hover:text-blue-900">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">
+                Grade: <span className="truncate max-w-[80px] sm:max-w-none">{registrations.find(r => r.gradeId.toString() === filterGrade)?.gradeName || filterGrade}</span>
+                <button onClick={() => setFilterGrade('')} className="hover:text-blue-900 active:text-blue-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear grade filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterScholarship && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">
                 Scholarship: {filterScholarship === 'yes' ? 'Yes' : 'No'}
-                <button onClick={() => setFilterScholarship('')} className="hover:text-purple-900">
+                <button onClick={() => setFilterScholarship('')} className="hover:text-purple-900 active:text-purple-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear scholarship filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterPayment && (
-              <span className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
-                Payment: {filterPayment}
-                <button onClick={() => setFilterPayment('')} className="hover:text-green-900">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">
+                Payment: <span className="truncate max-w-[100px] sm:max-w-none">{filterPayment}</span>
+                <button onClick={() => setFilterPayment('')} className="hover:text-green-900 active:text-green-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear payment filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             <button
               onClick={clearFilters}
-              className="text-sm text-primary-600 hover:text-primary-700 font-semibold flex items-center gap-1 ml-auto"
+              className="text-xs sm:text-sm text-primary-600 hover:text-primary-700 active:text-primary-800 font-semibold flex items-center gap-1 ml-auto touch-target min-h-[44px]"
+              aria-label="Clear all filters"
             >
-              <X className="w-4 h-4" />
-              Clear All
+              <X className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Clear All</span>
+              <span className="sm:hidden">Clear</span>
             </button>
-            <span className="text-sm text-gray-600 ml-2">
+            <span className="text-xs sm:text-sm text-gray-600 ml-2 break-words">
               Showing {filteredRegistrations.length} of {registrations.length} registrations
             </span>
           </div>
@@ -446,24 +448,26 @@ export default function RegistrationsTable() {
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-gray-900">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-900 break-words">
           Registered Students ({filteredRegistrations.length})
         </h2>
         <button
           onClick={handleExportExcel}
           disabled={exporting || filteredRegistrations.length === 0}
-          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target min-h-[44px] text-sm sm:text-base"
+          aria-label="Export registrations to Excel"
         >
           {exporting ? (
             <>
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               <span>Exporting...</span>
             </>
           ) : (
             <>
-              <Download className="w-5 h-5" />
-              <span>Export to Excel</span>
+              <Download className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Export to Excel</span>
+              <span className="sm:hidden">Export</span>
             </>
           )}
         </button>
@@ -473,7 +477,7 @@ export default function RegistrationsTable() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden relative">
         <div 
           ref={tableScrollRef}
-          className="overflow-x-auto relative"
+          className="overflow-x-auto relative -mx-4 sm:mx-0 mobile-scroll"
           style={{ scrollbarWidth: 'thin' }}
         >
           {/* Left scroll indicator */}
@@ -486,43 +490,44 @@ export default function RegistrationsTable() {
             <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-20" />
           )}
           
-          <table className="min-w-[1200px] w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('rollNumber')}>
-                  <div className="flex items-center gap-2">
-                    Roll Number
-                    {sortBy === 'rollNumber' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                  </div>
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('name')}>
-                  <div className="flex items-center gap-2">
-                    Name
-                    {sortBy === 'name' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                  </div>
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Father Name</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Grade</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mobile</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Scholarship</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Date</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Venue</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('registrationDate')}>
-                  <div className="flex items-center gap-2">
-                    Registration Date
-                    {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                  </div>
-                </th>
-                <th className="sticky right-0 px-4 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {paginatedRegistrations.length === 0 ? (
+          <div className="min-w-[1200px] sm:min-w-0">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <td colSpan={10} className="px-4 py-12 text-center">
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
+                    onClick={() => handleSort('rollNumber')}>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="truncate">Roll Number</span>
+                      {sortBy === 'rollNumber' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    </div>
+                  </th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
+                    onClick={() => handleSort('name')}>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="truncate">Name</span>
+                      {sortBy === 'name' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    </div>
+                  </th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Father Name</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Grade</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mobile</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Scholarship</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Date</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Venue</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
+                    onClick={() => handleSort('registrationDate')}>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
+                      <span className="truncate">Reg. Date</span>
+                      {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    </div>
+                  </th>
+                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {paginatedRegistrations.length === 0 ? (
+                  <tr>
+                    <td colSpan={10} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                         <Search className="w-8 h-8 text-gray-400" />
@@ -589,44 +594,45 @@ export default function RegistrationsTable() {
                     <td className="px-4 py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">{formatDate(reg.registrationDate)}</span>
                     </td>
-                    <td className="sticky right-0 px-4 py-3 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
-                      <div className="flex items-center justify-end gap-2">
+                    <td className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+                      <div className="flex items-center justify-end gap-1 sm:gap-2">
                         <button
                           onClick={() => setViewingDetails(reg)}
-                          className="text-blue-600 hover:text-blue-900 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                          className="text-blue-600 hover:text-blue-900 active:text-blue-800 p-1.5 sm:p-2 rounded-lg hover:bg-blue-50 active:bg-blue-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="View Details"
                           aria-label="View registration details"
                         >
-                          <Eye className="w-5 h-5" />
+                          <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
                           onClick={() => handlePrintSlip(reg)}
-                          className="text-primary-600 hover:text-primary-900 p-2 rounded-lg hover:bg-primary-50 transition-colors"
+                          className="text-primary-600 hover:text-primary-900 active:text-primary-800 p-1.5 sm:p-2 rounded-lg hover:bg-primary-50 active:bg-primary-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Print Roll Number Slip"
                           aria-label="Print roll number slip"
                         >
-                          <FileText className="w-5 h-5" />
+                          <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
                           onClick={() => handleDelete(reg.id)}
                           disabled={deletingId === reg.id}
-                          className="text-red-600 hover:text-red-900 p-2 rounded-lg hover:bg-red-50 transition-colors disabled:opacity-50"
+                          className="text-red-600 hover:text-red-900 active:text-red-800 p-1.5 sm:p-2 rounded-lg hover:bg-red-50 active:bg-red-100 transition-colors disabled:opacity-50 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                           title="Delete"
                           aria-label="Delete registration"
                         >
                           {deletingId === reg.id ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                           ) : (
-                            <Trash2 className="w-5 h-5" />
+                            <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                           )}
                         </button>
                       </div>
                     </td>
                   </tr>
                 ))
-              )}
-            </tbody>
-          </table>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
         {/* Pagination */}

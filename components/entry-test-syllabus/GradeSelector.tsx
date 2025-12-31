@@ -45,9 +45,9 @@ const GradeSelector = ({ selectedGradeId, onGradeSelect }: GradeSelectorProps) =
     return (
       <section className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
         <div className="container-custom">
-          <div className="text-center">
+          <div className="text-center px-4">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-            <p className="mt-4 text-gray-600">Loading grades...</p>
+            <p className="mt-3 sm:mt-4 text-sm sm:text-base text-gray-600">Loading grades...</p>
           </div>
         </div>
       </section>
@@ -57,36 +57,38 @@ const GradeSelector = ({ selectedGradeId, onGradeSelect }: GradeSelectorProps) =
   return (
     <section className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
       <div className="container-custom">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4">
+        <div className="text-center mb-8 sm:mb-12 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-3 sm:mb-4">
             <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
               Select Your Grade
             </span>
           </h2>
-          <p className="text-lg text-secondary-600 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-secondary-600 max-w-2xl mx-auto break-words">
             Choose your grade to view the test syllabus
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4 max-w-5xl mx-auto px-4 sm:px-0">
           {grades.map((grade) => (
             <button
               key={grade.id}
               onClick={() => onGradeSelect?.(grade.id)}
-              className={`group relative p-6 bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 ${
+              className={`group relative p-4 sm:p-6 bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl active:shadow-lg transition-all duration-300 border-2 touch-target min-h-[120px] sm:min-h-[140px] ${
                 selectedGradeId === grade.id
                   ? 'border-primary-600 bg-primary-50 scale-105'
-                  : 'border-gray-200 hover:border-primary-300 hover:scale-105'
+                  : 'border-gray-200 hover:border-primary-300 active:border-primary-400 hover:scale-105 active:scale-100'
               }`}
+              aria-label={`Select ${grade.name}`}
+              aria-pressed={selectedGradeId === grade.id}
             >
-              <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center transition-all duration-300 ${
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 flex-shrink-0 ${
                 selectedGradeId === grade.id
                   ? 'bg-gradient-to-br from-primary-500 to-accent-500 text-white'
                   : 'bg-gradient-to-br from-primary-100 to-accent-100 text-primary-600 group-hover:from-primary-200 group-hover:to-accent-200'
               }`}>
-                <GraduationCap className="w-8 h-8" />
+                <GraduationCap className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
-              <h3 className={`text-lg font-bold transition-colors ${
+              <h3 className={`text-sm sm:text-lg font-bold transition-colors truncate ${
                 selectedGradeId === grade.id
                   ? 'text-primary-700'
                   : 'text-gray-800 group-hover:text-primary-600'
@@ -94,8 +96,8 @@ const GradeSelector = ({ selectedGradeId, onGradeSelect }: GradeSelectorProps) =
                 {grade.name}
               </h3>
               {selectedGradeId === grade.id && (
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-5 h-5 sm:w-6 sm:h-6 bg-primary-600 rounded-full flex items-center justify-center">
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                 </div>
               )}
             </button>
@@ -103,9 +105,9 @@ const GradeSelector = ({ selectedGradeId, onGradeSelect }: GradeSelectorProps) =
         </div>
 
         {grades.length === 0 && (
-          <div className="text-center py-12 bg-white rounded-2xl">
-            <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No grades available at the moment.</p>
+          <div className="text-center py-8 sm:py-12 bg-white rounded-xl sm:rounded-2xl px-4">
+            <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+            <p className="text-sm sm:text-base text-gray-600">No grades available at the moment.</p>
           </div>
         )}
       </div>

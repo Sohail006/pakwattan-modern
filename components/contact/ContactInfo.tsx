@@ -61,11 +61,11 @@ const ContactInfo = () => {
   return (
     <section className="section-padding bg-white">
       <div className="container-custom">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
             <span className="text-gradient">Our Campuses</span>
           </h2>
-          <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
             {campuses.length > 0 
               ? `Visit us at any of our ${campuses.length} campus${campuses.length > 1 ? 'es' : ''} located in Havelian, Abbottabad`
               : 'Visit us at our campuses located in Havelian, Abbottabad'
@@ -85,16 +85,16 @@ const ContactInfo = () => {
             <p className="text-gray-600">No campus information available at the moment.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16">
             {campuses.map((campus) => (
               <div
                 key={campus.id}
-                className="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden border border-secondary-100"
+                className="bg-white rounded-2xl shadow-xl hover:shadow-2xl active:shadow-lg transition-all duration-300 overflow-hidden border border-secondary-100"
               >
-                <div className="p-8">
-                  <h3 className="text-xl font-bold text-secondary-800 mb-4 flex items-center">
-                    <MapPin className="w-5 h-5 mr-2 text-primary-600" />
-                    {campus.name}
+                <div className="p-4 sm:p-6 lg:p-8">
+                  <h3 className="text-lg sm:text-xl font-bold text-secondary-800 mb-3 sm:mb-4 flex items-center min-w-0">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary-600 flex-shrink-0" />
+                    <span className="truncate">{campus.name}</span>
                   </h3>
                   {campus.principalName && (
                     <p className="text-secondary-600 mb-4 text-sm">
@@ -169,29 +169,29 @@ const ContactInfo = () => {
         )}
 
         {/* Quick Stats */}
-        <div className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl p-8">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-secondary-800 mb-4">
+        <div className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-secondary-800 mb-3 sm:mb-4">
               By the Numbers
             </h3>
-            <p className="text-secondary-600">
+            <p className="text-sm sm:text-base text-secondary-600">
               Our impact in the community
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {quickStats.map((stat, index) => (
               <div
                 key={index}
-                className="text-center group hover:scale-105 transition-all duration-300"
+                className="text-center group hover:scale-105 active:scale-100 transition-all duration-300"
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-full bg-white shadow-lg flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
+                <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white shadow-lg flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
                   {stat.icon}
                 </div>
-                <div className="text-3xl font-bold text-secondary-800 mb-2">
+                <div className="text-2xl sm:text-3xl font-bold text-secondary-800 mb-1 sm:mb-2">
                   {stat.value}
                 </div>
-                <div className="text-lg font-semibold text-secondary-600">
+                <div className="text-sm sm:text-base lg:text-lg font-semibold text-secondary-600 truncate">
                   {stat.label}
                 </div>
               </div>

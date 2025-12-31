@@ -49,24 +49,36 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: false,
   
-  // Image optimization
+  // Image optimization - ENABLED for better performance
   images: {
-    domains: ['localhost', 'pakwattan.edu.pk', 'www.sharkasp.net', 'sohailghsno4-001-site8.rtempurl.com'],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
       {
         protocol: 'http',
         hostname: 'localhost',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pakwattan.edu.pk',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.sharkasp.net',
+        pathname: '/**',
       },
       {
         protocol: 'https',
         hostname: 'sohailghsno4-001-site8.rtempurl.com',
+        pathname: '/**',
       },
     ],
-    unoptimized: true
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 60,
+    unoptimized: false // ENABLED - Images will be optimized
   },
   
   // API rewrites for production deployment

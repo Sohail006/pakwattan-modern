@@ -35,6 +35,15 @@ YOUTUBE_CHANNEL_ID=UCpakwattanSchoolCollege
 NEXT_PUBLIC_GA_ID=your_google_analytics_id_here
 
 # ===========================================
+# SEO - GOOGLE SEARCH CONSOLE VERIFICATION
+# ===========================================
+# Get this from Google Search Console > Settings > Ownership verification
+# This is the verification code from the HTML tag method
+# Example: If the tag is <meta name="google-site-verification" content="abc123xyz" />
+# Then use: NEXT_PUBLIC_GOOGLE_VERIFICATION=abc123xyz
+NEXT_PUBLIC_GOOGLE_VERIFICATION=your_google_verification_code_here
+
+# ===========================================
 # DATABASE (If using)
 # ===========================================
 # Get this from your hosting provider

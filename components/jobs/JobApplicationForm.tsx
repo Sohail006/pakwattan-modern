@@ -317,11 +317,11 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 							<div>
-								<label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="name" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Full Name <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
+									<User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
 										fieldErrors.name ? 'text-red-500' : fieldValid.name ? 'text-green-500' : 'text-gray-400'
 									}`} />
 									<input
@@ -331,7 +331,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										value={formData.name}
 										onChange={handleInputChange}
 										onBlur={handleBlur}
-										className={`w-full pl-10 pr-10 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[44px] ${
 											fieldErrors.name 
 												? 'border-red-500 bg-red-50' 
 												: fieldValid.name && touchedFields.name
@@ -341,23 +341,23 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="Enter your full name"
 									/>
 									{fieldValid.name && touchedFields.name && !fieldErrors.name && (
-										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
 									)}
 								</div>
 								{fieldErrors.name && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.name}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.name}</span>
 									</p>
 								)}
 							</div>
 
 							<div>
-								<label htmlFor="fatherName" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="fatherName" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Father Name <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
+									<User className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
 										fieldErrors.fatherName ? 'text-red-500' : fieldValid.fatherName ? 'text-green-500' : 'text-gray-400'
 									}`} />
 									<input
@@ -367,7 +367,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										value={formData.fatherName}
 										onChange={handleInputChange}
 										onBlur={handleBlur}
-										className={`w-full pl-10 pr-10 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[44px] ${
 											fieldErrors.fatherName 
 												? 'border-red-500 bg-red-50' 
 												: fieldValid.fatherName && touchedFields.fatherName
@@ -377,19 +377,19 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="Enter father's name"
 									/>
 									{fieldValid.fatherName && touchedFields.fatherName && !fieldErrors.fatherName && (
-										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
 									)}
 								</div>
 								{fieldErrors.fatherName && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.fatherName}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.fatherName}</span>
 									</p>
 								)}
 							</div>
 
 							<div>
-								<label htmlFor="gender" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="gender" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Gender <span className="text-red-500">*</span>
 								</label>
 								<select
@@ -398,7 +398,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 									value={formData.gender ?? ''}
 									onChange={handleInputChange}
 									onBlur={handleBlur}
-									className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+									className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px]"
 								>
 									<option value="">Select Gender</option>
 									<option value="0">Male</option>
@@ -406,19 +406,19 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 									<option value="2">Other</option>
 								</select>
 								{fieldErrors.gender && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.gender}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.gender}</span>
 									</p>
 								)}
 							</div>
 
 							<div>
-								<label htmlFor="dob" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="dob" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Date of Birth <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+									<Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
 									<input
 										type="date"
 										id="dob"
@@ -426,13 +426,13 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										value={formData.dob instanceof Date ? formData.dob.toISOString().split('T')[0] : formData.dob || ''}
 										onChange={handleDateChange}
 										onBlur={handleDateBlur}
-										className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+										className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-3 text-base border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px]"
 									/>
 								</div>
 								{fieldErrors.dob && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.dob}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.dob}</span>
 									</p>
 								)}
 							</div>
@@ -440,19 +440,19 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 					</div>
 
 					{/* Contact Information */}
-					<div className="space-y-6">
-						<div className="flex items-center gap-3 pb-3 border-b-2 border-primary-200">
-							<Phone className="w-6 h-6 text-primary-600" />
-							<h3 className="text-xl font-bold text-gray-900">Contact Information</h3>
+					<div className="space-y-4 sm:space-y-6">
+						<div className="flex items-center gap-2 sm:gap-3 pb-2 sm:pb-3 border-b-2 border-primary-200">
+							<Phone className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 flex-shrink-0" />
+							<h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">Contact Information</h3>
 						</div>
 
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
 							<div>
-								<label htmlFor="mobileNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="mobileNumber" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Mobile Number <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
+									<Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
 										fieldErrors.mobileNumber ? 'text-red-500' : fieldValid.mobileNumber ? 'text-green-500' : 'text-gray-400'
 									}`} />
 									<input
@@ -462,7 +462,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										value={formData.mobileNumber}
 										onChange={handleInputChange}
 										onBlur={handleBlur}
-										className={`w-full pl-10 pr-10 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[44px] ${
 											fieldErrors.mobileNumber 
 												? 'border-red-500 bg-red-50' 
 												: fieldValid.mobileNumber && touchedFields.mobileNumber
@@ -472,24 +472,24 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="03XX-XXXXXXX"
 									/>
 									{fieldValid.mobileNumber && touchedFields.mobileNumber && !fieldErrors.mobileNumber && (
-										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
 									)}
 								</div>
 								{fieldErrors.mobileNumber && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.mobileNumber}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.mobileNumber}</span>
 									</p>
 								)}
-								<p className="mt-1 text-xs text-gray-500">Format: 03XX-XXXXXXX (11 digits)</p>
+								<p className="mt-1 text-xs text-gray-500 break-words">Format: 03XX-XXXXXXX (11 digits)</p>
 							</div>
 
 							<div>
-								<label htmlFor="whatsAppNumber" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="whatsAppNumber" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									WhatsApp Number
 								</label>
 								<div className="relative">
-									<Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
+									<Phone className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
 										fieldErrors.whatsAppNumber ? 'text-red-500' : fieldValid.whatsAppNumber ? 'text-green-500' : 'text-gray-400'
 									}`} />
 									<input
@@ -499,7 +499,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										value={formData.whatsAppNumber}
 										onChange={handleInputChange}
 										onBlur={handleBlur}
-										className={`w-full pl-10 pr-10 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[44px] ${
 											fieldErrors.whatsAppNumber 
 												? 'border-red-500 bg-red-50' 
 												: fieldValid.whatsAppNumber && touchedFields.whatsAppNumber
@@ -509,13 +509,13 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="03XX-XXXXXXX (Optional)"
 									/>
 									{fieldValid.whatsAppNumber && touchedFields.whatsAppNumber && !fieldErrors.whatsAppNumber && (
-										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
 									)}
 								</div>
 								{fieldErrors.whatsAppNumber && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.whatsAppNumber}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.whatsAppNumber}</span>
 									</p>
 								)}
 							</div>
@@ -523,19 +523,19 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 					</div>
 
 					{/* Professional Information */}
-					<div className="space-y-6">
-						<div className="flex items-center gap-3 pb-3 border-b-2 border-primary-200">
-							<Briefcase className="w-6 h-6 text-primary-600" />
-							<h3 className="text-xl font-bold text-gray-900">Professional Information</h3>
+					<div className="space-y-4 sm:space-y-6">
+						<div className="flex items-center gap-2 sm:gap-3 pb-2 sm:pb-3 border-b-2 border-primary-200">
+							<Briefcase className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 flex-shrink-0" />
+							<h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">Professional Information</h3>
 						</div>
 
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
 							<div>
-								<label htmlFor="fieldExperiencedInYears" className="block text-sm font-semibold text-gray-700 mb-2">
-									Teaching Experience (Years)
+								<label htmlFor="fieldExperiencedInYears" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
+									Teaching Experience (Years) <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<Briefcase className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 transition-colors ${
+									<Briefcase className={`absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
 										fieldErrors.fieldExperiencedInYears ? 'text-red-500' : fieldValid.fieldExperiencedInYears ? 'text-green-500' : 'text-gray-400'
 									}`} />
 									<input
@@ -547,7 +547,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										onBlur={handleBlur}
 										min="0"
 										max="50"
-										className={`w-full pl-10 pr-10 py-3 border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[44px] ${
 											fieldErrors.fieldExperiencedInYears 
 												? 'border-red-500 bg-red-50' 
 												: fieldValid.fieldExperiencedInYears && touchedFields.fieldExperiencedInYears
@@ -557,49 +557,50 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										placeholder="0"
 									/>
 									{fieldValid.fieldExperiencedInYears && touchedFields.fieldExperiencedInYears && !fieldErrors.fieldExperiencedInYears && (
-										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-green-500" />
+										<CheckCircle className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
 									)}
 								</div>
 								{fieldErrors.fieldExperiencedInYears && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.fieldExperiencedInYears}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.fieldExperiencedInYears}</span>
 									</p>
 								)}
-								<p className="mt-1 text-xs text-gray-500">Enter number of years (0-50)</p>
+								<p className="mt-1 text-xs text-gray-500 break-words">Enter number of years (0-50)</p>
 							</div>
 
 							<div>
-								<label htmlFor="subjectTought" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="subjectTought" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Subject Taught <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+									<BookOpen className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
 									<input
 										type="text"
 										id="subjectTought"
 										name="subjectTought"
 										value={formData.subjectTought}
 										onChange={handleInputChange}
-										className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+										onBlur={handleBlur}
+										className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-3 text-base border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px]"
 										placeholder="e.g., Mathematics, English, Science"
 									/>
 								</div>
 								{fieldErrors.subjectTought && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.subjectTought}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.subjectTought}</span>
 									</p>
 								)}
 							</div>
 
 							<div className="md:col-span-2">
-								<label htmlFor="packageDemand" className="block text-sm font-semibold text-gray-700 mb-2">
+								<label htmlFor="packageDemand" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
 									Expected Salary Package (PKR) <span className="text-red-500">*</span>
 								</label>
 								<div className="relative">
-									<Coins className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-									<div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium text-sm">
+									<Coins className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+									<div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium text-xs sm:text-sm">
 										PKR
 									</div>
 									<input
@@ -608,41 +609,42 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 										name="packageDemand"
 										value={formData.packageDemand}
 										onChange={handleInputChange}
-										className="w-full pl-10 pr-16 py-3 border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+										onBlur={handleBlur}
+										className="w-full pl-9 sm:pl-10 pr-12 sm:pr-16 py-2.5 sm:py-3 text-base border-2 border-gray-300 rounded-xl bg-white hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px]"
 										placeholder="e.g., 50,000 - 80,000"
 									/>
 								</div>
 								{fieldErrors.packageDemand && (
-									<p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-										<AlertCircle className="w-4 h-4" />
-										{fieldErrors.packageDemand}
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.packageDemand}</span>
 									</p>
 								)}
-								<p className="mt-1 text-xs text-gray-500">Enter expected salary in Pakistani Rupees (PKR)</p>
+								<p className="mt-1 text-xs text-gray-500 break-words">Enter expected salary in Pakistani Rupees (PKR)</p>
 							</div>
 						</div>
 					</div>
 
 					{/* Submit Button */}
-					<div className="pt-6 border-t-2 border-gray-100">
+					<div className="pt-4 sm:pt-6 border-t-2 border-gray-100">
 						<button
 							type="submit"
 							disabled={isSubmitting}
-							className="w-full bg-gradient-to-r from-primary-600 via-primary-700 to-accent-600 text-white py-4 px-8 rounded-xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all duration-300 flex items-center justify-center gap-3"
+							className="w-full bg-gradient-to-r from-primary-600 via-primary-700 to-accent-600 text-white py-3 sm:py-4 px-6 sm:px-8 rounded-xl font-bold text-base sm:text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-4 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:active:scale-100 transition-all duration-300 flex items-center justify-center gap-2 sm:gap-3 touch-target min-h-[44px]"
 						>
 							{isSubmitting ? (
 								<>
-									<Loader2 className="w-6 h-6 animate-spin" />
-									<span>Submitting Application...</span>
+									<Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin flex-shrink-0" />
+									<span className="break-words">Submitting Application...</span>
 								</>
 							) : (
 								<>
-									<Briefcase className="w-5 h-5" />
-									<span>Submit Application</span>
+									<Briefcase className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+									<span className="break-words">Submit Application</span>
 								</>
 							)}
 						</button>
-						<p className="mt-4 text-center text-sm text-gray-500">
+						<p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-gray-500 break-words px-2 sm:px-0">
 							By submitting this form, you agree to our terms and conditions. We will contact you shortly.
 						</p>
 					</div>

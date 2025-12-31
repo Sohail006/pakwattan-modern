@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import AboutHero from '@/components/about/AboutHero'
 import BackgroundHistory from '@/components/about/BackgroundHistory'
 import VisionMission from '@/components/about/VisionMission'
@@ -10,28 +11,40 @@ import GrowthChart from '@/components/about/GrowthChart'
 import DirectorMessage from '@/components/about/DirectorMessage'
 import PrincipalMessage from '@/components/about/PrincipalMessage'
 import YouTubeVideo from '@/components/about/YouTubeVideo'
+import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 
-export const metadata = {
-  title: 'About Us - Pak Wattan School & College of Sciences',
-  description: 'Learn about Pak Wattan School & College of Sciences - our history, vision, mission, faculty, and commitment to providing quality education in Havelian, KPK.',
-  keywords: 'about pak wattan, school history, vision mission, faculty, havelian school, kpk education',
-}
+export const metadata: Metadata = generatePageMetadata({
+  title: 'About Us',
+  description: 'Learn about Pak Wattan School & College of Sciences - our history, vision, mission, faculty, and commitment to providing quality education in Havelian, KPK since 2020.',
+  keywords: 'about pak wattan, school history, vision mission, faculty, havelian school, kpk education, pak wattan story',
+  path: '/about',
+})
 
 export default function AboutPage() {
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://pakwattan.edu.pk' },
+    { name: 'About Us', url: 'https://pakwattan.edu.pk/about' },
+  ])
+
   return (
-    <div className="min-h-screen">
-      <AboutHero />
-      <BackgroundHistory />
-      <VisionMission />
-      <Faculty />
-      <StaffEntryTest />
-      <PrizeDistribution />
-      <Admissions />
-      <WithdrawalPolicy />
-      <GrowthChart />
-      <YouTubeVideo />
-      <DirectorMessage />
-      <PrincipalMessage />
-    </div>
+    <>
+      <StructuredData data={breadcrumbs} />
+      <div className="min-h-screen">
+        <AboutHero />
+        <BackgroundHistory />
+        <VisionMission />
+        <Faculty />
+        <StaffEntryTest />
+        <PrizeDistribution />
+        <Admissions />
+        <WithdrawalPolicy />
+        <GrowthChart />
+        <YouTubeVideo />
+        <DirectorMessage />
+        <PrincipalMessage />
+      </div>
+    </>
   )
 }

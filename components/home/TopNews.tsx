@@ -115,7 +115,7 @@ const TopNews = () => {
 
   return (
     <div 
-      className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white py-3 shadow-lg relative overflow-hidden"
+      className="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 text-white py-2 sm:py-3 shadow-lg relative overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -124,22 +124,22 @@ const TopNews = () => {
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
       </div>
       
-      <div className="container-custom relative z-10">
-        <div className="flex items-center justify-between">
+      <div className="container-custom relative z-10 px-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
           {/* Left Section - Breaking News Badge */}
-          <div className="flex items-center space-x-4">
-            <div className="bg-gradient-to-r from-accent-400 to-accent-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg animate-pulse">
+          <div className="flex items-center space-x-2 sm:space-x-4 flex-shrink-0">
+            <div className="bg-gradient-to-r from-accent-400 to-accent-500 text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-lg animate-pulse">
               🔥 BREAKING
             </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-              <span className="text-sm font-medium hidden sm:inline">Latest News</span>
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full animate-bounce"></div>
+              <span className="text-xs sm:text-sm font-medium hidden sm:inline">Latest News</span>
             </div>
           </div>
           
           {/* Center Section - News Content */}
-          <div className="flex-1 mx-4 sm:mx-8">
-            <div className="relative min-h-[3rem] overflow-hidden">
+          <div className="flex-1 mx-2 sm:mx-4 lg:mx-8 min-w-0">
+            <div className="relative min-h-[2.5rem] sm:min-h-[3rem] overflow-hidden">
               <div 
                 className="absolute inset-0 flex items-center transition-all duration-700 ease-in-out"
                 style={{ transform: `translateY(-${currentNews * 100}%)` }}
@@ -149,22 +149,22 @@ const TopNews = () => {
                   return (
                     <div
                       key={item.id}
-                      className="w-full flex items-center justify-center min-h-[3rem] px-4"
+                      className="w-full flex items-center justify-center min-h-[2.5rem] sm:min-h-[3rem] px-2 sm:px-4"
                     >
-                      <div className="flex items-center space-x-3 max-w-4xl">
+                      <div className="flex items-center space-x-2 sm:space-x-3 max-w-4xl w-full">
                         {/* Icon */}
-                        <div className={`bg-gradient-to-r ${item.color} p-2 rounded-full shadow-lg`}>
-                          <ItemIcon className="w-5 h-5 text-white" />
+                        <div className={`bg-gradient-to-r ${item.color} p-1.5 sm:p-2 rounded-full shadow-lg flex-shrink-0`}>
+                          <ItemIcon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
                         
                         {/* Content */}
-                        <div className="flex-1 text-center">
-                          <h3 className={`text-sm sm:text-base font-bold ${
+                        <div className="flex-1 text-center min-w-0">
+                          <h3 className={`text-xs sm:text-sm lg:text-base font-bold truncate ${
                             item.urgent ? 'blink text-yellow-300' : 'text-white'
                           }`}>
                             {item.title}
                           </h3>
-                          <p className="text-xs sm:text-sm text-white/80 mt-1 hidden sm:block">
+                          <p className="text-xs sm:text-sm text-white/80 mt-0.5 sm:mt-1 hidden sm:block truncate">
                             {item.subtitle}
                           </p>
                         </div>
@@ -172,10 +172,11 @@ const TopNews = () => {
                         {/* Action Button */}
                         <a
                           href={item.href}
-                          className={`bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 flex items-center space-x-1 group`}
+                          className={`bg-white/20 hover:bg-white/30 active:bg-white/40 text-white px-2 sm:px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 flex items-center space-x-1 group flex-shrink-0 touch-target min-h-[44px]`}
                         >
-                          <span>{item.action}</span>
-                          <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                          <span className="hidden xs:inline">{item.action}</span>
+                          <span className="xs:hidden">→</span>
+                          <ExternalLink className="w-3 h-3 group-hover:translate-x-0.5 transition-transform hidden xs:inline" />
                         </a>
                       </div>
                     </div>
@@ -186,12 +187,12 @@ const TopNews = () => {
           </div>
           
           {/* Right Section - Controls and Indicators */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             {/* Navigation Controls */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5 sm:space-x-1">
               <button
                 onClick={prevNews}
-                className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
+                className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full flex items-center justify-center transition-all duration-300 group touch-target min-h-[44px] min-w-[44px]"
                 aria-label="Previous news"
               >
                 <ChevronLeft className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -199,7 +200,7 @@ const TopNews = () => {
               
               <button
                 onClick={togglePause}
-                className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
+                className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full flex items-center justify-center transition-all duration-300 group touch-target min-h-[44px] min-w-[44px]"
                 aria-label={isPaused ? "Resume news" : "Pause news"}
               >
                 {isPaused ? (
@@ -211,7 +212,7 @@ const TopNews = () => {
               
               <button
                 onClick={nextNews}
-                className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-300 group"
+                className="w-8 h-8 sm:w-9 sm:h-9 bg-white/20 hover:bg-white/30 active:bg-white/40 rounded-full flex items-center justify-center transition-all duration-300 group touch-target min-h-[44px] min-w-[44px]"
                 aria-label="Next news"
               >
                 <ChevronRight className="w-4 h-4 group-hover:scale-110 transition-transform" />
@@ -219,17 +220,18 @@ const TopNews = () => {
             </div>
             
             {/* Progress Indicators */}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-0.5 sm:space-x-1">
               {newsItems.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentNews(index)}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all duration-300 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center ${
                     index === currentNews
                       ? 'bg-white scale-125'
-                      : 'bg-white/50 hover:bg-white/80'
+                      : 'bg-white/50 hover:bg-white/80 active:bg-white/90'
                   }`}
                   aria-label={`Go to news item ${index + 1}`}
+                  aria-current={index === currentNews ? 'true' : 'false'}
                 />
               ))}
             </div>

@@ -107,7 +107,7 @@ const HeroSection = () => {
                   <Link
                     key={index}
                     href={link.href}
-                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 hover:scale-[1.02] hover:shadow-md touch-target focus-ring"
+                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 active:bg-gradient-to-r active:from-primary-100 active:to-accent-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-md touch-target min-h-[44px] focus-ring"
                     title={link.title}
                     aria-label={`Navigate to ${link.title}`}
                   >

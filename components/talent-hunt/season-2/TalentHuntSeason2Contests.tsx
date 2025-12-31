@@ -146,61 +146,63 @@ const TalentHuntSeason2Contests = () => {
   ]
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 sm:py-12 lg:py-16 bg-white">
       <div className="container-custom">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center space-x-2 bg-accent-100 rounded-full px-6 py-3 text-sm font-medium text-accent-700 mb-6">
-            <span><Trophy className="w-4 h-4" /></span>
+        <div className="text-center mb-8 sm:mb-10 lg:mb-12">
+          <div className="inline-flex items-center space-x-2 bg-accent-100 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-accent-700 mb-4 sm:mb-6">
+            <span><Trophy className="w-3 h-3 sm:w-4 sm:h-4" /></span>
             <span>10 Exciting Contest Streams</span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold font-josefin mb-6">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin mb-4 sm:mb-6 break-words">
             <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
               Contest Categories
             </span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed break-words px-4">
             These streams are carefully designed to foster expression, creativity, critical thinking, 
             and skill-building in a fun and encouraging environment.
           </p>
         </div>
 
         {/* Contest Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10 lg:mb-12">
           {contests.map((contest) => (
             <div
               key={contest.id}
-              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 cursor-pointer"
+              className="group bg-white rounded-xl sm:rounded-2xl shadow-lg hover:shadow-2xl active:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-primary-200 cursor-pointer touch-target"
               onClick={() => setSelectedContest(selectedContest === contest.id ? null : contest.id)}
             >
-              <div className={`bg-gradient-to-br ${contest.color} p-6 text-white`}>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                    {contest.icon}
+              <div className={`bg-gradient-to-br ${contest.color} p-4 sm:p-6 text-white`}>
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div className="w-6 h-6 sm:w-8 sm:h-8">
+                      {contest.icon}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-sm opacity-90">Contest #{contest.id}</div>
-                    <div className="text-xs opacity-75">Click for details</div>
+                  <div className="text-right min-w-0">
+                    <div className="text-xs sm:text-sm opacity-90 break-words">Contest #{contest.id}</div>
+                    <div className="text-xs opacity-75 hidden sm:block">Click for details</div>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{contest.title}</h3>
-                <p className="text-sm opacity-90 leading-relaxed">{contest.description}</p>
+                <h3 className="text-base sm:text-lg lg:text-xl font-bold mb-1 sm:mb-2 break-words">{contest.title}</h3>
+                <p className="text-xs sm:text-sm opacity-90 leading-relaxed break-words">{contest.description}</p>
               </div>
               
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Calendar className="w-4 h-4" />
-                    <span>{contest.date}</span>
+              <div className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 space-y-2 sm:space-y-0 gap-2">
+                  <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 min-w-0">
+                    <Calendar className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="truncate">{contest.date}</span>
                   </div>
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <Users className="w-4 h-4" />
-                    <span>{contest.participants}</span>
+                  <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-500 min-w-0">
+                    <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                    <span className="truncate">{contest.participants}</span>
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-primary-600">View Details</span>
-                  <ChevronDown className={`w-5 h-5 text-primary-600 transition-transform duration-200 ${
+                  <span className="text-xs sm:text-sm font-semibold text-primary-600 break-words">View Details</span>
+                  <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 text-primary-600 transition-transform duration-200 flex-shrink-0 ${
                     selectedContest === contest.id ? 'rotate-180' : ''
                   }`} />
                 </div>
@@ -208,22 +210,22 @@ const TalentHuntSeason2Contests = () => {
 
               {/* Expanded Details */}
               {selectedContest === contest.id && (
-                <div className="px-6 pb-6 border-t border-gray-100 bg-gray-50">
-                  <div className="space-y-4">
+                <div className="px-4 sm:px-6 pb-4 sm:pb-6 border-t border-gray-100 bg-gray-50">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Contest Details:</h4>
-                      <p className="text-sm text-gray-600 mb-4">{contest.details}</p>
+                      <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2 break-words">Contest Details:</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 mb-3 sm:mb-4 break-words">{contest.details}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Requirements:</h4>
-                      <p className="text-sm text-gray-600">{contest.requirements}</p>
+                      <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2 break-words">Requirements:</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 break-words">{contest.requirements}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-2">Prizes:</h4>
-                      <p className="text-sm text-gray-600">{contest.prizes}</p>
+                      <h4 className="text-sm sm:text-base font-semibold text-gray-900 mb-1 sm:mb-2 break-words">Prizes:</h4>
+                      <p className="text-xs sm:text-sm text-gray-600 break-words">{contest.prizes}</p>
                     </div>
-                    <div className="pt-4 border-t border-gray-200">
-                      <button className="w-full bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-200">
+                    <div className="pt-3 sm:pt-4 border-t border-gray-200">
+                      <button className="w-full bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white py-2.5 sm:py-2 px-4 rounded-lg font-semibold transition-colors duration-200 touch-target min-h-[44px] text-sm sm:text-base">
                         Register for this Contest
                       </button>
                     </div>
@@ -235,19 +237,19 @@ const TalentHuntSeason2Contests = () => {
         </div>
 
         {/* Registration CTA */}
-        <div className="text-center bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl p-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        <div className="text-center bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
+          <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4 break-words">
             Ready to Showcase Your Talent?
           </h3>
-          <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto break-words px-4">
             Join us in this exciting journey where talent meets opportunity. 
             Let&apos;s inspire the stars of tomorrow—one stream, one talent at a time.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-3 rounded-xl font-semibold transition-colors duration-200">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
+            <button className="bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold transition-colors duration-200 touch-target min-h-[44px] text-sm sm:text-base">
               Register Now
             </button>
-            <button className="bg-white hover:bg-gray-50 text-primary-600 border border-primary-600 px-8 py-3 rounded-xl font-semibold transition-colors duration-200">
+            <button className="bg-white hover:bg-gray-50 active:bg-gray-100 text-primary-600 border border-primary-600 px-6 sm:px-8 py-2.5 sm:py-3 rounded-xl font-semibold transition-colors duration-200 touch-target min-h-[44px] text-sm sm:text-base">
               View All Contests
             </button>
           </div>

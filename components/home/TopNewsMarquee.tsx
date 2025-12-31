@@ -30,8 +30,8 @@ const TopNewsMarquee = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 text-base font-bold shadow-lg relative overflow-hidden">
-        <Container className="text-center">
+      <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 sm:pt-16 text-sm sm:text-base font-bold shadow-lg relative overflow-hidden">
+        <Container className="text-center px-4">
           <div className="flex items-center justify-center py-2">
             <Loader2 className="w-4 h-4 animate-spin" />
           </div>
@@ -45,18 +45,18 @@ const TopNewsMarquee = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 text-base font-bold shadow-lg relative overflow-hidden">
-      <Container className="text-center">
+    <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 sm:pt-16 text-sm sm:text-base font-bold shadow-lg relative overflow-hidden">
+      <Container className="text-center px-4">
         <div className="overflow-hidden relative">
           {/* Enhanced gradient overlays for smooth edges */}
-          <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-accent-400 to-transparent z-10"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-accent-400 to-transparent z-10"></div>
+          <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-20 bg-gradient-to-r from-accent-400 to-transparent z-10"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-10 sm:w-20 bg-gradient-to-l from-accent-400 to-transparent z-10"></div>
           
           {/* Pause on hover for better UX */}
           <div className="hover:pause-animation">
             <div className="animate-marquee whitespace-nowrap">
               {marqueeItems.map((item, index) => (
-                <span key={index} className="inline-block mr-12 px-3 py-0.5 bg-white/20 rounded-full">
+                <span key={index} className="inline-block mr-6 sm:mr-12 px-2 sm:px-3 py-0.5 bg-white/20 rounded-full text-xs sm:text-sm break-words">
                   {item}
                 </span>
               ))}

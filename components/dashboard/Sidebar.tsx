@@ -205,39 +205,40 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
     return (
       <div className="flex flex-col h-full">
         {/* Logo Section */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <Link href={getDashboardRoute(userRole)} className="flex items-center space-x-3">
-            <div className="relative">
+        <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
+          <Link href={getDashboardRoute(userRole)} className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+            <div className="relative flex-shrink-0">
               <Image
                 src={SCHOOL_INFO.logo}
                 alt={SCHOOL_INFO.name}
                 width={40}
                 height={40}
-                className="w-10 h-10 rounded-lg"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg"
                 priority
               />
             </div>
             {isOpen && (
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-gray-900 font-josefin">
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs sm:text-sm font-bold text-gray-900 font-josefin truncate">
                   {SCHOOL_INFO.name}
                 </span>
-                <span className="text-xs text-gray-500">Dashboard</span>
+                <span className="text-xs text-gray-500 truncate">Dashboard</span>
               </div>
             )}
           </Link>
           {isMobile && (
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="p-2 rounded-lg hover:bg-gray-100"
+              className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center flex-shrink-0"
+              aria-label="Close menu"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           )}
         </div>
 
         {/* Navigation Menu */}
-        <nav className="flex-1 overflow-y-auto px-2 py-4">
+        <nav className="flex-1 overflow-y-auto px-2 py-3 sm:py-4">
           <ul className="space-y-1">
             {filteredMenuItems.map((item) => {
               const isActive = currentPath === item.href || currentPath.startsWith(item.href + '/')
@@ -247,23 +248,25 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
                     href={item.href}
                     onClick={() => isMobile && setIsMobileMenuOpen(false)}
                     className={`
-                      flex items-center space-x-3 px-3 py-2.5 rounded-lg
-                      transition-all duration-200 group
+                      flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg
+                      transition-all duration-200 group touch-target min-h-[44px]
                       ${
                         isActive
-                          ? 'bg-primary-50 text-primary-700 font-semibold'
-                          : 'text-gray-700 hover:bg-gray-100 hover:text-primary-600'
+                          ? 'bg-primary-50 text-primary-700 font-semibold active:bg-primary-100'
+                          : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200 hover:text-primary-600'
                       }
                     `}
+                    aria-label={item.name}
+                    aria-current={isActive ? 'page' : undefined}
                   >
-                    <span className={`${isActive ? 'text-primary-600' : 'text-gray-500 group-hover:text-primary-600'}`}>
+                    <span className={`flex-shrink-0 ${isActive ? 'text-primary-600' : 'text-gray-500 group-hover:text-primary-600'}`}>
                       {item.icon}
                     </span>
                     {isOpen && (
-                      <span className="flex-1">{item.name}</span>
+                      <span className="flex-1 text-sm sm:text-base truncate min-w-0">{item.name}</span>
                     )}
                     {item.badge && item.badge > 0 && (
-                      <span className="bg-primary-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+                      <span className="bg-primary-600 text-white text-xs font-semibold px-1.5 sm:px-2 py-0.5 rounded-full flex-shrink-0">
                         {item.badge > 9 ? '9+' : item.badge}
                       </span>
                     )}
@@ -275,13 +278,14 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
         </nav>
 
         {/* Logout Section */}
-        <div className="border-t border-gray-200 p-4">
+        <div className="border-t border-gray-200 p-3 sm:p-4">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-all duration-200 group"
+            className="w-full flex items-center space-x-2 sm:space-x-3 px-2 sm:px-3 py-2 sm:py-2.5 rounded-lg text-red-600 hover:bg-red-50 active:bg-red-100 transition-all duration-200 group touch-target min-h-[44px]"
+            aria-label="Logout"
           >
-            <LogOut className="w-5 h-5" />
-            {isOpen && <span className="font-medium">Logout</span>}
+            <LogOut className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+            {isOpen && <span className="font-medium text-sm sm:text-base">Logout</span>}
           </button>
         </div>
       </div>
@@ -304,7 +308,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
         {/* Toggle Button */}
         <button
           onClick={onToggle}
-          className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full p-1.5 shadow-md hover:bg-gray-50 transition-colors"
+          className="absolute -right-3 top-20 bg-white border border-gray-200 rounded-full p-1.5 sm:p-2 shadow-md hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label={isOpen ? 'Collapse sidebar' : 'Expand sidebar'}
         >
           {isOpen ? (
@@ -318,7 +322,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="fixed top-4 left-4 z-40 lg:hidden bg-white border border-gray-200 rounded-lg p-2 shadow-md"
+        className="fixed top-3 sm:top-4 left-3 sm:left-4 z-40 lg:hidden bg-white border border-gray-200 rounded-lg p-2 shadow-md hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
         aria-label="Open menu"
       >
         <LayoutDashboard className="w-5 h-5 text-gray-700" />

@@ -5,7 +5,8 @@ import { CardProps } from '@/types'
 
 const Card = ({ className = '', children, hover = true }: CardProps) => {
   const baseClasses = 'bg-white rounded-xl shadow-lg transition-all duration-300'
-  const hoverClasses = hover ? 'hover:shadow-xl hover:-translate-y-1' : ''
+  // Disable hover effects on touch devices
+  const hoverClasses = hover ? 'hover:shadow-xl hover:-translate-y-1 active:shadow-lg' : ''
   const classes = `${baseClasses} ${hoverClasses} ${className}`
   
   return (

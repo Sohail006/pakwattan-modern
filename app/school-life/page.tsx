@@ -1,28 +1,66 @@
+import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import SchoolLifeHero from '@/components/school-life/SchoolLifeHero'
-import AcademicSchedule from '@/components/school-life/AcademicSchedule'
-import StudentCodeOfConduct from '@/components/school-life/StudentCodeOfConduct'
-import CollegeKit from '@/components/school-life/CollegeKit'
-import AttendancePolicy from '@/components/school-life/AttendancePolicy'
-import ParentTeacherMeetings from '@/components/school-life/ParentTeacherMeetings'
-import SchoolActivities from '@/components/school-life/SchoolActivities'
-import StudentLife from '@/components/school-life/StudentLife'
+import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-export const metadata = {
-  title: 'School Life - Pak Wattan School & College of Sciences',
-  description: 'Discover the vibrant school life at Pak Wattan School & College of Sciences. Learn about our academic schedule, student activities, code of conduct, and more.',
-}
+// Lazy load below-fold components for better performance
+const AcademicSchedule = dynamic(() => import('@/components/school-life/AcademicSchedule'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const StudentCodeOfConduct = dynamic(() => import('@/components/school-life/StudentCodeOfConduct'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const CollegeKit = dynamic(() => import('@/components/school-life/CollegeKit'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const AttendancePolicy = dynamic(() => import('@/components/school-life/AttendancePolicy'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const ParentTeacherMeetings = dynamic(() => import('@/components/school-life/ParentTeacherMeetings'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const SchoolActivities = dynamic(() => import('@/components/school-life/SchoolActivities'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+const StudentLife = dynamic(() => import('@/components/school-life/StudentLife'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'School Life',
+  description: 'Discover the vibrant school life at Pak Wattan School & College of Sciences. Learn about our academic schedule, student activities, code of conduct, attendance policy, and parent-teacher meetings.',
+  keywords: 'school life, student activities, academic schedule, code of conduct, attendance policy, parent teacher meetings, pak wattan school life',
+  path: '/school-life',
+})
 
 export default function SchoolLifePage() {
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://pakwattan.edu.pk' },
+    { name: 'School Life', url: 'https://pakwattan.edu.pk/school-life' },
+  ])
+
   return (
-    <div className="min-h-screen">
-      <SchoolLifeHero />
-      <AcademicSchedule />
-      <StudentCodeOfConduct />
-      <CollegeKit />
-      <AttendancePolicy />
-      <ParentTeacherMeetings />
-      <SchoolActivities />
-      <StudentLife />
-    </div>
+    <>
+      <StructuredData data={breadcrumbs} />
+      <div className="min-h-screen">
+        <SchoolLifeHero />
+        <AcademicSchedule />
+        <StudentCodeOfConduct />
+        <CollegeKit />
+        <AttendancePolicy />
+        <ParentTeacherMeetings />
+        <SchoolActivities />
+        <StudentLife />
+      </div>
+    </>
   )
 }

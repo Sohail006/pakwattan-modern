@@ -138,60 +138,62 @@ const GradeSyllabusTable = () => {
           </p>
         </div>
 
-        {/* Desktop Table View */}
-        <div className="hidden md:block overflow-x-auto">
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-primary-600 text-white">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                    Grade
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                    Syllabus Title
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider">
-                    Academic Year
-                  </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
+             {/* Desktop Table View */}
+             <div className="hidden md:block overflow-x-auto -mx-4 sm:mx-0">
+               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+                 <table className="w-full min-w-[640px]">
+                   <thead className="bg-primary-600 text-white">
+                     <tr>
+                       <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                         Grade
+                       </th>
+                       <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                         Syllabus Title
+                       </th>
+                       <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                         Academic Year
+                       </th>
+                       <th className="px-3 sm:px-6 py-4 text-right text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                         Actions
+                       </th>
+                     </tr>
+                   </thead>
               <tbody className="divide-y divide-gray-200">
                 {gradesWithPdfs.map(({ grade, syllabus }) => (
                   <tr
                     key={grade.id}
                     className="hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-3">
-                          <FileText className="w-5 h-5 text-white" />
+                    <td className="px-3 sm:px-6 py-4">
+                      <div className="flex items-center min-w-0">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
+                          <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                         </div>
-                        <span className="text-lg font-bold text-gray-900">{grade.name}</span>
+                        <span className="text-base sm:text-lg font-bold text-gray-900 truncate">{grade.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">{syllabus.title}</div>
+                    <td className="px-3 sm:px-6 py-4 min-w-0">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">{syllabus.title}</div>
                       {syllabus.description && (
-                        <div className="text-xs text-gray-500 mt-1 line-clamp-1">
+                        <div className="text-xs text-gray-500 mt-1 line-clamp-1 truncate">
                           {syllabus.description}
                         </div>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-700">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                      <span className="text-xs sm:text-sm text-gray-700">
                         {syllabus.academicYear || 'N/A'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right">
                       <button
                         onClick={() => handleDownload(syllabus.pdfUrl!, syllabus.title)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold"
+                        className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 active:bg-primary-800 transition-colors font-semibold text-xs sm:text-sm min-h-[44px] min-w-[44px] touch-target"
+                        aria-label={`Download ${syllabus.title} PDF`}
                       >
-                        <Download className="w-4 h-4" />
-                        <span>Download</span>
+                        <Download className="w-4 h-4 flex-shrink-0" />
+                        <span className="hidden sm:inline">Download PDF</span>
+                        <span className="sm:hidden">Download</span>
                       </button>
                     </td>
                   </tr>
@@ -202,38 +204,39 @@ const GradeSyllabusTable = () => {
         </div>
 
         {/* Mobile Card View */}
-        <div className="md:hidden space-y-4">
+        <div className="md:hidden space-y-4 px-2">
           {gradesWithPdfs.map(({ grade, syllabus }) => (
             <div
               key={grade.id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 hover:shadow-xl transition-shadow"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 hover:shadow-xl transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-3">
-                    <FileText className="w-6 h-6 text-white" />
+                <div className="flex items-center min-w-0 flex-1">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                    <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                   </div>
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">{grade.name}</h3>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 truncate">{grade.name}</h3>
                     {syllabus.academicYear && (
-                      <p className="text-sm text-gray-600">Year: {syllabus.academicYear}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 truncate">Year: {syllabus.academicYear}</p>
                     )}
                   </div>
                 </div>
               </div>
               
-              <div className="mb-4">
-                <h4 className="text-base font-semibold text-gray-800 mb-1">{syllabus.title}</h4>
+              <div className="mb-4 min-w-0">
+                <h4 className="text-sm sm:text-base font-semibold text-gray-800 mb-1 truncate">{syllabus.title}</h4>
                 {syllabus.description && (
-                  <p className="text-sm text-gray-600 line-clamp-2">{syllabus.description}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 break-words">{syllabus.description}</p>
                 )}
               </div>
 
               <button
                 onClick={() => handleDownload(syllabus.pdfUrl!, syllabus.title)}
-                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 active:bg-primary-800 transition-colors font-semibold text-sm sm:text-base min-h-[44px] touch-target"
+                aria-label={`Download ${syllabus.title} PDF`}
               >
-                <Download className="w-5 h-5" />
+                <Download className="w-5 h-5 flex-shrink-0" />
                 <span>Download PDF</span>
               </button>
             </div>

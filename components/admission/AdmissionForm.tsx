@@ -339,7 +339,7 @@ const AdmissionForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
                       Emergency Contact *
                     </label>
                     <input
@@ -348,53 +348,53 @@ const AdmissionForm = () => {
                       value={formData.emergencyContact}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
                       placeholder="Emergency contact number"
                     />
                   </div>
-                </div>
-                <div className="mt-6">
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Address *
-                  </label>
-                  <textarea
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    required
-                    rows={3}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                    placeholder="Enter complete address"
-                  />
+                  <div className="md:col-span-2">
+                    <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
+                      Address *
+                    </label>
+                    <textarea
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      required
+                      rows={4}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[120px]"
+                      placeholder="Enter complete address"
+                    />
+                  </div>
                 </div>
               </div>
 
               {/* Required Documents Checklist */}
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                  <CheckCircle className="w-6 h-6 text-blue-600 mr-3" />
-                  Required Documents Checklist
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2 sm:mr-3 flex-shrink-0" />
+                  <span className="truncate">Required Documents Checklist</span>
                 </h3>
-                <div className="bg-blue-50 p-6 rounded-lg">
-                  <p className="text-gray-700 mb-4 font-semibold">
+                <div className="bg-blue-50 p-4 sm:p-6 rounded-lg">
+                  <p className="text-sm sm:text-base text-gray-700 mb-3 sm:mb-4 font-semibold break-words">
                     Please ensure you have the following documents ready:
                   </p>
-                  <ul className="grid md:grid-cols-2 gap-2 text-sm text-gray-600">
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm text-gray-600">
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Birth Certificate (Form B)
+                      <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 mr-2 flex-shrink-0" />
+                      <span className="break-words">Birth Certificate (Form B)</span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      2 Passport Size Photos
+                      <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 mr-2 flex-shrink-0" />
+                      <span className="break-words">2 Passport Size Photos</span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Father&apos;s CNIC Copy
+                      <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 mr-2 flex-shrink-0" />
+                      <span className="break-words">Father&apos;s CNIC Copy</span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                      Previous School Certificate
+                      <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-green-500 mr-2 flex-shrink-0" />
+                      <span className="break-words">Previous School Certificate</span>
                     </li>
                   </ul>
                 </div>
@@ -405,18 +405,18 @@ const AdmissionForm = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-gradient-to-r from-primary-600 to-accent-600 text-white px-12 py-4 rounded-lg font-semibold text-lg hover:from-primary-700 hover:to-accent-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto"
+                  className="bg-gradient-to-r from-primary-600 to-accent-600 text-white px-6 sm:px-8 lg:px-12 py-3 sm:py-3.5 lg:py-4 rounded-lg font-semibold text-base sm:text-lg hover:from-primary-700 hover:to-accent-700 active:from-primary-800 active:to-accent-800 transition-all duration-300 shadow-lg hover:shadow-xl active:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mx-auto touch-target min-h-[44px]"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Submitting...</span>
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin flex-shrink-0" />
+                      <span className="break-words">Submitting...</span>
                     </>
                   ) : (
-                    <span>Submit Application</span>
+                    <span className="break-words">Submit Application</span>
                   )}
                 </button>
-                <p className="text-sm text-gray-600 mt-4">
+                <p className="text-xs sm:text-sm text-gray-600 mt-3 sm:mt-4 break-words">
                   By submitting this form, you agree to our terms and conditions.
                 </p>
               </div>

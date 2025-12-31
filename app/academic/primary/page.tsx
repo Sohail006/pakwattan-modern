@@ -3,10 +3,16 @@ import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { BookOpen, Users, Calculator, Globe, Heart, Microscope } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'Primary Education - PakWattan Modern School',
-  description: 'Foundation education program for students aged 6-10 years with emphasis on core subjects and character building.',
-}
+import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Primary Education',
+  description: 'Foundation education program at Pak Wattan School & College of Sciences for students aged 6-10 years with emphasis on core subjects, character building, and holistic development.',
+  keywords: 'primary education, elementary education, pak wattan primary, havelian primary school, foundation education',
+  path: '/academic/primary',
+})
 
 const PrimaryPage = () => {
   const features = [
@@ -49,8 +55,16 @@ const PrimaryPage = () => {
     { grade: 'Grade 5', age: '10-11 years', focus: 'Preparation for middle school' }
   ]
 
+  const breadcrumbs = generateBreadcrumbSchema([
+    { name: 'Home', url: 'https://pakwattan.edu.pk' },
+    { name: 'Academic', url: 'https://pakwattan.edu.pk/academic' },
+    { name: 'Primary', url: 'https://pakwattan.edu.pk/academic/primary' },
+  ])
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
+    <>
+      <StructuredData data={breadcrumbs} />
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
       {/* Hero Section */}
       <section className="py-16 bg-gradient-to-r from-green-600 to-emerald-700 text-white">
         <Container>
@@ -195,6 +209,7 @@ const PrimaryPage = () => {
         </Container>
       </section>
     </div>
+    </>
   )
 }
 

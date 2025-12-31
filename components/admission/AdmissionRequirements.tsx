@@ -71,34 +71,34 @@ const AdmissionRequirements = () => {
   return (
     <section id="admission-requirements" className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
       <Container>
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-6">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
             <span className="text-gradient">Admission Requirements</span>
           </h2>
-          <p className="text-lg text-secondary-600 max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
             Complete list of documents and eligibility criteria for admission
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 mb-12 lg:mb-16">
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 mb-8 sm:mb-12 lg:mb-16">
           {/* Initial Documents */}
-          <Card className="p-6 sm:p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <FileText className="w-6 h-6 text-primary-600 mr-3" />
-              Initial Documents Required
+          <Card className="p-4 sm:p-6 lg:p-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+              <span className="break-words">Initial Documents Required</span>
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 break-words">
               These documents must be submitted before the entry test date:
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {initialDocuments.map((doc, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="text-primary-600 mt-1">
+                <div key={index} className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                  <div className="text-primary-600 mt-1 flex-shrink-0">
                     {doc.icon}
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{doc.title}</h4>
-                    <p className="text-gray-600 text-sm">{doc.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-900 break-words">{doc.title}</h4>
+                    <p className="text-xs sm:text-sm text-gray-600 break-words">{doc.description}</p>
                   </div>
                 </div>
               ))}
@@ -106,23 +106,23 @@ const AdmissionRequirements = () => {
           </Card>
 
           {/* Post-Admission Documents */}
-          <Card className="p-6 sm:p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <Award className="w-6 h-6 text-primary-600 mr-3" />
-              Post-Admission Documents
+          <Card className="p-4 sm:p-6 lg:p-8">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+              <Award className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+              <span className="break-words">Post-Admission Documents</span>
             </h3>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 break-words">
               These documents must be provided after confirmation of admission:
             </p>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {postAdmissionDocuments.map((doc, index) => (
-                <div key={index} className="flex items-start space-x-4 p-4 bg-gray-50 rounded-lg">
-                  <div className="text-primary-600 mt-1">
+                <div key={index} className="flex items-start space-x-3 sm:space-x-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                  <div className="text-primary-600 mt-1 flex-shrink-0">
                     {doc.icon}
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-gray-900">{doc.title}</h4>
-                    <p className="text-gray-600 text-sm">{doc.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-900 break-words">{doc.title}</h4>
+                    <p className="text-xs sm:text-sm text-gray-600 break-words">{doc.description}</p>
                   </div>
                 </div>
               ))}
@@ -131,16 +131,16 @@ const AdmissionRequirements = () => {
         </div>
 
         {/* Eligibility Criteria */}
-        <Card className="p-6 sm:p-8 bg-gradient-to-r from-primary-50 to-accent-50 border-l-4 border-primary-400">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-              <CheckCircle className="w-6 h-6 text-primary-600 mr-3" />
-              Eligibility Criteria
+        <Card className="p-4 sm:p-6 lg:p-8 bg-gradient-to-r from-primary-50 to-accent-50 border-l-4 border-primary-400">
+            <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center">
+              <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+              <span className="break-words">Eligibility Criteria</span>
             </h3>
-          <ul className="space-y-4">
+          <ul className="space-y-3 sm:space-y-4">
             {eligibilityCriteria.map((criteria, index) => (
               <li key={index} className="flex items-start">
-                <CheckCircle className="w-5 h-5 text-primary-600 mt-0.5 mr-3 flex-shrink-0" />
-                <span className="text-gray-700">{criteria}</span>
+                <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mt-0.5 mr-2 sm:mr-3 flex-shrink-0" />
+                <span className="text-sm sm:text-base text-gray-700 break-words">{criteria}</span>
               </li>
             ))}
           </ul>
