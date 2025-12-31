@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { 
   Mail, 
   Phone, 
-  CheckCircle, 
   XCircle, 
   Trash2, 
   Eye, 
@@ -15,14 +14,12 @@ import {
   Loader2,
   Calendar,
   User,
-  Send,
   AlertCircle,
   FileText
 } from 'lucide-react'
 import { 
   getContacts, 
   markContactAsRead, 
-  addContactResponse, 
   deleteContact,
   Contact 
 } from '@/lib/api/contact'
@@ -30,7 +27,7 @@ import { formatDate } from '@/lib/utils'
 import { toastService } from '@/lib/utils/toast'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
-type FilterStatus = 'all' | 'read' | 'unread' | 'responded'
+type FilterStatus = 'all' | 'read' | 'unread'
 
 export default function ContactMessagesTable() {
   const [contacts, setContacts] = useState<Contact[]>([])
@@ -45,8 +42,6 @@ export default function ContactMessagesTable() {
   // Action states
   const [processingId, setProcessingId] = useState<number | null>(null)
   const [viewingMessage, setViewingMessage] = useState<Contact | null>(null)
-  const [respondingTo, setRespondingTo] = useState<Contact | null>(null)
-  const [responseText, setResponseText] = useState('')
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean
     type: 'danger' | 'warning' | 'info'
@@ -104,8 +99,6 @@ export default function ContactMessagesTable() {
       filtered = filtered.filter(contact => contact.isRead)
     } else if (statusFilter === 'unread') {
       filtered = filtered.filter(contact => !contact.isRead)
-    } else if (statusFilter === 'responded') {
-      filtered = filtered.filter(contact => contact.response && contact.response.trim() !== '')
     }
 
     setFilteredContacts(filtered)
@@ -122,28 +115,6 @@ export default function ContactMessagesTable() {
       await loadContacts()
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unable to update message status.'
-      toastService.error(message)
-    } finally {
-      setProcessingId(null)
-    }
-  }
-
-  // Handle add response
-  const handleAddResponse = async () => {
-    if (!respondingTo || !responseText.trim()) {
-      toastService.error('Please enter a response message.')
-      return
-    }
-
-    try {
-      setProcessingId(respondingTo.id)
-      await addContactResponse(respondingTo.id, responseText.trim())
-      toastService.success('Response added successfully')
-      setRespondingTo(null)
-      setResponseText('')
-      await loadContacts()
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unable to add response.'
       toastService.error(message)
     } finally {
       setProcessingId(null)
@@ -180,8 +151,7 @@ export default function ContactMessagesTable() {
     const total = contacts.length
     const unread = contacts.filter(c => !c.isRead).length
     const read = contacts.filter(c => c.isRead).length
-    const responded = contacts.filter(c => c.response && c.response.trim() !== '').length
-    return { total, unread, read, responded }
+    return { total, unread, read }
   }, [contacts])
 
   if (loading && contacts.length === 0) {
@@ -198,7 +168,7 @@ export default function ContactMessagesTable() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-6 border-b border-gray-200">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6 border-b border-gray-200">
         <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
@@ -224,15 +194,6 @@ export default function ContactMessagesTable() {
               <p className="text-2xl font-bold text-green-900 mt-1">{stats.read}</p>
             </div>
             <Eye className="w-8 h-8 text-green-600" />
-          </div>
-        </div>
-        <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-purple-600">Responded</p>
-              <p className="text-2xl font-bold text-purple-900 mt-1">{stats.responded}</p>
-            </div>
-            <CheckCircle className="w-8 h-8 text-purple-600" />
           </div>
         </div>
       </div>
@@ -263,7 +224,6 @@ export default function ContactMessagesTable() {
               <option value="all">All Messages</option>
               <option value="unread">Unread</option>
               <option value="read">Read</option>
-              <option value="responded">Responded</option>
             </select>
           </div>
 
@@ -386,25 +346,17 @@ export default function ContactMessagesTable() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex flex-col gap-1">
-                      {contact.isRead ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          <Eye className="w-3 h-3 mr-1" />
-                          Read
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                          <EyeOff className="w-3 h-3 mr-1" />
-                          Unread
-                        </span>
-                      )}
-                      {contact.response && (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Responded
-                        </span>
-                      )}
-                    </div>
+                    {contact.isRead ? (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <Eye className="w-3 h-3 mr-1" />
+                        Read
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        <EyeOff className="w-3 h-3 mr-1" />
+                        Unread
+                      </span>
+                    )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
@@ -429,13 +381,6 @@ export default function ContactMessagesTable() {
                         ) : (
                           <Eye className="w-4 h-4" />
                         )}
-                      </button>
-                      <button
-                        onClick={() => setRespondingTo(contact)}
-                        className="text-green-600 hover:text-green-900 p-2 rounded hover:bg-green-50 transition-colors"
-                        title="Add response"
-                      >
-                        <Send className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => handleDelete(contact)}
@@ -500,102 +445,13 @@ export default function ContactMessagesTable() {
                 <p className="text-sm font-medium text-gray-500 mb-1">Date</p>
                 <p className="text-gray-900">{formatDate(viewingMessage.createdAt)}</p>
               </div>
-              {viewingMessage.response && (
-                <div>
-                  <p className="text-sm font-medium text-gray-500 mb-1">Response</p>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                    <p className="text-gray-900 whitespace-pre-wrap">{viewingMessage.response}</p>
-                    {viewingMessage.respondedAt && (
-                      <p className="text-xs text-gray-500 mt-2">
-                        Responded on {formatDate(viewingMessage.respondedAt)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              )}
             </div>
-            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setViewingMessage(null)
-                  setRespondingTo(viewingMessage)
-                }}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2"
-              >
-                <Send className="w-4 h-4" />
-                {viewingMessage.response ? 'Update Response' : 'Add Response'}
-              </button>
+            <div className="p-6 border-t border-gray-200 flex justify-end">
               <button
                 onClick={() => setViewingMessage(null)}
                 className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
                 Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Response Modal */}
-      {respondingTo && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
-            <div className="p-6 border-b border-gray-200">
-              <h2 className="text-xl font-bold text-gray-900">
-                {respondingTo.response ? 'Update Response' : 'Add Response'}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                Responding to: {respondingTo.name} ({respondingTo.email})
-              </p>
-            </div>
-            <div className="p-6">
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Response Message
-                </label>
-                <textarea
-                  value={responseText}
-                  onChange={(e) => setResponseText(e.target.value)}
-                  placeholder="Enter your response to this message..."
-                  rows={6}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
-              </div>
-              {respondingTo.response && (
-                <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Current Response</p>
-                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                    <p className="text-gray-900 whitespace-pre-wrap">{respondingTo.response}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
-              <button
-                onClick={() => {
-                  setRespondingTo(null)
-                  setResponseText('')
-                }}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleAddResponse}
-                disabled={!responseText.trim() || processingId === respondingTo.id}
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-              >
-                {processingId === respondingTo.id ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    Send Response
-                  </>
-                )}
               </button>
             </div>
           </div>
