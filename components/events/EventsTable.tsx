@@ -9,7 +9,7 @@ import Image from 'next/image'
 import { getApiBaseUrl } from '@/lib/config'
 
 interface EventsTableProps {
-  onEdit: (event: Event) => void
+  onEdit?: (event: Event) => void
   onRefresh: () => void
 }
 
@@ -328,13 +328,15 @@ export default function EventsTable({ onEdit, onRefresh }: EventsTableProps) {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-2">
-                          <button
-                            onClick={() => onEdit(item)}
-                            className="text-primary-600 hover:text-primary-900 p-2 rounded-lg hover:bg-primary-50 transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
+                          {onEdit && (
+                            <button
+                              onClick={() => onEdit(item)}
+                              className="text-primary-600 hover:text-primary-900 p-2 rounded-lg hover:bg-primary-50 transition-colors"
+                              title="Edit"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                          )}
                           <button
                             onClick={() => setDeleteConfirm({
                               isOpen: true,

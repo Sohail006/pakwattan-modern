@@ -23,6 +23,7 @@ import {
   Newspaper,
   Calendar,
   Briefcase,
+  Shield,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { logout } from '@/lib/api/auth'
@@ -49,7 +50,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
   const getDashboardRoute = (role: string): string => {
     const roleLower = role.toLowerCase()
     if (roleLower === 'admin') return '/dashboard/admin'
-    if (roleLower === 'staff') return '/dashboard/admin' // Staff uses admin dashboard
+    if (roleLower === 'staff') return '/dashboard/staff'
     if (roleLower === 'teacher') return '/dashboard/teacher'
     if (roleLower === 'student') return '/dashboard/student'
     if (roleLower === 'parent') return '/dashboard/parent'
@@ -170,6 +171,12 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       name: 'Settings',
       href: '/dashboard/settings',
       icon: <Settings className="w-5 h-5" />,
+      roles: ['Admin'],
+    },
+    {
+      name: 'Permissions',
+      href: '/dashboard/admin/permissions',
+      icon: <Shield className="w-5 h-5" />,
       roles: ['Admin'],
     },
   ]

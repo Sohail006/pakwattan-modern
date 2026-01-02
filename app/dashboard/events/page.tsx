@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { Event } from '@/lib/api/events'
 import { Plus, Loader2, AlertCircle, Calendar, CheckCircle } from 'lucide-react'
 import EventsTable from '@/components/events/EventsTable'
@@ -27,12 +28,8 @@ export default function EventsPage() {
           return
         }
 
-        const roles = getUserRoles()
-        const hasAccess = roles.some(role => 
-          role.toLowerCase() === 'admin' || 
-          role.toLowerCase() === 'staff' ||
-          role.toLowerCase() === 'managerialstaff'
-        )
+        // Permission-based check (with role fallback for backward compatibility)
+        const hasAccess = canPerform(PERMISSIONS.EVENTS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
 
         if (!hasAccess) {
           setAuthError('You do not have permission to access this page.')
@@ -47,6 +44,9 @@ export default function EventsPage() {
 
     checkAuth()
   }, [router])
+
+  // Permission checks
+  const canUpdate = canPerform(PERMISSIONS.EVENTS_UPDATE, ['Admin', 'Staff', 'ManagerialStaff'])
 
   const handleAddNew = () => {
     setEditingEvent(null)
@@ -126,20 +126,22 @@ export default function EventsPage() {
               <p className="text-sm text-gray-500 mt-1">Manage school events and activities</p>
             </div>
           </div>
-          <button
-            onClick={handleAddNew}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add Event</span>
-          </button>
+          {canPerform(PERMISSIONS.EVENTS_CREATE, ['Admin', 'Staff', 'ManagerialStaff']) && (
+            <button
+              onClick={handleAddNew}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add Event</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Events Table */}
       <EventsTable 
         key={refreshKey}
-        onEdit={handleEdit}
+        onEdit={canUpdate ? handleEdit : undefined}
         onRefresh={handleRefresh}
       />
 

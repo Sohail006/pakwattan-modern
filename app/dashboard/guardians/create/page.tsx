@@ -5,15 +5,16 @@ import { useRouter } from 'next/navigation'
 import { ArrowLeft, AlertCircle, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import GuardianForm from '@/components/guardians/GuardianForm'
-import { getUserRoles } from '@/lib/api/auth'
+import { canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 
 export default function CreateGuardianPage() {
   const router = useRouter()
   const [success, setSuccess] = useState(false)
   const [showForm, setShowForm] = useState(true)
 
-  const userRoles = getUserRoles()
-  const canCreate = userRoles.includes('Admin') || userRoles.includes('Staff')
+  // Permission-based check (with role fallback for backward compatibility)
+  const canCreate = canPerform(PERMISSIONS.GUARDIANS_CREATE, ['Admin', 'Staff'])
 
   if (!canCreate) {
     router.push('/dashboard')

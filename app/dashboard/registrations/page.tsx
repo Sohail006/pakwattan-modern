@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import RegistrationsTable from '@/components/registrations/RegistrationsTable'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { Loader2, AlertCircle, LogIn, FileText, Calendar, Info } from 'lucide-react'
 import Link from 'next/link'
 import { getActiveAdmissionSetting, deriveRegistrationStatus } from '@/lib/api/admissionSettings'
@@ -31,9 +32,8 @@ export default function RegistrationsPage() {
         return
       }
 
-      // Check authorization (Admin or Staff can manage registrations)
-      const userRoles = getUserRoles()
-      const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+      // Check authorization (Permission-based with role fallback)
+      const canManage = canPerform(PERMISSIONS.REGISTRATIONS_VIEW, ['Admin', 'Staff'])
       
       if (!canManage) {
         setAuthError('You do not have permission to access this page. Only Administrators and Staff can manage registrations.')

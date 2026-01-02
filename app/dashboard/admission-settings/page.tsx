@@ -3,7 +3,8 @@
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { Settings, Loader2, AlertCircle, CheckCircle, Save, Calendar, GraduationCap, Award, CreditCard, FileText, Edit, Trash2, Phone } from 'lucide-react'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { 
   getActiveAdmissionSetting, 
   createAdmissionSetting, 
@@ -63,21 +64,20 @@ export default function AdmissionSettingsPage() {
     isRegistrationOpen: false,
   })
 
-  useEffect(() => {
-    const checkAuth = () => {
-      setCheckingAuth(true)
-      
-      if (!isAuthenticated()) {
-        setAuthError('You must be logged in to access this page.')
-        setCheckingAuth(false)
-        setTimeout(() => {
-          router.push('/login')
-        }, 2000)
-        return
-      }
+  const checkAuth = useCallback(() => {
+    setCheckingAuth(true)
+    
+    if (!isAuthenticated()) {
+      setAuthError('You must be logged in to access this page.')
+      setCheckingAuth(false)
+      setTimeout(() => {
+        router.push('/login')
+      }, 2000)
+      return
+    }
 
-      const userRoles = getUserRoles()
-      const canManage = userRoles.includes('Admin') || userRoles.includes('ManagerialStaff')
+    // Permission-based check (with role fallback for backward compatibility)
+    const canManage = canPerform(PERMISSIONS.SETTINGS_ADMISSION, ['Admin', 'ManagerialStaff'])
       
       if (!canManage) {
         setAuthError('You do not have permission to access this page. Only Administrators and Managerial Staff can manage admission settings.')
@@ -88,12 +88,13 @@ export default function AdmissionSettingsPage() {
         return
       }
 
-      setCheckingAuth(false)
-      setAuthError(null)
-    }
-
-    checkAuth()
+    setCheckingAuth(false)
+    setAuthError(null)
   }, [router])
+
+  useEffect(() => {
+    checkAuth()
+  }, [checkAuth])
 
   const loadData = useCallback(async () => {
     try {

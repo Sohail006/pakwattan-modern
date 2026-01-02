@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { getStudentsPaginated, Student, PaginatedStudentsParams } from '@/lib/api/students'
 import { getGrades, Grade } from '@/lib/api/grades'
 import { Loader2, AlertCircle, LogIn, Users, TrendingUp, Calendar, GraduationCap, Search, Filter, Eye, Edit, Trash2, CheckCircle } from 'lucide-react'
@@ -118,8 +119,8 @@ export default function AdmissionsPage() {
         return
       }
 
-      const userRoles = getUserRoles()
-      const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+      // Permission-based check (with role fallback for backward compatibility)
+      const canManage = canPerform(PERMISSIONS.ADMISSIONS_VIEW, ['Admin', 'Staff'])
       
       if (!canManage) {
         setAuthError('You do not have permission to access this page. Only Administrators and Staff can manage admissions.')

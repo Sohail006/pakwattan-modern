@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { Loader2, AlertCircle, LogIn, Mail } from 'lucide-react'
 import Link from 'next/link'
 import ContactMessagesTable from '@/components/contact-messages/ContactMessagesTable'
@@ -26,9 +27,8 @@ export default function ContactMessagesPage() {
         return
       }
 
-      // Check authorization (Admin or Staff can manage contact messages)
-      const userRoles = getUserRoles()
-      const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+      // Check authorization (Permission-based with role fallback)
+      const canManage = canPerform(PERMISSIONS.CONTACTS_VIEW, ['Admin', 'Staff'])
 
       if (!canManage) {
         setAuthError('You do not have permission to access this page. Only Administrators and Staff can manage contact messages.')

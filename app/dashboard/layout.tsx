@@ -53,19 +53,15 @@ export default function DashboardLayout({
         const accessedRole = pathSegments[1]?.toLowerCase()
         
         // If accessing another role's main dashboard, redirect to their own
-        // Staff uses admin dashboard, so treat staff as admin for routing
-        const normalizedPrimaryRole = primaryRole === 'staff' ? 'admin' : primaryRole
-        const normalizedAccessedRole = accessedRole === 'staff' ? 'admin' : accessedRole
-        
-        if (accessedRole && roleDashboardRoutes.includes(accessedRole) && normalizedAccessedRole !== normalizedPrimaryRole) {
+        if (accessedRole && roleDashboardRoutes.includes(accessedRole) && accessedRole !== primaryRole) {
           const roleRoutes: Record<string, string> = {
             admin: '/dashboard/admin',
-            staff: '/dashboard/admin', // Staff uses admin dashboard
+            staff: '/dashboard/staff',
             teacher: '/dashboard/teacher',
             student: '/dashboard/student',
             parent: '/dashboard/parent',
           }
-          const expectedRoute = roleRoutes[primaryRole] || roleRoutes[normalizedPrimaryRole] || '/dashboard/admin'
+          const expectedRoute = roleRoutes[primaryRole] || '/dashboard/admin'
           window.location.href = expectedRoute
           return
         }

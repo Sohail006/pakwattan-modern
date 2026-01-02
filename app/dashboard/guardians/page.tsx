@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { Users, Plus, Search, Loader2, AlertCircle, UserPlus } from 'lucide-react'
 import Link from 'next/link'
 import { getGuardians, Guardian, deleteGuardian } from '@/lib/api/guardians'
-import { getUserRoles } from '@/lib/api/auth'
+import { canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
 export default function GuardiansPage() {
@@ -24,8 +25,11 @@ export default function GuardiansPage() {
     onConfirm: () => void
   } | null>(null)
 
-  const userRoles = getUserRoles()
-  const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+  // Permission-based checks (with role fallback for backward compatibility)
+  const canView = canPerform(PERMISSIONS.GUARDIANS_VIEW, ['Admin', 'Staff'])
+  const canCreate = canPerform(PERMISSIONS.GUARDIANS_CREATE, ['Admin', 'Staff'])
+  const canDelete = canPerform(PERMISSIONS.GUARDIANS_DELETE, ['Admin', 'Staff'])
+  const canManage = canView || canCreate || canDelete
 
   useEffect(() => {
     if (!canManage) {
@@ -103,13 +107,15 @@ export default function GuardiansPage() {
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Guardians</h1>
           <p className="text-gray-600 mt-1">Manage student guardians and parents</p>
         </div>
-        <Link
-          href="/dashboard/guardians/create"
-          className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2 rounded-lg hover:from-primary-700 hover:to-accent-700 transition-all shadow-sm hover:shadow-md"
-        >
-          <Plus className="w-5 h-5" />
-          <span>Create Guardian</span>
-        </Link>
+        {canCreate && (
+          <Link
+            href="/dashboard/guardians/create"
+            className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2 rounded-lg hover:from-primary-700 hover:to-accent-700 transition-all shadow-sm hover:shadow-md"
+          >
+            <Plus className="w-5 h-5" />
+            <span>Create Guardian</span>
+          </Link>
+        )}
       </div>
 
       {/* Search */}
@@ -211,14 +217,16 @@ export default function GuardiansPage() {
                     >
                       View Details
                     </Link>
-                    <button
-                      onClick={() => handleDelete(guardian.id)}
-                      className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      disabled={guardian.studentCount > 0}
-                      title={guardian.studentCount > 0 ? 'Cannot delete guardian with linked students' : 'Delete guardian'}
-                    >
-                      Delete
-                    </button>
+                    {canDelete && (
+                      <button
+                        onClick={() => handleDelete(guardian.id)}
+                        className="px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        disabled={guardian.studentCount > 0}
+                        title={guardian.studentCount > 0 ? 'Cannot delete guardian with linked students' : 'Delete guardian'}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                   {guardian.studentCount > 0 && (
                     <p className="mt-2 text-xs text-amber-600 text-center">

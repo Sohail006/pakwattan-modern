@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import { UserPlus, Mail, Lock, Phone, User, Shield, AlertCircle, CheckCircle, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { createUser, type CreateUserRequest } from '@/lib/api/users'
-import { getUserRoles } from '@/lib/api/auth'
+import { getUserRoles, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 
 export default function CreateUserPage() {
   const router = useRouter()
@@ -24,11 +25,17 @@ export default function CreateUserPage() {
   const [success, setSuccess] = useState(false)
 
   const currentUserRoles = getUserRoles()
-  const isStaff = currentUserRoles.includes('Staff') && !currentUserRoles.includes('Admin')
-
-  const roles = isStaff
+  // Permission-based check (with role fallback for backward compatibility)
+  const canCreateAdmin = canPerform(PERMISSIONS.USERS_CREATE, ['Admin']) && 
+                         currentUserRoles.includes('Admin')
+  const canCreateStaff = canPerform(PERMISSIONS.USERS_CREATE, ['Admin', 'Staff'])
+  
+  // Determine available roles based on permissions
+  const roles = canCreateAdmin
+    ? ['Admin', 'Staff', 'Teacher', 'Student', 'Parent']
+    : canCreateStaff
     ? ['Staff', 'Teacher', 'Student', 'Parent'] // Staff cannot create Admin
-    : ['Admin', 'Staff', 'Teacher', 'Student', 'Parent']
+    : ['Teacher', 'Student', 'Parent'] // Fallback
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { TestSyllabus } from '@/lib/api/testSyllabus'
 import { Plus, Loader2, AlertCircle, FileText, CheckCircle } from 'lucide-react'
 import TestSyllabusTable from '@/components/test-syllabus/TestSyllabusTable'
@@ -27,12 +28,8 @@ export default function TestSyllabusPage() {
           return
         }
 
-        const roles = getUserRoles()
-        const hasAccess = roles.some(role => 
-          role.toLowerCase() === 'admin' || 
-          role.toLowerCase() === 'staff' ||
-          role.toLowerCase() === 'managerialstaff'
-        )
+        // Permission-based check (with role fallback for backward compatibility)
+        const hasAccess = canPerform(PERMISSIONS.TEST_SYLLABUS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
 
         if (!hasAccess) {
           setAuthError('You do not have permission to access this page.')

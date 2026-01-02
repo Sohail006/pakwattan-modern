@@ -12,7 +12,8 @@ import {
   updateUser,
   type User 
 } from '@/lib/api/users'
-import { getUserRoles } from '@/lib/api/auth'
+import { canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
 export default function TeachersPage() {
@@ -37,8 +38,9 @@ export default function TeachersPage() {
   const [showRightScroll, setShowRightScroll] = useState(false)
   const tableScrollRef = useRef<HTMLDivElement>(null)
 
-  const currentUserRoles = getUserRoles()
-  const isAdmin = currentUserRoles.includes('Admin')
+  // Permission-based checks (with role fallback for backward compatibility)
+  const canUpdate = canPerform(PERMISSIONS.TEACHERS_UPDATE, ['Admin', 'Staff'])
+  const canDelete = canPerform(PERMISSIONS.TEACHERS_DELETE, ['Admin'])
 
   const loadTeachers = useCallback(async () => {
     try {
@@ -374,22 +376,26 @@ export default function TeachersPage() {
                                 <XCircle className="w-5 h-5" />
                               </button>
                             )}
-                            {isAdmin && (
+                            {(canUpdate || canDelete) && (
                               <>
-                                <button
-                                  onClick={() => handleEdit(teacher)}
-                                  className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                                  title="Edit teacher"
-                                >
-                                  <Edit className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(teacher.id)}
-                                  className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                                  title="Delete teacher"
-                                >
-                                  <Trash2 className="w-5 h-5" />
-                                </button>
+                                {canUpdate && (
+                                  <button
+                                    onClick={() => handleEdit(teacher)}
+                                    className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                    title="Edit teacher"
+                                  >
+                                    <Edit className="w-5 h-5" />
+                                  </button>
+                                )}
+                                {canDelete && (
+                                  <button
+                                    onClick={() => handleDelete(teacher.id)}
+                                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                    title="Delete teacher"
+                                  >
+                                    <Trash2 className="w-5 h-5" />
+                                  </button>
+                                )}
                               </>
                             )}
                           </>

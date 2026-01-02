@@ -290,3 +290,105 @@ export function getUserRoles(): string[] {
   return [];
 }
 
+/**
+ * Get user permissions from current user
+ * Helper function to extract permissions from JWT token
+ */
+export function getUserPermissions(): string[] {
+  if (typeof window === 'undefined') return [];
+  
+  const token = localStorage.getItem('auth_token');
+  if (!token) return [];
+  
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Check multiple possible claim names for permissions
+    const permissions = payload.permissions || payload.perm || payload.permission || [];
+    if (Array.isArray(permissions)) {
+      return permissions.filter((p): p is string => typeof p === 'string');
+    }
+    return [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Check if user has a specific permission
+ * @param permission - Permission name (e.g., 'users.create')
+ * @returns true if user has the permission
+ */
+export function hasPermission(permission: string): boolean {
+  const permissions = getUserPermissions();
+  const roles = getUserRoles();
+  
+  // Admin always has all permissions (system protection)
+  if (roles.includes('Admin')) {
+    return true;
+  }
+  
+  return permissions.includes(permission);
+}
+
+/**
+ * Check if user has any of the specified permissions
+ * @param permissions - Array of permission names
+ * @returns true if user has at least one of the permissions
+ */
+export function hasAnyPermission(...permissions: string[]): boolean {
+  const userPermissions = getUserPermissions();
+  const roles = getUserRoles();
+  
+  // Admin always has all permissions
+  if (roles.includes('Admin')) {
+    return true;
+  }
+  
+  return permissions.some(p => userPermissions.includes(p));
+}
+
+/**
+ * Check if user has all of the specified permissions
+ * @param permissions - Array of permission names
+ * @returns true if user has all of the permissions
+ */
+export function hasAllPermissions(...permissions: string[]): boolean {
+  const userPermissions = getUserPermissions();
+  const roles = getUserRoles();
+  
+  // Admin always has all permissions
+  if (roles.includes('Admin')) {
+    return true;
+  }
+  
+  return permissions.every(p => userPermissions.includes(p));
+}
+
+/**
+ * Check if user can perform an action (combines role and permission checks)
+ * This is a convenience function that checks both roles and permissions
+ * @param permission - Permission name (optional)
+ * @param allowedRoles - Array of role names that are allowed (optional)
+ * @returns true if user has permission or is in allowed roles
+ */
+export function canPerform(permission?: string, allowedRoles?: string[]): boolean {
+  const roles = getUserRoles();
+  
+  // Admin can always perform any action
+  if (roles.includes('Admin')) {
+    return true;
+  }
+  
+  // Check role-based access if allowedRoles provided
+  if (allowedRoles && allowedRoles.some(role => roles.includes(role))) {
+    return true;
+  }
+  
+  // Check permission-based access if permission provided
+  if (permission) {
+    return hasPermission(permission);
+  }
+  
+  return false;
+}
+

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import JobsTable from '@/components/jobs/JobsTable'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { Loader2, AlertCircle, LogIn, Briefcase } from 'lucide-react'
 import Link from 'next/link'
 
@@ -27,9 +28,8 @@ export default function JobsPage() {
 				return
 			}
 
-			// Check authorization (Admin or Staff can manage jobs)
-			const userRoles = getUserRoles()
-			const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+			// Check authorization (Permission-based with role fallback)
+			const canManage = canPerform(PERMISSIONS.JOBS_VIEW, ['Admin', 'Staff'])
 
 			if (!canManage) {
 				setAuthError('You do not have permission to access this page. Only Administrators and Staff can manage job applications.')

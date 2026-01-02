@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { NEWS_ITEMS } from '@/lib/constants'
 import { EVENTS_DATA } from '@/lib/constants'
 import { NEWS_MARQUEE_ITEMS } from '@/lib/constants'
@@ -119,12 +120,9 @@ export default function MigrateNewsEventsPage() {
           return
         }
 
-        const roles = getUserRoles()
-        const hasAccess = roles.some(role => 
-          role.toLowerCase() === 'admin' || 
-          role.toLowerCase() === 'staff' ||
-          role.toLowerCase() === 'managerialstaff'
-        )
+        // Permission-based check (with role fallback for backward compatibility)
+        const hasAccess = canPerform(PERMISSIONS.NEWS_VIEW, ['Admin', 'Staff', 'ManagerialStaff']) ||
+                          canPerform(PERMISSIONS.EVENTS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
 
         if (!hasAccess) {
           setAuthError('You do not have permission to access this page.')

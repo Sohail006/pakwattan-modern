@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { News } from '@/lib/api/news'
 import { Plus, Loader2, AlertCircle, Newspaper, CheckCircle } from 'lucide-react'
 import NewsTable from '@/components/news/NewsTable'
@@ -27,12 +28,8 @@ export default function NewsPage() {
           return
         }
 
-        const roles = getUserRoles()
-        const hasAccess = roles.some(role => 
-          role.toLowerCase() === 'admin' || 
-          role.toLowerCase() === 'staff' ||
-          role.toLowerCase() === 'managerialstaff'
-        )
+        // Permission-based check (with role fallback for backward compatibility)
+        const hasAccess = canPerform(PERMISSIONS.NEWS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
 
         if (!hasAccess) {
           setAuthError('You do not have permission to access this page.')
@@ -47,6 +44,8 @@ export default function NewsPage() {
 
     checkAuth()
   }, [router])
+
+  // Permission checks are handled in NewsTable component
 
   const handleAddNew = () => {
     setEditingNews(null)
@@ -126,20 +125,22 @@ export default function NewsPage() {
               <p className="text-sm text-gray-500 mt-1">Manage news items and announcements</p>
             </div>
           </div>
-          <button
-            onClick={handleAddNew}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
-          >
-            <Plus className="w-5 h-5" />
-            <span>Add News</span>
-          </button>
+          {canPerform(PERMISSIONS.NEWS_CREATE, ['Admin', 'Staff', 'ManagerialStaff']) && (
+            <button
+              onClick={handleAddNew}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+            >
+              <Plus className="w-5 h-5" />
+              <span>Add News</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* News Table */}
       <NewsTable 
         key={refreshKey}
-        onEdit={handleEdit}
+        onEdit={canPerform(PERMISSIONS.NEWS_UPDATE, ['Admin', 'Staff', 'ManagerialStaff']) ? handleEdit : undefined}
         onRefresh={handleRefresh}
       />
 

@@ -9,7 +9,7 @@ import Image from 'next/image'
 import { getApiBaseUrl } from '@/lib/config'
 
 interface NewsTableProps {
-  onEdit: (news: News) => void
+  onEdit?: (news: News) => void
   onRefresh: () => void
 }
 
@@ -295,7 +295,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                       <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-1 sm:space-x-2">
                           <button
-                            onClick={() => onEdit(item)}
+                            onClick={() => onEdit?.(item)}
                             className="text-primary-600 hover:text-primary-900 active:text-primary-800 p-1.5 sm:p-2 rounded-lg hover:bg-primary-50 active:bg-primary-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                             title="Edit"
                             aria-label="Edit news item"

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import StudentsManagement from '@/components/students/StudentsManagement'
-import { getUserRoles, isAuthenticated } from '@/lib/api/auth'
+import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import { Loader2, AlertCircle, LogIn } from 'lucide-react'
 import Link from 'next/link'
 
@@ -27,9 +28,8 @@ export default function StudentsPage() {
         return
       }
 
-      // Check authorization (Admin or Staff can manage students)
-      const userRoles = getUserRoles()
-      const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+      // Check authorization (Permission-based with role fallback)
+      const canManage = canPerform(PERMISSIONS.STUDENTS_VIEW, ['Admin', 'Staff'])
       
       if (!canManage) {
         setAuthError('You do not have permission to access this page. Only Administrators and Staff can manage students.')

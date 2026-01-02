@@ -14,7 +14,8 @@ import {
   removeRole,
   type User 
 } from '@/lib/api/users'
-import { getUserRoles } from '@/lib/api/auth'
+import { canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
 export default function UsersManagementPage() {
@@ -42,8 +43,13 @@ export default function UsersManagementPage() {
   const [showRightScroll, setShowRightScroll] = useState(false)
   const tableScrollRef = useRef<HTMLDivElement>(null)
 
-  const currentUserRoles = getUserRoles()
-  const isAdmin = currentUserRoles.includes('Admin')
+  // Permission-based checks (with role fallback for backward compatibility)
+  const canViewActivityLogs = canPerform(PERMISSIONS.ACTIVITY_LOGS_VIEW, ['Admin'])
+  const canDeleteUsers = canPerform(PERMISSIONS.USERS_DELETE, ['Admin'])
+  const canAssignRoles = canPerform(PERMISSIONS.USERS_ASSIGN_ROLE, ['Admin'])
+  const canUpdateUsers = canPerform(PERMISSIONS.USERS_UPDATE, ['Admin', 'Staff'])
+  const canActivateUsers = canPerform(PERMISSIONS.USERS_ACTIVATE, ['Admin', 'Staff'])
+  const canDeactivateUsers = canPerform(PERMISSIONS.USERS_DEACTIVATE, ['Admin', 'Staff'])
 
   const loadUsers = useCallback(async () => {
     try {
@@ -261,7 +267,7 @@ export default function UsersManagementPage() {
           <p className="text-gray-600 mt-1">Manage user accounts and permissions</p>
         </div>
         <div className="flex items-center space-x-3">
-          {isAdmin && (
+          {canViewActivityLogs && (
             <Link
               href="/dashboard/users/activity-logs"
               className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
@@ -442,7 +448,7 @@ export default function UsersManagementPage() {
                           <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
                         ) : (
                           <>
-                            {!user.isActive ? (
+                            {!user.isActive && canActivateUsers && (
                               <button
                                 onClick={() => handleActivate(user.id)}
                                 className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
@@ -450,7 +456,8 @@ export default function UsersManagementPage() {
                               >
                                 <CheckCircle className="w-5 h-5" />
                               </button>
-                            ) : (
+                            )}
+                            {user.isActive && canDeactivateUsers && (
                               <button
                                 onClick={() => handleDeactivate(user.id)}
                                 className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
@@ -459,29 +466,35 @@ export default function UsersManagementPage() {
                                 <XCircle className="w-5 h-5" />
                               </button>
                             )}
-                            {isAdmin && (
+                            {(canUpdateUsers || canDeleteUsers || canAssignRoles) && (
                               <>
-                                <button
-                                  onClick={() => handleEdit(user)}
-                                  className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
-                                  title="Edit user"
-                                >
-                                  <Edit className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(user.id)}
-                                  className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
-                                  title="Delete user"
-                                >
-                                  <Trash2 className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => setShowRoleAssignment(showRoleAssignment === user.id ? null : user.id)}
-                                  className="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
-                                  title="Manage roles"
-                                >
-                                  <Shield className="w-5 h-5" />
-                                </button>
+                                {canUpdateUsers && (
+                                  <button
+                                    onClick={() => handleEdit(user)}
+                                    className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                    title="Edit user"
+                                  >
+                                    <Edit className="w-5 h-5" />
+                                  </button>
+                                )}
+                                {canDeleteUsers && (
+                                  <button
+                                    onClick={() => handleDelete(user.id)}
+                                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                    title="Delete user"
+                                  >
+                                    <Trash2 className="w-5 h-5" />
+                                  </button>
+                                )}
+                                {canAssignRoles && (
+                                  <button
+                                    onClick={() => setShowRoleAssignment(showRoleAssignment === user.id ? null : user.id)}
+                                    className="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
+                                    title="Manage roles"
+                                  >
+                                    <Shield className="w-5 h-5" />
+                                  </button>
+                                )}
                               </>
                             )}
                           </>

@@ -5,7 +5,8 @@ import { useRouter, useParams } from 'next/navigation'
 import { ArrowLeft, Edit, Trash2, Users, Mail, Phone, MapPin, Briefcase, CreditCard, AlertCircle, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { getGuardianById, Guardian, deleteGuardian, getGuardianStudents, StudentBasic } from '@/lib/api/guardians'
-import { getUserRoles } from '@/lib/api/auth'
+import { canPerform } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
 import GuardianForm from '@/components/guardians/GuardianForm'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
@@ -29,8 +30,11 @@ export default function GuardianDetailPage() {
     onConfirm: () => void
   } | null>(null)
 
-  const userRoles = getUserRoles()
-  const canManage = userRoles.includes('Admin') || userRoles.includes('Staff')
+  // Permission-based checks (with role fallback for backward compatibility)
+  const canView = canPerform(PERMISSIONS.GUARDIANS_VIEW, ['Admin', 'Staff'])
+  const canUpdate = canPerform(PERMISSIONS.GUARDIANS_UPDATE, ['Admin', 'Staff'])
+  const canDelete = canPerform(PERMISSIONS.GUARDIANS_DELETE, ['Admin', 'Staff'])
+  const canManage = canView || canUpdate || canDelete
 
   useEffect(() => {
     if (!canManage) {
@@ -134,25 +138,29 @@ export default function GuardianDetailPage() {
           </div>
         </div>
         <div className="flex items-center space-x-3">
-          <button
-            onClick={() => setShowEditForm(true)}
-            className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            <Edit className="w-4 h-4" />
-            <span>Edit</span>
-          </button>
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
-          >
-            {deleting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-            <span>Delete</span>
-          </button>
+          {canUpdate && (
+            <button
+              onClick={() => setShowEditForm(true)}
+              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+            >
+              <Edit className="w-4 h-4" />
+              <span>Edit</span>
+            </button>
+          )}
+          {canDelete && (
+            <button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="flex items-center space-x-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+            >
+              {deleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+              <span>Delete</span>
+            </button>
+          )}
         </div>
       </div>
 
