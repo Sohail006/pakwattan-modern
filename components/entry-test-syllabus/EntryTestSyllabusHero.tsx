@@ -24,16 +24,16 @@ const EntryTestSyllabusHero = () => {
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-josefin leading-tight break-words">
                 Test
                 <span className="bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">
-                  {' '}Syllabus
+                  {' '}Model Papers
                 </span>
               </h1>
               
               <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed break-words">
-                Prepare for your admission and scholarship tests with our comprehensive syllabi
+                Prepare for your admission and scholarship tests with our comprehensive model papers
               </p>
               
               <p className="text-base sm:text-lg text-white/80 leading-relaxed break-words">
-                Access detailed test syllabi for all grades. Download PDFs or view online. 
+                Access detailed test model papers for all grades. Download PDFs or view online. 
                 Know exactly what to prepare and excel in your tests.
               </p>
             </div>
@@ -55,7 +55,7 @@ const EntryTestSyllabusHero = () => {
                 className="group bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/20 active:bg-white/30 font-semibold touch-target"
               >
                 <Download className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" />
-                <span className="truncate">View Syllabi</span>
+                <span className="truncate">View Model Papers</span>
               </Button>
             </div>
           </div>
@@ -75,7 +75,7 @@ const EntryTestSyllabusHero = () => {
                   </div>
                   <div className="mt-8">
                     <div className="bg-white/10 rounded-xl p-6 text-center">
-                      <div className="text-3xl font-bold">Test Syllabus</div>
+                      <div className="text-3xl font-bold">Model Papers</div>
                       <div className="text-sm text-white/80 mt-2">For Admission & Scholarship</div>
                     </div>
                   </div>

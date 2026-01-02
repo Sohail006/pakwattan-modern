@@ -32,7 +32,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
       }
     } catch (err) {
       console.error('[SyllabusViewer] Failed to load syllabi:', err)
-      setError('Failed to load syllabus. Please try again.')
+      setError('Failed to load model papers. Please try again.')
       setSelectedSyllabus(null)
     } finally {
       setLoading(false)
@@ -55,17 +55,17 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
           <div className="text-center py-16">
             <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <h3 className="text-2xl font-bold text-gray-700 mb-2">Select a Grade</h3>
-            <p className="text-gray-600">Choose a grade above to view the test syllabus</p>
+            <p className="text-gray-600">Choose a grade above to view the test model papers</p>
           </div>
         ) : loading ? (
           <div className="text-center py-16">
             <Loader2 className="w-12 h-12 animate-spin text-primary-600 mx-auto mb-4" />
-            <p className="text-gray-600">Loading syllabus...</p>
+            <p className="text-gray-600">Loading model papers...</p>
           </div>
         ) : error ? (
           <div className="text-center py-16">
             <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-700 mb-2">Error Loading Syllabus</h3>
+            <h3 className="text-xl font-bold text-gray-700 mb-2">Error Loading Model Papers</h3>
             <p className="text-gray-600 mb-4">{error}</p>
             <button
               onClick={loadSyllabi}
@@ -76,7 +76,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
           </div>
         ) : selectedSyllabus ? (
           <div className="max-w-5xl mx-auto space-y-6">
-            {/* Syllabus Header */}
+            {/* Model Paper Header */}
             <div className="bg-gradient-to-r from-primary-600 to-accent-600 rounded-2xl p-6 text-white">
               <h2 className="text-2xl md:text-3xl font-bold font-josefin mb-2">
                 {selectedSyllabus.title}
@@ -92,7 +92,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <FileText className="w-6 h-6 text-primary-600" />
-                    <h3 className="text-xl font-bold text-gray-800">PDF Syllabus</h3>
+                    <h3 className="text-xl font-bold text-gray-800">PDF Model Paper</h3>
                   </div>
                   <a
                     href={selectedSyllabus.pdfUrl}
@@ -111,7 +111,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
               <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <FileText className="w-6 h-6 text-primary-600" />
-                  <h3 className="text-xl font-bold text-gray-800">Text Syllabus</h3>
+                  <h3 className="text-xl font-bold text-gray-800">Text Model Paper</h3>
                 </div>
                 <TextViewer content={selectedSyllabus.textContent} />
               </div>
@@ -125,7 +125,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <FileText className="w-6 h-6 text-primary-600" />
-                        <h3 className="text-xl font-bold text-gray-800">PDF Syllabus</h3>
+                        <h3 className="text-xl font-bold text-gray-800">PDF Model Paper</h3>
                       </div>
                       <a
                         href={selectedSyllabus.pdfUrl}
@@ -145,7 +145,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
                   <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <FileText className="w-6 h-6 text-primary-600" />
-                      <h3 className="text-xl font-bold text-gray-800">Text Syllabus</h3>
+                      <h3 className="text-xl font-bold text-gray-800">Text Model Paper</h3>
                     </div>
                     <TextViewer content={selectedSyllabus.textContent} />
                   </div>
@@ -170,9 +170,9 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
         ) : (
           <div className="text-center py-16">
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-2xl font-bold text-gray-700 mb-2">No Syllabus Available</h3>
+            <h3 className="text-2xl font-bold text-gray-700 mb-2">No Model Papers Available</h3>
             <p className="text-gray-600">
-              Syllabus for this grade is not available yet. Please check back later.
+              Model papers for this grade are not available yet. Please check back later.
             </p>
           </div>
         )}

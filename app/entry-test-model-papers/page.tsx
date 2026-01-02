@@ -9,7 +9,7 @@ import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 export default function EntryTestSyllabusPage() {
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: 'https://pakwattan.edu.pk' },
-    { name: 'Test Syllabus', url: 'https://pakwattan.edu.pk/entry-test-syllabus' },
+    { name: 'Model Papers', url: 'https://pakwattan.edu.pk/entry-test-model-papers' },
   ])
 
   return (

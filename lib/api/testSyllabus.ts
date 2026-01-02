@@ -1,4 +1,4 @@
-// Test Syllabus API endpoints
+// Model Papers API endpoints
 import { api, ApiError } from './client';
 
 export interface TestSyllabus {
@@ -43,7 +43,7 @@ export interface TestSyllabusQueryParams {
 }
 
 /**
- * Get all test syllabi (admin only)
+ * Get all model papers (admin only)
  */
 export async function getTestSyllabi(params?: TestSyllabusQueryParams): Promise<TestSyllabus[]> {
 	try {
@@ -57,24 +57,24 @@ export async function getTestSyllabi(params?: TestSyllabusQueryParams): Promise<
 		return await api.get<TestSyllabus[]>(endpoint);
 	} catch (error) {
 		const apiError = error as ApiError;
-		throw new Error(apiError.message || 'Unable to load test syllabi. Please refresh the page and try again.');
+		throw new Error(apiError.message || 'Unable to load model papers. Please refresh the page and try again.');
 	}
 }
 
 /**
- * Get test syllabus by ID (admin only)
+ * Get model paper by ID (admin only)
  */
 export async function getTestSyllabusById(id: number): Promise<TestSyllabus> {
 	try {
 		return await api.get<TestSyllabus>(`/api/test-syllabus/${id}`);
 	} catch (error) {
 		const apiError = error as ApiError;
-		throw new Error(apiError.message || 'Unable to load test syllabus. Please try again.');
+		throw new Error(apiError.message || 'Unable to load model paper. Please try again.');
 	}
 }
 
 /**
- * Get public test syllabi (no authentication required)
+ * Get public model papers (no authentication required)
  */
 export async function getTestSyllabiPublic(params?: {
 	gradeId?: number;
@@ -89,13 +89,13 @@ export async function getTestSyllabiPublic(params?: {
 	} catch (error) {
 		const apiError = error as ApiError;
 		// Return empty array on error for public endpoint (graceful degradation)
-		console.warn('[getTestSyllabiPublic] Failed to load syllabi:', apiError.message);
+		console.warn('[getTestSyllabiPublic] Failed to load model papers:', apiError.message);
 		return [];
 	}
 }
 
 /**
- * Create new test syllabus
+ * Create new model paper
  */
 export async function createTestSyllabus(
 	data: TestSyllabusCreate,
@@ -111,12 +111,12 @@ export async function createTestSyllabus(
 		return await api.post<TestSyllabus>('/api/test-syllabus', data);
 	} catch (error) {
 		const apiError = error as ApiError;
-		throw new Error(apiError.message || 'Unable to create test syllabus. Please check your input and try again.');
+		throw new Error(apiError.message || 'Unable to create model paper. Please check your input and try again.');
 	}
 }
 
 /**
- * Update test syllabus
+ * Update model paper
  */
 export async function updateTestSyllabus(
 	id: number,
@@ -133,12 +133,12 @@ export async function updateTestSyllabus(
 		return await api.put<TestSyllabus>(`/api/test-syllabus/${id}`, data);
 	} catch (error) {
 		const apiError = error as ApiError;
-		throw new Error(apiError.message || 'Unable to update test syllabus. Please check your input and try again.');
+		throw new Error(apiError.message || 'Unable to update model paper. Please check your input and try again.');
 	}
 }
 
 /**
- * Delete test syllabus
+ * Delete model paper
  */
 export async function deleteTestSyllabus(id: number): Promise<void> {
 	try {
@@ -150,7 +150,7 @@ export async function deleteTestSyllabus(id: number): Promise<void> {
 }
 
 /**
- * Upload PDF file for syllabus
+ * Upload PDF file for model paper
  */
 export async function uploadSyllabusPdf(file: File): Promise<{ url: string }> {
 	try {

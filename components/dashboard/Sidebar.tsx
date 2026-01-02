@@ -102,7 +102,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       roles: ['Admin', 'ManagerialStaff'],
     },
     {
-      name: 'Test Syllabus',
+      name: 'Model Papers',
       href: '/dashboard/test-syllabus',
       icon: <FileText className="w-5 h-5" />,
       roles: ['Admin', 'Staff', 'ManagerialStaff'],

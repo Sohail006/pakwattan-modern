@@ -64,7 +64,7 @@ const GradeSelector = ({ selectedGradeId, onGradeSelect }: GradeSelectorProps) =
             </span>
           </h2>
           <p className="text-base sm:text-lg text-secondary-600 max-w-2xl mx-auto break-words">
-            Choose your grade to view the test syllabus
+            Choose your grade to view the test model papers
           </p>
         </div>
 

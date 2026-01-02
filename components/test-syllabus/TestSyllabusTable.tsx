@@ -80,7 +80,7 @@ export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTab
       loadSyllabi()
       onRefresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to delete test syllabus.')
+      setError(err instanceof Error ? err.message : 'Unable to delete model paper.')
     }
   }
 
@@ -251,7 +251,7 @@ export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTab
         isOpen={deleteConfirm.isOpen}
         onClose={() => setDeleteConfirm({ isOpen: false, syllabusId: null, syllabusTitle: '' })}
         onConfirm={() => deleteConfirm.syllabusId && handleDelete(deleteConfirm.syllabusId)}
-        title="Delete Test Syllabus"
+        title="Delete Model Paper"
         message={`Are you sure you want to delete "${deleteConfirm.syllabusTitle}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"

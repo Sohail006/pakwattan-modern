@@ -51,7 +51,7 @@ const GradeSyllabusTable = () => {
         setGradesWithPdfs(gradesWithPdfsData)
       } catch (err) {
         console.error('[GradeSyllabusTable] Failed to load data:', err)
-        setError('Failed to load syllabi. Please try again.')
+        setError('Failed to load model papers. Please try again.')
       } finally {
         setLoading(false)
       }
@@ -147,9 +147,9 @@ const GradeSyllabusTable = () => {
                        <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
                          Grade
                        </th>
-                       <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
-                         Syllabus Title
-                       </th>
+                      <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
+                        Model Paper Title
+                      </th>
                        <th className="px-3 sm:px-6 py-4 text-left text-xs sm:text-sm font-semibold uppercase tracking-wider">
                          Academic Year
                        </th>

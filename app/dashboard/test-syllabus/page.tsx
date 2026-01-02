@@ -108,10 +108,10 @@ export default function TestSyllabusPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
             <FileText className="w-8 h-8 text-primary-600" />
-            Test Syllabus Management
+            Model Papers Management
           </h1>
           <p className="text-gray-600 mt-1">
-            Manage entry test and scholarship test syllabi for all grades
+            Manage entry test and scholarship test model papers for all grades
           </p>
         </div>
         <button
@@ -119,7 +119,7 @@ export default function TestSyllabusPage() {
           className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-semibold"
         >
           <Plus className="w-5 h-5" />
-          Add New Syllabus
+          Add New Model Paper
         </button>
       </div>
 

@@ -114,13 +114,13 @@ const HeroSection = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
                 <Button 
-                  href="/entry-test-syllabus" 
+                  href="/entry-test-model-papers" 
                   variant="secondary"
                   size="md"
                   className="group relative bg-white/20 backdrop-blur-sm border-2 border-white/40 text-white hover:bg-white/30 hover:scale-105 touch-target focus-ring font-semibold"
                 >
                   <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Test Syllabus</span>
+                  <span>Model Papers</span>
                 </Button>
                 <Button 
                   href="/admission#process" 

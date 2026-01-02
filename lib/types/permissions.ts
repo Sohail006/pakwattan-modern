@@ -111,7 +111,7 @@ export const PERMISSIONS = {
   CONTACTS_RESPOND: 'contacts.respond',
   CONTACTS_DELETE: 'contacts.delete',
   
-  // Test Syllabus
+  // Model Papers
   TEST_SYLLABUS_VIEW: 'test_syllabus.view',
   TEST_SYLLABUS_CREATE: 'test_syllabus.create',
   TEST_SYLLABUS_UPDATE: 'test_syllabus.update',
@@ -161,7 +161,7 @@ export const PERMISSION_CATEGORIES = {
   ADMISSIONS: 'Admissions',
   REGISTRATIONS: 'Registrations',
   CONTACTS: 'Contacts',
-  TEST_SYLLABUS: 'Test Syllabus',
+  TEST_SYLLABUS: 'Model Papers',
   JOBS: 'Jobs',
   SETTINGS: 'Settings',
   PERMISSIONS: 'Permissions',
