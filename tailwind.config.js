@@ -70,6 +70,8 @@ module.exports = {
         'glow': 'glow 2s ease-in-out infinite alternate',
         'slide-in-left': 'slideInLeft 0.5s ease-out',
         'slide-in-right': 'slideInRight 0.5s ease-out',
+        'bounce-y': 'bounceY 1.5s ease-in-out infinite',
+        'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -107,6 +109,14 @@ module.exports = {
         slideInRight: {
           '0%': { transform: 'translateX(100%)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        bounceY: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(8px)' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+          '50%': { opacity: '0.95', transform: 'scale(1.02)' },
         },
       },
     },
