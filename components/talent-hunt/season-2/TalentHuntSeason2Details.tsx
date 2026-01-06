@@ -37,7 +37,6 @@ const TalentHuntSeason2Details = () => {
     { name: 'Instrumental Music Playing Contest', date: '15th November 2025', participants: 'All Grades' },
     { name: 'Quiz Competition', date: '18th October 2025', participants: 'Grades 6-7 & 8-10' },
     { name: 'Spelling Bee Contest', date: '18th October 2025', participants: 'All Grades' },
-    { name: 'DIY / Handicrafts Contest', date: '13th December 2025', participants: 'All Grades' },
     { name: 'Creative Writing Competition', date: '13th September 2025', participants: 'All Grades' },
     { name: 'Painting, Sketching & Calligraphy Contest', date: '13th September 2025', participants: 'All Grades' },
     { name: 'Photography / Videography Contest', date: 'TBD', participants: 'All Grades' }

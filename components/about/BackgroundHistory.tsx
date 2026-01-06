@@ -18,7 +18,7 @@ const BackgroundHistory = () => {
               <strong>PAK WATTAN School and College of Sciences Havelian</strong> was established on 
               <strong> November 2nd, 2020</strong>, with the mission of providing quality education 
               with affordable expenses. PWSCS gives scholarships to students every year, including 
-              Pakians Scholarship, merit-based, orphan, special child, and Hafiz e Quran scholarships. 
+              Pakians Scholarship, Merit Based Scholarship, Orphans Scholarship, Special child Scholarship, and Hafiz ul Quran Scholarship. 
               The scholarship test has always been conducted on <strong>March 23rd</strong> in the 
               girl&apos;s campus Havelian.
             </p>

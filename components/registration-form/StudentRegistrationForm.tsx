@@ -12,8 +12,24 @@ import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { validatePakistanPhoneNumber, maskPakistanPhoneNumber, cleanPhoneNumber, formatDate, formatTime } from '@/lib/utils'
 
 
-const TEST_RULES = [
-  'Registration Fee is Rs: 500/- and not refundable.',
+// Default registration fee fallback (used when admission settings are not available)
+const DEFAULT_REGISTRATION_FEE = 500
+
+// Helper function to format registration fee
+const formatRegistrationFee = (fee: number | undefined): string => {
+  const amount = fee || DEFAULT_REGISTRATION_FEE
+  return `PKR ${amount}/-`
+}
+
+// Helper function to format registration fee in PKR format (for TEST_RULES)
+const formatRegistrationFeeRs = (fee: number | undefined): string => {
+  const amount = fee || DEFAULT_REGISTRATION_FEE
+  return `PKR ${amount}/-`
+}
+
+// Generate test rules with dynamic registration fee
+const getTestRules = (registrationFee: number | undefined): string[] => [
+  `Registration Fee is ${formatRegistrationFeeRs(registrationFee)} and not refundable.`,
   'Do not proceed during the test session until instructed to do so.',
   'Please bring your roll number slip along with your other test materials at the day of Test.',
   'You will be provided with a new booklet in case of any damaged or miss printed one.',
@@ -840,7 +856,7 @@ export default function StudentRegistrationForm() {
                   <p className="text-sm text-gray-600">Please read all rules carefully before proceeding with registration.</p>
                 </div>
                 <ol className="space-y-3 list-decimal list-inside">
-                  {TEST_RULES.map((rule, index) => (
+                  {getTestRules(activeSetting?.registrationFee).map((rule, index) => (
                     <li key={index} className="text-sm text-gray-700 leading-relaxed pl-2">
                       {rule}
                     </li>
@@ -855,7 +871,7 @@ export default function StudentRegistrationForm() {
                       ⚠️ Important Notice
                     </p>
                     <p className="text-sm font-semibold text-yellow-800">
-                      Registration Fee: Rs. 500/- (Non-refundable)
+                      Registration Fee: {formatRegistrationFee(activeSetting?.registrationFee)} (Non-refundable)
                     </p>
                     <p className="text-xs text-yellow-700 mt-1">
                       This fee must be paid before the test date. Please ensure you have completed the payment through your selected payment method.
@@ -1224,7 +1240,7 @@ export default function StudentRegistrationForm() {
                 </select>
                 <p className="mt-2 text-xs sm:text-sm text-gray-600">
                   Registration Fee: <span className="font-semibold text-primary-600">
-                    {activeSetting?.registrationFee ? `PKR ${activeSetting.registrationFee}` : 'PKR 500/-'}
+                    {formatRegistrationFee(activeSetting?.registrationFee)}
                   </span> (Non-refundable)
                 </p>
 
@@ -1361,7 +1377,7 @@ export default function StudentRegistrationForm() {
                         <p className="text-sm text-amber-800 break-words">
                           You will pay the registration fee in person on the test date. Please bring the exact cash amount of{' '}
                           <span className="font-semibold">
-                            {activeSetting?.registrationFee ? `PKR ${activeSetting.registrationFee}` : 'PKR 500/-'}
+                            {formatRegistrationFee(activeSetting?.registrationFee)}
                           </span>.
                         </p>
                         {activeSetting?.testStartDate && (

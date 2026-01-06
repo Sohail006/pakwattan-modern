@@ -300,15 +300,6 @@ export const NEWS_ITEMS: NewsItem[] = [
     createdAt: parseDate('18th October 2025 (Saturday)')
   },
   {
-    id: '8',
-    title: 'Handicrafts / DIY Crafts Competition',
-    description: 'Unleash your creativity at Pak Wattan\'s Handicrafts & DIY Crafts Competition! Showcase your artistic talent through handmade creations and innovative do-it-yourself projects.',
-    date: '13th December 2025 (Saturday)',
-    category: 'competition' as const,
-    slug: 'handicrafts-diy-competition',
-    createdAt: parseDate('13th December 2025 (Saturday)')
-  },
-  {
     id: '9',
     title: 'Creative Writing (Story, Essay, Poem)',
     description: 'Let your imagination flow at Pak Wattan\'s Creative Writing Competition! Whether it\'s a story, an essay, or a poem, this is your chance to express your thoughts and creativity through words.',

@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react'
 import { X, Save, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
 import { News, CreateNewsRequest, UpdateNewsRequest, createNews, updateNews } from '@/lib/api/news'
 import FormField from '@/components/ui/FormField'
-import ProfileImageUpload from '@/components/ui/ProfileImageUpload'
+import NewsImageUpload from '@/components/news/NewsImageUpload'
+import RichTextEditor from '@/components/ui/RichTextEditor'
 
 interface NewsFormProps {
   news?: News | null
@@ -260,24 +261,22 @@ export default function NewsForm({ news, mode, onClose, onSuccess }: NewsFormPro
           </FormField>
 
           {/* Content (Optional) */}
-          <FormField label="Content" hint="Full article content (optional)">
-            <textarea
-              value={formData.content}
-              onChange={(e) => handleInputChange('content', e.target.value)}
+          <FormField label="Content" hint="Full article content (optional - supports HTML formatting)">
+            <RichTextEditor
+              value={formData.content || ''}
+              onChange={(html) => handleInputChange('content', html)}
               placeholder="Enter full article content (optional)"
               rows={8}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              disabled={loading}
             />
           </FormField>
 
           {/* Image Upload */}
           <FormField label="Featured Image" hint="Upload a featured image for this news item">
-            <ProfileImageUpload
+            <NewsImageUpload
               value={formData.imageUrl || null}
               onChange={(url) => handleInputChange('imageUrl', url || '')}
-              mode="edit"
-              size="lg"
-              shape="rounded"
+              disabled={loading}
             />
           </FormField>
 

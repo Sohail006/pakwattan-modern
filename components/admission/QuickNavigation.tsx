@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { FileText, ListChecks, DollarSign, ArrowRight } from 'lucide-react'
+import { FileText, ListChecks, Coins, ArrowRight } from 'lucide-react'
 
 const QuickNavigation = () => {
   const [activeSection, setActiveSection] = useState('')
@@ -10,7 +10,7 @@ const QuickNavigation = () => {
   const sections = [
     { id: 'admission-process', label: 'Process', icon: <FileText className="w-4 h-4" /> },
     { id: 'admission-requirements', label: 'Requirements', icon: <ListChecks className="w-4 h-4" /> },
-    { id: 'fee-structure', label: 'Fees', icon: <DollarSign className="w-4 h-4" /> },
+    { id: 'fee-structure', label: 'Fees', icon: <Coins className="w-4 h-4" /> },
     { id: 'admission-form', label: 'Apply Now', icon: <ArrowRight className="w-4 h-4" /> },
   ]
 

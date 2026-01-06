@@ -5,48 +5,43 @@ export const scholarshipStats: ScholarshipStats = {
   totalAmount: 1500000, // 15 lacs
   totalStudents: 200,
   averageAmount: 7500,
-  topCategory: "Merit-Based",
+  topCategory: "Merit Based",
   testDate: "March 23rd",
   testLocation: "Girls Campus, Havelian"
 };
 
-// Scholarship Types
+// Scholarship Types (Active)
+// Note: Kinship Scholarship and Deserving Scholarship have been archived but kept in historical data
 export const scholarshipTypes: ScholarshipType[] = [
-  {
-    type: "Merit-Based Scholarship",
-    amount: "₨32,000 - ₨83,000",
-    criteria: "95%+ marks (internal) or 80%+ entrance test",
-    description: "Academic excellence scholarships for outstanding students"
-  },
-  {
-    type: "Orphan Scholarship", 
-    amount: "₨32,000 - ₨66,500",
-    criteria: "Orphan status verification required",
-    description: "Support for orphaned students"
-  },
-  {
-    type: "Special Child Scholarship",
-    amount: "₨32,000",
-    criteria: "Special needs documentation required",
-    description: "Support for students with special needs"
-  },
-  {
-    type: "Kinship Scholarship",
-    amount: "₨32,000",
-    criteria: "Family relationship verification required",
-    description: "Support for family members of existing students"
-  },
-  {
-    type: "Deserving Scholarship",
-    amount: "₨66,500",
-    criteria: "Financial hardship assessment",
-    description: "Need-based financial assistance"
-  },
   {
     type: "Pakians Scholarship",
     amount: "Variable",
     criteria: "95%+ in annual examinations",
     description: "Merit-based scholarships for internal students"
+  },
+  {
+    type: "Merit Based Scholarship",
+    amount: "PKR 32,000 - 83,000",
+    criteria: "95%+ marks (internal) or 80%+ entrance test",
+    description: "Academic excellence scholarships for outstanding students"
+  },
+  {
+    type: "Orphans Scholarship", 
+    amount: "PKR 32,000 - 66,500",
+    criteria: "Orphan status verification required",
+    description: "Support for orphaned students"
+  },
+  {
+    type: "Special child Scholarship",
+    amount: "PKR 32,000",
+    criteria: "Special needs documentation required",
+    description: "Support for students with special needs"
+  },
+  {
+    type: "Hafiz ul Quran Scholarship",
+    amount: "PKR 32,000 - 66,500",
+    criteria: "Complete Quran memorization certificate from recognized institution required",
+    description: "Scholarships for students who have memorized the entire Quran"
   }
 ];
 
@@ -60,7 +55,7 @@ export const scholarshipCriteria: ScholarshipCriteria = {
   specialCategories: {
     orphan: "Orphan status verification required with proper documentation",
     specialChild: "Special needs documentation and medical certificates required",
-    kinship: "Family relationship verification with existing students or staff"
+    hafizUlQuran: "Complete Quran memorization certificate from recognized institution required. Verification of Hafiz status must be provided."
   },
   rules: [
     "The scholarship will be solely based on the Ist time board result/ interview/ entry test results declared by the institution and marks obtained after retotaling will not be entertained.",

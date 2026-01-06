@@ -1,6 +1,6 @@
 'use client'
 
-import { DollarSign, Users, Calendar, MapPin, TrendingUp, Award } from 'lucide-react'
+import { Coins, Users, Calendar, MapPin, TrendingUp, Award } from 'lucide-react'
 import { ScholarshipStats as ScholarshipStatsType } from '@/types/scholarship'
 
 interface ScholarshipStatsProps {
@@ -10,9 +10,9 @@ interface ScholarshipStatsProps {
 const ScholarshipStats = ({ stats }: ScholarshipStatsProps) => {
   const formatAmount = (amount: number) => {
     if (amount >= 100000) {
-      return `₨${(amount / 100000).toFixed(1)} Lacs`
+      return `PKR ${(amount / 100000).toFixed(1)} Lacs`
     }
-    return `₨${amount.toLocaleString()}`
+    return `PKR ${amount.toLocaleString()}`
   }
 
   return (
@@ -31,7 +31,7 @@ const ScholarshipStats = ({ stats }: ScholarshipStatsProps) => {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16">
           <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 text-center hover:bg-white/20 active:bg-white/15 transition-all duration-300">
             <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 lg:mb-6">
-              <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
+              <Coins className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-white" />
             </div>
             <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 break-words">{formatAmount(stats.totalAmount)}</h3>
             <p className="text-white/80 text-xs sm:text-sm lg:text-lg break-words">Total Scholarship Amount</p>

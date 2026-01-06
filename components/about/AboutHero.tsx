@@ -50,8 +50,8 @@ const AboutHero = () => {
               <p className="text-base sm:text-lg text-white/80 leading-relaxed break-words">
                 Established in <strong>November 2nd, 2020</strong>, with the mission of providing 
                 quality education with affordable expenses. PWSCS gives scholarships to students 
-                every year, including Pakians Scholarship, merit-based, orphan, special child, 
-                and Hafiz e Quran scholarships.
+                every year, including Pakians Scholarship, Merit Based Scholarship, Orphans Scholarship, Special child Scholarship, 
+                and Hafiz ul Quran Scholarship.
               </p>
             </div>
 

@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Edit, Trash2, Loader2, Search, X, Filter, Calendar, Image as ImageIcon } from 'lucide-react'
-import { News, getNews, deleteNews, PaginatedNewsParams } from '@/lib/api/news'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { Edit, Trash2, Loader2, Search, X, Filter, Calendar, Image as ImageIcon, CheckSquare, Square, Trash, Eye, EyeOff } from 'lucide-react'
+import { News, getNews, deleteNews, bulkDeleteNews, bulkUpdateNews, PaginatedNewsParams } from '@/lib/api/news'
 import { formatDate } from '@/lib/utils'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import Image from 'next/image'
@@ -40,19 +40,36 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
   
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [publishedFilter, setPublishedFilter] = useState<string>('all') // 'all', 'published', 'draft'
+  
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
+  const [bulkLoading, setBulkLoading] = useState(false)
   
   // Delete confirmation
   const [deleteConfirm, setDeleteConfirm] = useState<{
     isOpen: boolean
     newsId: number | null
     newsTitle: string
+    isBulk: boolean
   }>({
     isOpen: false,
     newsId: null,
-    newsTitle: ''
+    newsTitle: '',
+    isBulk: false
   })
+  
+  // Debounce search term
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+      setPage(1) // Reset to first page when search changes
+    }, 500) // 500ms debounce delay
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
 
   // Load news
   const loadNews = useCallback(async () => {
@@ -63,7 +80,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
       const params: PaginatedNewsParams = {
         page,
         pageSize,
-        search: searchTerm || undefined,
+        search: debouncedSearchTerm || undefined,
         category: selectedCategory || undefined,
         isPublished: publishedFilter === 'all' ? undefined : publishedFilter === 'published',
         sortBy: 'date',
@@ -79,7 +96,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
     } finally {
       setLoading(false)
     }
-  }, [page, pageSize, searchTerm, selectedCategory, publishedFilter])
+  }, [page, pageSize, debouncedSearchTerm, selectedCategory, publishedFilter])
 
   useEffect(() => {
     loadNews()
@@ -88,13 +105,73 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
   const handleDelete = async (newsId: number) => {
     try {
       await deleteNews(newsId)
-      setDeleteConfirm({ isOpen: false, newsId: null, newsTitle: '' })
+      setDeleteConfirm({ isOpen: false, newsId: null, newsTitle: '', isBulk: false })
+      setSelectedIds(new Set())
       loadNews()
       onRefresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to delete news item.')
     }
   }
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return
+    
+    try {
+      setBulkLoading(true)
+      await bulkDeleteNews(Array.from(selectedIds))
+      setDeleteConfirm({ isOpen: false, newsId: null, newsTitle: '', isBulk: false })
+      setSelectedIds(new Set())
+      loadNews()
+      onRefresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to delete news items.')
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleBulkPublish = async (publish: boolean) => {
+    if (selectedIds.size === 0) return
+    
+    try {
+      setBulkLoading(true)
+      await bulkUpdateNews(Array.from(selectedIds), { isPublished: publish })
+      setSelectedIds(new Set())
+      loadNews()
+      onRefresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Unable to ${publish ? 'publish' : 'unpublish'} news items.`)
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(news.map(item => item.id)))
+    } else {
+      setSelectedIds(new Set())
+    }
+  }
+
+  const handleSelectItem = (id: number, checked: boolean) => {
+    const newSelected = new Set(selectedIds)
+    if (checked) {
+      newSelected.add(id)
+    } else {
+      newSelected.delete(id)
+    }
+    setSelectedIds(newSelected)
+  }
+
+  const allSelected = useMemo(() => {
+    return news.length > 0 && news.every(item => selectedIds.has(item.id))
+  }, [news, selectedIds])
+
+  const someSelected = useMemo(() => {
+    return selectedIds.size > 0 && selectedIds.size < news.length
+  }, [news, selectedIds])
 
   const getImageUrl = (imageUrl: string | null | undefined): string | null => {
     if (!imageUrl) return null
@@ -106,6 +183,58 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
 
   return (
     <div className="space-y-4">
+      {/* Bulk Actions Toolbar */}
+      {selectedIds.size > 0 && (
+        <div className="bg-primary-50 border border-primary-200 rounded-lg p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center space-x-3">
+            <span className="text-sm font-medium text-primary-900">
+              {selectedIds.size} item{selectedIds.size !== 1 ? 's' : ''} selected
+            </span>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => handleBulkPublish(true)}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm touch-target min-h-[44px]"
+              title="Publish selected"
+            >
+              <Eye className="w-4 h-4" />
+              <span className="hidden sm:inline">Publish</span>
+            </button>
+            <button
+              onClick={() => handleBulkPublish(false)}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 active:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm touch-target min-h-[44px]"
+              title="Unpublish selected"
+            >
+              <EyeOff className="w-4 h-4" />
+              <span className="hidden sm:inline">Unpublish</span>
+            </button>
+            <button
+              onClick={() => setDeleteConfirm({
+                isOpen: true,
+                newsId: null,
+                newsTitle: `${selectedIds.size} news item${selectedIds.size !== 1 ? 's' : ''}`,
+                isBulk: true
+              })}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 active:bg-red-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 text-sm touch-target min-h-[44px]"
+              title="Delete selected"
+            >
+              <Trash className="w-4 h-4" />
+              <span className="hidden sm:inline">Delete</span>
+            </button>
+            <button
+              onClick={() => setSelectedIds(new Set())}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors disabled:opacity-50 text-sm touch-target min-h-[44px]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
@@ -205,6 +334,22 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
+                    <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target w-12">
+                      <button
+                        onClick={() => handleSelectAll(!allSelected)}
+                        className="flex items-center justify-center w-5 h-5 text-primary-600 hover:text-primary-800 transition-colors touch-target min-h-[44px] min-w-[44px]"
+                        aria-label={allSelected ? 'Deselect all' : 'Select all'}
+                        title={allSelected ? 'Deselect all' : 'Select all'}
+                      >
+                        {allSelected ? (
+                          <CheckSquare className="w-5 h-5" />
+                        ) : someSelected ? (
+                          <div className="w-5 h-5 border-2 border-primary-600 rounded bg-primary-100" />
+                        ) : (
+                          <Square className="w-5 h-5" />
+                        )}
+                      </button>
+                    </th>
                     <th className="px-3 sm:px-4 lg:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider touch-target">
                       Image
                     </th>
@@ -231,8 +376,23 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {news.map((item) => {
                     const imageUrl = getImageUrl(item.imageUrl)
+                    const isSelected = selectedIds.has(item.id)
                     return (
-                      <tr key={item.id} className="hover:bg-gray-50 active:bg-gray-100 transition-colors">
+                      <tr key={item.id} className={`hover:bg-gray-50 active:bg-gray-100 transition-colors ${isSelected ? 'bg-primary-50' : ''}`}>
+                        <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
+                          <button
+                            onClick={() => handleSelectItem(item.id, !isSelected)}
+                            className="flex items-center justify-center w-5 h-5 text-primary-600 hover:text-primary-800 transition-colors touch-target min-h-[44px] min-w-[44px]"
+                            aria-label={isSelected ? 'Deselect' : 'Select'}
+                            title={isSelected ? 'Deselect' : 'Select'}
+                          >
+                            {isSelected ? (
+                              <CheckSquare className="w-5 h-5" />
+                            ) : (
+                              <Square className="w-5 h-5" />
+                            )}
+                          </button>
+                        </td>
                         <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap">
                           {imageUrl ? (
                             <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 relative rounded-lg overflow-hidden bg-gray-100">
@@ -306,7 +466,8 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                             onClick={() => setDeleteConfirm({
                               isOpen: true,
                               newsId: item.id,
-                              newsTitle: item.title
+                              newsTitle: item.title,
+                              isBulk: false
                             })}
                             className="text-red-600 hover:text-red-900 active:text-red-800 p-1.5 sm:p-2 rounded-lg hover:bg-red-50 active:bg-red-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
                             title="Delete"
@@ -361,12 +522,20 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
       <ConfirmationDialog
         isOpen={deleteConfirm.isOpen}
         type="danger"
-        title="Delete News Item"
-        message={`Are you sure you want to delete "${deleteConfirm.newsTitle}"? This action cannot be undone.`}
+        title={deleteConfirm.isBulk ? "Delete News Items" : "Delete News Item"}
+        message={deleteConfirm.isBulk 
+          ? `Are you sure you want to delete ${deleteConfirm.newsTitle}? This action cannot be undone.`
+          : `Are you sure you want to delete "${deleteConfirm.newsTitle}"? This action cannot be undone.`}
         confirmText="Delete"
         cancelText="Cancel"
-        onConfirm={() => deleteConfirm.newsId && handleDelete(deleteConfirm.newsId)}
-        onClose={() => setDeleteConfirm({ isOpen: false, newsId: null, newsTitle: '' })}
+        onConfirm={() => {
+          if (deleteConfirm.isBulk) {
+            handleBulkDelete()
+          } else if (deleteConfirm.newsId) {
+            handleDelete(deleteConfirm.newsId)
+          }
+        }}
+        onClose={() => setDeleteConfirm({ isOpen: false, newsId: null, newsTitle: '', isBulk: false })}
       />
     </div>
   )

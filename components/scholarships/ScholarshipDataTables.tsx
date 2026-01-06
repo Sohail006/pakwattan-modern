@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Filter, Download, Users, DollarSign } from 'lucide-react'
+import { Search, Filter, Download, Users, Coins } from 'lucide-react'
 import { ScholarshipSession } from '@/types/scholarship'
 
 interface ScholarshipDataTablesProps {
@@ -74,9 +74,9 @@ const ScholarshipDataTables = ({ sessions }: ScholarshipDataTablesProps) => {
             <div className="flex items-center justify-between">
               <div className="min-w-0 flex-1">
                 <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Total Amount</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-accent-600 truncate">₨{totalAmount.toLocaleString()}</p>
+                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-accent-600 truncate">PKR {totalAmount.toLocaleString()}</p>
               </div>
-              <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-accent-600 flex-shrink-0 ml-2" />
+              <Coins className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-accent-600 flex-shrink-0 ml-2" />
             </div>
           </div>
           
@@ -85,10 +85,10 @@ const ScholarshipDataTables = ({ sessions }: ScholarshipDataTablesProps) => {
               <div className="min-w-0 flex-1">
                 <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Average Amount</p>
                 <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 truncate">
-                  ₨{filteredStudents.length > 0 ? Math.round(totalAmount / filteredStudents.length).toLocaleString() : 0}
+                  PKR {filteredStudents.length > 0 ? Math.round(totalAmount / filteredStudents.length).toLocaleString() : 0}
                 </p>
               </div>
-              <DollarSign className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-green-600 flex-shrink-0 ml-2" />
+              <Coins className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-green-600 flex-shrink-0 ml-2" />
             </div>
           </div>
           
@@ -159,7 +159,7 @@ const ScholarshipDataTables = ({ sessions }: ScholarshipDataTablesProps) => {
                         </span>
                       </td>
                       <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 font-semibold text-green-600 text-xs sm:text-sm whitespace-nowrap">
-                        ₨{student.amount.toLocaleString()}
+                        PKR {student.amount.toLocaleString()}
                       </td>
                     </tr>
                   ))}

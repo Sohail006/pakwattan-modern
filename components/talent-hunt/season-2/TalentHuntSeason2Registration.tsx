@@ -33,7 +33,6 @@ const TalentHuntSeason2Registration = () => {
     'Instrumental Music Playing Contest',
     'Quiz Competition',
     'Spelling Bee Contest',
-    'DIY / Handicrafts Contest',
     'Creative Writing Competition',
     'Painting, Sketching & Calligraphy Contest',
     'Photography / Videography Contest'

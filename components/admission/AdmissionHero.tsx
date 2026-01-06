@@ -42,7 +42,7 @@ const AdmissionHero = () => {
     {
       icon: <Calendar className="w-8 h-8" />,
       title: 'Academic Year',
-      description: '2025-26 admissions now open'
+      description: '2026-27 admissions now open'
     },
     {
       icon: <Award className="w-8 h-8" />,
@@ -70,7 +70,7 @@ const AdmissionHero = () => {
                 </span>
               </h1>
               <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 leading-relaxed break-words">
-                Admissions Open for Academic Year 2025-26
+                Admissions Open for Academic Year 2026-27
               </p>
               <p className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed break-words">
                 Become part of Pakistan&apos;s leading educational institution. We welcome 

@@ -167,3 +167,47 @@ export async function deleteNews(id: number): Promise<void> {
   }
 }
 
+/**
+ * Upload image for news item
+ */
+export async function uploadNewsImage(file: File): Promise<string> {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await api.postFormData<{ imageUrl: string }>(
+      '/api/news/upload-image',
+      formData
+    );
+    
+    return response.imageUrl;
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to upload image. Please ensure the file is a valid image and try again.');
+  }
+}
+
+/**
+ * Bulk delete news items
+ */
+export async function bulkDeleteNews(ids: number[]): Promise<void> {
+  try {
+    await api.post('/api/news/bulk-delete', { ids });
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to delete news items. Please try again.');
+  }
+}
+
+/**
+ * Bulk update news items (publish/unpublish)
+ */
+export async function bulkUpdateNews(ids: number[], updates: { isPublished?: boolean; category?: string }): Promise<void> {
+  try {
+    await api.post('/api/news/bulk-update', { ids, ...updates });
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to update news items. Please try again.');
+  }
+}
+

@@ -1,26 +1,26 @@
 'use client'
 
-import { DollarSign, Users, Calendar } from 'lucide-react'
+import { Coins, Users, Calendar } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 
 const FeeStructure = () => {
   const feeData = [
-    { class: 'Playgroup (PG)', monthly: 'Rs4,500', admission: 'Rs12,000', annual: 'Rs10,000' },
-    { class: 'Kindergarten (KG)', monthly: 'Rs4,500', admission: 'Rs12,000', annual: 'Rs10,000' },
-    { class: 'Prep', monthly: 'Rs4,500', admission: 'Rs12,000', annual: 'Rs10,000' },
-    { class: 'Grade 1', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 2', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 3', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 4', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 5', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 6', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 7', monthly: 'Rs5,000', admission: 'Rs14,000', annual: 'Rs10,000' },
-    { class: 'Grade 8', monthly: 'Rs5,500', admission: 'Rs17,000', annual: 'Rs10,000' },
-    { class: 'Grade 9', monthly: 'Rs5,500', admission: 'Rs17,000', annual: 'Rs20,000' },
-    { class: 'Grade 10', monthly: 'Rs6,500', admission: 'Rs17,000', annual: 'Rs20,000' },
-    { class: 'Grade 11', monthly: 'Rs7,500', admission: 'Rs22,000', annual: 'Rs20,000' },
-    { class: 'Grade 12', monthly: 'Rs7,500', admission: 'Rs22,000', annual: 'Rs20,000' }
+    { class: 'Playgroup (PG)', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
+    { class: 'Kindergarten (KG)', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
+    { class: 'Prep', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
+    { class: 'Grade 1', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 2', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 3', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 4', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 5', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 6', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 7', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
+    { class: 'Grade 8', monthly: 'PKR 5,500', admission: 'PKR 17,000', annual: 'PKR 10,000' },
+    { class: 'Grade 9', monthly: 'PKR 5,500', admission: 'PKR 17,000', annual: 'PKR 20,000' },
+    { class: 'Grade 10', monthly: 'PKR 6,500', admission: 'PKR 17,000', annual: 'PKR 20,000' },
+    { class: 'Grade 11', monthly: 'PKR 7,500', admission: 'PKR 22,000', annual: 'PKR 20,000' },
+    { class: 'Grade 12', monthly: 'PKR 7,500', admission: 'PKR 22,000', annual: 'PKR 20,000' }
   ]
 
   const ageLimits = [
@@ -57,11 +57,11 @@ const FeeStructure = () => {
           {/* Fee Structure */}
           <Card className="p-3 sm:p-4 lg:p-5 lg:col-span-3">
             <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 flex items-center">
-              <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 flex-shrink-0" />
+              <Coins className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 flex-shrink-0" />
               <span className="break-words">Fee Structure</span>
             </h3>
             <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3 break-words">
-              All fees are in Pakistani Rupees (Rs). Fees are subject to change.
+              All fees are in Pakistani Rupees (PKR). Fees are subject to change.
             </p>
             
             <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll">

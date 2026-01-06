@@ -1,6 +1,6 @@
 'use client'
 
-import { ClipboardCheck, AlertTriangle, DollarSign, BookOpen } from 'lucide-react'
+import { ClipboardCheck, AlertTriangle, Coins, BookOpen } from 'lucide-react'
 
 const AttendancePolicy = () => {
   const attendanceRules = [
@@ -55,13 +55,13 @@ const AttendancePolicy = () => {
     {
       id: 9,
       text: 'A fine of Rs.100/- per day is levied for absence without leave and Rs.100/- per day may be imposed for absence immediately after and before the vacations/holidays.',
-      icon: <DollarSign className="w-6 h-6 text-green-500" />,
+      icon: <Coins className="w-6 h-6 text-green-500" />,
       color: 'bg-green-50'
     },
     {
       id: 10,
       text: 'Absentee in any exam during year will lead to charge of Rs 1000/- fine per paper.',
-      icon: <DollarSign className="w-6 h-6 text-green-500" />,
+      icon: <Coins className="w-6 h-6 text-green-500" />,
       color: 'bg-green-50'
     },
     {

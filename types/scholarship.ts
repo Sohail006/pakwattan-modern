@@ -23,7 +23,7 @@ export interface ScholarshipCriteria {
   specialCategories: {
     orphan: string;
     specialChild: string;
-    kinship: string;
+    hafizUlQuran: string;
   };
   rules: string[];
 }

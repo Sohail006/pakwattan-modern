@@ -24,7 +24,7 @@ const PrizeDistribution = () => {
     },
     {
       icon: <Gift className="w-8 h-8" />,
-      title: 'Hafiz e Quran',
+      title: 'Hafiz ul Quran',
       description: 'Religious scholarship program',
       color: 'from-purple-500 to-purple-600'
     }
@@ -38,21 +38,27 @@ const PrizeDistribution = () => {
       color: 'bg-primary-100 text-primary-800'
     },
     {
-      name: 'Orphan Scholarship',
-      description: 'Full support for orphan students',
-      percentage: '100%',
+      name: 'Merit Based Scholarship',
+      description: 'Academic excellence scholarships for outstanding students',
+      percentage: 'Variable',
       color: 'bg-accent-100 text-accent-800'
     },
     {
-      name: 'Special Child Scholarship',
+      name: 'Orphans Scholarship',
+      description: 'Full support for orphan students',
+      percentage: '100%',
+      color: 'bg-red-100 text-red-800'
+    },
+    {
+      name: 'Special child Scholarship',
       description: 'Support for students with special needs',
       percentage: '100%',
       color: 'bg-green-100 text-green-800'
     },
     {
-      name: 'Hafiz e Quran Scholarship',
+      name: 'Hafiz ul Quran Scholarship',
       description: 'For students who have memorized the Quran',
-      percentage: '50%',
+      percentage: 'Variable',
       color: 'bg-purple-100 text-purple-800'
     }
   ]

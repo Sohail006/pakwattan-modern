@@ -21,6 +21,10 @@ const ScholarshipDataTables = dynamic(() => import('@/components/scholarships/Sc
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
 
+const ScholarshipTypes = dynamic(() => import('@/components/scholarships/ScholarshipTypes'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
 const ScholarshipCriteria = dynamic(() => import('@/components/scholarships/ScholarshipCriteria'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
@@ -31,8 +35,8 @@ const ScholarshipApplicationProcess = dynamic(() => import('@/components/scholar
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Scholarships',
-  description: 'Learn about our scholarship programs including Pakians Scholarship, merit-based, orphan, special child, and Hafiz e Quran scholarships. 15 lacs scholarship program with detailed criteria and application process.',
-  keywords: 'scholarships, pak wattan scholarships, merit scholarship, orphan scholarship, hafiz e quran scholarship, 15 lacs scholarship, march 23rd test, pak wattan financial aid',
+  description: 'Learn about our scholarship programs including Pakians Scholarship, Merit Based Scholarship, Orphans Scholarship, Special child Scholarship, and Hafiz ul Quran Scholarship. 15 lacs scholarship program with detailed criteria and application process.',
+  keywords: 'scholarships, pak wattan scholarships, merit based scholarship, orphans scholarship, special child scholarship, hafiz ul quran scholarship, pakians scholarship, 15 lacs scholarship, march 23rd test, pak wattan financial aid',
   path: '/scholarships',
 })
 
@@ -48,6 +52,7 @@ export default function ScholarshipsPage() {
       <div className="min-h-screen">
         <ScholarshipsHero />
         <ScholarshipStats stats={scholarshipStats} />
+        <ScholarshipTypes />
         <ScholarshipDataTables sessions={allScholarshipSessions} />
         <ScholarshipCriteria 
           criteria={scholarshipCriteria} 

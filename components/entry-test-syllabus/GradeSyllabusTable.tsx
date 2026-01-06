@@ -34,19 +34,37 @@ const GradeSyllabusTable = () => {
           s.contentType === 'PDF' && s.pdfUrl && s.isActive
         )
 
-        // Match syllabi with grades - create array of grades with PDFs only
+        // Match syllabi with grades - create array with ALL active model papers per grade
+        // Use flatMap to create one row per model paper (even if multiple for same grade)
         const gradesWithPdfsData: GradeSyllabusRow[] = sortedGrades
-          .map(grade => {
-            const syllabus = pdfSyllabi.find(s => s.gradeId === grade.id)
-            if (syllabus && syllabus.pdfUrl) {
-              return { grade, syllabus }
-            }
-            return null
+          .flatMap(grade => {
+            // Get ALL active PDF syllabi for this grade (not just first)
+            const syllabi = pdfSyllabi.filter(s => 
+              s.gradeId === grade.id && s.pdfUrl && s.isActive
+            )
+            
+            // Create one row per syllabus
+            return syllabi.map(syllabus => ({
+              grade,
+              syllabus
+            }))
           })
-          .filter((item): item is GradeSyllabusRow => item !== null)
-
-        // Sort by grade order
-        gradesWithPdfsData.sort((a, b) => a.grade.order - b.grade.order)
+          .sort((a, b) => {
+            // Sort by grade order first
+            if (a.grade.order !== b.grade.order) {
+              return a.grade.order - b.grade.order
+            }
+            // Then by academic year (newest first), or by creation date if no year
+            const yearA = a.syllabus.academicYear || 0
+            const yearB = b.syllabus.academicYear || 0
+            if (yearA !== yearB) {
+              return yearB - yearA  // Descending (newest first)
+            }
+            // If same year, sort by creation date (newest first)
+            const dateA = new Date(a.syllabus.createdAt || 0).getTime()
+            const dateB = new Date(b.syllabus.createdAt || 0).getTime()
+            return dateB - dateA
+          })
 
         setGradesWithPdfs(gradesWithPdfsData)
       } catch (err) {
@@ -161,7 +179,7 @@ const GradeSyllabusTable = () => {
               <tbody className="divide-y divide-gray-200">
                 {gradesWithPdfs.map(({ grade, syllabus }) => (
                   <tr
-                    key={grade.id}
+                    key={`${grade.id}-${syllabus.id}`}
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-3 sm:px-6 py-4">
@@ -207,7 +225,7 @@ const GradeSyllabusTable = () => {
         <div className="md:hidden space-y-4 px-2">
           {gradesWithPdfs.map(({ grade, syllabus }) => (
             <div
-              key={grade.id}
+              key={`${grade.id}-${syllabus.id}`}
               className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 hover:shadow-xl transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">

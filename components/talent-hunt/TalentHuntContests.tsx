@@ -8,7 +8,6 @@ import {
   Music2, 
   Brain, 
   CheckSquare, 
-  Scissors, 
   Edit, 
   Palette, 
   Camera,
@@ -87,17 +86,6 @@ const TalentHuntContests = () => {
       prizes: 'Spelling Champion Awards',
       requirements: 'Vocabulary list provided in advance, spelling accuracy',
       color: 'from-pink-500 to-rose-500'
-    },
-    {
-      id: 7,
-      title: 'DIY / Handicrafts Contest',
-      icon: <Scissors className="w-8 h-8" />,
-      description: 'Creative handicrafts and DIY projects competition',
-      date: '13th December 2025 (Saturday)',
-      participants: 'All Grades',
-      prizes: 'Best Craft Awards',
-      requirements: 'Handmade items, creativity, originality',
-      color: 'from-yellow-500 to-amber-500'
     },
     {
       id: 8,

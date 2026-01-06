@@ -10,18 +10,18 @@ const ScholarshipsHero = () => {
       description: 'Merit-based scholarships for outstanding students'
     },
     {
-      icon: <Heart className="w-6 h-6" />,
-      title: 'Orphan Scholarship',
-      description: 'Support for orphaned students'
-    },
-    {
       icon: <Star className="w-6 h-6" />,
-      title: 'Merit-Based',
+      title: 'Merit Based Scholarship',
       description: 'Academic excellence scholarships'
     },
     {
+      icon: <Heart className="w-6 h-6" />,
+      title: 'Orphans Scholarship',
+      description: 'Support for orphaned students'
+    },
+    {
       icon: <BookOpen className="w-6 h-6" />,
-      title: 'Hafiz e Quran',
+      title: 'Hafiz ul Quran Scholarship',
       description: 'Scholarships for Quran memorizers'
     }
   ]
@@ -46,7 +46,7 @@ const ScholarshipsHero = () => {
               </p>
               <p className="text-base sm:text-lg text-white/80 leading-relaxed break-words">
                 PWSCS gives scholarships to students every year, including Pakians Scholarship, 
-                merit-based, orphan, special child, and Hafiz e Quran scholarships. Our 
+                Merit Based Scholarship, Orphans Scholarship, Special child Scholarship, and Hafiz ul Quran Scholarship. Our 
                 <strong> 15 Lacs Scholarship Program</strong> supports deserving students. 
                 The scholarship test has always been conducted on <strong>March 23rd</strong> 
                 in the girl&apos;s campus Havelian.
