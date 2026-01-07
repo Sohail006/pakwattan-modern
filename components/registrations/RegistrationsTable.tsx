@@ -4,24 +4,32 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye } from 'lucide-react'
 import { RegistrationResponse, getAllRegistrations, deleteRegistration } from '@/lib/api/registrations'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
-import { formatDate, formatTime } from '@/lib/utils'
+import { debounce, formatDate, formatTime } from '@/lib/utils'
 import { exportRegistrationsToExcel } from '@/lib/utils/excelExportRegistrations'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
+import { toastService } from '@/lib/utils/toast'
 
 type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | null
 type SortOrder = 'asc' | 'desc'
 
 export default function RegistrationsTable() {
   const [registrations, setRegistrations] = useState<RegistrationResponse[]>([])
-  const [filteredRegistrations, setFilteredRegistrations] = useState<RegistrationResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [filterGrade, setFilterGrade] = useState<string>('')
   const [filterScholarship, setFilterScholarship] = useState<string>('')
   const [filterPayment, setFilterPayment] = useState<string>('')
+
+  // Debounce search to reduce filtering cost
+  const debouncedSetSearch = useRef(
+    debounce((value: string) => {
+      setDebouncedSearchTerm(value)
+    }, 300)
+  ).current
   
   // Sort state
   const [sortBy, setSortBy] = useState<SortField>(null)
@@ -71,11 +79,15 @@ export default function RegistrationsTable() {
 
   // Filter and sort registrations
   useEffect(() => {
+    debouncedSetSearch(searchTerm)
+  }, [searchTerm, debouncedSetSearch])
+
+  // Memoized filtering and sorting for performance
+  const filteredRegistrations = useMemo(() => {
     let filtered = [...registrations]
 
-    // Apply search filter
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase()
+    if (debouncedSearchTerm) {
+      const term = debouncedSearchTerm.toLowerCase()
       filtered = filtered.filter(reg =>
         reg.name.toLowerCase().includes(term) ||
         reg.fatherName.toLowerCase().includes(term) ||
@@ -85,12 +97,10 @@ export default function RegistrationsTable() {
       )
     }
 
-    // Apply grade filter
     if (filterGrade) {
       filtered = filtered.filter(reg => reg.gradeId.toString() === filterGrade)
     }
 
-    // Apply scholarship filter
     if (filterScholarship) {
       if (filterScholarship === 'yes') {
         filtered = filtered.filter(reg => reg.applyForScholarship)
@@ -99,12 +109,10 @@ export default function RegistrationsTable() {
       }
     }
 
-    // Apply payment method filter
     if (filterPayment) {
       filtered = filtered.filter(reg => reg.paymentMethod.toLowerCase() === filterPayment.toLowerCase())
     }
 
-    // Apply sorting
     if (sortBy) {
       filtered.sort((a, b) => {
         let aVal: string | number
@@ -137,9 +145,21 @@ export default function RegistrationsTable() {
       })
     }
 
-    setFilteredRegistrations(filtered)
-    setCurrentPage(1) // Reset to first page when filters change
-  }, [registrations, searchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder])
+    return filtered
+  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder])
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [debouncedSearchTerm, filterGrade, filterScholarship, filterPayment])
+
+  // Clamp current page if filtered results shrink
+  useEffect(() => {
+    const totalPages = Math.max(1, Math.ceil(filteredRegistrations.length / itemsPerPage))
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages)
+    }
+  }, [filteredRegistrations.length, currentPage])
 
   const handleSort = (field: SortField) => {
     if (sortBy === field) {
@@ -153,6 +173,7 @@ export default function RegistrationsTable() {
   const handleDelete = (id: number) => {
     const registration = registrations.find(r => r.id === id)
     const studentName = registration ? registration.name : 'this registration'
+    const previousRegistrations = registrations
     
     setConfirmDialog({
       isOpen: true,
@@ -163,12 +184,17 @@ export default function RegistrationsTable() {
       onConfirm: async () => {
         setConfirmDialog(null)
         setDeletingId(id)
+        // Optimistically remove from UI
+        setRegistrations(prev => prev.filter(r => r.id !== id))
         try {
           await deleteRegistration(id)
-          await loadRegistrations()
+          toastService.success('Registration deleted.')
         } catch (err) {
           const message = err instanceof Error ? err.message : 'Failed to delete registration.'
           setError(message)
+          // Roll back on error
+          setRegistrations(previousRegistrations)
+          toastService.error(message)
         } finally {
           setDeletingId(null)
         }
@@ -185,7 +211,7 @@ export default function RegistrationsTable() {
 
   const handleExportExcel = () => {
     if (filteredRegistrations.length === 0) {
-      alert('No registrations to export.')
+      toastService.error('No registrations to export.')
       return
     }
     
