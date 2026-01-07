@@ -533,7 +533,9 @@ export default function RegistrationsTable() {
                       {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
                     </div>
                   </th>
-                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
+                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-20 border-l border-gray-200">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
