@@ -491,7 +491,7 @@ export default function RegistrationsTable() {
           )}
           
           <div className="min-w-[1400px] sm:min-w-0">
-            <table className="w-full">
+            <table className="w-full table-fixed">
               <colgroup>
                 <col style={{ width: '130px', minWidth: '130px' }} />
                 <col style={{ width: '160px', minWidth: '160px' }} />
