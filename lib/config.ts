@@ -117,6 +117,21 @@ export const API_CONFIG = {
   }
 }
 
+/**
+ * Check if SignalR/WebSocket notifications are enabled
+ * Set NEXT_PUBLIC_ENABLE_SIGNALR=false to disable WebSocket connections
+ * Default: false (disabled) to prevent console errors if hub is not available
+ */
+export function isSignalREnabled(): boolean {
+  // Check environment variable first
+  const envValue = process.env.NEXT_PUBLIC_ENABLE_SIGNALR;
+  if (envValue !== undefined) {
+    return envValue.toLowerCase() === 'true';
+  }
+  // Default to false to prevent console errors
+  return false;
+}
+
 // Fallback configuration when API is not available
 export const FALLBACK_CONFIG = {
   enabled: true,

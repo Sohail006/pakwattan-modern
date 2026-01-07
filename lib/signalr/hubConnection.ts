@@ -39,6 +39,8 @@ export function createHubConnection(): signalR.HubConnection {
       },
       // Don't skip negotiation for better compatibility
       transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.ServerSentEvents,
+      // Suppress WebSocket errors in console
+      skipNegotiation: false,
     })
     .withAutomaticReconnect({
       nextRetryDelayInMilliseconds: retryContext => {
@@ -50,21 +52,36 @@ export function createHubConnection(): signalR.HubConnection {
         return null;
       }
     })
-    .configureLogging(process.env.NODE_ENV === 'development' ? signalR.LogLevel.Warning : signalR.LogLevel.None)
+    // Suppress all logging in production, only show critical errors in development
+    .configureLogging(process.env.NODE_ENV === 'development' ? signalR.LogLevel.Error : signalR.LogLevel.None)
     .build();
   
-  // Suppress connection errors in the connection's error handler
+  // Suppress all connection errors - SignalR is optional
   connection.onclose((error) => {
-    if (error) {
-      // Only log non-connection-refused errors
+    // Silently handle all connection errors
+    // WebSocket failures are expected if the hub is not available
+    // Only log in development mode for debugging
+    if (error && process.env.NODE_ENV === 'development') {
       const errorMessage = error.message || String(error);
+      // Only log unexpected errors, not connection refused
       if (!errorMessage.includes('ERR_CONNECTION_REFUSED') && 
           !errorMessage.includes('Failed to fetch') &&
-          !errorMessage.includes('ECONNREFUSED')) {
-        if (process.env.NODE_ENV === 'development') {
-          console.warn('[SignalR] Connection closed:', errorMessage);
-        }
+          !errorMessage.includes('ECONNREFUSED') &&
+          !errorMessage.includes('WebSocket')) {
+        console.debug('[SignalR] Connection closed:', errorMessage);
       }
+    }
+  });
+
+  // Suppress connection errors
+  connection.onreconnecting((error) => {
+    // Silently handle reconnection attempts
+  });
+
+  // Suppress reconnection errors
+  connection.onreconnected((connectionId) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.debug('[SignalR] Reconnected:', connectionId);
     }
   });
 

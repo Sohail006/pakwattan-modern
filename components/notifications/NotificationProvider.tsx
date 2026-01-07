@@ -3,6 +3,7 @@
 import { createContext, useContext, ReactNode } from 'react';
 import { useSignalR, UseSignalROptions } from '@/hooks/useSignalR';
 import { NotificationMessage } from '@/lib/signalr/hubConnection';
+import { isSignalREnabled } from '@/lib/config';
 
 interface NotificationContextType {
   isConnected: boolean;
@@ -22,11 +23,14 @@ export function NotificationProvider({
   children: ReactNode;
   options?: UseSignalROptions;
 }) {
-  // SignalR is optional - app works fine without it
-  // Only auto-connect if explicitly enabled (default: true, but fails gracefully)
+  // SignalR is optional - only connect if explicitly enabled via environment variable
+  // Set NEXT_PUBLIC_ENABLE_SIGNALR=true to enable WebSocket notifications
+  const signalREnabled = isSignalREnabled();
+  
+  // Only auto-connect if SignalR is enabled
   const signalR = useSignalR(options || { 
-    autoConnect: true, 
-    joinAdminOnConnect: true 
+    autoConnect: signalREnabled, 
+    joinAdminOnConnect: signalREnabled 
   });
 
   return (

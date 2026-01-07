@@ -14,6 +14,7 @@ import {
   joinTeacherGroup,
 } from '@/lib/signalr/hubConnection';
 import { isAuthenticated, getCurrentUser } from '@/lib/api/auth';
+import { isSignalREnabled } from '@/lib/config';
 
 export interface UseSignalROptions {
   autoConnect?: boolean;
@@ -48,6 +49,11 @@ export function useSignalR(options: UseSignalROptions = {}) {
 
   // Connect to SignalR
   const connect = useCallback(async () => {
+    // Skip connection if SignalR is disabled
+    if (!isSignalREnabled()) {
+      return;
+    }
+
     if (!isAuthenticated()) {
       // Silently skip if not authenticated
       return;
