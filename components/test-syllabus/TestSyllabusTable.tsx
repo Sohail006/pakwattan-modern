@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Edit, Trash2, Loader2, Search, X, Filter, FileText, Eye } from 'lucide-react'
 import { TestSyllabus, getTestSyllabi, deleteTestSyllabus, TestSyllabusQueryParams } from '@/lib/api/testSyllabus'
-import { formatDate } from '@/lib/utils'
+import { formatDate, debounce } from '@/lib/utils'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 
 interface TestSyllabusTableProps {
@@ -12,12 +12,13 @@ interface TestSyllabusTableProps {
 }
 
 export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTableProps) {
-  const [syllabi, setSyllabi] = useState<TestSyllabus[]>([])
+  const [allSyllabi, setAllSyllabi] = useState<TestSyllabus[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [activeFilter, setActiveFilter] = useState<string>('all') // 'all', 'active', 'inactive'
   
   // Delete confirmation
@@ -31,7 +32,18 @@ export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTab
     syllabusTitle: ''
   })
 
-  // Load syllabi
+  // Debounce search term updates
+  const debouncedSetSearch = useRef(
+    debounce((value: string) => {
+      setDebouncedSearchTerm(value)
+    }, 300)
+  ).current
+
+  useEffect(() => {
+    debouncedSetSearch(searchTerm)
+  }, [searchTerm, debouncedSetSearch])
+
+  // Load syllabi - only fetch from API, no client-side filtering
   const loadSyllabi = useCallback(async () => {
     try {
       setLoading(true)
@@ -42,45 +54,52 @@ export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTab
       }
       
       const data = await getTestSyllabi(params)
-      
-      // Filter by search term if provided
-      let filtered = data
-      if (searchTerm) {
-        filtered = data.filter(s => 
-          s.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          s.gradeName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          s.description?.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      }
-      
-      // Sort by display order, then by created date
-      filtered.sort((a, b) => {
-        if (a.displayOrder !== b.displayOrder) {
-          return a.displayOrder - b.displayOrder
-        }
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      })
-      
-      setSyllabi(filtered)
+      setAllSyllabi(data)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load test syllabi. Please try again.')
     } finally {
       setLoading(false)
     }
-  }, [searchTerm, activeFilter])
+  }, [activeFilter]) // Only depend on activeFilter, not searchTerm
 
   useEffect(() => {
     loadSyllabi()
   }, [loadSyllabi])
 
+  // Memoize filtered and sorted data to prevent recalculation on every render
+  const syllabi = useMemo(() => {
+    let filtered = [...allSyllabi]
+    
+    // Filter by search term if provided
+    if (debouncedSearchTerm) {
+      const searchLower = debouncedSearchTerm.toLowerCase()
+      filtered = filtered.filter(s => 
+        s.title.toLowerCase().includes(searchLower) ||
+        s.gradeName?.toLowerCase().includes(searchLower) ||
+        s.description?.toLowerCase().includes(searchLower)
+      )
+    }
+    
+    // Sort by display order, then by created date
+    return filtered.sort((a, b) => {
+      if (a.displayOrder !== b.displayOrder) {
+        return a.displayOrder - b.displayOrder
+      }
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    })
+  }, [allSyllabi, debouncedSearchTerm])
+
   const handleDelete = async (syllabusId: number) => {
     try {
       await deleteTestSyllabus(syllabusId)
       setDeleteConfirm({ isOpen: false, syllabusId: null, syllabusTitle: '' })
-      loadSyllabi()
+      // Remove from local state immediately for better UX
+      setAllSyllabi(prev => prev.filter(s => s.id !== syllabusId))
       onRefresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to delete model paper.')
+      // Reload on error to ensure consistency
+      loadSyllabi()
     }
   }
 

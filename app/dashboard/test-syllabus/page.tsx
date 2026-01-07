@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
@@ -21,7 +21,7 @@ export default function TestSyllabusPage() {
 
   // Check authentication and authorization
   useEffect(() => {
-    const checkAuth = async () => {
+    const checkAuth = () => {
       try {
         if (!isAuthenticated()) {
           router.push('/login')
@@ -45,33 +45,34 @@ export default function TestSyllabusPage() {
     checkAuth()
   }, [router])
 
-  const handleAddNew = () => {
+  const handleAddNew = useCallback(() => {
     setEditingSyllabus(null)
     setIsFormOpen(true)
-  }
+  }, [])
 
-  const handleEdit = (syllabus: TestSyllabus) => {
+  const handleEdit = useCallback((syllabus: TestSyllabus) => {
     setEditingSyllabus(syllabus)
     setIsFormOpen(true)
-  }
+  }, [])
 
-  const handleFormClose = () => {
+  const handleFormClose = useCallback(() => {
     setIsFormOpen(false)
     setEditingSyllabus(null)
-  }
+  }, [])
 
-  const handleFormSuccess = (message?: string) => {
+  const handleFormSuccess = useCallback((message?: string) => {
     if (message) {
       setSuccess(message)
       setTimeout(() => setSuccess(null), 3000)
     }
     setRefreshKey(prev => prev + 1)
-    handleFormClose()
-  }
+    setIsFormOpen(false)
+    setEditingSyllabus(null)
+  }, [])
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     setRefreshKey(prev => prev + 1)
-  }
+  }, [])
 
   if (checkingAuth) {
     return (
