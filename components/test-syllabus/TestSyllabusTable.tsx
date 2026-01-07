@@ -174,93 +174,97 @@ export default function TestSyllabusTable({ onEdit, onRefresh }: TestSyllabusTab
             <p className="text-sm sm:text-base text-gray-600">No test syllabi found.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll">
-            <div className="min-w-[640px] sm:min-w-0">
-              <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
-                  <tr>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grade</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Content Type</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated</th>
-                    <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {syllabi.map((syllabus) => (
-                    <tr key={syllabus.id} className="hover:bg-gray-50">
-                      <td className="px-3 sm:px-6 py-4 min-w-0">
-                        <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">{syllabus.title}</div>
-                        {syllabus.description && (
-                          <div className="text-xs text-gray-500 mt-1 line-clamp-1 truncate">{syllabus.description}</div>
+          <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll relative">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[25%] min-w-[200px]">Title</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell w-[10%]">Grade</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[12%] min-w-[100px]">Content Type</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden lg:table-cell w-[8%]">Year</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-[10%] min-w-[80px]">Status</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell w-[12%]">Updated</th>
+                  <th className="px-3 sm:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider sticky right-0 bg-gray-50 z-20 w-[120px] min-w-[120px] shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)]">
+                    <span className="hidden sm:inline">Actions</span>
+                    <span className="sm:hidden">Act</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {syllabi.map((syllabus) => (
+                  <tr key={syllabus.id} className="group hover:bg-gray-50">
+                    <td className="px-3 sm:px-6 py-4 min-w-0">
+                      <div className="text-xs sm:text-sm font-medium text-gray-900 truncate">{syllabus.title}</div>
+                      {syllabus.description && (
+                        <div className="text-xs text-gray-500 mt-1 line-clamp-1 truncate">{syllabus.description}</div>
+                      )}
+                      <div className="md:hidden text-xs text-gray-500 mt-1">
+                        {syllabus.gradeName || `Grade ${syllabus.gradeId}`}
+                      </div>
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                      <div className="text-xs sm:text-sm text-gray-900 truncate">{syllabus.gradeName || `Grade ${syllabus.gradeId}`}</div>
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getContentTypeBadge(syllabus.contentType)}`}>
+                        {syllabus.contentType}
+                      </span>
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden lg:table-cell">
+                      {syllabus.academicYear || 'N/A'}
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                        syllabus.isActive 
+                          ? 'bg-green-100 text-green-800' 
+                          : 'bg-gray-100 text-gray-800'
+                      }`}>
+                        {syllabus.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500 hidden xl:table-cell">
+                      {formatDate(syllabus.updatedAt)}
+                    </td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium sticky right-0 bg-white group-hover:bg-gray-50 z-20 shadow-[2px_0_4px_-2px_rgba(0,0,0,0.1)] transition-colors">
+                      <div className="flex items-center justify-end gap-1 sm:gap-2">
+                        {syllabus.pdfUrl && (
+                          <a
+                            href={syllabus.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary-600 hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center p-1 sm:p-2"
+                            title="View PDF"
+                            aria-label={`View ${syllabus.title} PDF`}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </a>
                         )}
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                        <div className="text-xs sm:text-sm text-gray-900 truncate">{syllabus.gradeName || `Grade ${syllabus.gradeId}`}</div>
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getContentTypeBadge(syllabus.contentType)}`}>
-                          {syllabus.contentType}
-                        </span>
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                        {syllabus.academicYear || 'N/A'}
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                          syllabus.isActive 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
-                          {syllabus.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-xs sm:text-sm text-gray-500">
-                        {formatDate(syllabus.updatedAt)}
-                      </td>
-                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex items-center justify-end gap-2">
-                          {syllabus.pdfUrl && (
-                            <a
-                              href={syllabus.pdfUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary-600 hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
-                              title="View PDF"
-                              aria-label={`View ${syllabus.title} PDF`}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </a>
-                          )}
-                          <button
-                            onClick={() => onEdit(syllabus)}
-                            className="text-primary-600 hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
-                            title="Edit"
-                            aria-label={`Edit ${syllabus.title}`}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => setDeleteConfirm({
-                              isOpen: true,
-                              syllabusId: syllabus.id,
-                              syllabusTitle: syllabus.title
-                            })}
-                            className="text-red-600 hover:text-red-900 active:text-red-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
-                            title="Delete"
-                            aria-label={`Delete ${syllabus.title}`}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                        <button
+                          onClick={() => onEdit(syllabus)}
+                          className="text-primary-600 hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center p-1 sm:p-2"
+                          title="Edit"
+                          aria-label={`Edit ${syllabus.title}`}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm({
+                            isOpen: true,
+                            syllabusId: syllabus.id,
+                            syllabusTitle: syllabus.title
+                          })}
+                          className="text-red-600 hover:text-red-900 active:text-red-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center p-1 sm:p-2"
+                          title="Delete"
+                          aria-label={`Delete ${syllabus.title}`}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
