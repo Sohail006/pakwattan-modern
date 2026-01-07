@@ -552,26 +552,26 @@ export default function RegistrationsTable() {
               ) : (
                 paginatedRegistrations.map((reg) => (
                   <tr key={reg.id} className="group hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold bg-primary-100 text-primary-800">
                         {reg.rollNumber || 'Pending'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm font-medium text-gray-900">{reg.name}</span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">{reg.fatherName}</span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                         {reg.gradeName || `Grade ${reg.gradeId}`}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">{reg.mobile || '-'}</span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       {reg.applyForScholarship ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           {reg.scholarshipType || 'Yes'}
@@ -580,18 +580,18 @@ export default function RegistrationsTable() {
                         <span className="text-sm text-gray-500">No</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">{reg.testDate ? formatDate(reg.testDate) : '-'}</span>
                       {reg.testTime && (
                         <span className="text-xs text-gray-500 block">{formatTime(reg.testTime)}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">
                         {reg.testVenue || '-'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 whitespace-nowrap">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700">{formatDate(reg.registrationDate)}</span>
                     </td>
                     <td className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
