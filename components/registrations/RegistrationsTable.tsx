@@ -492,36 +492,48 @@ export default function RegistrationsTable() {
           
           <div className="min-w-[1400px] sm:min-w-0">
             <table className="w-full">
+              <colgroup>
+                <col style={{ width: '130px', minWidth: '130px' }} />
+                <col style={{ width: '160px', minWidth: '160px' }} />
+                <col style={{ width: '150px', minWidth: '150px' }} />
+                <col style={{ width: '110px', minWidth: '110px' }} />
+                <col style={{ width: '130px', minWidth: '130px' }} />
+                <col style={{ width: '140px', minWidth: '140px' }} />
+                <col style={{ width: '120px', minWidth: '120px' }} />
+                <col style={{ width: '130px', minWidth: '130px' }} />
+                <col style={{ width: '120px', minWidth: '120px' }} />
+                <col style={{ width: '150px', minWidth: '150px' }} />
+              </colgroup>
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] min-w-[130px]"
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
                     onClick={() => handleSort('rollNumber')}>
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <span className="truncate">Roll Number</span>
                       {sortBy === 'rollNumber' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
                     </div>
                   </th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] min-w-[160px] bg-gray-50"
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] bg-gray-50"
                     onClick={() => handleSort('name')}>
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <span className="truncate font-semibold">Name</span>
                       {sortBy === 'name' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
                     </div>
                   </th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[150px]">Father Name</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[110px]">Grade</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[130px]">Mobile</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[140px]">Scholarship</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[120px]">Test Date</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider min-w-[130px]">Test Venue</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] min-w-[120px]"
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Father Name</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Grade</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mobile</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Scholarship</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Date</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Venue</th>
+                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
                     onClick={() => handleSort('registrationDate')}>
                     <div className="flex items-center gap-1.5 sm:gap-2">
                       <span className="truncate">Reg. Date</span>
                       {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
                     </div>
                   </th>
-                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200 min-w-[150px]">Actions</th>
+                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -552,26 +564,26 @@ export default function RegistrationsTable() {
               ) : (
                 paginatedRegistrations.map((reg) => (
                   <tr key={reg.id} className="group hover:bg-gray-50 transition-colors">
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[130px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold bg-primary-100 text-primary-800">
                         {reg.rollNumber || 'Pending'}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[160px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm font-medium text-gray-900 block truncate" title={reg.name}>{reg.name || '-'}</span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[150px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700 block truncate" title={reg.fatherName}>{reg.fatherName || '-'}</span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[110px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                         {reg.gradeName || `Grade ${reg.gradeId}`}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[130px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700 block truncate">{reg.mobile || '-'}</span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[140px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       {reg.applyForScholarship ? (
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                           {reg.scholarshipType || 'Yes'}
@@ -580,18 +592,18 @@ export default function RegistrationsTable() {
                         <span className="text-sm text-gray-500">No</span>
                       )}
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[120px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700 block">{reg.testDate ? formatDate(reg.testDate) : '-'}</span>
                       {reg.testTime && (
                         <span className="text-xs text-gray-500 block">{formatTime(reg.testTime)}</span>
                       )}
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[130px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700 block truncate" title={reg.testVenue || ''}>
                         {reg.testVenue || '-'}
                       </span>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap min-w-[120px]">
+                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
                       <span className="text-sm text-gray-700 block">{formatDate(reg.registrationDate)}</span>
                     </td>
                     <td className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
