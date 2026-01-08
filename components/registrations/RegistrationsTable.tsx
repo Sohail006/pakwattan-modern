@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye } from 'lucide-react'
+import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles } from 'lucide-react'
 import { RegistrationResponse, getAllRegistrations, deleteRegistration } from '@/lib/api/registrations'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
 import { exportRegistrationsToExcel } from '@/lib/utils/excelExportRegistrations'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import { toastService } from '@/lib/utils/toast'
+import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | null
+type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'testDate' | 'scholarship' | null
 type SortOrder = 'asc' | 'desc'
 
 export default function RegistrationsTable() {
@@ -135,6 +136,18 @@ export default function RegistrationsTable() {
             aVal = new Date(a.registrationDate).getTime()
             bVal = new Date(b.registrationDate).getTime()
             break
+          case 'fatherName':
+            aVal = a.fatherName.toLowerCase()
+            bVal = b.fatherName.toLowerCase()
+            break
+          case 'testDate':
+            aVal = a.testDate ? new Date(a.testDate).getTime() : 0
+            bVal = b.testDate ? new Date(b.testDate).getTime() : 0
+            break
+          case 'scholarship':
+            aVal = a.applyForScholarship ? 1 : 0
+            bVal = b.applyForScholarship ? 1 : 0
+            break
           default:
             return 0
         }
@@ -218,8 +231,10 @@ export default function RegistrationsTable() {
     setExporting(true)
     try {
       exportRegistrationsToExcel(filteredRegistrations)
+      toastService.success(`Successfully exported ${filteredRegistrations.length} registration(s) to Excel.`)
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to export to Excel.')
+      const message = err instanceof Error ? err.message : 'Failed to export to Excel.'
+      toastService.error(message)
     } finally {
       setTimeout(() => setExporting(false), 1000)
     }
@@ -298,8 +313,43 @@ export default function RegistrationsTable() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      <div className="space-y-6 animate-fade-in">
+        {/* Statistics Cards Skeleton */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1 space-y-2">
+                  <SkeletonLoader variant="text" width="60%" height="16px" />
+                  <SkeletonLoader variant="text" width="40%" height="32px" />
+                </div>
+                <SkeletonLoader variant="default" width="48px" height="48px" className="rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        {/* Filters Skeleton */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+            <SkeletonLoader variant="text" height="44px" className="sm:col-span-2 lg:col-span-2" />
+            <SkeletonLoader variant="text" height="44px" />
+            <SkeletonLoader variant="text" height="44px" />
+            <SkeletonLoader variant="text" height="44px" />
+          </div>
+        </div>
+        
+        {/* Table Skeleton */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+          <div className="p-4">
+            <SkeletonLoader variant="text" height="24px" width="200px" className="mb-4" />
+            <div className="space-y-3">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <SkeletonLoader key={i} variant="text" height="56px" />
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
@@ -314,52 +364,52 @@ export default function RegistrationsTable() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* Statistics Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-md hover:border-primary-200 transition-all duration-300 group cursor-default">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Total Registrations</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.totalRegistrations}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate group-hover:text-primary-600 transition-colors">Total Registrations</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2 group-hover:text-primary-700 transition-colors">{stats.totalRegistrations}</p>
             </div>
-            <div className="p-2 sm:p-3 bg-primary-100 rounded-lg flex-shrink-0 ml-2">
+            <div className="p-2 sm:p-3 bg-primary-100 rounded-lg flex-shrink-0 ml-2 group-hover:bg-primary-200 group-hover:scale-110 transition-all duration-300">
               <Users className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-primary-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-md hover:border-green-200 transition-all duration-300 group cursor-default">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Registrations</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.activeRegistrations}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate group-hover:text-green-600 transition-colors">Active Registrations</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2 group-hover:text-green-700 transition-colors">{stats.activeRegistrations}</p>
             </div>
-            <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0 ml-2">
+            <div className="p-2 sm:p-3 bg-green-100 rounded-lg flex-shrink-0 ml-2 group-hover:bg-green-200 group-hover:scale-110 transition-all duration-300">
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-md hover:border-blue-200 transition-all duration-300 group cursor-default">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">This Month</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.registrationsThisMonth}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate group-hover:text-blue-600 transition-colors">This Month</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2 group-hover:text-blue-700 transition-colors">{stats.registrationsThisMonth}</p>
             </div>
-            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0 ml-2">
+            <div className="p-2 sm:p-3 bg-blue-100 rounded-lg flex-shrink-0 ml-2 group-hover:bg-blue-200 group-hover:scale-110 transition-all duration-300">
               <Calendar className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-blue-600" />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6 hover:shadow-md hover:border-purple-200 transition-all duration-300 group cursor-default">
           <div className="flex items-center justify-between">
             <div className="min-w-0 flex-1">
-              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">With Scholarship</p>
-              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2">{stats.withScholarship}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600 truncate group-hover:text-purple-600 transition-colors">With Scholarship</p>
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mt-1 sm:mt-2 group-hover:text-purple-700 transition-colors">{stats.withScholarship}</p>
             </div>
-            <div className="p-2 sm:p-3 bg-purple-100 rounded-lg flex-shrink-0 ml-2">
+            <div className="p-2 sm:p-3 bg-purple-100 rounded-lg flex-shrink-0 ml-2 group-hover:bg-purple-200 group-hover:scale-110 transition-all duration-300">
               <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-purple-600" />
             </div>
           </div>
@@ -367,17 +417,17 @@ export default function RegistrationsTable() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 transition-shadow hover:shadow-md">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
           {/* Search */}
           <div className="sm:col-span-2 lg:col-span-2 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 transition-colors pointer-events-none" />
             <input
               type="text"
               placeholder="Search by name, roll number, mobile..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px] hover:border-gray-400"
             />
           </div>
 
@@ -385,7 +435,7 @@ export default function RegistrationsTable() {
           <select
             value={filterGrade}
             onChange={(e) => setFilterGrade(e.target.value)}
-            className="px-3 sm:px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px] bg-white"
+            className="px-3 sm:px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px] bg-white hover:border-gray-400 cursor-pointer"
           >
             <option value="">All Grades</option>
             {Array.from(new Set(registrations.map(r => r.gradeId))).sort().map(gradeId => {
@@ -402,7 +452,7 @@ export default function RegistrationsTable() {
           <select
             value={filterScholarship}
             onChange={(e) => setFilterScholarship(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px] hover:border-gray-400 cursor-pointer"
           >
             <option value="">All</option>
             <option value="yes">With Scholarship</option>
@@ -413,7 +463,7 @@ export default function RegistrationsTable() {
           <select
             value={filterPayment}
             onChange={(e) => setFilterPayment(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px] hover:border-gray-400 cursor-pointer"
           >
             <option value="">All Payment Methods</option>
             <option value="easypaisa">EasyPaisa</option>
@@ -423,43 +473,46 @@ export default function RegistrationsTable() {
         </div>
 
         {(searchTerm || filterGrade || filterScholarship || filterPayment) && (
-          <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-xs sm:text-sm font-semibold text-gray-700">Active Filters:</span>
+          <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 animate-fade-in">
+            <span className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" />
+              Active Filters:
+            </span>
             {searchTerm && (
-              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-primary-100 text-primary-800 rounded-full text-xs sm:text-sm font-medium hover:bg-primary-200 transition-colors shadow-sm">
                 Search: &quot;<span className="truncate max-w-[100px] sm:max-w-none">{searchTerm}</span>&quot;
-                <button onClick={() => setSearchTerm('')} className="hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear search filter">
+                <button onClick={() => setSearchTerm('')} className="hover:text-primary-900 active:text-primary-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-primary-300 transition-colors" aria-label="Clear search filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterGrade && (
-              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs sm:text-sm font-medium hover:bg-blue-200 transition-colors shadow-sm">
                 Grade: <span className="truncate max-w-[80px] sm:max-w-none">{registrations.find(r => r.gradeId.toString() === filterGrade)?.gradeName || filterGrade}</span>
-                <button onClick={() => setFilterGrade('')} className="hover:text-blue-900 active:text-blue-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear grade filter">
+                <button onClick={() => setFilterGrade('')} className="hover:text-blue-900 active:text-blue-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-blue-300 transition-colors" aria-label="Clear grade filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterScholarship && (
-              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs sm:text-sm font-medium hover:bg-purple-200 transition-colors shadow-sm">
                 Scholarship: {filterScholarship === 'yes' ? 'Yes' : 'No'}
-                <button onClick={() => setFilterScholarship('')} className="hover:text-purple-900 active:text-purple-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear scholarship filter">
+                <button onClick={() => setFilterScholarship('')} className="hover:text-purple-900 active:text-purple-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-purple-300 transition-colors" aria-label="Clear scholarship filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             {filterPayment && (
-              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium">
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium hover:bg-green-200 transition-colors shadow-sm">
                 Payment: <span className="truncate max-w-[100px] sm:max-w-none">{filterPayment}</span>
-                <button onClick={() => setFilterPayment('')} className="hover:text-green-900 active:text-green-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center" aria-label="Clear payment filter">
+                <button onClick={() => setFilterPayment('')} className="hover:text-green-900 active:text-green-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-green-300 transition-colors" aria-label="Clear payment filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
             )}
             <button
               onClick={clearFilters}
-              className="text-xs sm:text-sm text-primary-600 hover:text-primary-700 active:text-primary-800 font-semibold flex items-center gap-1 ml-auto touch-target min-h-[44px]"
+              className="text-xs sm:text-sm text-primary-600 hover:text-primary-700 active:text-primary-800 font-semibold flex items-center gap-1 ml-auto touch-target min-h-[44px] px-2 py-1 rounded-lg hover:bg-primary-50 transition-colors"
               aria-label="Clear all filters"
             >
               <X className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -481,7 +534,7 @@ export default function RegistrationsTable() {
         <button
           onClick={handleExportExcel}
           disabled={exporting || filteredRegistrations.length === 0}
-          className="flex items-center gap-2 bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-target min-h-[44px] text-sm sm:text-base"
+          className="flex items-center gap-2 bg-green-600 text-white px-3 sm:px-4 py-2 rounded-lg hover:bg-green-700 active:bg-green-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed touch-target min-h-[44px] text-sm sm:text-base shadow-md hover:shadow-lg hover:scale-105 active:scale-95 disabled:hover:scale-100 disabled:hover:shadow-md"
           aria-label="Export registrations to Excel"
         >
           {exporting ? (
@@ -500,80 +553,96 @@ export default function RegistrationsTable() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden relative">
+      <div className="bg-white rounded-2xl shadow-xl border border-gray-200/60 overflow-hidden relative w-full">
         <div 
           ref={tableScrollRef}
-          className="overflow-x-auto relative -mx-4 sm:mx-0 mobile-scroll"
-          style={{ scrollbarWidth: 'thin' }}
+          className="overflow-x-auto relative w-full mobile-scroll"
+          style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', width: '100%' }}
         >
           {/* Left scroll indicator */}
           {showLeftScroll && (
-            <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-white via-white/80 to-transparent pointer-events-none z-20" />
+            <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-white via-white/95 to-transparent pointer-events-none z-20" />
           )}
           
           {/* Right scroll indicator */}
           {showRightScroll && (
-            <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white via-white/80 to-transparent pointer-events-none z-20" />
+            <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white via-white/95 to-transparent pointer-events-none z-20" />
           )}
           
-          <div className="min-w-[1400px] sm:min-w-0">
-            <table className="w-full table-fixed">
-              <colgroup>
-                <col style={{ width: '130px', minWidth: '130px' }} />
-                <col style={{ width: '160px', minWidth: '160px' }} />
-                <col style={{ width: '150px', minWidth: '150px' }} />
-                <col style={{ width: '110px', minWidth: '110px' }} />
-                <col style={{ width: '130px', minWidth: '130px' }} />
-                <col style={{ width: '140px', minWidth: '140px' }} />
-                <col style={{ width: '120px', minWidth: '120px' }} />
-                <col style={{ width: '130px', minWidth: '130px' }} />
-                <col style={{ width: '120px', minWidth: '120px' }} />
-                <col style={{ width: '150px', minWidth: '150px' }} />
-              </colgroup>
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
+          <div className="min-w-[1400px] w-full">
+            <table className="w-full table-auto" role="table" aria-label="Registered students table" style={{ width: '100%', tableLayout: 'auto' }}>
+              <thead className="sticky top-0 bg-gradient-to-r from-primary-600 via-primary-600 to-primary-700 text-white z-30 shadow-2xl" style={{ width: '100%', display: 'table-header-group' }}>
+                <tr className="border-b-2 border-primary-800/30" style={{ width: '100%' }}>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] whitespace-nowrap transition-all duration-200 first:rounded-tl-2xl"
                     onClick={() => handleSort('rollNumber')}>
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <span className="truncate">Roll Number</span>
-                      {sortBy === 'rollNumber' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Roll Number</span>
+                      {sortBy === 'rollNumber' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
                   </th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px] bg-gray-50"
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] whitespace-nowrap transition-all duration-200"
                     onClick={() => handleSort('name')}>
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <span className="truncate font-semibold">Name</span>
-                      {sortBy === 'name' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Name</span>
+                      {sortBy === 'name' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
                   </th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Father Name</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Grade</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Mobile</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Scholarship</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Date</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Test Venue</th>
-                  <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider cursor-pointer hover:bg-gray-100 active:bg-gray-200 touch-target min-h-[44px]"
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden md:table-cell whitespace-nowrap transition-all duration-200"
+                    onClick={() => handleSort('fatherName')}>
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Father Name</span>
+                      {sortBy === 'fatherName' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                    </div>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] whitespace-nowrap transition-all duration-200"
+                    onClick={() => handleSort('gradeId')}>
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Grade</span>
+                      {sortBy === 'gradeId' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                    </div>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider hidden sm:table-cell whitespace-nowrap">
+                    <span className="drop-shadow-sm">Mobile</span>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
+                    onClick={() => handleSort('scholarship')}>
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Scholarship</span>
+                      {sortBy === 'scholarship' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                    </div>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
+                    onClick={() => handleSort('testDate')}>
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Test Date</span>
+                      {sortBy === 'testDate' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                    </div>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider hidden lg:table-cell whitespace-nowrap">
+                    <span className="drop-shadow-sm">Test Venue</span>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
                     onClick={() => handleSort('registrationDate')}>
-                    <div className="flex items-center gap-1.5 sm:gap-2">
-                      <span className="truncate">Reg. Date</span>
-                      {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />)}
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Reg. Date</span>
+                      {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
                   </th>
-                  <th className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-20 border-l border-gray-200">
-                    Actions
+                  <th className="sticky right-0 px-4 sm:px-5 py-4 text-right text-xs font-bold text-white uppercase tracking-wider bg-gradient-to-r from-primary-700 to-primary-600 z-30 border-l-2 border-white/30 whitespace-nowrap shadow-[4px_0_12px_rgba(0,0,0,0.15)]">
+                    <span className="drop-shadow-sm">Actions</span>
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-100">
                 {paginatedRegistrations.length === 0 ? (
                   <tr>
                     <td colSpan={10} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
-                    <div className="flex flex-col items-center justify-center">
-                      <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                        <Search className="w-8 h-8 text-gray-400" />
+                    <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
+                      <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-inner">
+                        <Search className="w-10 h-10 text-gray-400" />
                       </div>
                       <p className="text-lg font-semibold text-gray-900 mb-2">No registrations found</p>
-                      <p className="text-sm text-gray-500 mb-4">
+                      <p className="text-sm text-gray-500 mb-4 text-center max-w-md">
                         {searchTerm || filterGrade || filterScholarship || filterPayment
                           ? 'Try adjusting your filters to see more results'
                           : 'No registrations have been submitted yet'}
@@ -581,7 +650,7 @@ export default function RegistrationsTable() {
                       {(searchTerm || filterGrade || filterScholarship || filterPayment) && (
                         <button
                           onClick={clearFilters}
-                          className="text-sm text-primary-600 hover:text-primary-700 font-semibold"
+                          className="text-sm text-primary-600 hover:text-primary-700 font-semibold px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
                         >
                           Clear all filters
                         </button>
@@ -590,55 +659,85 @@ export default function RegistrationsTable() {
                   </td>
                 </tr>
               ) : (
-                paginatedRegistrations.map((reg) => (
-                  <tr key={reg.id} className="group hover:bg-gray-50 transition-colors">
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-md text-sm font-semibold bg-primary-100 text-primary-800">
-                        {reg.rollNumber || 'Pending'}
-                      </span>
-                    </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm font-medium text-gray-900 block truncate" title={reg.name}>{reg.name || '-'}</span>
-                    </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm text-gray-700 block truncate" title={reg.fatherName}>{reg.fatherName || '-'}</span>
-                    </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                        {reg.gradeName || `Grade ${reg.gradeId}`}
-                      </span>
-                    </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm text-gray-700 block truncate">{reg.mobile || '-'}</span>
-                    </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      {reg.applyForScholarship ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          {reg.scholarshipType || 'Yes'}
+                paginatedRegistrations.map((reg, index) => (
+                  <tr key={reg.id} className="group hover:bg-gradient-to-r hover:from-primary-50/50 hover:to-transparent transition-all duration-300 animate-fade-in border-b border-gray-100/80 hover:border-primary-100" style={{ animationDelay: `${index * 20}ms` }}>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden">
+                      <div className="min-w-0">
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-bold bg-gradient-to-br from-primary-500 to-primary-600 text-white shadow-md hover:shadow-lg hover:from-primary-600 hover:to-primary-700 transition-all duration-200 truncate max-w-full">
+                          {reg.rollNumber || <span className="text-primary-200">Pending</span>}
                         </span>
-                      ) : (
-                        <span className="text-sm text-gray-500">No</span>
-                      )}
+                      </div>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm text-gray-700 block">{reg.testDate ? formatDate(reg.testDate) : '-'}</span>
-                      {reg.testTime && (
-                        <span className="text-xs text-gray-500 block">{formatTime(reg.testTime)}</span>
-                      )}
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden">
+                      <div className="min-w-0">
+                        <span className="text-sm font-semibold text-gray-900 block truncate" title={reg.name}>{reg.name || '-'}</span>
+                      </div>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm text-gray-700 block truncate" title={reg.testVenue || ''}>
-                        {reg.testVenue || '-'}
-                      </span>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden md:table-cell">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-gray-700 block truncate" title={reg.fatherName}>{reg.fatherName || '-'}</span>
+                      </div>
                     </td>
-                    <td className="px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap">
-                      <span className="text-sm text-gray-700 block">{formatDate(reg.registrationDate)}</span>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden">
+                      <div className="min-w-0">
+                        <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800 border border-gray-300/50 shadow-sm truncate max-w-full">
+                          {reg.gradeName || `Grade ${reg.gradeId}`}
+                        </span>
+                      </div>
                     </td>
-                    <td className="sticky right-0 px-3 sm:px-4 py-2.5 sm:py-3 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
-                      <div className="flex items-center justify-end gap-1 sm:gap-2">
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden sm:table-cell">
+                      <div className="min-w-0">
+                        {reg.mobile ? (
+                          <a 
+                            href={`tel:${reg.mobile}`}
+                            className="text-sm font-medium text-primary-600 hover:text-primary-700 hover:underline transition-all duration-200 inline-flex items-center gap-1.5 group/link truncate max-w-full"
+                            title={`Call ${reg.mobile}`}
+                            aria-label={`Call ${reg.mobile}`}
+                          >
+                            <span className="truncate">{reg.mobile}</span>
+                            <span className="text-primary-400 group-hover/link:text-primary-600 transition-colors flex-shrink-0">📞</span>
+                          </a>
+                        ) : (
+                          <span className="text-sm text-gray-400">-</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
+                      <div className="min-w-0">
+                        {reg.applyForScholarship ? (
+                          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md truncate max-w-full">
+                            {reg.scholarshipType || 'Yes'}
+                          </span>
+                        ) : (
+                          <span className="text-sm text-gray-400 font-medium">No</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-gray-900 block">{reg.testDate ? formatDate(reg.testDate) : '-'}</span>
+                        {reg.testTime && (
+                          <span className="text-xs text-gray-500 font-normal mt-0.5 block">{formatTime(reg.testTime)}</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-gray-700 block truncate" title={reg.testVenue || ''}>
+                          {reg.testVenue || '-'}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-gray-700 block">{formatDate(reg.registrationDate)}</span>
+                      </div>
+                    </td>
+                    <td className="sticky right-0 px-4 sm:px-5 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gradient-to-l group-hover:from-primary-50/50 group-hover:to-white z-10 border-l-2 border-gray-200 group-hover:border-primary-200 transition-all duration-300">
+                      <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setViewingDetails(reg)}
-                          className="text-blue-600 hover:text-blue-900 active:text-blue-800 p-1.5 sm:p-2 rounded-lg hover:bg-blue-50 active:bg-blue-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="text-blue-600 hover:text-blue-700 active:text-blue-800 p-2 rounded-xl hover:bg-blue-50 active:bg-blue-100 transition-all duration-200 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                           title="View Details"
                           aria-label="View registration details"
                         >
@@ -646,7 +745,7 @@ export default function RegistrationsTable() {
                         </button>
                         <button
                           onClick={() => handlePrintSlip(reg)}
-                          className="text-primary-600 hover:text-primary-900 active:text-primary-800 p-1.5 sm:p-2 rounded-lg hover:bg-primary-50 active:bg-primary-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="text-primary-600 hover:text-primary-700 active:text-primary-800 p-2 rounded-xl hover:bg-primary-50 active:bg-primary-100 transition-all duration-200 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
                           title="Print Roll Number Slip"
                           aria-label="Print roll number slip"
                         >
@@ -655,7 +754,7 @@ export default function RegistrationsTable() {
                         <button
                           onClick={() => handleDelete(reg.id)}
                           disabled={deletingId === reg.id}
-                          className="text-red-600 hover:text-red-900 active:text-red-800 p-1.5 sm:p-2 rounded-lg hover:bg-red-50 active:bg-red-100 transition-colors disabled:opacity-50 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+                          className="text-red-600 hover:text-red-700 active:text-red-800 p-2 rounded-xl hover:bg-red-50 active:bg-red-100 transition-all duration-200 disabled:opacity-50 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110 active:scale-95 disabled:hover:scale-100 shadow-sm hover:shadow-md"
                           title="Delete"
                           aria-label="Delete registration"
                         >
@@ -677,29 +776,31 @@ export default function RegistrationsTable() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 px-6 py-4 flex items-center justify-between border-t-2 border-gray-200/60">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-700">
-                Showing {startIndex + 1} to {Math.min(endIndex, filteredRegistrations.length)} of {filteredRegistrations.length} results
+              <span className="text-sm font-medium text-gray-700">
+                Showing <span className="font-bold text-primary-700">{startIndex + 1}</span> to <span className="font-bold text-primary-700">{Math.min(endIndex, filteredRegistrations.length)}</span> of <span className="font-bold text-primary-700">{filteredRegistrations.length}</span> results
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
-                className="p-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                className="p-2.5 border-2 border-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white hover:border-primary-400 hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100 bg-white"
+                aria-label="Previous page"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-5 h-5 text-gray-700" />
               </button>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm font-bold text-gray-800 px-4 py-2 bg-white rounded-xl border-2 border-gray-200 shadow-sm">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
-                className="p-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
+                className="p-2.5 border-2 border-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed hover:bg-white hover:border-primary-400 hover:shadow-md transition-all duration-200 hover:scale-105 active:scale-95 disabled:hover:scale-100 bg-white"
+                aria-label="Next page"
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-5 h-5 text-gray-700" />
               </button>
             </div>
           </div>
@@ -708,22 +809,26 @@ export default function RegistrationsTable() {
 
       {/* View Details Modal */}
       {viewingDetails && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-accent-600 text-white p-6 flex items-center justify-between">
-              <h2 className="text-2xl font-bold">Registration Details</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-slide-up border border-gray-200">
+            <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-accent-600 text-white p-6 flex items-center justify-between shadow-lg">
+              <h2 className="text-2xl font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-6 h-6" />
+                Registration Details
+              </h2>
               <button
                 onClick={() => setViewingDetails(null)}
-                className="text-white hover:text-gray-200 p-1 rounded-md hover:bg-white/10 transition-colors"
+                className="text-white hover:text-gray-200 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 hover:scale-110 active:scale-95"
+                aria-label="Close modal"
               >
                 <X className="w-6 h-6" />
               </button>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6 animate-fade-in">
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                <div className="p-3 rounded-lg hover:bg-gray-50 transition-colors">
                   <p className="text-sm font-semibold text-gray-500 mb-1">Student Name</p>
-                  <p className="text-gray-900">{viewingDetails.name}</p>
+                  <p className="text-gray-900 font-medium">{viewingDetails.name}</p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Father Name</p>
@@ -811,17 +916,17 @@ export default function RegistrationsTable() {
                 </div>
               )}
             </div>
-            <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-gray-200">
+            <div className="sticky bottom-0 bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-gray-200 shadow-lg">
               <button
                 onClick={() => handlePrintSlip(viewingDetails)}
-                className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors"
+                className="flex items-center gap-2 bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95"
               >
                 <FileText className="w-4 h-4" />
                 <span>Print Roll Slip</span>
               </button>
               <button
                 onClick={() => setViewingDetails(null)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-colors"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 Close
               </button>
