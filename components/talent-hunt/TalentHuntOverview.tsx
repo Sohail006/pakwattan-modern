@@ -60,28 +60,16 @@ const TalentHuntOverview = () => {
 
           {/* Flyer Images */}
           <div className="space-y-4 sm:space-y-6">
-            <div className="grid grid-cols-2 gap-4 sm:gap-6">
-              <div className="group">
+            <div className="flex justify-center">
+              <div className="group max-w-md w-full">
                 <div className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300">
                   <Image
                     src="/images/talent-hunt/Flyer1.jpg"
                     alt="Talent Hunt Flyer 1"
-                    width={300}
-                    height={300}
+                    width={400}
+                    height={400}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 300px"
-                  />
-                </div>
-              </div>
-              <div className="group">
-                <div className="aspect-square rounded-xl sm:rounded-2xl overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300">
-                  <Image
-                    src="/images/talent-hunt/Flyer2.jpg"
-                    alt="Talent Hunt Flyer 2"
-                    width={300}
-                    height={300}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 300px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                   />
                 </div>
               </div>

@@ -65,7 +65,7 @@ const TalentHuntDetails = () => {
 
         {/* Flyers and Action Buttons */}
         <div className="bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 items-center">
             {/* Flyer 1 */}
             <div className="text-center order-1 lg:order-1">
               <Image
@@ -114,18 +114,6 @@ const TalentHuntDetails = () => {
                   Now expanded to district level participation
                 </p>
               </Link>
-            </div>
-
-            {/* Flyer 2 */}
-            <div className="text-center order-3 lg:order-3">
-              <Image
-                src="/images/talent-hunt/Flyer2.jpg"
-                alt="Talent Hunt Flyer 2"
-                width={200}
-                height={200}
-                className="mx-auto rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                sizes="(max-width: 1024px) 100vw, 200px"
-              />
             </div>
           </div>
         </div>
