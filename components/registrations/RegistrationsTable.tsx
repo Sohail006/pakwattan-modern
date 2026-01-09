@@ -12,7 +12,7 @@ import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import { toastService } from '@/lib/utils/toast'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'testDate' | 'scholarship' | null
+type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'testDate' | 'scholarship' | 'paymentStatus' | null
 type SortOrder = 'asc' | 'desc'
 
 export default function RegistrationsTable() {
@@ -165,6 +165,10 @@ export default function RegistrationsTable() {
             aVal = a.applyForScholarship ? 1 : 0
             bVal = b.applyForScholarship ? 1 : 0
             break
+          case 'paymentStatus':
+            aVal = getPaymentStatusDisplay(a.paymentStatus, a.paymentMethod).toLowerCase()
+            bVal = getPaymentStatusDisplay(b.paymentStatus, b.paymentMethod).toLowerCase()
+            break
           default:
             return 0
         }
@@ -186,6 +190,99 @@ export default function RegistrationsTable() {
     })
     return map
   }, [scholarshipTypes])
+
+  // Helper function to format payment method name
+  const formatPaymentMethod = (paymentMethod?: string): string => {
+    if (!paymentMethod) return 'Unpaid'
+    
+    // Map payment method values to display names
+    const methodMap: Record<string, string> = {
+      'EasyPaisa': 'EasyPaisa',
+      'BankAccount': 'Bank Account',
+      'Bank Account': 'Bank Account',
+      'ByHandOnTestDate': 'By Hand on Test Date',
+      'By Hand on Test Date': 'By Hand on Test Date',
+    }
+    
+    return methodMap[paymentMethod] || paymentMethod
+  }
+
+  // Helper function to get payment status display text
+  const getPaymentStatusDisplay = (paymentStatus?: string, paymentMethod?: string): string => {
+    // If payment status is explicitly "Unpaid", show "Unpaid"
+    if (paymentStatus?.toLowerCase() === 'unpaid') {
+      return 'Unpaid'
+    }
+    
+    // If payment method is "By Hand on Test Date", show "Pending"
+    if (paymentMethod === 'By Hand on Test Date' || paymentMethod === 'ByHandOnTestDate') {
+      return 'Pending'
+    }
+    
+    // If payment method exists (EasyPaisa or Bank Account), show the method name
+    // This assumes that if a payment method is selected, payment is made via that method
+    if (paymentMethod) {
+      const formattedMethod = formatPaymentMethod(paymentMethod)
+      // Only show method name if it's not "By Hand on Test Date" (already handled above)
+      if (formattedMethod !== 'By Hand on Test Date' && formattedMethod !== 'Unpaid') {
+        return formattedMethod
+      }
+    }
+    
+    // If payment status is "Paid" but no method, show "Paid"
+    if (paymentStatus?.toLowerCase() === 'paid') {
+      return 'Paid'
+    }
+    
+    // If payment status is "Pending", show "Pending"
+    if (paymentStatus?.toLowerCase() === 'pending') {
+      return 'Pending'
+    }
+    
+    // Default: Unpaid
+    return 'Unpaid'
+  }
+
+  // Helper function to get payment status badge
+  const getPaymentStatusBadge = (paymentStatus?: string, paymentMethod?: string) => {
+    const displayText = getPaymentStatusDisplay(paymentStatus, paymentMethod)
+    const status = paymentStatus?.toLowerCase() || ''
+    
+    // Determine badge color based on display text
+    // Green for: EasyPaisa, Bank Account, or Paid status
+    if (displayText === 'EasyPaisa' || displayText === 'Bank Account' || status === 'paid' || displayText === 'Paid') {
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md">
+          {displayText}
+        </span>
+      )
+    }
+    
+    // Red for: Unpaid
+    if (displayText === 'Unpaid' || status === 'unpaid') {
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md">
+          {displayText}
+        </span>
+      )
+    }
+    
+    // Yellow for: Pending or By Hand on Test Date
+    if (displayText === 'Pending' || status === 'pending') {
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-yellow-500 to-yellow-600 text-white shadow-md">
+          {displayText}
+        </span>
+      )
+    }
+    
+    // Default fallback (gray)
+    return (
+      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-md">
+        {displayText}
+      </span>
+    )
+  }
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -638,6 +735,13 @@ export default function RegistrationsTable() {
                     </div>
                   </th>
                   <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
+                    onClick={() => handleSort('paymentStatus')}>
+                    <div className="flex items-center gap-2">
+                      <span className="drop-shadow-sm">Payment Status</span>
+                      {sortBy === 'paymentStatus' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                    </div>
+                  </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
                     onClick={() => handleSort('testDate')}>
                     <div className="flex items-center gap-2">
                       <span className="drop-shadow-sm">Test Date</span>
@@ -662,7 +766,7 @@ export default function RegistrationsTable() {
               <tbody className="bg-white divide-y divide-gray-100">
                 {paginatedRegistrations.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
+                    <td colSpan={11} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
                     <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-inner">
                         <Search className="w-10 h-10 text-gray-400" />
@@ -739,6 +843,11 @@ export default function RegistrationsTable() {
                         ) : (
                           <span className="text-sm text-gray-400 font-medium">No</span>
                         )}
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
+                      <div className="min-w-0">
+                        {getPaymentStatusBadge(reg.paymentStatus, reg.paymentMethod)}
                       </div>
                     </td>
                     <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
@@ -911,6 +1020,16 @@ export default function RegistrationsTable() {
                           : 'Yes') 
                       : 'No'}
                   </p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Payment Status</p>
+                  <div className="mt-1">
+                    {getPaymentStatusBadge(viewingDetails.paymentStatus, viewingDetails.paymentMethod)}
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Payment Method</p>
+                  <p className="text-gray-900">{viewingDetails.paymentMethod || '-'}</p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Registration Date</p>

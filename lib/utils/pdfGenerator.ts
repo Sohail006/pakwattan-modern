@@ -352,6 +352,58 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(...darkColor)
 
+    // Helper function to format payment method name
+    const formatPaymentMethod = (paymentMethod?: string): string => {
+      if (!paymentMethod) return 'Unpaid'
+      
+      // Map payment method values to display names
+      const methodMap: Record<string, string> = {
+        'EasyPaisa': 'EasyPaisa',
+        'BankAccount': 'Bank Account',
+        'Bank Account': 'Bank Account',
+        'ByHandOnTestDate': 'By Hand on Test Date',
+        'By Hand on Test Date': 'By Hand on Test Date',
+      }
+      
+      return methodMap[paymentMethod] || paymentMethod
+    }
+
+    // Helper function to get payment status display
+    const getPaymentStatusDisplay = (paymentStatus?: string, paymentMethod?: string): string => {
+      // If payment status is explicitly "Unpaid", show "Unpaid"
+      if (paymentStatus?.toLowerCase() === 'unpaid') {
+        return 'Unpaid'
+      }
+      
+      // If payment method is "By Hand on Test Date", show "Pending"
+      if (paymentMethod === 'By Hand on Test Date' || paymentMethod === 'ByHandOnTestDate') {
+        return 'Pending'
+      }
+      
+      // If payment method exists (EasyPaisa or Bank Account), show the method name
+      if (paymentMethod) {
+        const formattedMethod = formatPaymentMethod(paymentMethod)
+        if (formattedMethod !== 'By Hand on Test Date' && formattedMethod !== 'Unpaid') {
+          return formattedMethod
+        }
+      }
+      
+      // If payment status is "Paid" but no method, show "Paid"
+      if (paymentStatus?.toLowerCase() === 'paid') {
+        return 'Paid'
+      }
+      
+      // If payment status is "Pending", show "Pending"
+      if (paymentStatus?.toLowerCase() === 'pending') {
+        return 'Pending'
+      }
+      
+      // Default: Unpaid
+      return 'Unpaid'
+    }
+
+    const paymentStatusDisplay = getPaymentStatusDisplay(registration.paymentStatus, registration.paymentMethod)
+
     const studentInfo = [
       { label: 'Name:', value: registration.name, col: 1 },
       { label: 'Father Name:', value: registration.fatherName, col: 1 },
@@ -361,6 +413,8 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
       { label: 'Mobile:', value: registration.mobile || 'N/A', col: 2 },
       { label: 'WhatsApp:', value: registration.whatsApp || 'N/A', col: 2 },
       { label: 'Email:', value: registration.email || 'N/A', col: 2 },
+      { label: 'Payment Status:', value: paymentStatusDisplay, col: 1 },
+      { label: 'Payment Method:', value: registration.paymentMethod || 'N/A', col: 2 },
     ]
 
     let col1Y = yPos

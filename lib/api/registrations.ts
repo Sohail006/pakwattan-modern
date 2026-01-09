@@ -42,6 +42,7 @@ export interface RegistrationResponse {
 	applyForScholarship: boolean;
 	scholarshipType?: string;
 	paymentMethod: string;
+	paymentStatus?: string; // "Paid" | "Unpaid" | "Pending"
 	rollNumber?: string;
 	testVenue?: string;
 	testDate?: string;
