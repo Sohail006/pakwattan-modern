@@ -6,10 +6,11 @@ import { getActiveAdmissionSetting, deriveRegistrationStatus, getAllScholarshipT
 import { getGrades, type Grade } from '@/lib/api/grades'
 import { CheckCircle, AlertCircle, Loader2, FileText, X, Calendar, Info, CreditCard, Phone, Copy, Building2, Wallet } from 'lucide-react'
 import ProfileImageUpload from '@/components/ui/ProfileImageUpload'
+import ReceiptUpload from '@/components/ui/ReceiptUpload'
 import FormField from '@/components/ui/FormField'
 import FormSectionNavigation from '@/components/registration-form/FormSectionNavigation'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
-import { validatePakistanPhoneNumber, maskPakistanPhoneNumber, cleanPhoneNumber, formatDate, formatTime } from '@/lib/utils'
+import { validatePakistanPhoneNumber, maskPakistanPhoneNumber, cleanPhoneNumber, formatDate, formatTime, maskCNICFormB, validateCNICFormB } from '@/lib/utils'
 
 
 // Default registration fee fallback (used when admission settings are not available)
@@ -113,6 +114,7 @@ interface FormData {
   applyForScholarship: boolean
   scholarshipType: number | null
   paymentMethod: number
+  transactionReceiptUrl: string | null
 }
 
 export default function StudentRegistrationForm() {
@@ -131,6 +133,7 @@ export default function StudentRegistrationForm() {
     applyForScholarship: false,
     scholarshipType: null,
     paymentMethod: 0,
+    transactionReceiptUrl: null,
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -184,6 +187,11 @@ export default function StudentRegistrationForm() {
         return null
       case 'email':
         return validateEmail(value as string).error || null
+      case 'formBorCNIC':
+        if (value && (value as string).trim()) {
+          return validateCNICFormB(value as string, false).error || null
+        }
+        return null
       case 'gender':
         if (value === -1) return 'Please select a gender'
         return null
@@ -193,6 +201,12 @@ export default function StudentRegistrationForm() {
       case 'scholarshipType':
         if (formData.applyForScholarship && (value === null || value === '')) {
           return 'Please select a scholarship type if you are applying for a scholarship'
+        }
+        return null
+      case 'transactionReceiptUrl':
+        // Receipt is required for EasyPaisa (0) or Bank Account (1)
+        if ((formData.paymentMethod === 0 || formData.paymentMethod === 1) && !value) {
+          return 'Transaction receipt is required for this payment method'
         }
         return null
       default:
@@ -227,6 +241,13 @@ export default function StudentRegistrationForm() {
     } else if (name === 'mobile' || name === 'whatsApp') {
       // Apply phone number masking
       const masked = maskPakistanPhoneNumber(value)
+      setFormData(prev => ({
+        ...prev,
+        [name]: masked,
+      }))
+    } else if (name === 'formBorCNIC') {
+      // Apply CNIC/Form B masking
+      const masked = maskCNICFormB(value)
       setFormData(prev => ({
         ...prev,
         [name]: masked,
@@ -268,6 +289,30 @@ export default function StudentRegistrationForm() {
       console.error('[RegistrationForm] Image error:', errorMessage)
     }
     setError(errorMessage)
+  }
+
+  const handleReceiptChange = (receiptUrl: string | null) => {
+    setFormData(prev => ({
+      ...prev,
+      transactionReceiptUrl: receiptUrl,
+    }))
+    // Clear receipt error when user uploads
+    setFieldErrors(prev => {
+      const newErrors = { ...prev }
+      delete newErrors.transactionReceiptUrl
+      return newErrors
+    })
+  }
+
+  const handleReceiptError = (errorMessage: string) => {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('[RegistrationForm] Receipt error:', errorMessage)
+    }
+    setError(errorMessage)
+    setFieldErrors(prev => ({
+      ...prev,
+      transactionReceiptUrl: errorMessage,
+    }))
   }
 
   // Scroll to first error field
@@ -319,6 +364,12 @@ export default function StudentRegistrationForm() {
     if (formData.applyForScholarship) {
       const scholarshipError = validateField('scholarshipType', formData.scholarshipType ?? '')
       if (scholarshipError) errors.scholarshipType = scholarshipError
+    }
+
+    // Validate receipt for EasyPaisa or Bank Account
+    if (formData.paymentMethod === 0 || formData.paymentMethod === 1) {
+      const receiptError = validateField('transactionReceiptUrl', formData.transactionReceiptUrl ?? '')
+      if (receiptError) errors.transactionReceiptUrl = receiptError
     }
 
     setFieldErrors(errors)
@@ -376,6 +427,7 @@ export default function StudentRegistrationForm() {
         applyForScholarship: formData.applyForScholarship,
         scholarshipType: formData.applyForScholarship && formData.scholarshipType !== null ? formData.scholarshipType : undefined,
         paymentMethod: formData.paymentMethod,
+        transactionReceiptUrl: formData.transactionReceiptUrl || undefined,
       })
 
       setSuccess(response)
@@ -721,6 +773,7 @@ export default function StudentRegistrationForm() {
                     applyForScholarship: false,
                     scholarshipType: null,
                     paymentMethod: 0,
+                    transactionReceiptUrl: null,
                   })
                 }}
                 className="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-300 transition-colors"
@@ -1046,15 +1099,22 @@ export default function StudentRegistrationForm() {
                     </select>
                   </FormField>
 
-                  <FormField label="Form B / CNIC Number" htmlFor="formBorCNIC">
+                  <FormField label="Form B / CNIC Number" htmlFor="formBorCNIC" error={fieldErrors.formBorCNIC}>
                     <input
                       id="formBorCNIC"
                       type="text"
                       name="formBorCNIC"
                       value={formData.formBorCNIC}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-base"
-                      aria-invalid={false}
+                      onBlur={handleBlur}
+                      inputMode="numeric"
+                      placeholder="XXXXX-XXXXXXX-X"
+                      maxLength={15}
+                      className={`w-full px-4 py-2.5 sm:py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 text-base ${
+                        fieldErrors.formBorCNIC ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
+                      aria-invalid={!!fieldErrors.formBorCNIC}
+                      aria-describedby={fieldErrors.formBorCNIC ? 'formBorCNIC-error' : undefined}
                     />
                   </FormField>
                 </div>
@@ -1416,6 +1476,45 @@ export default function StudentRegistrationForm() {
                   </div>
                 )}
               </FormField>
+
+              {/* Transaction Receipt Upload - Conditional */}
+              {(formData.paymentMethod === 0 || formData.paymentMethod === 1) && (
+                <FormField
+                  label="Transaction Receipt Photo"
+                  required={formData.paymentMethod === 0 || formData.paymentMethod === 1}
+                  htmlFor="transactionReceipt"
+                >
+                  <ReceiptUpload
+                    value={formData.transactionReceiptUrl}
+                    onChange={handleReceiptChange}
+                    onError={handleReceiptError}
+                    disabled={isSubmitting}
+                    required={formData.paymentMethod === 0 || formData.paymentMethod === 1}
+                    showInstructions={true}
+                  />
+                  {fieldErrors.transactionReceiptUrl && (
+                    <p className="mt-2 text-sm text-red-600" role="alert">
+                      {fieldErrors.transactionReceiptUrl}
+                    </p>
+                  )}
+                  <div className="mt-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold text-blue-900 mb-1">
+                          📸 Important: Receipt Photo Required
+                        </p>
+                        <ul className="text-xs text-blue-800 space-y-1 list-disc list-inside">
+                          <li>Take a clear photo of your transaction receipt</li>
+                          <li>Ensure all details are visible: amount, date, transaction ID</li>
+                          <li>Make sure the photo is well-lit and not blurry</li>
+                          <li>Accepted formats: JPG, JPEG, PNG (Max 5MB)</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </FormField>
+              )}
             </div>
           </div>
 

@@ -19,6 +19,7 @@ export interface RegistrationRequest {
 	applyForScholarship: boolean;
 	scholarshipType?: number; // Only if applyForScholarship is true
 	paymentMethod: number; // 0 EasyPaisa, 1 BankAccount, 2 ByHandOnTestDate
+	transactionReceiptUrl?: string; // Receipt image URL (required for EasyPaisa/BankAccount)
 }
 
 export interface RegistrationResponse {
@@ -43,6 +44,11 @@ export interface RegistrationResponse {
 	scholarshipType?: string;
 	paymentMethod: string;
 	paymentStatus?: string; // "Paid" | "Unpaid" | "Pending"
+	transactionReceiptUrl?: string; // Receipt image URL
+	receiptVerificationStatus?: string; // "Pending" | "Verified" | "Rejected"
+	receiptVerifiedBy?: string;
+	receiptVerifiedAt?: string;
+	receiptVerificationNotes?: string;
 	rollNumber?: string;
 	testVenue?: string;
 	testDate?: string;
@@ -72,6 +78,7 @@ export async function submitRegistration(data: RegistrationRequest): Promise<Reg
             applyForScholarship: data.applyForScholarship,
             scholarshipType: data.applyForScholarship && data.scholarshipType !== undefined ? data.scholarshipType : null,
             paymentMethod: data.paymentMethod,
+            transactionReceiptUrl: data.transactionReceiptUrl,
         };
 
         const response = await api.post<RegistrationResponse>('/api/registrations', payload);
@@ -108,5 +115,48 @@ export async function deleteRegistration(id: number): Promise<void> {
 	} catch (error) {
 		const apiError = error as ApiError;
 		throw new Error(apiError.message || 'Unable to delete registration.');
+	}
+}
+
+/**
+ * Upload receipt image (images only - JPG, JPEG, PNG)
+ */
+export async function uploadReceiptImage(file: File): Promise<string> {
+	try {
+		const formData = new FormData()
+		formData.append('file', file)
+		
+		const response = await api.postFormData<{ receiptUrl: string }>(
+			'/api/registrations/upload-receipt',
+			formData
+		)
+		
+		return response.receiptUrl
+	} catch (error) {
+		const apiError = error as ApiError
+		throw new Error(apiError.message || 'Unable to upload receipt. Please ensure the file is a valid image and try again.')
+	}
+}
+
+/**
+ * Verify receipt (Admin only)
+ */
+export async function verifyReceipt(
+	registrationId: number,
+	verificationStatus: 'Verified' | 'Rejected',
+	verificationNotes?: string
+): Promise<RegistrationResponse> {
+	try {
+		const response = await api.post<RegistrationResponse>(
+			`/api/registrations/${registrationId}/verify-receipt`,
+			{
+				verificationStatus,
+				verificationNotes,
+			}
+		)
+		return response
+	} catch (error) {
+		const apiError = error as ApiError
+		throw new Error(apiError.message || 'Unable to verify receipt.')
 	}
 }

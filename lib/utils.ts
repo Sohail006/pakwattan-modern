@@ -91,6 +91,59 @@ export function validatePakistanPhoneNumber(phone: string, required: boolean = f
 }
 
 /**
+ * Masks CNIC/Form B number with Pakistani format (XXXXX-XXXXXXX-X)
+ * @param value - The input value (can contain digits, hyphens, spaces, etc.)
+ * @returns Formatted CNIC/Form B number (XXXXX-XXXXXXX-X)
+ */
+export function maskCNICFormB(value: string): string {
+  // Remove all non-digit characters
+  const cleaned = value.replace(/\D/g, '')
+  
+  // Limit to 13 digits (CNIC/Form B length)
+  const limited = cleaned.slice(0, 13)
+  
+  // Format: XXXXX-XXXXXXX-X
+  if (limited.length <= 5) {
+    return limited
+  } else if (limited.length <= 12) {
+    return `${limited.slice(0, 5)}-${limited.slice(5)}`
+  } else {
+    return `${limited.slice(0, 5)}-${limited.slice(5, 12)}-${limited.slice(12)}`
+  }
+}
+
+/**
+ * Validates CNIC/Form B number format
+ * @param cnic - The CNIC/Form B number to validate (can be formatted or clean)
+ * @param required - Whether the CNIC/Form B number is required (default: false)
+ * @returns Object with validation result and optional error message
+ */
+export function validateCNICFormB(cnic: string, required: boolean = false): { valid: boolean; error?: string } {
+  // If empty and not required, it's valid
+  if (!cnic || cnic.trim() === '') {
+    if (required) {
+      return { valid: false, error: 'CNIC/Form B number is required' }
+    }
+    return { valid: true }
+  }
+  
+  // Remove all non-digit characters for validation
+  const cleaned = cnic.replace(/\D/g, '')
+  
+  // Must be exactly 13 digits
+  if (cleaned.length !== 13) {
+    return { valid: false, error: 'CNIC/Form B must be exactly 13 digits (format: XXXXX-XXXXXXX-X)' }
+  }
+  
+  // Validate that all characters are digits
+  if (!/^\d{13}$/.test(cleaned)) {
+    return { valid: false, error: 'CNIC/Form B must contain only digits' }
+  }
+  
+  return { valid: true }
+}
+
+/**
  * Cleans phone number for storage (removes formatting, keeps only digits)
  * @param phone - The formatted phone number
  * @returns Clean phone number with only digits

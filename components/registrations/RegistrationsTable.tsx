@@ -1,18 +1,20 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles } from 'lucide-react'
-import { RegistrationResponse, getAllRegistrations, deleteRegistration } from '@/lib/api/registrations'
+import Image from 'next/image'
+import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt } from '@/lib/api/registrations'
 import { getAllScholarshipTypes } from '@/lib/api/admissionSettings'
 import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
+import { getApiBaseUrl } from '@/lib/config'
 import { exportRegistrationsToExcel } from '@/lib/utils/excelExportRegistrations'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import { toastService } from '@/lib/utils/toast'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'testDate' | 'scholarship' | 'paymentStatus' | null
+type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'scholarship' | 'paymentStatus' | 'receipt' | null
 type SortOrder = 'asc' | 'desc'
 
 export default function RegistrationsTable() {
@@ -47,6 +49,11 @@ export default function RegistrationsTable() {
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [exporting, setExporting] = useState(false)
   const [viewingDetails, setViewingDetails] = useState<RegistrationResponse | null>(null)
+  const [viewingReceipt, setViewingReceipt] = useState<RegistrationResponse | null>(null)
+  const [showVerificationDialog, setShowVerificationDialog] = useState(false)
+  const [verificationNotes, setVerificationNotes] = useState('')
+  const [verificationAction, setVerificationAction] = useState<'verify' | 'reject' | null>(null)
+  const [verifyingReceipt, setVerifyingReceipt] = useState(false)
   const [confirmDialog, setConfirmDialog] = useState<{
     isOpen: boolean
     type: 'danger' | 'warning' | 'info'
@@ -93,6 +100,54 @@ export default function RegistrationsTable() {
       }
     }
     loadScholarshipTypes()
+  }, [])
+
+  // Helper function to format payment method name
+  const formatPaymentMethod = (paymentMethod: string): string => {
+    const methodMap: Record<string, string> = {
+      'EasyPaisa': 'EasyPaisa',
+      'BankAccount': 'Bank Account',
+      'ByHandOnTestDate': 'By Hand on Test Date',
+      'By Hand on Test Date': 'By Hand on Test Date',
+    }
+    
+    return methodMap[paymentMethod] || paymentMethod
+  }
+
+  // Helper function to get payment status display text
+  const getPaymentStatusDisplay = useCallback((paymentStatus?: string, paymentMethod?: string): string => {
+    // If payment status is explicitly "Unpaid", show "Unpaid"
+    if (paymentStatus?.toLowerCase() === 'unpaid') {
+      return 'Unpaid'
+    }
+    
+    // If payment method is "By Hand on Test Date", show "Pending"
+    if (paymentMethod === 'By Hand on Test Date' || paymentMethod === 'ByHandOnTestDate') {
+      return 'Pending'
+    }
+    
+    // If payment method exists (EasyPaisa or Bank Account), show the method name
+    // This assumes that if a payment method is selected, payment is made via that method
+    if (paymentMethod) {
+      const formattedMethod = formatPaymentMethod(paymentMethod)
+      // Only show method name if it's not "By Hand on Test Date" (already handled above)
+      if (formattedMethod !== 'By Hand on Test Date' && formattedMethod !== 'Unpaid') {
+        return formattedMethod
+      }
+    }
+    
+    // If payment status is "Paid" but no method, show "Paid"
+    if (paymentStatus?.toLowerCase() === 'paid') {
+      return 'Paid'
+    }
+    
+    // If payment status is "Pending", show "Pending"
+    if (paymentStatus?.toLowerCase() === 'pending') {
+      return 'Pending'
+    }
+    
+    // Default: Unpaid
+    return 'Unpaid'
   }, [])
 
   // Filter and sort registrations
@@ -157,10 +212,6 @@ export default function RegistrationsTable() {
             aVal = a.fatherName.toLowerCase()
             bVal = b.fatherName.toLowerCase()
             break
-          case 'testDate':
-            aVal = a.testDate ? new Date(a.testDate).getTime() : 0
-            bVal = b.testDate ? new Date(b.testDate).getTime() : 0
-            break
           case 'scholarship':
             aVal = a.applyForScholarship ? 1 : 0
             bVal = b.applyForScholarship ? 1 : 0
@@ -168,6 +219,10 @@ export default function RegistrationsTable() {
           case 'paymentStatus':
             aVal = getPaymentStatusDisplay(a.paymentStatus, a.paymentMethod).toLowerCase()
             bVal = getPaymentStatusDisplay(b.paymentStatus, b.paymentMethod).toLowerCase()
+            break
+          case 'receipt':
+            aVal = getReceiptStatusDisplay(a.transactionReceiptUrl, a.receiptVerificationStatus, a.paymentMethod).toLowerCase()
+            bVal = getReceiptStatusDisplay(b.transactionReceiptUrl, b.receiptVerificationStatus, b.paymentMethod).toLowerCase()
             break
           default:
             return 0
@@ -180,7 +235,7 @@ export default function RegistrationsTable() {
     }
 
     return filtered
-  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder])
+  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder, getPaymentStatusDisplay])
 
   // Create ID-to-name mapping for scholarship types
   const scholarshipTypeMap = useMemo(() => {
@@ -190,58 +245,6 @@ export default function RegistrationsTable() {
     })
     return map
   }, [scholarshipTypes])
-
-  // Helper function to format payment method name
-  const formatPaymentMethod = (paymentMethod?: string): string => {
-    if (!paymentMethod) return 'Unpaid'
-    
-    // Map payment method values to display names
-    const methodMap: Record<string, string> = {
-      'EasyPaisa': 'EasyPaisa',
-      'BankAccount': 'Bank Account',
-      'Bank Account': 'Bank Account',
-      'ByHandOnTestDate': 'By Hand on Test Date',
-      'By Hand on Test Date': 'By Hand on Test Date',
-    }
-    
-    return methodMap[paymentMethod] || paymentMethod
-  }
-
-  // Helper function to get payment status display text
-  const getPaymentStatusDisplay = (paymentStatus?: string, paymentMethod?: string): string => {
-    // If payment status is explicitly "Unpaid", show "Unpaid"
-    if (paymentStatus?.toLowerCase() === 'unpaid') {
-      return 'Unpaid'
-    }
-    
-    // If payment method is "By Hand on Test Date", show "Pending"
-    if (paymentMethod === 'By Hand on Test Date' || paymentMethod === 'ByHandOnTestDate') {
-      return 'Pending'
-    }
-    
-    // If payment method exists (EasyPaisa or Bank Account), show the method name
-    // This assumes that if a payment method is selected, payment is made via that method
-    if (paymentMethod) {
-      const formattedMethod = formatPaymentMethod(paymentMethod)
-      // Only show method name if it's not "By Hand on Test Date" (already handled above)
-      if (formattedMethod !== 'By Hand on Test Date' && formattedMethod !== 'Unpaid') {
-        return formattedMethod
-      }
-    }
-    
-    // If payment status is "Paid" but no method, show "Paid"
-    if (paymentStatus?.toLowerCase() === 'paid') {
-      return 'Paid'
-    }
-    
-    // If payment status is "Pending", show "Pending"
-    if (paymentStatus?.toLowerCase() === 'pending') {
-      return 'Pending'
-    }
-    
-    // Default: Unpaid
-    return 'Unpaid'
-  }
 
   // Helper function to get payment status badge
   const getPaymentStatusBadge = (paymentStatus?: string, paymentMethod?: string) => {
@@ -277,6 +280,113 @@ export default function RegistrationsTable() {
     }
     
     // Default fallback (gray)
+    return (
+      <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-md">
+        {displayText}
+      </span>
+    )
+  }
+
+  // Helper function to get receipt status display text
+  const getReceiptStatusDisplay = (
+    receiptUrl?: string | null,
+    verificationStatus?: string | null,
+    paymentMethod?: string
+  ): string => {
+    // If payment method is "By Hand on Test Date", receipt is not required
+    if (paymentMethod === 'ByHandOnTestDate' || paymentMethod === '2') {
+      return 'N/A'
+    }
+
+    // If verified
+    if (verificationStatus?.toLowerCase() === 'verified') {
+      return 'Verified'
+    }
+
+    // If rejected
+    if (verificationStatus?.toLowerCase() === 'rejected') {
+      return 'Rejected'
+    }
+
+    // If uploaded but pending verification
+    if (receiptUrl) {
+      return 'Pending'
+    }
+
+    // If missing (required but not uploaded)
+    return 'Missing'
+  }
+
+  // Helper function to get receipt status badge
+  const getReceiptStatusBadge = (
+    receiptUrl?: string | null,
+    verificationStatus?: string | null,
+    paymentMethod?: string,
+    onClick?: () => void
+  ) => {
+    const displayText = getReceiptStatusDisplay(receiptUrl, verificationStatus, paymentMethod)
+    const status = verificationStatus?.toLowerCase() || ''
+
+    // N/A - Not required
+    if (displayText === 'N/A') {
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-md">
+          <span className="mr-1">-</span>
+          N/A
+        </span>
+      )
+    }
+
+    // Verified - Green
+    if (displayText === 'Verified' || status === 'verified') {
+      return (
+        <button
+          onClick={onClick}
+          className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md hover:from-green-600 hover:to-green-700 transition-all duration-200 cursor-pointer"
+        >
+          <CheckCircle className="w-3 h-3 mr-1.5" />
+          Verified
+        </button>
+      )
+    }
+
+    // Rejected - Red
+    if (displayText === 'Rejected' || status === 'rejected') {
+      return (
+        <button
+          onClick={onClick}
+          className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md hover:from-red-600 hover:to-red-700 transition-all duration-200 cursor-pointer"
+        >
+          <XCircle className="w-3 h-3 mr-1.5" />
+          Rejected
+        </button>
+      )
+    }
+
+    // Pending - Yellow
+    if (displayText === 'Pending' || status === 'pending') {
+      return (
+        <button
+          onClick={onClick}
+          className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-yellow-500 to-yellow-600 text-white shadow-md hover:from-yellow-600 hover:to-yellow-700 transition-all duration-200 cursor-pointer"
+        >
+          <Clock className="w-3 h-3 mr-1.5" />
+          Pending
+        </button>
+      )
+    }
+
+    // Missing - Red
+    if (displayText === 'Missing') {
+      return (
+        <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-red-500 to-red-600 text-white shadow-md">
+          <AlertCircle className="w-3 h-3 mr-1.5" />
+          Missing
+        </span>
+      )
+    }
+
+    // Default fallback
     return (
       <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-gray-400 to-gray-500 text-white shadow-md">
         {displayText}
@@ -343,6 +453,33 @@ export default function RegistrationsTable() {
       console.error('Error generating PDF:', error)
       setError('Failed to generate PDF. Please try again.')
     })
+  }
+
+  const handleViewReceipt = (registration: RegistrationResponse) => {
+    setViewingReceipt(registration)
+  }
+
+  const handleVerifyReceipt = async (registrationId: number, status: 'Verified' | 'Rejected', notes?: string) => {
+    try {
+      setVerifyingReceipt(true)
+      await verifyReceipt(registrationId, status, notes)
+      toastService.success(`Receipt ${status.toLowerCase()} successfully.`)
+      await loadRegistrations() // Refresh registrations
+      setViewingReceipt(null)
+      setShowVerificationDialog(false)
+      setVerificationNotes('')
+      setVerificationAction(null)
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to verify receipt.'
+      toastService.error(message)
+    } finally {
+      setVerifyingReceipt(false)
+    }
+  }
+
+  const openVerificationDialog = (action: 'verify' | 'reject') => {
+    setVerificationAction(action)
+    setShowVerificationDialog(true)
   }
 
   const handleExportExcel = () => {
@@ -742,14 +879,11 @@ export default function RegistrationsTable() {
                     </div>
                   </th>
                   <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
-                    onClick={() => handleSort('testDate')}>
+                    onClick={() => handleSort('receipt')}>
                     <div className="flex items-center gap-2">
-                      <span className="drop-shadow-sm">Test Date</span>
-                      {sortBy === 'testDate' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
+                      <span className="drop-shadow-sm">Receipt</span>
+                      {sortBy === 'receipt' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
-                  </th>
-                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider hidden lg:table-cell whitespace-nowrap">
-                    <span className="drop-shadow-sm">Test Venue</span>
                   </th>
                   <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider cursor-pointer hover:bg-primary-700/60 active:bg-primary-800/80 touch-target min-h-[52px] hidden lg:table-cell whitespace-nowrap transition-all duration-200"
                     onClick={() => handleSort('registrationDate')}>
@@ -766,7 +900,7 @@ export default function RegistrationsTable() {
               <tbody className="bg-white divide-y divide-gray-100">
                 {paginatedRegistrations.length === 0 ? (
                   <tr>
-                    <td colSpan={11} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
+                    <td colSpan={10} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
                     <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-inner">
                         <Search className="w-10 h-10 text-gray-400" />
@@ -852,17 +986,12 @@ export default function RegistrationsTable() {
                     </td>
                     <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
                       <div className="min-w-0">
-                        <span className="text-sm font-medium text-gray-900 block">{reg.testDate ? formatDate(reg.testDate) : '-'}</span>
-                        {reg.testTime && (
-                          <span className="text-xs text-gray-500 font-normal mt-0.5 block">{formatTime(reg.testTime)}</span>
+                        {getReceiptStatusBadge(
+                          reg.transactionReceiptUrl,
+                          reg.receiptVerificationStatus,
+                          reg.paymentMethod,
+                          reg.transactionReceiptUrl || reg.receiptVerificationStatus ? () => handleViewReceipt(reg) : undefined
                         )}
-                      </div>
-                    </td>
-                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
-                      <div className="min-w-0">
-                        <span className="text-sm font-medium text-gray-700 block truncate" title={reg.testVenue || ''}>
-                          {reg.testVenue || '-'}
-                        </span>
                       </div>
                     </td>
                     <td className="px-4 sm:px-5 py-4 overflow-hidden hidden lg:table-cell">
@@ -1079,6 +1208,186 @@ export default function RegistrationsTable() {
               >
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Receipt View Modal */}
+      {viewingReceipt && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-y-auto animate-slide-up border border-gray-200">
+            <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-primary-700 text-white p-6 flex items-center justify-between shadow-lg z-10">
+              <div>
+                <h2 className="text-2xl font-bold mb-1">Transaction Receipt</h2>
+                <p className="text-primary-100 text-sm">
+                  {viewingReceipt.name} • Registration #{viewingReceipt.id}
+                </p>
+              </div>
+              <button
+                onClick={() => {
+                  setViewingReceipt(null)
+                  setShowVerificationDialog(false)
+                  setVerificationNotes('')
+                  setVerificationAction(null)
+                }}
+                className="text-white hover:text-gray-200 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 hover:scale-110 active:scale-95"
+                aria-label="Close modal"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="p-6 bg-gray-50">
+              {/* Receipt Image */}
+              {viewingReceipt.transactionReceiptUrl ? (
+                <div className="bg-white rounded-lg border-2 border-gray-200 p-4 mb-4">
+                  <div className="relative">
+                    <Image
+                      src={viewingReceipt.transactionReceiptUrl.startsWith('http') 
+                        ? viewingReceipt.transactionReceiptUrl 
+                        : `${getApiBaseUrl()}${viewingReceipt.transactionReceiptUrl.startsWith('/') ? '' : '/'}${viewingReceipt.transactionReceiptUrl}`}
+                      alt="Transaction Receipt"
+                      width={800}
+                      height={600}
+                      className="max-w-full h-auto rounded-lg shadow-lg mx-auto"
+                      unoptimized={true}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white rounded-lg border-2 border-gray-200 p-8 text-center">
+                  <Receipt className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+                  <p className="text-gray-600 font-medium">No receipt uploaded</p>
+                </div>
+              )}
+
+              {/* Verification Status */}
+              {viewingReceipt.receiptVerificationStatus && (
+                <div className="mb-4 p-4 bg-white rounded-lg border border-gray-200">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-semibold text-gray-700">Verification Status:</span>
+                    {getReceiptStatusBadge(
+                      viewingReceipt.transactionReceiptUrl,
+                      viewingReceipt.receiptVerificationStatus,
+                      viewingReceipt.paymentMethod
+                    )}
+                  </div>
+                  {viewingReceipt.receiptVerifiedBy && (
+                    <p className="text-sm text-gray-600">
+                      Verified by: <span className="font-medium">{viewingReceipt.receiptVerifiedBy}</span>
+                    </p>
+                  )}
+                  {viewingReceipt.receiptVerifiedAt && (
+                    <p className="text-sm text-gray-600">
+                      Verified at: <span className="font-medium">{formatDate(viewingReceipt.receiptVerifiedAt)}</span>
+                    </p>
+                  )}
+                  {viewingReceipt.receiptVerificationNotes && (
+                    <p className="text-sm text-gray-600 mt-2">
+                      Notes: <span className="font-medium">{viewingReceipt.receiptVerificationNotes}</span>
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Actions */}
+              {viewingReceipt.transactionReceiptUrl && (
+                <div className="flex items-center gap-3 flex-wrap">
+                  {viewingReceipt.receiptVerificationStatus !== 'Verified' && (
+                    <button
+                      onClick={() => openVerificationDialog('verify')}
+                      disabled={verifyingReceipt}
+                      className="flex-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <CheckCircle className="w-5 h-5" />
+                      Mark as Verified
+                    </button>
+                  )}
+                  {viewingReceipt.receiptVerificationStatus !== 'Rejected' && (
+                    <button
+                      onClick={() => openVerificationDialog('reject')}
+                      disabled={verifyingReceipt}
+                      className="flex-1 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    >
+                      <XCircle className="w-5 h-5" />
+                      Reject
+                    </button>
+                  )}
+                  <a
+                    href={viewingReceipt.transactionReceiptUrl.startsWith('http') 
+                      ? viewingReceipt.transactionReceiptUrl 
+                      : `${getApiBaseUrl()}${viewingReceipt.transactionReceiptUrl.startsWith('/') ? '' : '/'}${viewingReceipt.transactionReceiptUrl}`}
+                    download
+                    className="px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-5 h-5" />
+                    Download
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Verification Dialog */}
+      {showVerificationDialog && viewingReceipt && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full animate-slide-up border border-gray-200">
+            <div className="p-6">
+              <h3 className="text-xl font-bold mb-4">
+                {verificationAction === 'verify' ? 'Verify Receipt' : 'Reject Receipt'}
+              </h3>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {verificationAction === 'reject' ? 'Rejection Reason (Optional)' : 'Notes (Optional)'}
+                </label>
+                <textarea
+                  value={verificationNotes}
+                  onChange={(e) => setVerificationNotes(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  rows={4}
+                  placeholder={verificationAction === 'reject' ? 'Enter reason for rejection...' : 'Enter verification notes...'}
+                />
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => {
+                    if (verificationAction === 'verify') {
+                      handleVerifyReceipt(viewingReceipt.id, 'Verified', verificationNotes || undefined)
+                    } else {
+                      handleVerifyReceipt(viewingReceipt.id, 'Rejected', verificationNotes || undefined)
+                    }
+                  }}
+                  disabled={verifyingReceipt}
+                  className={`flex-1 font-semibold py-2.5 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                    verificationAction === 'verify'
+                      ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                      : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white'
+                  }`}
+                >
+                  {verifyingReceipt ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Processing...
+                    </span>
+                  ) : (
+                    'Confirm'
+                  )}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowVerificationDialog(false)
+                    setVerificationNotes('')
+                    setVerificationAction(null)
+                  }}
+                  disabled={verifyingReceipt}
+                  className="px-4 py-2.5 bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
