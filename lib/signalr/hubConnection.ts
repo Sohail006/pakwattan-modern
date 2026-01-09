@@ -74,7 +74,7 @@ export function createHubConnection(): signalR.HubConnection {
   });
 
   // Suppress connection errors
-  connection.onreconnecting((error) => {
+  connection.onreconnecting(() => {
     // Silently handle reconnection attempts
   });
 

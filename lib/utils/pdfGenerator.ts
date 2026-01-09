@@ -3,6 +3,7 @@ import QRCode from 'qrcode'
 import { RegistrationResponse } from '@/lib/api/registrations'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { getActiveAdmissionSetting } from '@/lib/api/admissionSettings'
+import { getGradeById } from '@/lib/api/grades'
 import { formatDate, formatTime } from '@/lib/utils'
 import { getApiBaseUrl } from '@/lib/config'
 
@@ -186,6 +187,37 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     const darkColor: [number, number, number] = [17, 24, 39] // Gray-900
     const lightGray: [number, number, number] = [243, 244, 246] // Gray-100
 
+    // ============================================
+    // FETCH DYNAMIC DATA (Registration Fee & Grade Name)
+    // ============================================
+    // Fetch registration fee from admission settings
+    let registrationFee = 500 // Default fallback
+    try {
+      const activeSetting = await getActiveAdmissionSetting()
+      if (activeSetting?.registrationFee) {
+        registrationFee = activeSetting.registrationFee
+      }
+    } catch (error) {
+      console.warn('[PDF Generator] Failed to fetch registration fee:', error)
+      // Use default fallback
+    }
+
+    // Fetch grade name if missing from registration
+    let gradeDisplayName = registration.gradeName
+    if (!gradeDisplayName && registration.gradeId) {
+      try {
+        const grade = await getGradeById(registration.gradeId)
+        gradeDisplayName = grade.name
+      } catch (error) {
+        console.warn('[PDF Generator] Failed to fetch grade name:', error)
+        // Fallback to generic format
+        gradeDisplayName = `Grade ${registration.gradeId}`
+      }
+    } else if (!gradeDisplayName) {
+      // Fallback if gradeId is also missing
+      gradeDisplayName = 'N/A'
+    }
+
     let yPos = margin
 
     // ============================================
@@ -325,7 +357,7 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
       { label: 'Father Name:', value: registration.fatherName, col: 1 },
       { label: 'Date of Birth:', value: registration.dob ? formatDate(registration.dob) : 'N/A', col: 1 },
       { label: 'Gender:', value: registration.gender, col: 1 },
-      { label: 'Grade:', value: registration.gradeName || `Grade ${registration.gradeId}`, col: 2 },
+      { label: 'Grade:', value: gradeDisplayName, col: 2 },
       { label: 'Mobile:', value: registration.mobile || 'N/A', col: 2 },
       { label: 'WhatsApp:', value: registration.whatsApp || 'N/A', col: 2 },
       { label: 'Email:', value: registration.email || 'N/A', col: 2 },
@@ -445,7 +477,7 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     doc.setTextColor(60, 60, 60)
 
     const instructions = [
-      'Registration Fee Rs. 500/- is non-refundable.',
+      `Registration Fee Rs. ${registrationFee}/- is non-refundable.`,
       'Bring this slip and required test materials on test day.',
       'Follow all test rules and supervisor instructions.',
       'Electronic devices are strictly prohibited.',
@@ -480,7 +512,7 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
         name: registration.name,
         fatherName: registration.fatherName,
         rollNumber: registration.rollNumber || 'PENDING',
-        grade: registration.gradeName || `Grade ${registration.gradeId}`,
+        grade: gradeDisplayName,
         testDate: testDate || 'To Be Announced',
         testTime: formattedTestTime,
         testVenue: testVenue || 'To Be Announced',
