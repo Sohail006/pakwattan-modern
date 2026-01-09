@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles } from 'lucide-react'
 import { RegistrationResponse, getAllRegistrations, deleteRegistration } from '@/lib/api/registrations'
+import { getAllScholarshipTypes } from '@/lib/api/admissionSettings'
+import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
 import { exportRegistrationsToExcel } from '@/lib/utils/excelExportRegistrations'
@@ -17,6 +19,7 @@ export default function RegistrationsTable() {
   const [registrations, setRegistrations] = useState<RegistrationResponse[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [scholarshipTypes, setScholarshipTypes] = useState<ScholarshipType[]>([])
   
   // Filter state
   const [searchTerm, setSearchTerm] = useState('')
@@ -77,6 +80,20 @@ export default function RegistrationsTable() {
   useEffect(() => {
     loadRegistrations()
   }, [loadRegistrations])
+
+  // Load scholarship types for ID-to-name mapping
+  useEffect(() => {
+    const loadScholarshipTypes = async () => {
+      try {
+        const types = await getAllScholarshipTypes()
+        setScholarshipTypes(types)
+      } catch (error) {
+        console.warn('[RegistrationsTable] Failed to load scholarship types:', error)
+        // Continue without scholarship types - will show IDs as fallback
+      }
+    }
+    loadScholarshipTypes()
+  }, [])
 
   // Filter and sort registrations
   useEffect(() => {
@@ -160,6 +177,15 @@ export default function RegistrationsTable() {
 
     return filtered
   }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder])
+
+  // Create ID-to-name mapping for scholarship types
+  const scholarshipTypeMap = useMemo(() => {
+    const map = new Map<number, string>()
+    scholarshipTypes.forEach(type => {
+      map.set(type.id, type.name)
+    })
+    return map
+  }, [scholarshipTypes])
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -706,7 +732,9 @@ export default function RegistrationsTable() {
                       <div className="min-w-0">
                         {reg.applyForScholarship ? (
                           <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md truncate max-w-full">
-                            {reg.scholarshipType || 'Yes'}
+                            {reg.scholarshipType 
+                              ? (scholarshipTypeMap.get(Number(reg.scholarshipType)) || reg.scholarshipType)
+                              : 'Yes'}
                           </span>
                         ) : (
                           <span className="text-sm text-gray-400 font-medium">No</span>
@@ -878,7 +906,9 @@ export default function RegistrationsTable() {
                   <p className="text-sm font-semibold text-gray-500 mb-1">Scholarship</p>
                   <p className="text-gray-900">
                     {viewingDetails.applyForScholarship 
-                      ? (viewingDetails.scholarshipType || 'Yes') 
+                      ? (viewingDetails.scholarshipType 
+                          ? (scholarshipTypeMap.get(Number(viewingDetails.scholarshipType)) || viewingDetails.scholarshipType)
+                          : 'Yes') 
                       : 'No'}
                   </p>
                 </div>
