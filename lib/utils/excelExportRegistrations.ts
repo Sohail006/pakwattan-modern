@@ -7,10 +7,12 @@ import { getPaymentStatusDisplay, getReceiptStatusDisplay } from '@/lib/utils/pa
  * Export registrations data to Excel file
  * @param registrations - Array of registration data to export
  * @param filename - Optional filename (default: Registrations_Export_YYYY-MM-DD.xlsx)
+ * @param scholarshipTypeMap - Optional map of scholarship type ID to name for converting IDs to names
  */
 export function exportRegistrationsToExcel(
   registrations: RegistrationResponse[],
-  filename?: string
+  filename?: string,
+  scholarshipTypeMap?: Map<number, string>
 ): void {
   try {
     if (!registrations || registrations.length === 0) {
@@ -38,6 +40,17 @@ export function exportRegistrationsToExcel(
         reg.paymentMethod
       )
       const receiptVerifiedAt = reg.receiptVerifiedAt ? formatDate(reg.receiptVerifiedAt) : ''
+      
+      // Convert scholarship type ID to name if mapping is available
+      let scholarshipTypeDisplay = ''
+      if (reg.scholarshipType) {
+        if (scholarshipTypeMap) {
+          const scholarshipId = Number(reg.scholarshipType)
+          scholarshipTypeDisplay = scholarshipTypeMap.get(scholarshipId) || reg.scholarshipType
+        } else {
+          scholarshipTypeDisplay = reg.scholarshipType
+        }
+      }
 
       return {
         'Roll Number': reg.rollNumber || 'Pending',
@@ -52,7 +65,7 @@ export function exportRegistrationsToExcel(
         'Form B/CNIC': reg.formBorCNIC || '',
         'Previous School': reg.previousSchoolName || '',
         'Apply for Scholarship': reg.applyForScholarship ? 'Yes' : 'No',
-        'Scholarship Type': reg.scholarshipType || '',
+        'Scholarship Type': scholarshipTypeDisplay,
         'Payment Method': reg.paymentMethod,
         'Payment Status': paymentStatusDisplay,
         'Receipt Status': receiptStatusDisplay,

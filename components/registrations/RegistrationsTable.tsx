@@ -418,7 +418,7 @@ export default function RegistrationsTable() {
     
     setExporting(true)
     try {
-      exportRegistrationsToExcel(filteredRegistrations)
+      exportRegistrationsToExcel(filteredRegistrations, undefined, scholarshipTypeMap)
       toastService.success(`Successfully exported ${filteredRegistrations.length} registration(s) to Excel.`)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to export to Excel.'
