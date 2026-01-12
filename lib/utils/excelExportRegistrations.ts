@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx'
 import { RegistrationResponse } from '@/lib/api/registrations'
 import { formatDate, formatTime } from '@/lib/utils'
+import { getPaymentStatusDisplay, getReceiptStatusDisplay } from '@/lib/utils/paymentHelpers'
 
 /**
  * Export registrations data to Excel file
@@ -29,6 +30,15 @@ export function exportRegistrationsToExcel(
       const testDate = reg.testDate ? formatDate(reg.testDate) : ''
       const testTime = reg.testTime ? formatTime(reg.testTime) : ''
 
+      // Format payment status using the same logic as the table display
+      const paymentStatusDisplay = getPaymentStatusDisplay(reg.paymentStatus, reg.paymentMethod)
+      const receiptStatusDisplay = getReceiptStatusDisplay(
+        reg.transactionReceiptUrl,
+        reg.receiptVerificationStatus,
+        reg.paymentMethod
+      )
+      const receiptVerifiedAt = reg.receiptVerifiedAt ? formatDate(reg.receiptVerifiedAt) : ''
+
       return {
         'Roll Number': reg.rollNumber || 'Pending',
         'Name': reg.name,
@@ -44,6 +54,10 @@ export function exportRegistrationsToExcel(
         'Apply for Scholarship': reg.applyForScholarship ? 'Yes' : 'No',
         'Scholarship Type': reg.scholarshipType || '',
         'Payment Method': reg.paymentMethod,
+        'Payment Status': paymentStatusDisplay,
+        'Receipt Status': receiptStatusDisplay,
+        'Receipt Verified By': reg.receiptVerifiedBy || '',
+        'Receipt Verified At': receiptVerifiedAt,
         'Test Venue': reg.testVenue || '',
         'Test Date': testDate,
         'Test Time': testTime,
@@ -71,6 +85,10 @@ export function exportRegistrationsToExcel(
       { wch: 18 }, // Apply for Scholarship
       { wch: 20 }, // Scholarship Type
       { wch: 15 }, // Payment Method
+      { wch: 15 }, // Payment Status
+      { wch: 15 }, // Receipt Status
+      { wch: 20 }, // Receipt Verified By
+      { wch: 15 }, // Receipt Verified At
       { wch: 30 }, // Test Venue
       { wch: 12 }, // Test Date
       { wch: 12 }, // Test Time

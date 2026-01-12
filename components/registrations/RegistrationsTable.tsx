@@ -10,6 +10,7 @@ import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
 import { getApiBaseUrl } from '@/lib/config'
 import { exportRegistrationsToExcel } from '@/lib/utils/excelExportRegistrations'
+import { formatPaymentMethod, getPaymentStatusDisplay, getReceiptStatusDisplay } from '@/lib/utils/paymentHelpers'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import { toastService } from '@/lib/utils/toast'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
@@ -102,52 +103,9 @@ export default function RegistrationsTable() {
     loadScholarshipTypes()
   }, [])
 
-  // Helper function to format payment method name
-  const formatPaymentMethod = (paymentMethod: string): string => {
-    const methodMap: Record<string, string> = {
-      'EasyPaisa': 'EasyPaisa',
-      'BankAccount': 'Bank Account',
-      'ByHandOnTestDate': 'By Hand on Test Date',
-      'By Hand on Test Date': 'By Hand on Test Date',
-    }
-    
-    return methodMap[paymentMethod] || paymentMethod
-  }
-
-  // Helper function to get payment status display text
-  const getPaymentStatusDisplay = useCallback((paymentStatus?: string, paymentMethod?: string): string => {
-    // If payment status is explicitly "Unpaid", show "Unpaid"
-    if (paymentStatus?.toLowerCase() === 'unpaid') {
-      return 'Unpaid'
-    }
-    
-    // If payment method is "By Hand on Test Date", show "Pending"
-    if (paymentMethod === 'By Hand on Test Date' || paymentMethod === 'ByHandOnTestDate') {
-      return 'Pending'
-    }
-    
-    // If payment method exists (EasyPaisa or Bank Account), show the method name
-    // This assumes that if a payment method is selected, payment is made via that method
-    if (paymentMethod) {
-      const formattedMethod = formatPaymentMethod(paymentMethod)
-      // Only show method name if it's not "By Hand on Test Date" (already handled above)
-      if (formattedMethod !== 'By Hand on Test Date' && formattedMethod !== 'Unpaid') {
-        return formattedMethod
-      }
-    }
-    
-    // If payment status is "Paid" but no method, show "Paid"
-    if (paymentStatus?.toLowerCase() === 'paid') {
-      return 'Paid'
-    }
-    
-    // If payment status is "Pending", show "Pending"
-    if (paymentStatus?.toLowerCase() === 'pending') {
-      return 'Pending'
-    }
-    
-    // Default: Unpaid
-    return 'Unpaid'
+  // Helper function to get payment status display text (using extracted utility)
+  const getPaymentStatusDisplayMemo = useCallback((paymentStatus?: string, paymentMethod?: string): string => {
+    return getPaymentStatusDisplay(paymentStatus, paymentMethod)
   }, [])
 
   // Filter and sort registrations
@@ -217,8 +175,8 @@ export default function RegistrationsTable() {
             bVal = b.applyForScholarship ? 1 : 0
             break
           case 'paymentStatus':
-            aVal = getPaymentStatusDisplay(a.paymentStatus, a.paymentMethod).toLowerCase()
-            bVal = getPaymentStatusDisplay(b.paymentStatus, b.paymentMethod).toLowerCase()
+            aVal = getPaymentStatusDisplayMemo(a.paymentStatus, a.paymentMethod).toLowerCase()
+            bVal = getPaymentStatusDisplayMemo(b.paymentStatus, b.paymentMethod).toLowerCase()
             break
           case 'receipt':
             aVal = getReceiptStatusDisplay(a.transactionReceiptUrl, a.receiptVerificationStatus, a.paymentMethod).toLowerCase()
@@ -235,7 +193,7 @@ export default function RegistrationsTable() {
     }
 
     return filtered
-  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder, getPaymentStatusDisplay])
+  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder, getPaymentStatusDisplayMemo])
 
   // Create ID-to-name mapping for scholarship types
   const scholarshipTypeMap = useMemo(() => {
@@ -248,7 +206,7 @@ export default function RegistrationsTable() {
 
   // Helper function to get payment status badge
   const getPaymentStatusBadge = (paymentStatus?: string, paymentMethod?: string) => {
-    const displayText = getPaymentStatusDisplay(paymentStatus, paymentMethod)
+    const displayText = getPaymentStatusDisplayMemo(paymentStatus, paymentMethod)
     const status = paymentStatus?.toLowerCase() || ''
     
     // Determine badge color based on display text
@@ -285,36 +243,6 @@ export default function RegistrationsTable() {
         {displayText}
       </span>
     )
-  }
-
-  // Helper function to get receipt status display text
-  const getReceiptStatusDisplay = (
-    receiptUrl?: string | null,
-    verificationStatus?: string | null,
-    paymentMethod?: string
-  ): string => {
-    // If payment method is "By Hand on Test Date", receipt is not required
-    if (paymentMethod === 'ByHandOnTestDate' || paymentMethod === '2') {
-      return 'N/A'
-    }
-
-    // If verified
-    if (verificationStatus?.toLowerCase() === 'verified') {
-      return 'Verified'
-    }
-
-    // If rejected
-    if (verificationStatus?.toLowerCase() === 'rejected') {
-      return 'Rejected'
-    }
-
-    // If uploaded but pending verification
-    if (receiptUrl) {
-      return 'Pending'
-    }
-
-    // If missing (required but not uploaded)
-    return 'Missing'
   }
 
   // Helper function to get receipt status badge
@@ -861,6 +789,9 @@ export default function RegistrationsTable() {
                       {sortBy === 'gradeId' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
                   </th>
+                  <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider hidden md:table-cell whitespace-nowrap">
+                    <span className="drop-shadow-sm">Previous School</span>
+                  </th>
                   <th className="px-4 sm:px-5 py-4 text-left text-xs font-bold text-white uppercase tracking-wider hidden sm:table-cell whitespace-nowrap">
                     <span className="drop-shadow-sm">Mobile</span>
                   </th>
@@ -900,7 +831,7 @@ export default function RegistrationsTable() {
               <tbody className="bg-white divide-y divide-gray-100">
                 {paginatedRegistrations.length === 0 ? (
                   <tr>
-                    <td colSpan={10} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
+                    <td colSpan={11} className="px-3 sm:px-4 py-8 sm:py-12 text-center">
                     <div className="flex flex-col items-center justify-center py-8 animate-fade-in">
                       <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 shadow-inner">
                         <Search className="w-10 h-10 text-gray-400" />
@@ -946,6 +877,13 @@ export default function RegistrationsTable() {
                       <div className="min-w-0">
                         <span className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-br from-gray-100 to-gray-200 text-gray-800 border border-gray-300/50 shadow-sm truncate max-w-full">
                           {reg.gradeName || `Grade ${reg.gradeId}`}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 sm:px-5 py-4 overflow-hidden hidden md:table-cell">
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium text-gray-700 block truncate" title={reg.previousSchoolName || '-'}>
+                          {reg.previousSchoolName || '-'}
                         </span>
                       </div>
                     </td>
