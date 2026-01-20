@@ -2,11 +2,12 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, Award, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Award, Star, ZoomIn, Trophy } from 'lucide-react'
 import Container from '@/components/ui/Container'
 
 const BISEHSSCTopers = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null)
 
   const topperImages = [
     { id: 1, src: '/images/hssc-toppers/1.jpg', name: 'Qasim Zaib', marks: '1035', position: '1st Position', group: 'Computer Science' },
@@ -34,136 +35,200 @@ const BISEHSSCTopers = () => {
   }
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-accent-50 to-primary-50">
-      <Container>
-        <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4 sm:px-0">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-3 sm:mb-4 break-words">
-            <span className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm sm:text-base lg:text-lg">
-              BISE HSSC Toppers
-            </span>
-          </h2>
-          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
-            Celebrating our outstanding students who achieved top positions in HSSC Board Results
-          </p>
+    <>
+      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-50 via-accent-50 to-yellow-50 relative overflow-hidden">
+        {/* Decorative Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-200/30 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-200/30 rounded-full blur-3xl"></div>
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-4 sm:px-0">
-          <div className="bg-white rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden">
-            {/* Carousel Container */}
-            <div className="relative">
-              {/* Background with animated fireworks */}
-              <div 
-                className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10"
-                style={{
-                  backgroundImage: 'url(/images/pakians-coaching-academy/pca-hero.jpg/animatedfireworks.gif)',
-                  borderRadius: '8px'
-                }}
-              />
-              
-              <div className="relative bg-black/20 backdrop-blur-sm">
-                <div className="relative h-64 sm:h-80 lg:h-96 overflow-hidden">
-                  {topperImages.map((slide, index) => (
+        <Container>
+          {/* Enhanced Header */}
+          <div className="text-center mb-10 sm:mb-12 lg:mb-16 px-4 sm:px-0">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full px-6 sm:px-8 py-2 sm:py-3 mb-6 shadow-lg">
+              <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+              <span className="text-sm sm:text-base md:text-lg font-bold text-black">Top Achievers</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6 break-words">
+              <span className="bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 bg-clip-text text-transparent">
+                BISE HSSC Toppers
+              </span>
+            </h2>
+            <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto">
+              Celebrating our outstanding students who achieved top positions in HSSC Board Results
+            </p>
+          </div>
+
+          {/* Enhanced Image Display */}
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-0">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border-4 border-yellow-300/30">
+              <div className="relative min-h-[600px] sm:min-h-[700px] lg:min-h-[800px] overflow-hidden bg-gradient-to-br from-yellow-50/50 to-primary-50/50">
+                {topperImages.map((slide, index) => {
+                  return (
                     <div
                       key={slide.id}
-                      className={`absolute inset-0 transition-all duration-500 ${
+                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
                         index === currentSlide
-                          ? 'opacity-100 translate-x-0'
+                          ? 'opacity-100 translate-x-0 scale-100'
                           : index < currentSlide
-                          ? 'opacity-0 -translate-x-full'
-                          : 'opacity-0 translate-x-full'
+                          ? 'opacity-0 -translate-x-full scale-95'
+                          : 'opacity-0 translate-x-full scale-95'
                       }`}
                     >
-                      <div className="h-full flex items-center justify-center p-4 sm:p-6 lg:p-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 w-full max-w-4xl">
-                          {/* Image */}
-                          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-3 sm:p-4 shadow-lg">
-                            <div className="aspect-square rounded-lg overflow-hidden">
-                              <Image
-                                src={slide.src}
-                                alt={slide.name}
-                                width={400}
-                                height={400}
-                                className="w-full h-full object-cover"
-                                loading="lazy"
-                                sizes="(max-width: 768px) 100vw, 50vw"
-                              />
+                    <div className="h-full flex items-center justify-center p-6 sm:p-8 lg:p-12">
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl">
+                        {/* Large Prominent Image */}
+                        <div className="group relative order-2 lg:order-1">
+                          <div className="relative h-[450px] sm:h-[550px] lg:h-[650px] rounded-xl sm:rounded-2xl overflow-hidden shadow-2xl cursor-pointer" onClick={() => setZoomedImage(slide.src)}>
+                            <Image
+                              src={slide.src}
+                              alt={slide.name}
+                              fill
+                              className="object-cover transition-transform duration-700 group-hover:scale-110"
+                              sizes="(max-width: 1024px) 100vw, 50vw"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+                            <div className="absolute top-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                              {slide.position}
+                            </div>
+                            <div className="absolute bottom-4 left-4 right-4 text-white">
+                              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-2 break-words">
+                                {slide.name}
+                              </h3>
+                              <p className="text-base sm:text-lg text-white/90 break-words">
+                                {slide.group}
+                              </p>
+                            </div>
+                            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <span className="text-sm font-semibold text-secondary-700 flex items-center space-x-2">
+                                <ZoomIn className="w-4 h-4" />
+                                <span>Click to enlarge</span>
+                              </span>
                             </div>
                           </div>
-                          
-                          {/* Content */}
-                          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 sm:p-6 shadow-lg flex flex-col justify-center min-w-0">
-                            <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
-                              <Award className="w-5 h-5 sm:w-6 sm:h-6 text-primary-600 flex-shrink-0" />
-                              <span className="text-xs sm:text-sm font-medium text-primary-600 truncate">HSSC Topper</span>
-                            </div>
-                            <h3 className="text-xl sm:text-2xl font-bold text-secondary-800 mb-2 break-words">
-                              {slide.name}
-                            </h3>
-                            <div className="space-y-1.5 sm:space-y-2 mb-3 sm:mb-4">
-                              <div className="flex items-center space-x-2">
-                                <Star className="w-4 h-4 sm:w-5 sm:h-5 text-accent-600 flex-shrink-0" />
-                                <span className="text-base sm:text-lg font-semibold text-accent-600 break-words">
-                                  {slide.position}
-                                </span>
+                        </div>
+                        
+                        {/* Enhanced Content */}
+                        <div className="order-1 lg:order-2 flex flex-col justify-center space-y-6">
+                          <div className="bg-white/95 backdrop-blur-sm rounded-xl sm:rounded-2xl p-6 sm:p-8 shadow-xl">
+                            <div className="flex items-center space-x-3 mb-6">
+                              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+                                <Award className="w-6 h-6 text-black" />
                               </div>
-                              <div className="text-sm sm:text-base lg:text-lg text-secondary-600 break-words">
-                                <strong>Marks:</strong> {slide.marks}
-                              </div>
-                              <div className="text-sm sm:text-base lg:text-lg text-secondary-600 break-words">
-                                <strong>Group:</strong> {slide.group}
+                              <div>
+                                <p className="text-sm font-medium text-secondary-600">HSSC Topper</p>
+                                <p className="text-lg font-bold text-secondary-800">Board Results</p>
                               </div>
                             </div>
-                            <div className="bg-gradient-to-r from-primary-100 to-accent-100 rounded-lg p-2 sm:p-3">
-                              <p className="text-xs sm:text-sm text-secondary-700 font-medium break-words">
-                                🏆 Outstanding achievement in Havelian Circle
+                            
+                            <div className="space-y-4 mb-6">
+                              <div className="p-4 bg-gradient-to-r from-yellow-100 to-primary-100 rounded-lg border-l-4 border-yellow-500">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <Star className="w-5 h-5 text-yellow-600" />
+                                  <span className="text-sm font-medium text-secondary-600">Position</span>
+                                </div>
+                                <p className="text-2xl font-bold text-secondary-800">{slide.position}</p>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="p-4 bg-gradient-to-br from-primary-50 to-accent-50 rounded-lg">
+                                  <p className="text-xs font-medium text-secondary-600 mb-1">Marks</p>
+                                  <p className="text-xl font-bold text-primary-700">{slide.marks}</p>
+                                </div>
+                                <div className="p-4 bg-gradient-to-br from-accent-50 to-primary-50 rounded-lg">
+                                  <p className="text-xs font-medium text-secondary-600 mb-1">Group</p>
+                                  <p className="text-lg font-bold text-accent-700 break-words">{slide.group}</p>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="bg-gradient-to-r from-yellow-400/20 to-primary-400/20 rounded-lg p-4 border-2 border-yellow-300/50">
+                              <p className="text-sm font-semibold text-secondary-700 flex items-center space-x-2">
+                                <Trophy className="w-5 h-5 text-yellow-600" />
+                                <span>Outstanding achievement in Havelian Circle</span>
                               </p>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-
-                {/* Navigation Arrows */}
+                    </div>
+                  )
+                })}
+                
+                {/* Enhanced Navigation */}
                 <button
                   onClick={prevSlide}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 hover:bg-white active:bg-white/80 text-secondary-700 hover:text-primary-600 active:text-primary-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-10 touch-target min-h-[44px] min-w-[44px]"
+                  className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white hover:bg-yellow-50 active:bg-yellow-100 text-secondary-700 hover:text-primary-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 z-20 hover:scale-110 active:scale-95 touch-target min-h-[44px] min-w-[44px] border-2 border-yellow-200"
                   aria-label="Previous slide"
                 >
-                  <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <ChevronLeft className="w-6 h-6 sm:w-7 sm:h-7" />
                 </button>
                 
                 <button
                   onClick={nextSlide}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 hover:bg-white active:bg-white/80 text-secondary-700 hover:text-primary-600 active:text-primary-700 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-10 touch-target min-h-[44px] min-w-[44px]"
+                  className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 bg-white hover:bg-yellow-50 active:bg-yellow-100 text-secondary-700 hover:text-primary-600 rounded-full flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 z-20 hover:scale-110 active:scale-95 touch-target min-h-[44px] min-w-[44px] border-2 border-yellow-200"
                   aria-label="Next slide"
                 >
-                  <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
                 </button>
 
-                {/* Indicators */}
-                <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 flex space-x-1.5 sm:space-x-2 z-10">
+                {/* Enhanced Indicators */}
+                <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
                   {topperImages.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => goToSlide(index)}
-                      className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-300 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                      className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center ${
                         index === currentSlide
-                          ? 'bg-primary-600 scale-125'
-                          : 'bg-white/50 hover:bg-white/80 active:bg-white/90'
+                          ? 'bg-yellow-500 scale-125 shadow-lg'
+                          : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500'
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                       aria-current={index === currentSlide ? 'true' : 'false'}
                     />
                   ))}
                 </div>
+
+                {/* Slide Counter */}
+                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg z-20">
+                  <span className="text-sm font-semibold text-secondary-700">
+                    {currentSlide + 1} / {topperImages.length}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+        </Container>
+      </section>
+
+      {/* Image Lightbox Modal */}
+      {zoomedImage && (
+        <div 
+          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 cursor-pointer"
+          onClick={() => setZoomedImage(null)}
+        >
+          <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <Image
+              src={zoomedImage}
+              alt="Enlarged topper image"
+              width={800}
+              height={1000}
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              onClick={() => setZoomedImage(null)}
+              className="absolute top-4 right-4 bg-white text-black w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors shadow-lg"
+              aria-label="Close"
+            >
+              ×
+            </button>
+          </div>
         </div>
-      </Container>
-    </section>
+      )}
+    </>
   )
 }
 

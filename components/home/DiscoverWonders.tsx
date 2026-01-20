@@ -1,11 +1,17 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { GraduationCap, BookOpen, Trophy } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
 
 const DiscoverWonders = () => {
+  const [ref, entry] = useIntersectionObserver({
+    threshold: 0.1,
+    freezeOnceVisible: true
+  })
   const wings = [
     {
       icon: <GraduationCap className="w-12 h-12" />,
@@ -28,15 +34,15 @@ const DiscoverWonders = () => {
   ]
 
   return (
-    <section className="py-8 sm:py-10 lg:py-12 bg-white">
-      <Container>
-        <div className="text-center mb-8 sm:mb-10 lg:mb-12 px-4 sm:px-0">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6 break-words">
-            <span className="bg-gradient-to-r from-primary-600 to-accent-500 bg-clip-text text-transparent">
+    <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-white via-primary-50/30 to-accent-50/30">
+      <Container className="px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6 break-words tracking-tight">
+            <span className="bg-gradient-to-r from-primary-600 via-primary-700 to-accent-500 bg-clip-text text-transparent">
               Discover the Wonders of Pak Wattan
             </span>
           </h2>
-          <p className="text-base sm:text-lg text-secondary-600 max-w-4xl mx-auto leading-relaxed break-words">
+          <p className="text-base sm:text-lg md:text-xl text-secondary-600 max-w-4xl mx-auto leading-relaxed break-words">
             Our mission is to establish a learning environment based on the principles of 
             self-discipline and respect where each child may develop the skills necessary 
             to help them succeed honorably in a rapidly changing world through the use 
@@ -45,28 +51,46 @@ const DiscoverWonders = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-0">
-          {wings.map((wing, index) => (
-            <Link
-              key={index}
-              href={wing.href}
-              className="group"
-            >
-              <Card className="p-4 sm:p-6 lg:p-8 text-center bg-gradient-to-br from-primary-50 to-accent-50 hover:from-primary-100 hover:to-accent-100 active:from-primary-50 active:to-accent-50 transition-all duration-300">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl active:shadow-lg transition-all duration-300 group-hover:scale-110 active:scale-100">
-                  <div className="text-primary-600 group-hover:text-primary-700 transition-colors">
+        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+          {wings.map((wing, index) => {
+            const isVisible = entry?.isIntersecting
+            return (
+              <Link
+                key={index}
+                href={wing.href}
+                className="group block"
+                aria-label={`Learn more about ${wing.title}`}
+                style={{
+                  animationDelay: `${index * 0.15}s`,
+                  animationFillMode: 'both'
+                }}
+              >
+                <Card className={`p-6 sm:p-8 lg:p-10 text-center bg-gradient-to-br from-white to-primary-50/50 border-2 border-transparent hover:border-primary-300 active:border-primary-200 shadow-lg hover:shadow-2xl active:shadow-lg transition-all duration-500 transform hover:-translate-y-2 active:translate-y-0 h-full ${
+                  isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
+                }`}>
+                <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-6 sm:mb-8 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center shadow-xl group-hover:shadow-2xl group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 active:scale-100">
+                  <div className="text-primary-600 group-hover:text-primary-700 transition-colors duration-300">
                     {wing.icon}
                   </div>
                 </div>
-                <h3 className="text-lg sm:text-xl font-bold text-secondary-800 mb-3 sm:mb-4 group-hover:text-primary-700 transition-colors break-words">
+                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary-800 mb-4 sm:mb-6 group-hover:text-primary-700 transition-colors duration-300 break-words">
                   {wing.title}
                 </h3>
-                <p className="text-sm sm:text-base text-secondary-600 leading-relaxed break-words">
+                <p className="text-sm sm:text-base lg:text-lg text-secondary-600 leading-relaxed break-words">
                   {wing.description}
                 </p>
+                <div className="mt-6 pt-6 border-t-2 border-transparent group-hover:border-primary-200 transition-colors duration-300">
+                  <span className="text-primary-600 group-hover:text-primary-700 font-semibold text-sm sm:text-base inline-flex items-center">
+                    Learn More
+                    <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
               </Card>
             </Link>
-          ))}
+            )
+          })}
         </div>
       </Container>
     </section>

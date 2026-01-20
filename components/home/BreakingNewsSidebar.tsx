@@ -180,9 +180,9 @@ const BreakingNewsSidebar = () => {
   const displayedItems = showAll ? filteredNewsItems : filteredNewsItems.slice(0, displayCount)
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-xl sm:rounded-2xl shadow-xl border-2 border-gray-100 hover:border-primary-200 transition-all duration-300 overflow-hidden">
       {/* Three Column Layout - Mobile Responsive */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0">
         
         {/* Column 1: News & Events - Mobile Optimized */}
         <div className="lg:border-r border-gray-200">
@@ -260,7 +260,7 @@ const BreakingNewsSidebar = () => {
                       </div>
                       <div className="flex-1 min-w-0 flex-text-fix">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm group-hover:text-primary-700 transition-colors duration-300 mobile-card-text">
+                          <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-xs sm:text-sm group-hover:text-primary-700 transition-colors duration-300 line-clamp-2 break-words">
                             {item.title}
                           </h4>
                           {item.category && (
@@ -269,7 +269,7 @@ const BreakingNewsSidebar = () => {
                             </span>
                           )}
                         </div>
-                        <p className="text-gray-600 mb-2 sm:mb-3 leading-relaxed text-xs mobile-text-container">
+                        <p className="text-gray-600 mb-2 sm:mb-3 leading-relaxed text-xs line-clamp-2 break-words">
                           {item.description}
                         </p>
                         <div className="flex items-center space-x-2">
@@ -416,15 +416,15 @@ const BreakingNewsSidebar = () => {
                   </div>
                 </div>
               ) : latestPost ? (
-                <div className="bg-white rounded-lg sm:rounded-xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                <div className="bg-white rounded-lg sm:rounded-xl border-2 border-gray-200 hover:border-primary-300 overflow-hidden hover:shadow-2xl transition-all duration-300 group transform hover:-translate-y-1">
                   {/* Post Header - Mobile Optimized */}
                   <div className="flex items-center space-x-2 sm:space-x-3 p-3 sm:p-4 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
                     <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
                       <span className="text-white font-bold text-xs sm:text-sm">PW</span>
                     </div>
-                           <div className="flex-1 min-w-0 flex-text-fix">
-                              <h4 className="font-semibold text-gray-900 text-xs sm:text-sm text-no-overlap">{(latestPost.from as Record<string, unknown>).name as string}</h4>
-                             <p className="text-xs text-gray-500 text-no-overlap">
+                           <div className="flex-1 min-w-0">
+                              <h4 className="font-semibold text-gray-900 text-xs sm:text-sm truncate">{(latestPost.from as Record<string, unknown>).name as string}</h4>
+                             <p className="text-xs text-gray-500 truncate">
                                 {formatDateTime(latestPost.created_time as string, { hour: '2-digit', minute: '2-digit' })}
                              </p>
                            </div>
@@ -442,7 +442,7 @@ const BreakingNewsSidebar = () => {
                   
                          {/* Post Content - Mobile Optimized */}
                          <div className="p-3 sm:p-4">
-                           <p className="text-gray-800 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 mobile-text-container">
+                           <p className="text-gray-800 text-xs sm:text-sm leading-relaxed mb-3 sm:mb-4 line-clamp-3 break-words">
                               {latestPost.message as string}
                            </p>
                     
@@ -561,9 +561,9 @@ const BreakingNewsSidebar = () => {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-primary-100 to-accent-100 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300 group-hover:scale-105 flex-shrink-0">
                       <span className="text-sm sm:text-lg">{item.icon}</span>
                     </div>
-                           <div className="flex-1 min-w-0 flex-text-fix">
-                             <h4 className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors duration-300 text-xs sm:text-sm text-no-overlap mobile-card-text">{item.name}</h4>
-                             <p className="text-xs text-gray-600 hidden sm:block mobile-text-container">{item.description}</p>
+                           <div className="flex-1 min-w-0">
+                             <h4 className="font-semibold text-gray-900 group-hover:text-primary-700 transition-colors duration-300 text-xs sm:text-sm truncate">{item.name}</h4>
+                             <p className="text-xs text-gray-600 hidden sm:block line-clamp-1 truncate">{item.description}</p>
                            </div>
                     <div className="text-primary-400 group-hover:text-primary-600 transition-colors duration-300 group-hover:translate-x-1 flex-shrink-0">
                       <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -599,7 +599,7 @@ const BreakingNewsSidebar = () => {
         <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
           <div className="flex items-center space-x-2">
             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary-500 rounded-full animate-pulse"></div>
-                   <p className="text-xs text-gray-600 text-no-overlap">
+                   <p className="text-xs text-gray-600 truncate">
                      <span className="font-semibold text-primary-600">Live Updates</span>
                      <span className="hidden sm:inline"> - Auto-refreshing content</span>
                    </p>
@@ -617,7 +617,7 @@ const BreakingNewsSidebar = () => {
               </svg>
             </a>
             {lastUpdated && (
-                     <p className="text-xs text-gray-400 text-no-overlap">
+                     <p className="text-xs text-gray-400 truncate">
                        <span className="hidden sm:inline">Last updated: </span>
                        <span className="sm:hidden">Updated: </span>
                        {lastUpdated ? formatTime(lastUpdated) : ''}

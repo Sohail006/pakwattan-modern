@@ -73,6 +73,12 @@ module.exports = {
         'bounce-y': 'bounceY 1.5s ease-in-out infinite',
         'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
       },
+      transitionTimingFunction: {
+        'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)',
+        'bounce-in': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+        'ease-out-quart': 'cubic-bezier(0.25, 1, 0.5, 1)',
+        'ease-in-out-cubic': 'cubic-bezier(0.65, 0, 0.35, 1)',
+      },
       keyframes: {
         fadeIn: {
           '0%': { opacity: '0' },
@@ -84,6 +90,10 @@ module.exports = {
         },
         fadeInUp: {
           '0%': { opacity: '0', transform: 'translateY(30px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeInUpStagger: {
+          '0%': { opacity: '0', transform: 'translateY(40px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         marquee: {
@@ -117,6 +127,10 @@ module.exports = {
         pulseSubtle: {
           '0%, 100%': { opacity: '1', transform: 'scale(1)' },
           '50%': { opacity: '0.95', transform: 'scale(1.02)' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9)' },
+          '100%': { opacity: '1', transform: 'scale(1)' },
         },
       },
     },
