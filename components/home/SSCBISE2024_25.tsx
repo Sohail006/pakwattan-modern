@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
+import Container from '@/components/ui/Container'
 
 const SSCBISE2024_25 = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -9,17 +10,17 @@ const SSCBISE2024_25 = () => {
   const slides = [
     {
       title: "5th time in a row - SSC Havelian Circle's top achiever!",
-      image: "/images/ssc-results/566.jpg",
+      image: "/images/ssc-results/573.jpeg",
       description: "Celebrating our continued excellence in SSC Board Results"
     },
     {
       title: "Outstanding Performance",
-      image: "/images/ssc-results/565.jpg", 
+      image: "/images/ssc-results/572.jpeg", 
       description: "Our students continue to excel in board examinations"
     },
     {
       title: "Academic Excellence",
-      image: "/images/ssc-results/531.jpg",
+      image: "/images/ssc-results/570.jpeg",
       description: "Maintaining our position as the top school in Havelian Circle"
     }
   ]
@@ -34,7 +35,7 @@ const SSCBISE2024_25 = () => {
 
   return (
     <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
-      <div className="container-custom">
+      <Container>
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <div className="inline-flex items-center space-x-2 bg-primary-100 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-primary-700 mb-4 sm:mb-6">
             <span>🏆</span>
@@ -139,7 +140,7 @@ const SSCBISE2024_25 = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

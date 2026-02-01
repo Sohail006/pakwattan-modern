@@ -1,9 +1,10 @@
 import Image from 'next/image'
+import Container from '@/components/ui/Container'
 
 const FooterCTA = () => {
   return (
     <section className="bg-gradient-to-r from-primary-600 to-primary-700 text-white py-8 sm:py-10 lg:py-12">
-      <div className="container-custom">
+      <Container>
         <div className="flex flex-col md:flex-row items-center space-y-4 sm:space-y-6 md:space-y-0 md:space-x-6 lg:space-x-8">
           <div className="flex-shrink-0">
             <Image
@@ -25,7 +26,7 @@ const FooterCTA = () => {
             </p>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

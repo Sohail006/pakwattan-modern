@@ -1,6 +1,35 @@
 // Events API endpoints
 import { api, ApiError } from './client';
 
+// Simple in-memory cache for frequently-used read endpoints
+const EVENTS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+type EventsCacheEntry<T> = {
+  data: T;
+  timestamp: number;
+};
+
+const eventsCache = new Map<string, EventsCacheEntry<unknown>>();
+
+function getEventsCacheKey(path: string): string {
+  return `events:${path}`;
+}
+
+function getEventsFromCache<T>(key: string): T | null {
+  const entry = eventsCache.get(key) as EventsCacheEntry<T> | undefined;
+  if (!entry) return null;
+  const isExpired = Date.now() - entry.timestamp > EVENTS_CACHE_TTL_MS;
+  if (isExpired) {
+    eventsCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setEventsCache<T>(key: string, data: T) {
+  eventsCache.set(key, { data, timestamp: Date.now() });
+}
+
 export interface Event {
   id: number;
   title: string;
@@ -82,7 +111,15 @@ export async function getEvents(params?: PaginatedEventsParams): Promise<Paginat
     if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder);
 
     const queryString = queryParams.toString();
-    return await api.get<PaginatedEventsResponse>(`/api/events${queryString ? `?${queryString}` : ''}`);
+    const path = `/api/events${queryString ? `?${queryString}` : ''}`;
+    const cacheKey = getEventsCacheKey(path);
+
+    const cached = getEventsFromCache<PaginatedEventsResponse>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<PaginatedEventsResponse>(path);
+    setEventsCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load events. Please try again.');
@@ -94,7 +131,15 @@ export async function getEvents(params?: PaginatedEventsParams): Promise<Paginat
  */
 export async function getEventById(id: number): Promise<Event> {
   try {
-    return await api.get<Event>(`/api/events/${id}`);
+    const path = `/api/events/${id}`;
+    const cacheKey = getEventsCacheKey(path);
+
+    const cached = getEventsFromCache<Event>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<Event>(path);
+    setEventsCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load event. Please try again.');
@@ -106,7 +151,15 @@ export async function getEventById(id: number): Promise<Event> {
  */
 export async function getUpcomingEvents(limit: number = 5): Promise<Event[]> {
   try {
-    return await api.get<Event[]>(`/api/events/upcoming?limit=${limit}`);
+    const path = `/api/events/upcoming?limit=${limit}`;
+    const cacheKey = getEventsCacheKey(path);
+
+    const cached = getEventsFromCache<Event[]>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<Event[]>(path);
+    setEventsCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load upcoming events. Please try again.');

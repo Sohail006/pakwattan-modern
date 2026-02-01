@@ -331,3 +331,68 @@ export async function checkEmailExists(email: string, excludeStudentId?: number)
   }
 }
 
+export interface BulkUpdateStudentsRequest {
+  updates: Array<{
+    id: number;
+    name?: string;
+    fatherName?: string;
+    email?: string;
+    phone?: string;
+    whatsApp?: string;
+    dateOfBirth?: string;
+    gender?: 'Male' | 'Female' | 'Other';
+    status?: 'Active' | 'Inactive' | 'Suspended' | 'Graduated' | 'Transferred';
+    address?: string;
+    previousSchool?: string;
+    gradeId?: number;
+    sectionId?: number;
+    campusId?: number;
+    sessionId?: number;
+  }>;
+}
+
+export interface BulkUpdateStudentsResponse {
+  success: number;
+  failed: number;
+  errors?: Array<{
+    studentId: number;
+    field: string;
+    error: string;
+  }>;
+}
+
+/**
+ * Bulk update multiple students
+ */
+export async function bulkUpdateStudents(
+  updates: BulkUpdateStudentsRequest['updates']
+): Promise<BulkUpdateStudentsResponse> {
+  try {
+    // Ensure dateOfBirth is in ISO format if provided
+    const processedUpdates = updates.map(update => {
+      if (update.dateOfBirth) {
+        if (typeof update.dateOfBirth === 'string') {
+          // If it's already an ISO string, use it; otherwise parse it
+          if (!update.dateOfBirth.includes('T')) {
+            // It's a date string (YYYY-MM-DD), convert to ISO
+            const date = new Date(update.dateOfBirth);
+            if (isNaN(date.getTime())) {
+              throw new Error(`Invalid date of birth for student ${update.id}`);
+            }
+            update.dateOfBirth = date.toISOString();
+          }
+        }
+      }
+      return update;
+    });
+
+    return await api.post<BulkUpdateStudentsResponse>(
+      '/api/students/bulk-update',
+      { updates: processedUpdates }
+    );
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to update students. Please try again.');
+  }
+}
+

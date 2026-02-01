@@ -30,12 +30,14 @@ const Achievements = () => {
   useEffect(() => {
     if (entry?.isIntersecting) {
       const animateCounts = () => {
+        // Use fixed keys array instead of deriving from counts to avoid dependency
+        const keys = ['students', 'awards', 'alumni', 'campuses'] as const
         ACHIEVEMENTS_DATA.forEach((achievement, index) => {
           const duration = 2000
           const startTime = performance.now()
           const startValue = 0
           const endValue = achievement.count
-          const key = Object.keys(counts)[index]
+          const key = keys[index]
 
           const animate = (currentTime: number) => {
             const elapsed = currentTime - startTime

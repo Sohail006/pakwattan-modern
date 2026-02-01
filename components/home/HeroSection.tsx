@@ -46,7 +46,7 @@ const HeroSection = () => {
           </div>
         )}
         
-        {/* Video background with optimized loading */}
+        {/* Video background with optimized loading (desktop only to reduce mobile load) */}
         {!videoError && (
           <video
             autoPlay
@@ -54,10 +54,10 @@ const HeroSection = () => {
             loop
             playsInline
             preload="metadata"
-            poster="/images/hero-poster.jpg"
+            poster="/images/logo/logo_150x150.png"
             onError={handleVideoError}
             onLoadedData={handleVideoLoaded}
-            className={`w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            className={`hidden md:block w-full h-full object-cover transition-opacity duration-700 ease-out ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
             aria-label="Pak Wattan School background video"
           >
             <source src="/files/bannerImage.mp4" type="video/mp4" />
@@ -136,7 +136,7 @@ const HeroSection = () => {
                   aria-label="Check scholarship result date"
                 >
                   <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  Result Date
+                  <span>Result Date</span>
                 </Button>
               </div>
             </div>
@@ -150,7 +150,7 @@ const HeroSection = () => {
                   <Link
                     key={index}
                     href={link.href}
-                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 active:bg-gradient-to-r active:from-primary-100 active:to-accent-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:-translate-y-0.5 active:scale-100 touch-target min-h-[44px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 rounded-xl"
+                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 active:bg-gradient-to-r active:from-primary-100 active:to-accent-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:-translate-y-0.5 active:scale-100 touch-target min-h-[44px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2"
                     title={link.title}
                     aria-label={`Navigate to ${link.title}`}
                   >

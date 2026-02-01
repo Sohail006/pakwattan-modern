@@ -78,7 +78,7 @@ const NewsAndEvents = dynamic(() => import('@/components/home/NewsAndEvents'), {
 })
 
 const FooterCTA = dynamic(() => import('@/components/home/FooterCTA'), {
-  loading: () => <SkeletonLoader variant="card" height="h-32" className="my-8" />
+  loading: () => <SkeletonLoader variant="card" className="my-8 h-32" />
 })
 export default function Home() {
   return (

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { GraduationCap, BookOpen, Trophy } from 'lucide-react'
 import Container from '@/components/ui/Container'
@@ -56,7 +55,7 @@ const DiscoverWonders = () => {
             const isVisible = entry?.isIntersecting
             return (
               <Link
-                key={index}
+                key={wing.href}
                 href={wing.href}
                 className="group block"
                 aria-label={`Learn more about ${wing.title}`}

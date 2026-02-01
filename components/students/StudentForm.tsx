@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
-import { X, Loader2, Users, Plus, AlertCircle } from 'lucide-react'
+import { X, Loader2, Users, Plus, AlertCircle, User, GraduationCap, Info } from 'lucide-react'
 import { Student, createStudent, updateStudent, CreateStudentRequest, UpdateStudentRequest, checkEmailExists } from '@/lib/api/students'
 import { getGrades, Grade } from '@/lib/api/grades'
 import { getSections, Section } from '@/lib/api/sections'
@@ -60,6 +60,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
   
   // Guardian form modal state
   const [showGuardianForm, setShowGuardianForm] = useState(false)
+  
+  // Form section/tab state for better organization
+  const [activeSection, setActiveSection] = useState<'personal' | 'academic' | 'guardian' | 'additional'>('personal')
   
   // Ref for form element to scroll to errors
   const formRef = useRef<HTMLFormElement>(null)
@@ -125,9 +128,9 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
       }
 
       // Set default section if available and still unset (0)
-      // Note: Currently sections are not filtered by grade in the API
-      // TODO: Add grade-section dependency validation when backend supports it
-      if (sections.length > 0 && prev.sectionId === 0) {
+      // Note: Section will be reset if grade changes (handled in grade change handler)
+      if (sections.length > 0 && prev.sectionId === 0 && prev.gradeId > 0) {
+        // Only set default section if grade is already selected
         updates.sectionId = sections[0].id
       }
 
@@ -493,12 +496,37 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
     }
   }, [formData, mode, student, onSuccess])
 
+  // Handle grade change - reset section if grade changes (for grade-section dependency)
+  const handleGradeChange = useCallback((gradeId: number) => {
+    setFormData((prev) => {
+      const updates: Partial<FormData> = { gradeId }
+      
+      // Reset section when grade changes (grade-section dependency)
+      // This ensures section is compatible with the selected grade
+      if (prev.gradeId !== gradeId && prev.gradeId > 0) {
+        updates.sectionId = 0
+        // Clear section error if it exists
+        clearFieldError('sectionId')
+      }
+      
+      return { ...prev, ...updates }
+    })
+    clearFieldError('gradeId')
+  }, [clearFieldError])
+
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     
     // Special handling for email field - use separate handler
     if (name === 'email') {
       handleEmailChange(e as React.ChangeEvent<HTMLInputElement>)
+      return
+    }
+    
+    // Special handling for grade change - reset section
+    if (name === 'gradeId') {
+      const gradeId = value === '' ? 0 : parseInt(value) || 0
+      handleGradeChange(gradeId)
       return
     }
     
@@ -515,13 +543,13 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: name === 'gradeId' || name === 'sectionId' || name === 'campusId' || name === 'sessionId' 
+        [name]: name === 'sectionId' || name === 'campusId' || name === 'sessionId' 
           ? (value === '' ? 0 : parseInt(value) || 0)
           : value,
       }))
       clearFieldError(name)
     }
-  }, [handleEmailChange, clearFieldError])
+  }, [handleEmailChange, handleGradeChange, clearFieldError])
 
   const handlePhoneBlur = useCallback((e: React.FocusEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -551,9 +579,19 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
         }
       }}
       onKeyDown={(e) => {
-        // Close modal on Escape key (only if guardian form is not open)
-        if (e.key === 'Escape' && !showGuardianForm) {
+        // Keyboard shortcuts
+        if (showGuardianForm) return // Don't handle shortcuts when guardian form is open
+        
+        // Close modal on Escape key
+        if (e.key === 'Escape') {
           onClose()
+        }
+        // Submit form on Ctrl/Cmd + Enter
+        else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault()
+          if (formRef.current && !loading) {
+            formRef.current.requestSubmit()
+          }
         }
       }}
       tabIndex={-1}
@@ -594,38 +632,110 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-            {/* Name */}
-            <FormField label="Student Name" required error={errors.name} htmlFor="name">
-              <input
-                id="name"
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                aria-invalid={!!errors.name}
-                aria-describedby={errors.name ? 'name-error' : undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              />
-            </FormField>
+          {/* Form Sections/Tabs - Better organization */}
+          <div className="border-b border-gray-200">
+            <nav className="flex flex-wrap gap-2 -mb-px" aria-label="Form sections">
+              <button
+                type="button"
+                onClick={() => setActiveSection('personal')}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeSection === 'personal'
+                    ? 'border-primary-600 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <User className="w-4 h-4" />
+                <span className="hidden sm:inline">Personal</span>
+                <span className="sm:hidden">Info</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveSection('academic')}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeSection === 'academic'
+                    ? 'border-primary-600 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span className="hidden sm:inline">Academic</span>
+                <span className="sm:hidden">Academic</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveSection('guardian')}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeSection === 'guardian'
+                    ? 'border-primary-600 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">Guardian</span>
+                <span className="sm:hidden">Guardian</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveSection('additional')}
+                className={`flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                  activeSection === 'additional'
+                    ? 'border-primary-600 text-primary-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }`}
+              >
+                <Info className="w-4 h-4" />
+                <span className="hidden sm:inline">Additional</span>
+                <span className="sm:hidden">More</span>
+              </button>
+            </nav>
+          </div>
 
-            {/* Father Name */}
-            <FormField label="Father Name" required error={errors.fatherName} htmlFor="fatherName">
-              <input
-                id="fatherName"
-                type="text"
-                name="fatherName"
-                value={formData.fatherName}
-                onChange={handleChange}
-                required
-                aria-invalid={!!errors.fatherName}
-                aria-describedby={errors.fatherName ? 'fatherName-error' : undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              />
-            </FormField>
+          {/* Personal Information Section */}
+          {(activeSection === 'personal') && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 animate-in fade-in duration-200">
+              {/* Name */}
+              <FormField 
+                label="Student Name" 
+                required 
+                error={errors.name}
+                hint="Enter the full name of the student"
+                htmlFor="name"
+              >
+                <input
+                  id="name"
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  required
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? 'name-error' : 'name-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                />
+              </FormField>
 
-            {/* Email */}
+              {/* Father Name */}
+              <FormField 
+                label="Father Name" 
+                required 
+                error={errors.fatherName}
+                hint="Enter the full name of the student's father"
+                htmlFor="fatherName"
+              >
+                <input
+                  id="fatherName"
+                  type="text"
+                  name="fatherName"
+                  value={formData.fatherName}
+                  onChange={handleChange}
+                  required
+                  aria-invalid={!!errors.fatherName}
+                  aria-describedby={errors.fatherName ? 'fatherName-error' : 'fatherName-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                />
+              </FormField>
+
+              {/* Email */}
             <FormField 
               label="Email" 
               required 
@@ -704,256 +814,319 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
               />
             </FormField>
 
-            {/* Date of Birth */}
-            <FormField label="Date of Birth" required error={errors.dateOfBirth} htmlFor="dateOfBirth">
-              <input
-                id="dateOfBirth"
-                type="date"
-                name="dateOfBirth"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                required
-                aria-invalid={!!errors.dateOfBirth}
-                aria-describedby={errors.dateOfBirth ? 'dateOfBirth-error' : undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              />
-            </FormField>
-
-            {/* Gender */}
-            <FormField label="Gender" required error={errors.gender} htmlFor="gender">
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                required
-                aria-invalid={!!errors.gender}
-                aria-describedby={errors.gender ? 'gender-error' : undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+              {/* Date of Birth */}
+              <FormField 
+                label="Date of Birth" 
+                required 
+                error={errors.dateOfBirth}
+                hint="Select the student's date of birth"
+                htmlFor="dateOfBirth"
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </FormField>
-
-            {/* Status */}
-            <FormField label="Status" required error={errors.status} htmlFor="status">
-              <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-                aria-invalid={!!errors.status}
-                aria-describedby={errors.status ? 'status-error' : undefined}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Suspended">Suspended</option>
-                <option value="Graduated">Graduated</option>
-                <option value="Transferred">Transferred</option>
-              </select>
-            </FormField>
-
-            {/* Grade */}
-            <FormField label="Grade" required error={errors.gradeId} htmlFor="gradeId">
-              {loadingOptions ? (
-                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
-                  <div className="h-5 bg-gray-300 rounded w-24"></div>
-                </div>
-              ) : (
-                <select
-                  id="gradeId"
-                  name="gradeId"
-                  value={formData.gradeId || ''}
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  name="dateOfBirth"
+                  value={formData.dateOfBirth}
                   onChange={handleChange}
                   required
-                  aria-invalid={!!errors.gradeId}
-                  aria-describedby={errors.gradeId ? 'gradeId-error' : undefined}
+                  max={new Date().toISOString().split('T')[0]} // Prevent future dates
+                  aria-invalid={!!errors.dateOfBirth}
+                  aria-describedby={errors.dateOfBirth ? 'dateOfBirth-error' : 'dateOfBirth-hint'}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                >
-                  <option value="">Select Grade</option>
-                  {grades.map(grade => (
-                    <option key={grade.id} value={grade.id}>
-                      {grade.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </FormField>
-
-            {/* Section */}
-            <FormField label="Section" required error={errors.sectionId} htmlFor="sectionId">
-              {loadingOptions ? (
-                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
-                  <div className="h-5 bg-gray-300 rounded w-24"></div>
-                </div>
-              ) : (
-                <select
-                  id="sectionId"
-                  name="sectionId"
-                  value={formData.sectionId || ''}
-                  onChange={handleChange}
-                  required
-                  aria-invalid={!!errors.sectionId}
-                  aria-describedby={errors.sectionId ? 'sectionId-error' : undefined}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                >
-                  <option value="">Select Section</option>
-                  {sections.map(section => (
-                    <option key={section.id} value={section.id}>
-                      {section.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </FormField>
-
-            {/* Campus */}
-            <FormField label="Campus" required error={errors.campusId} htmlFor="campusId">
-              {loadingOptions ? (
-                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
-                  <div className="h-5 bg-gray-300 rounded w-24"></div>
-                </div>
-              ) : (
-                <select
-                  id="campusId"
-                  name="campusId"
-                  value={formData.campusId || ''}
-                  onChange={handleChange}
-                  required
-                  aria-invalid={!!errors.campusId}
-                  aria-describedby={errors.campusId ? 'campusId-error' : undefined}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                >
-                  <option value="">Select Campus</option>
-                  {campuses.map(campus => (
-                    <option key={campus.id} value={campus.id}>
-                      {campus.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </FormField>
-
-            {/* Session */}
-            <FormField label="Session" required error={errors.sessionId} htmlFor="sessionId">
-              {loadingOptions ? (
-                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
-                  <div className="h-5 bg-gray-300 rounded w-24"></div>
-                </div>
-              ) : (
-                <select
-                  id="sessionId"
-                  name="sessionId"
-                  value={formData.sessionId || ''}
-                  onChange={handleChange}
-                  required
-                  aria-invalid={!!errors.sessionId}
-                  aria-describedby={errors.sessionId ? 'sessionId-error' : undefined}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-                >
-                  <option value="">Select Session</option>
-                  {sessions.map(session => (
-                    <option key={session.id} value={session.id}>
-                      {session.name} {session.isCurrent && '(Current)'}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </FormField>
-
-            {/* Guardian */}
-            <FormField 
-              label={
-                <div className="flex items-center justify-between w-full">
-                  <span className="flex items-center">
-                    <Users className="inline w-4 h-4 mr-1" />
-                    Guardian
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleOpenGuardianForm}
-                    className="flex items-center space-x-1 text-sm text-primary-600 hover:text-primary-700 font-medium transition-all hover:bg-primary-50 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-                    aria-label="Create new guardian"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Create New</span>
-                  </button>
-                </div>
-              }
-              required 
-              error={errors.guardianId}
-            >
-              {loadingOptions ? (
-                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
-                  <div className="h-5 bg-gray-300 rounded w-32"></div>
-                </div>
-              ) : (
-                <SearchableSelect
-                  options={guardianOptions}
-                  value={formData.guardianId || 0}
-                  onChange={handleGuardianChange}
-                  placeholder="Search and select a guardian..."
-                  searchPlaceholder="Search by name, email, phone, or relation..."
-                  emptyMessage={guardians.length === 0 ? "No guardians available. Click 'Create New' to add one." : "No guardians found matching your search."}
-                  loading={loadingOptions}
-                  disabled={guardians.length === 0}
-                  required
-                  error={errors.guardianId}
-                  maxHeight="max-h-72"
-                  highlightMatch={true}
-                  showClearButton={true}
-                  filterFunction={guardianFilterFunction}
                 />
-              )}
-              {!loadingOptions && guardians.length === 0 && !errors.guardianId && (
-                <div className="mt-1 flex items-start space-x-1">
-                  <AlertCircle className="w-3 h-3 text-amber-600 mt-0.5 flex-shrink-0" />
-                  <p className="text-xs text-amber-600">
-                    No active guardians found. Click &quot;Create New&quot; to add a guardian.
-                  </p>
-                </div>
-              )}
-            </FormField>
-          </div>
+              </FormField>
 
-          {/* Address */}
-          <FormField label="Address" error={errors.address} htmlFor="address">
-            <textarea
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              rows={3}
-              aria-invalid={!!errors.address}
-              aria-describedby={errors.address ? 'address-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-y"
-            />
-          </FormField>
+              {/* Gender */}
+              <FormField 
+                label="Gender" 
+                required 
+                error={errors.gender}
+                hint="Select the student's gender"
+                htmlFor="gender"
+              >
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                  aria-invalid={!!errors.gender}
+                  aria-describedby={errors.gender ? 'gender-error' : 'gender-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </FormField>
 
-          {/* Previous School */}
-          <FormField label="Previous School" error={errors.previousSchool} htmlFor="previousSchool">
-            <input
-              id="previousSchool"
-              type="text"
-              name="previousSchool"
-              value={formData.previousSchool}
-              onChange={handleChange}
-              aria-invalid={!!errors.previousSchool}
-              aria-describedby={errors.previousSchool ? 'previousSchool-error' : undefined}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-            />
-          </FormField>
+              {/* Status */}
+              <FormField 
+                label="Status" 
+                required 
+                error={errors.status}
+                hint="Select the current enrollment status"
+                htmlFor="status"
+              >
+                <select
+                  id="status"
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                  required
+                  aria-invalid={!!errors.status}
+                  aria-describedby={errors.status ? 'status-error' : 'status-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                  <option value="Suspended">Suspended</option>
+                  <option value="Graduated">Graduated</option>
+                  <option value="Transferred">Transferred</option>
+                </select>
+              </FormField>
+            </div>
+          )}
+
+          {/* Academic Information Section */}
+          {(activeSection === 'academic') && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 animate-in fade-in duration-200">
+              {/* Grade */}
+              <FormField 
+                label="Grade" 
+                required 
+                error={errors.gradeId}
+                hint="Selecting a grade will reset the section selection"
+                htmlFor="gradeId"
+              >
+                {loadingOptions ? (
+                  <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
+                    <div className="h-5 bg-gray-300 rounded w-24"></div>
+                  </div>
+                ) : (
+                  <select
+                    id="gradeId"
+                    name="gradeId"
+                    value={formData.gradeId || ''}
+                    onChange={handleChange}
+                    required
+                    aria-invalid={!!errors.gradeId}
+                    aria-describedby={errors.gradeId ? 'gradeId-error' : 'gradeId-hint'}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  >
+                    <option value="">Select Grade</option>
+                    {grades.map(grade => (
+                      <option key={grade.id} value={grade.id}>
+                        {grade.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </FormField>
+
+              {/* Section */}
+              <FormField 
+                label="Section" 
+                required 
+                error={errors.sectionId} 
+                hint={formData.gradeId === 0 ? 'Please select a grade first' : undefined}
+                htmlFor="sectionId"
+              >
+                {loadingOptions ? (
+                  <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
+                    <div className="h-5 bg-gray-300 rounded w-24"></div>
+                  </div>
+                ) : (
+                  <select
+                    id="sectionId"
+                    name="sectionId"
+                    value={formData.sectionId || ''}
+                    onChange={handleChange}
+                    required
+                    disabled={formData.gradeId === 0}
+                    aria-invalid={!!errors.sectionId}
+                    aria-describedby={errors.sectionId ? 'sectionId-error' : formData.gradeId === 0 ? 'sectionId-hint' : undefined}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                      formData.gradeId === 0 ? 'bg-gray-100 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <option value="">
+                      {formData.gradeId === 0 ? 'Select Grade First' : 'Select Section'}
+                    </option>
+                    {sections.map(section => (
+                      <option key={section.id} value={section.id}>
+                        {section.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </FormField>
+
+              {/* Campus */}
+              <FormField label="Campus" required error={errors.campusId} htmlFor="campusId">
+                {loadingOptions ? (
+                  <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
+                    <div className="h-5 bg-gray-300 rounded w-24"></div>
+                  </div>
+                ) : (
+                  <select
+                    id="campusId"
+                    name="campusId"
+                    value={formData.campusId || ''}
+                    onChange={handleChange}
+                    required
+                    aria-invalid={!!errors.campusId}
+                    aria-describedby={errors.campusId ? 'campusId-error' : undefined}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  >
+                    <option value="">Select Campus</option>
+                    {campuses.map(campus => (
+                      <option key={campus.id} value={campus.id}>
+                        {campus.name}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </FormField>
+
+              {/* Session */}
+              <FormField label="Session" required error={errors.sessionId} htmlFor="sessionId">
+                {loadingOptions ? (
+                  <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
+                    <div className="h-5 bg-gray-300 rounded w-24"></div>
+                  </div>
+                ) : (
+                  <select
+                    id="sessionId"
+                    name="sessionId"
+                    value={formData.sessionId || ''}
+                    onChange={handleChange}
+                    required
+                    aria-invalid={!!errors.sessionId}
+                    aria-describedby={errors.sessionId ? 'sessionId-error' : undefined}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                  >
+                    <option value="">Select Session</option>
+                    {sessions.map(session => (
+                      <option key={session.id} value={session.id}>
+                        {session.name} {session.isCurrent && '(Current)'}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </FormField>
+            </div>
+          )}
+
+          {/* Guardian Section */}
+          {(activeSection === 'guardian') && (
+            <div className="animate-in fade-in duration-200">
+              <FormField 
+                label={
+                  <div className="flex items-center justify-between w-full flex-wrap gap-2">
+                    <span className="flex items-center">
+                      <Users className="inline w-4 h-4 mr-1" />
+                      Guardian
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleOpenGuardianForm}
+                      className="flex items-center space-x-1 text-sm text-primary-600 hover:text-primary-700 font-medium transition-all hover:bg-primary-50 px-2 py-1 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                      aria-label="Create new guardian"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span className="hidden sm:inline">Create New</span>
+                      <span className="sm:hidden">New</span>
+                    </button>
+                  </div>
+                }
+                required 
+                error={errors.guardianId}
+                hint="A guardian must be selected for each student"
+              >
+                {loadingOptions ? (
+                  <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 animate-pulse">
+                    <div className="h-5 bg-gray-300 rounded w-32"></div>
+                  </div>
+                ) : (
+                  <SearchableSelect
+                    options={guardianOptions}
+                    value={formData.guardianId || 0}
+                    onChange={handleGuardianChange}
+                    placeholder="Search and select a guardian..."
+                    searchPlaceholder="Search by name, email, phone, or relation..."
+                    emptyMessage={guardians.length === 0 ? "No guardians available. Click 'Create New' to add one." : "No guardians found matching your search."}
+                    loading={loadingOptions}
+                    disabled={guardians.length === 0}
+                    required
+                    error={errors.guardianId}
+                    maxHeight="max-h-72"
+                    highlightMatch={true}
+                    showClearButton={true}
+                    filterFunction={guardianFilterFunction}
+                  />
+                )}
+                {!loadingOptions && guardians.length === 0 && !errors.guardianId && (
+                  <div className="mt-1 flex items-start space-x-1">
+                    <AlertCircle className="w-3 h-3 text-amber-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-amber-600">
+                      No active guardians found. Click &quot;Create New&quot; to add a guardian.
+                    </p>
+                  </div>
+                )}
+              </FormField>
+            </div>
+          )}
+
+          {/* Additional Information Section */}
+          {(activeSection === 'additional') && (
+            <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-200">
+              {/* Address */}
+              <FormField 
+                label="Address" 
+                error={errors.address}
+                hint="Enter the student's residential address (optional)"
+                htmlFor="address"
+              >
+                <textarea
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  rows={3}
+                  aria-invalid={!!errors.address}
+                  aria-describedby={errors.address ? 'address-error' : 'address-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 resize-y"
+                />
+              </FormField>
+
+              {/* Previous School */}
+              <FormField 
+                label="Previous School" 
+                error={errors.previousSchool}
+                hint="Enter the name of the student's previous school (if applicable)"
+                htmlFor="previousSchool"
+              >
+                <input
+                  id="previousSchool"
+                  type="text"
+                  name="previousSchool"
+                  value={formData.previousSchool}
+                  onChange={handleChange}
+                  aria-invalid={!!errors.previousSchool}
+                  aria-describedby={errors.previousSchool ? 'previousSchool-error' : 'previousSchool-hint'}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
+                />
+              </FormField>
+            </div>
+          )}
 
           {/* Actions */}
-          <div className="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 sm:gap-4 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 order-2 sm:order-1"
               aria-label="Cancel and close form"
             >
               Cancel
@@ -961,12 +1134,18 @@ export default function StudentForm({ student, mode, onClose, onSuccess }: Stude
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg hover:from-primary-700 hover:to-accent-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-md hover:shadow-lg"
+              className="px-6 py-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-lg hover:from-primary-700 hover:to-accent-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 shadow-md hover:shadow-lg order-1 sm:order-2"
               aria-label={mode === 'create' ? 'Create student' : 'Update student'}
+              title={mode === 'create' ? 'Create student (Ctrl+Enter)' : 'Update student (Ctrl+Enter)'}
             >
               {loading && <Loader2 className="w-4 h-4 animate-spin" />}
               <span>{mode === 'create' ? 'Create Student' : 'Update Student'}</span>
             </button>
+          </div>
+          {/* Keyboard shortcut hint */}
+          <div className="text-xs text-gray-500 text-center pt-2 border-t border-gray-100">
+            <span className="hidden sm:inline">Press <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Enter</kbd> to submit, <kbd className="px-1.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-xs">Esc</kbd> to cancel</span>
+            <span className="sm:hidden">Press Esc to cancel</span>
           </div>
         </form>
       </div>

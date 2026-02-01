@@ -30,10 +30,16 @@ const TopNewsMarquee = () => {
 
   if (loading) {
     return (
-      <div className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 sm:pt-16 text-sm sm:text-base font-bold shadow-lg relative overflow-hidden">
+      <div
+        className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 sm:pt-16 text-sm sm:text-base font-bold shadow-lg relative overflow-hidden"
+        role="status"
+        aria-busy="true"
+        aria-live="polite"
+        aria-label="Loading latest news"
+      >
         <Container className="text-center px-4">
           <div className="flex items-center justify-center py-2">
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
           </div>
         </Container>
       </div>
@@ -41,7 +47,12 @@ const TopNewsMarquee = () => {
   }
 
   if (marqueeItems.length === 0) {
-    return null
+    return (
+      <div
+        className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-400 text-black py-1 pt-14 sm:pt-16 text-sm sm:text-base font-bold shadow-lg relative overflow-hidden min-h-[3rem]"
+        aria-hidden
+      />
+    )
   }
 
   return (
@@ -56,7 +67,7 @@ const TopNewsMarquee = () => {
           <div className="hover:pause-animation">
             <div className="animate-marquee whitespace-nowrap">
               {marqueeItems.map((item, index) => (
-                <span key={index} className="inline-block mr-6 sm:mr-12 px-2 sm:px-3 py-0.5 bg-white/20 rounded-full text-xs sm:text-sm break-words">
+                <span key={`marquee-${index}`} className="inline-block mr-6 sm:mr-12 px-2 sm:px-3 py-0.5 bg-white/20 rounded-full text-xs sm:text-sm break-words">
                   {item}
                 </span>
               ))}

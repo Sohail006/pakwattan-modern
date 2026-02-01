@@ -1,6 +1,35 @@
 // News API endpoints
 import { api, ApiError } from './client';
 
+// Simple in-memory cache for frequently-used read endpoints
+const NEWS_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+type CacheEntry<T> = {
+  data: T;
+  timestamp: number;
+};
+
+const newsCache = new Map<string, CacheEntry<unknown>>();
+
+function getCacheKey(path: string): string {
+  return `news:${path}`;
+}
+
+function getFromCache<T>(key: string): T | null {
+  const entry = newsCache.get(key) as CacheEntry<T> | undefined;
+  if (!entry) return null;
+  const isExpired = Date.now() - entry.timestamp > NEWS_CACHE_TTL_MS;
+  if (isExpired) {
+    newsCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+
+function setCache<T>(key: string, data: T) {
+  newsCache.set(key, { data, timestamp: Date.now() });
+}
+
 export interface News {
   id: number;
   title: string;
@@ -75,7 +104,15 @@ export async function getNews(params?: PaginatedNewsParams): Promise<PaginatedNe
     if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder);
 
     const queryString = queryParams.toString();
-    return await api.get<PaginatedNewsResponse>(`/api/news${queryString ? `?${queryString}` : ''}`);
+    const path = `/api/news${queryString ? `?${queryString}` : ''}`;
+    const cacheKey = getCacheKey(path);
+
+    const cached = getFromCache<PaginatedNewsResponse>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<PaginatedNewsResponse>(path);
+    setCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load news. Please try again.');
@@ -87,7 +124,15 @@ export async function getNews(params?: PaginatedNewsParams): Promise<PaginatedNe
  */
 export async function getNewsById(id: number): Promise<News> {
   try {
-    return await api.get<News>(`/api/news/${id}`);
+    const path = `/api/news/${id}`;
+    const cacheKey = getCacheKey(path);
+
+    const cached = getFromCache<News>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<News>(path);
+    setCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load news item. Please try again.');
@@ -99,7 +144,15 @@ export async function getNewsById(id: number): Promise<News> {
  */
 export async function getNewsBySlug(slug: string): Promise<News> {
   try {
-    return await api.get<News>(`/api/news/slug/${slug}`);
+    const path = `/api/news/slug/${slug}`;
+    const cacheKey = getCacheKey(path);
+
+    const cached = getFromCache<News>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<News>(path);
+    setCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load news item. Please try again.');
@@ -111,7 +164,15 @@ export async function getNewsBySlug(slug: string): Promise<News> {
  */
 export async function getFeaturedNews(limit: number = 5): Promise<News[]> {
   try {
-    return await api.get<News[]>(`/api/news/featured?limit=${limit}`);
+    const path = `/api/news/featured?limit=${limit}`;
+    const cacheKey = getCacheKey(path);
+
+    const cached = getFromCache<News[]>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<News[]>(path);
+    setCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load featured news. Please try again.');
@@ -123,7 +184,15 @@ export async function getFeaturedNews(limit: number = 5): Promise<News[]> {
  */
 export async function getMarqueeNews(limit: number = 10): Promise<News[]> {
   try {
-    return await api.get<News[]>(`/api/news/marquee?limit=${limit}`);
+    const path = `/api/news/marquee?limit=${limit}`;
+    const cacheKey = getCacheKey(path);
+
+    const cached = getFromCache<News[]>(cacheKey);
+    if (cached) return cached;
+
+    const result = await api.get<News[]>(path);
+    setCache(cacheKey, result);
+    return result;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load marquee news. Please try again.');

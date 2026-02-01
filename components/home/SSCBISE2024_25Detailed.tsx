@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Trophy, ZoomIn, Grid3x3 } from 'lucide-react'
@@ -13,6 +13,7 @@ const SSCBISE2024_25Detailed = () => {
   const [showAllImages, setShowAllImages] = useState(false)
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set())
   const [mounted, setMounted] = useState(false)
+  const scrollPositionRef = useRef(0)
 
   useEffect(() => {
     setMounted(true)
@@ -20,22 +21,27 @@ const SSCBISE2024_25Detailed = () => {
 
   // Memoize resultImages to prevent unnecessary re-renders
   const resultImages = useMemo(() => [
-    { id: 1, left: '/images/ssc-results/566.jpg', right: '/images/ssc-results/1105.jpg' },
-    { id: 2, left: '/images/ssc-results/565.jpg', right: '/images/ssc-results/1101.jpg' },
-    { id: 3, left: '/images/ssc-results/565_2.jpg', right: '/images/ssc-results/1094.jpg' },
-    { id: 4, left: '/images/ssc-results/552.jpg', right: '/images/ssc-results/1078.jpg' },
-    { id: 5, left: '/images/ssc-results/538.jpg', right: '/images/ssc-results/1063.jpg' },
-    { id: 6, left: '/images/ssc-results/531.jpg', right: '/images/ssc-results/1061.jpg' },
-    { id: 7, left: '/images/ssc-results/531_1.jpg', right: '/images/ssc-results/1041.jpg' },
-    { id: 8, left: '/images/ssc-results/530.jpg', right: '/images/ssc-results/1033.jpg' },
-    { id: 9, left: '/images/ssc-results/528.jpg', right: '/images/ssc-results/1032.jpg' },
-    { id: 10, left: '/images/ssc-results/527.jpg', right: '/images/ssc-results/1023.jpg' },
-    { id: 11, left: '/images/ssc-results/521.jpg', right: '/images/ssc-results/1022.jpg' },
-    { id: 12, left: '/images/ssc-results/508.jpg', right: '/images/ssc-results/1014.jpg' },
-    { id: 13, left: '/images/ssc-results/506.jpg', right: '/images/ssc-results/1014_1.jpg' },
-    { id: 14, left: '/images/ssc-results/505.jpg', right: '/images/ssc-results/1007.jpg' },
-    { id: 15, left: '/images/ssc-results/503.jpg', right: '/images/ssc-results/1005.jpg' },
-    { id: 16, left: '/images/ssc-results/500.jpg', right: '/images/ssc-results/1005.jpg' }
+    { id: 1, left: '/images/ssc-results/573.jpeg', right: '/images/ssc-results/1105.jpg' },
+    { id: 2, left: '/images/ssc-results/572.jpeg', right: '/images/ssc-results/1101.jpg' },
+    { id: 3, left: '/images/ssc-results/570.jpeg', right: '/images/ssc-results/1094.jpg' },
+    { id: 4, left: '/images/ssc-results/561.jpeg', right: '/images/ssc-results/1078.jpg' },
+    { id: 5, left: '/images/ssc-results/547.jpeg', right: '/images/ssc-results/1063.jpg' },
+    { id: 6, left: '/images/ssc-results/547_1.jpeg', right: '/images/ssc-results/1061.jpg' },
+    { id: 7, left: '/images/ssc-results/546.jpeg', right: '/images/ssc-results/1041.jpg' },
+    { id: 8, left: '/images/ssc-results/545.jpeg', right: '/images/ssc-results/1033.jpg' },
+    { id: 9, left: '/images/ssc-results/545_1.jpeg', right: '/images/ssc-results/1032.jpg' },
+    { id: 10, left: '/images/ssc-results/545.jpeg', right: '/images/ssc-results/1023.jpg' },
+    { id: 11, left: '/images/ssc-results/541.jpeg', right: '/images/ssc-results/1022.jpg' },
+    { id: 12, left: '/images/ssc-results/538.jpeg', right: '/images/ssc-results/1014.jpg' },
+    { id: 13, left: '/images/ssc-results/537.jpeg', right: '/images/ssc-results/1014_1.jpg' },
+    { id: 14, left: '/images/ssc-results/537_1.jpeg', right: '/images/ssc-results/1007.jpg' },
+    { id: 15, left: '/images/ssc-results/537_2.jpeg', right: '/images/ssc-results/1005.jpg' },
+    { id: 16, left: '/images/ssc-results/531.jpeg', right: '/images/ssc-results/519.jpeg' },
+    { id: 17, left: '/images/ssc-results/530.jpeg', right: '/images/ssc-results/513.jpeg' },
+    { id: 18, left: '/images/ssc-results/530_1.jpeg', right: '/images/ssc-results/509.jpeg' },
+    { id: 19, left: '/images/ssc-results/527.jpeg', right: '/images/ssc-results/509.jpeg' },
+    { id: 20, left: '/images/ssc-results/523.jpeg', right: '/images/ssc-results/505.jpeg' },
+    { id: 21, left: '/images/ssc-results/520.jpeg', right: '/images/ssc-results/1005.jpg' }
   ], [])
 
   // Show only first 4 slides initially (8 images)
@@ -97,27 +103,25 @@ const SSCBISE2024_25Detailed = () => {
 
     if (zoomedImage) {
       document.addEventListener('keydown', handleEscape)
-      // Prevent body scroll when modal is open
-      const scrollY = window.scrollY
+      // Store scroll position and prevent body scroll when modal is open
+      scrollPositionRef.current = window.scrollY
       document.body.style.position = 'fixed'
-      document.body.style.top = `-${scrollY}px`
+      document.body.style.top = `-${scrollPositionRef.current}px`
       document.body.style.width = '100%'
       document.body.style.overflow = 'hidden'
     } else {
-      // Restore body scroll
-      const scrollY = document.body.style.top
+      // Restore body scroll and position
+      const savedScrollY = scrollPositionRef.current
       document.body.style.position = ''
       document.body.style.top = ''
       document.body.style.width = ''
       document.body.style.overflow = ''
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1)
-      }
+      window.scrollTo(0, savedScrollY)
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape)
-      // Cleanup on unmount
+      // Cleanup: restore body styles; scroll is restored in next effect run (zoomedImage=null)
       document.body.style.position = ''
       document.body.style.top = ''
       document.body.style.width = ''
@@ -189,6 +193,7 @@ const SSCBISE2024_25Detailed = () => {
                                   loading={index < 4 ? "eager" : "lazy"}
                                   priority={index < 2}
                                   sizes="(max-width: 1024px) 100vw, 50vw"
+                                  unoptimized
                                   onError={() => setImageErrors(prev => new Set(prev).add(slide.left))}
                                 />
                               ) : (
@@ -220,6 +225,7 @@ const SSCBISE2024_25Detailed = () => {
                                   loading={index < 4 ? "eager" : "lazy"}
                                   priority={index < 2}
                                   sizes="(max-width: 1024px) 100vw, 50vw"
+                                  unoptimized
                                   onError={() => setImageErrors(prev => new Set(prev).add(slide.right))}
                                 />
                               ) : (
@@ -349,7 +355,7 @@ const SSCBISE2024_25Detailed = () => {
                           return (
                             <div
                               key={image.id}
-                              className="group relative aspect-[3/4] rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer bg-gradient-to-br from-white to-yellow-50/50 animate-fade-in-up"
+                              className="group relative aspect-[3/4] min-h-[140px] w-full rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer bg-gradient-to-br from-white to-yellow-50/50 animate-fade-in-up"
                               style={{
                                 animationDelay: `${idx * 0.05}s`,
                                 animationFillMode: 'both'
@@ -370,6 +376,7 @@ const SSCBISE2024_25Detailed = () => {
                                     loading={idx < 8 ? "eager" : "lazy"}
                                     priority={idx < 4}
                                     sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 20vw, 16vw"
+                                    unoptimized
                                     onError={() => {
                                       console.error(`Failed to load image: ${image.src}`)
                                       setImageErrors(prev => new Set(prev).add(image.src))
@@ -403,6 +410,7 @@ const SSCBISE2024_25Detailed = () => {
                     </div>
                   </div>
                 )}
+
               </AnimatedFireworksBackground>
             </div>
           </div>
@@ -446,7 +454,7 @@ const SSCBISE2024_25Detailed = () => {
                 e.stopPropagation()
               }}
               priority
-              unoptimized={false}
+              unoptimized
               onError={() => {
                 console.error('Failed to load zoomed image:', zoomedImage)
                 setZoomedImage(null)
