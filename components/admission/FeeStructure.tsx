@@ -6,21 +6,21 @@ import Card from '@/components/ui/Card'
 
 const FeeStructure = () => {
   const feeData = [
-    { class: 'Playgroup (PG)', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
-    { class: 'Kindergarten (KG)', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
-    { class: 'Prep', monthly: 'PKR 4,500', admission: 'PKR 12,000', annual: 'PKR 10,000' },
-    { class: 'Grade 1', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 2', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 3', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 4', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 5', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 6', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 7', monthly: 'PKR 5,000', admission: 'PKR 14,000', annual: 'PKR 10,000' },
-    { class: 'Grade 8', monthly: 'PKR 5,500', admission: 'PKR 17,000', annual: 'PKR 10,000' },
-    { class: 'Grade 9', monthly: 'PKR 5,500', admission: 'PKR 17,000', annual: 'PKR 20,000' },
-    { class: 'Grade 10', monthly: 'PKR 6,500', admission: 'PKR 17,000', annual: 'PKR 20,000' },
-    { class: 'Grade 11', monthly: 'PKR 7,500', admission: 'PKR 22,000', annual: 'PKR 20,000' },
-    { class: 'Grade 12', monthly: 'PKR 7,500', admission: 'PKR 22,000', annual: 'PKR 20,000' }
+    { class: 'Playgroup (PG)', monthly: 'PKR 4,500', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Kindergarten (KG)', monthly: 'PKR 4,500', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Prep', monthly: 'PKR 4,500', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 1', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 2', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 3', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 4', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 5', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 6', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 7', monthly: 'PKR 5,000', admission: 'PKR 15,000', annual: 'PKR 15,000' },
+    { class: 'Grade 8', monthly: 'PKR 5,500', admission: 'PKR 15,000', annual: 'PKR 20,000' },
+    { class: 'Grade 9', monthly: 'PKR 5,500', admission: 'PKR 20,000', annual: 'PKR 20,000' },
+    { class: 'Grade 10', monthly: 'PKR 6,500', admission: 'PKR 20,000', annual: 'PKR 20,000' },
+    { class: 'Grade 11', monthly: 'PKR 7,500', admission: 'PKR 20,000', annual: 'PKR 20,000' },
+    { class: 'Grade 12', monthly: 'PKR 7,500', admission: 'PKR 20,000', annual: 'PKR 20,000' }
   ]
 
   const ageLimits = [
