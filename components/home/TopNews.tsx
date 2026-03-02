@@ -23,8 +23,8 @@ const TopNews = () => {
   const newsItems = [
     {
       id: 1,
-      title: "مسلسل چار سال میں چار مرتبہ حویلیاں سرکل ٹاپ",
-      subtitle: "Four consecutive years topping Havelian Circle",
+      title: "مسلسل پانچ سال میں پانچ مرتبہ حویلیاں سرکل ٹاپ",
+      subtitle: "Five consecutive years topping Havelian Circle",
       type: "achievement",
       urgent: true,
       icon: Trophy,
