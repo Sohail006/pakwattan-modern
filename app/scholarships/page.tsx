@@ -5,8 +5,6 @@ import ScholarshipNotice from '@/components/scholarships/ScholarshipNotice'
 import StructuredData from '@/components/seo/StructuredData'
 import { 
   scholarshipStats, 
-  scholarshipTypes, 
-  scholarshipCriteria, 
   allScholarshipSessions 
 } from '@/lib/scholarship-data'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
@@ -23,10 +21,6 @@ const ScholarshipDataTables = dynamic(() => import('@/components/scholarships/Sc
 })
 
 const ScholarshipTypes = dynamic(() => import('@/components/scholarships/ScholarshipTypes'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
-})
-
-const ScholarshipCriteria = dynamic(() => import('@/components/scholarships/ScholarshipCriteria'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
 
@@ -56,10 +50,6 @@ export default function ScholarshipsPage() {
         <ScholarshipTypes />
         <ScholarshipNotice />
         <ScholarshipDataTables sessions={allScholarshipSessions} />
-        <ScholarshipCriteria 
-          criteria={scholarshipCriteria} 
-          scholarshipTypes={scholarshipTypes} 
-        />
         <ScholarshipApplicationProcess />
       </div>
     </>

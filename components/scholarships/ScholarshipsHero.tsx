@@ -48,8 +48,8 @@ const ScholarshipsHero = () => {
                 PWSCS gives scholarships to students every year, including Pakians Scholarship, 
                 Merit Based Scholarship, Orphans Scholarship, Special child Scholarship, and Hafiz ul Quran Scholarship. Our 
                 <strong> 15 Lacs Scholarship Program</strong> supports deserving students. 
-                The scholarship test has always been conducted on <strong>March 23rd</strong> 
-                in the girl&apos;s campus Havelian.
+                The scholarship test has always been conducted on <strong>March 23rd</strong>
+                {' '}in the girl&apos;s campus Havelian.
               </p>
             </div>
 
