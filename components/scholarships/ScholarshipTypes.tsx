@@ -49,14 +49,6 @@ const ScholarshipTypes = () => {
                 </h3>
               </div>
 
-              {/* Amount */}
-              <div className="mb-3 sm:mb-4">
-                <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">Amount Range</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-accent-600 break-words">
-                  {type.amount}
-                </p>
-              </div>
-
               {/* Criteria */}
               <div className="mb-3 sm:mb-4">
                 <p className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">Criteria</p>
