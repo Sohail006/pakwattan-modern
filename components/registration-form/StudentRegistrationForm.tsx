@@ -431,25 +431,18 @@ export default function StudentRegistrationForm() {
       })
 
       setSuccess(response)
-      
-      // If response doesn't have test info, fetch from active admission settings as fallback
+
+      // If response doesn't have test info, use cached active admission setting (no extra API call)
       if (!response.testVenue || !response.testDate || !response.testTime) {
-        try {
-          const activeSetting = await getActiveAdmissionSetting()
-          if (activeSetting) {
-            setTestInfoFromSettings({
-              testVenue: activeSetting.defaultTestVenue || undefined,
-              testDate: activeSetting.testStartDate || undefined,
-              testTime: activeSetting.defaultTestTime || undefined,
-            })
-          }
-        } catch (error) {
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('[RegistrationForm] Failed to fetch test info from admission settings:', error)
-          }
+        if (activeSetting) {
+          setTestInfoFromSettings({
+            testVenue: activeSetting.defaultTestVenue || undefined,
+            testDate: activeSetting.testStartDate || undefined,
+            testTime: activeSetting.defaultTestTime || undefined,
+          })
         }
       } else {
-        setTestInfoFromSettings(null) // Clear fallback if response has test info
+        setTestInfoFromSettings(null)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit registration. Please try again.')
@@ -491,14 +484,18 @@ export default function StudentRegistrationForm() {
     }
   }, [success])
 
-  // Load admission settings
+  // Single bootstrap: fetch active setting once, then load scholarships + grades in parallel (no duplicate API calls)
   useEffect(() => {
-    const loadSettings = async () => {
+    const loadBootstrap = async () => {
+      setLoadingSettings(true)
+      setLoadingScholarships(true)
+      setLoadingGrades(true)
+
+      let activeSetting: AdmissionSetting | null = null
       try {
-        setLoadingSettings(true)
-        const setting = await getActiveAdmissionSetting()
-        setActiveSetting(setting)
-        setSettingsStatus(deriveRegistrationStatus(setting))
+        activeSetting = await getActiveAdmissionSetting()
+        setActiveSetting(activeSetting)
+        setSettingsStatus(deriveRegistrationStatus(activeSetting))
         setSettingsError(null)
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
@@ -510,151 +507,106 @@ export default function StudentRegistrationForm() {
       } finally {
         setLoadingSettings(false)
       }
-    }
-    loadSettings()
-  }, [])
 
-  // Load scholarship types from API (only active ones)
-  useEffect(() => {
-    const loadScholarshipTypes = async () => {
+      // Load scholarship types and admission criteria in parallel (reuse activeSetting; no second settings call)
       try {
-        setLoadingScholarships(true)
-        setScholarshipsError(null)
-        const allTypes = await getAllScholarshipTypes()
-        // Filter only active scholarship types and sort by displayOrder
+        const [allTypes, allCriteria] = await Promise.all([
+          getAllScholarshipTypes(),
+          getAllAdmissionCriteria(),
+        ])
+
         const activeTypes = allTypes
           .filter(type => type.isActive)
           .sort((a, b) => a.displayOrder - b.displayOrder)
         setScholarshipTypes(activeTypes)
-      } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('[RegistrationForm] Unable to load scholarship types:', err)
-        }
-        setScholarshipsError('Unable to load scholarship types. Please refresh the page.')
-        setScholarshipTypes([]) // Fallback to empty array
-      } finally {
-        setLoadingScholarships(false)
-      }
-    }
-    loadScholarshipTypes()
-  }, [])
+        setScholarshipsError(null)
 
-  // Load grades from "Passing Marks by Grade" in active admission settings
-  useEffect(() => {
-    const loadGradesFromCriteria = async () => {
-      try {
-        setLoadingGrades(true)
-        setGradesError(null)
-
-        // First, get active admission setting
-        const activeSetting = await getActiveAdmissionSetting()
-        
         if (!activeSetting) {
           setGradesError('Admission settings are not configured. Please contact the administration.')
           setGrades([])
-          return
-        }
+        } else {
+          const activeCriteria = allCriteria.filter(criteria => {
+            const matchesSession = criteria.sessionId === activeSetting!.sessionId
+            const matchesYear = criteria.academicYear === activeSetting!.academicYear
+            const isActive = criteria.isActive !== false
+            return matchesSession && matchesYear && isActive
+          })
 
-        // Get all admission criteria
-        const allCriteria = await getAllAdmissionCriteria()
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[RegistrationForm] Loaded all criteria:', allCriteria)
-        }
-
-        // Filter criteria for the active admission setting
-        // Match by sessionId and academicYear (or by settingId if available)
-        const activeCriteria = allCriteria.filter(criteria => {
-          const matchesSession = criteria.sessionId === activeSetting.sessionId
-          const matchesYear = criteria.academicYear === activeSetting.academicYear
-          const isActive = criteria.isActive !== false // Default to true if not specified
-          return matchesSession && matchesYear && isActive
-        })
-
-        if (process.env.NODE_ENV === 'development') {
-          console.log('[RegistrationForm] Filtered criteria for active setting:', activeCriteria)
-        }
-
-        if (activeCriteria.length === 0) {
-          setGradesError('No grades have been configured for this admission cycle. Please contact the administration.')
-          setGrades([])
-          return
-        }
-
-        // Extract unique grades from criteria
-        // Use a Map to deduplicate by gradeId
-        const gradeMap = new Map<number, { id: number; name: string; order: number }>()
-        
-        for (const criteria of activeCriteria) {
-          if (!gradeMap.has(criteria.gradeId)) {
-            // If gradeName is available in criteria, use it
-            // Otherwise, we'll need to fetch from Grade API
-            const gradeName = criteria.gradeName || `Grade ${criteria.gradeId}`
-            gradeMap.set(criteria.gradeId, {
-              id: criteria.gradeId,
-              name: gradeName,
-              order: criteria.gradeId // Temporary order, will update if we fetch full grade details
-            })
+          if (process.env.NODE_ENV === 'development') {
+            console.log('[RegistrationForm] Filtered criteria for active setting:', activeCriteria)
           }
-        }
 
-        // Fetch full grade details to get proper order and names
-        // This ensures we have correct sorting and names
-        try {
-          const allGradesFromAPI = await getGrades(true)
-          const gradesFromCriteria: Grade[] = []
-          
-          // Convert Map to Array for iteration
-          const gradeMapArray = Array.from(gradeMap.entries())
-          for (const [gradeId, gradeInfo] of gradeMapArray) {
-            const fullGrade = allGradesFromAPI.find(g => g.id === gradeId)
-            if (fullGrade) {
-              // Use full grade details (includes proper name and order)
-              gradesFromCriteria.push(fullGrade)
-            } else {
-              // Fallback: use info from criteria
-              gradesFromCriteria.push({
-                id: gradeInfo.id,
-                name: gradeInfo.name,
-                order: gradeInfo.order,
-                isActive: true,
-                createdAt: new Date().toISOString()
-              } as Grade)
+          if (activeCriteria.length === 0) {
+            setGradesError('No grades have been configured for this admission cycle. Please contact the administration.')
+            setGrades([])
+          } else {
+            const gradeMap = new Map<number, { id: number; name: string; order: number }>()
+            for (const criteria of activeCriteria) {
+              if (!gradeMap.has(criteria.gradeId)) {
+                const gradeName = criteria.gradeName || `Grade ${criteria.gradeId}`
+                gradeMap.set(criteria.gradeId, {
+                  id: criteria.gradeId,
+                  name: gradeName,
+                  order: criteria.gradeId,
+                })
+              }
             }
-          }
 
-          // Sort by order field
-          const sortedGrades = gradesFromCriteria.sort((a, b) => a.order - b.order)
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[RegistrationForm] Grades from admission criteria:', sortedGrades)
+            try {
+              const allGradesFromAPI = await getGrades(true)
+              const gradesFromCriteria: Grade[] = []
+              const gradeMapArray = Array.from(gradeMap.entries())
+              for (const [gradeId, gradeInfo] of gradeMapArray) {
+                const fullGrade = allGradesFromAPI.find(g => g.id === gradeId)
+                if (fullGrade) {
+                  gradesFromCriteria.push(fullGrade)
+                } else {
+                  gradesFromCriteria.push({
+                    id: gradeInfo.id,
+                    name: gradeInfo.name,
+                    order: gradeInfo.order,
+                    isActive: true,
+                    createdAt: new Date().toISOString(),
+                  } as Grade)
+                }
+              }
+              const sortedGrades = gradesFromCriteria.sort((a, b) => a.order - b.order)
+              if (process.env.NODE_ENV === 'development') {
+                console.log('[RegistrationForm] Grades from admission criteria:', sortedGrades)
+              }
+              setGrades(sortedGrades)
+            } catch (gradeApiError) {
+              if (process.env.NODE_ENV === 'development') {
+                console.warn('[RegistrationForm] Failed to fetch full grade details, using criteria data:', gradeApiError)
+              }
+              const fallbackGrades = Array.from(gradeMap.values())
+                .map(g => ({
+                  id: g.id,
+                  name: g.name,
+                  order: g.order,
+                  isActive: true,
+                  createdAt: new Date().toISOString(),
+                } as Grade))
+                .sort((a, b) => a.order - b.order)
+              setGrades(fallbackGrades)
+            }
+            setGradesError(null)
           }
-          setGrades(sortedGrades)
-        } catch (gradeApiError) {
-          // If Grade API fails, use criteria data as fallback
-          if (process.env.NODE_ENV === 'development') {
-            console.warn('[RegistrationForm] Failed to fetch full grade details, using criteria data:', gradeApiError)
-          }
-          const fallbackGrades = Array.from(gradeMap.values())
-            .map(g => ({
-              id: g.id,
-              name: g.name,
-              order: g.order,
-              isActive: true,
-              createdAt: new Date().toISOString()
-            } as Grade))
-            .sort((a, b) => a.order - b.order)
-          setGrades(fallbackGrades)
         }
       } catch (err) {
         if (process.env.NODE_ENV === 'development') {
-          console.error('[RegistrationForm] Unable to load grades from admission criteria:', err)
+          console.error('[RegistrationForm] Bootstrap load error (scholarships/grades):', err)
         }
+        setScholarshipsError('Unable to load scholarship types. Please refresh the page.')
+        setScholarshipTypes([])
         setGradesError('Unable to load grades from admission settings. Please refresh the page.')
-        setGrades([]) // Fallback to empty array
+        setGrades([])
       } finally {
+        setLoadingScholarships(false)
         setLoadingGrades(false)
       }
     }
-    loadGradesFromCriteria()
+    loadBootstrap()
   }, [])
 
   const registrationDisabled = settingsStatus ? !settingsStatus.isOpen : false
