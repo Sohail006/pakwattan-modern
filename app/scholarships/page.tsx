@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import ScholarshipsHero from '@/components/scholarships/ScholarshipsHero'
+import ScholarshipNotice from '@/components/scholarships/ScholarshipNotice'
 import StructuredData from '@/components/seo/StructuredData'
 import { 
   scholarshipStats, 
@@ -53,6 +54,7 @@ export default function ScholarshipsPage() {
         <ScholarshipsHero />
         <ScholarshipStats stats={scholarshipStats} />
         <ScholarshipTypes />
+        <ScholarshipNotice />
         <ScholarshipDataTables sessions={allScholarshipSessions} />
         <ScholarshipCriteria 
           criteria={scholarshipCriteria} 
