@@ -464,30 +464,25 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     doc.setTextColor(...primaryColor)
     doc.text('TEST INFORMATION', margin + 5, testInfoBoxY + 6)
     
-    // Test details - use registration values or fall back to active admission settings
+    // Test details: prefer live admission settings, then registration snapshot
     doc.setFontSize(8.5)
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(...darkColor)
     
-    // Try to get test info from registration, fall back to active admission settings
-    let testVenue = registration.testVenue
-    let testDate = registration.testDate
-    let testTime = registration.testTime
-    
-    // If registration doesn't have test info, try to get from active admission settings
-    // (Backend should have assigned this during registration, but this is a safety fallback)
-    if (!testVenue || !testDate || !testTime) {
-      try {
-        const activeSetting = await getActiveAdmissionSetting()
-        if (activeSetting) {
-          // Use default test info from settings as fallback
-          testVenue = testVenue || activeSetting.defaultTestVenue || undefined
-          testDate = testDate || activeSetting.testStartDate || undefined
-          testTime = testTime || activeSetting.defaultTestTime || undefined
-        }
-      } catch (error) {
-        console.warn('[PDF Generator] Failed to fetch active admission settings:', error)
+    // Prefer current active admission settings over registration snapshot so dashboard
+    // changes (e.g. Test Start Date) show on the slip even if the API returned stale values.
+    let testVenue = registration.testVenue || undefined
+    let testDate = registration.testDate || undefined
+    let testTime = registration.testTime || undefined
+    try {
+      const activeSetting = await getActiveAdmissionSetting()
+      if (activeSetting) {
+        if (activeSetting.defaultTestVenue) testVenue = activeSetting.defaultTestVenue
+        if (activeSetting.testStartDate) testDate = activeSetting.testStartDate
+        if (activeSetting.defaultTestTime) testTime = activeSetting.defaultTestTime
       }
+    } catch (error) {
+      console.warn('[PDF Generator] Failed to fetch active admission settings:', error)
     }
     
     const formattedTestTime = testTime ? formatTime(testTime) : 'To Be Announced'

@@ -432,17 +432,29 @@ export default function StudentRegistrationForm() {
 
       setSuccess(response)
 
-      // If response doesn't have test info, use cached active admission setting (no extra API call)
-      if (!response.testVenue || !response.testDate || !response.testTime) {
+      // Always merge with fresh active admission settings so Test Start Date / venue / time
+      // from the dashboard win over any stale values returned on the registration record.
+      try {
+        const fresh = await getActiveAdmissionSetting()
+        if (fresh) {
+          setTestInfoFromSettings({
+            testVenue: fresh.defaultTestVenue || response.testVenue || undefined,
+            testDate: fresh.testStartDate || response.testDate || undefined,
+            testTime: fresh.defaultTestTime || response.testTime || undefined,
+          })
+        } else {
+          setTestInfoFromSettings(null)
+        }
+      } catch {
         if (activeSetting) {
           setTestInfoFromSettings({
-            testVenue: activeSetting.defaultTestVenue || undefined,
-            testDate: activeSetting.testStartDate || undefined,
-            testTime: activeSetting.defaultTestTime || undefined,
+            testVenue: activeSetting.defaultTestVenue || response.testVenue || undefined,
+            testDate: activeSetting.testStartDate || response.testDate || undefined,
+            testTime: activeSetting.defaultTestTime || response.testTime || undefined,
           })
+        } else {
+          setTestInfoFromSettings(null)
         }
-      } else {
-        setTestInfoFromSettings(null)
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit registration. Please try again.')
@@ -675,18 +687,18 @@ export default function StudentRegistrationForm() {
                 <div className="bg-white rounded-lg p-4 border border-green-100">
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Test Venue</p>
                   <p className="text-lg font-semibold text-gray-900">
-                    {success.testVenue || testInfoFromSettings?.testVenue || 'TBA'}
+                    {testInfoFromSettings?.testVenue || success.testVenue || 'TBA'}
                   </p>
                 </div>
                 <div className="bg-white rounded-lg p-4 border border-green-100">
                   <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Test Date & Time</p>
                   <p className="text-lg font-semibold text-gray-900">
-                    {(success.testDate
-                      ? formatDate(success.testDate)
-                      : testInfoFromSettings?.testDate
-                        ? formatDate(testInfoFromSettings.testDate)
+                    {(testInfoFromSettings?.testDate
+                      ? formatDate(testInfoFromSettings.testDate)
+                      : success.testDate
+                        ? formatDate(success.testDate)
                         : 'TBA')}{' '}
-                    {formatTime(success.testTime || testInfoFromSettings?.testTime || '')}
+                    {formatTime(testInfoFromSettings?.testTime || success.testTime || '')}
                   </p>
                 </div>
               </div>
