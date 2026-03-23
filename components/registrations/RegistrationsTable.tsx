@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image'
 import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt } from '@/lib/api/registrations'
-import { getAllScholarshipTypes } from '@/lib/api/admissionSettings'
+import { getAllScholarshipTypes, getActiveAdmissionSetting } from '@/lib/api/admissionSettings'
 import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
@@ -50,6 +50,12 @@ export default function RegistrationsTable() {
   const [deletingId, setDeletingId] = useState<number | null>(null)
   const [exporting, setExporting] = useState(false)
   const [viewingDetails, setViewingDetails] = useState<RegistrationResponse | null>(null)
+  /** Merged with live admission settings so Test Start Date from dashboard shows in modal */
+  const [detailsMergedTest, setDetailsMergedTest] = useState<{
+    testVenue?: string
+    testDate?: string
+    testTime?: string
+  } | null>(null)
   const [viewingReceipt, setViewingReceipt] = useState<RegistrationResponse | null>(null)
   const [showVerificationDialog, setShowVerificationDialog] = useState(false)
   const [verificationNotes, setVerificationNotes] = useState('')
@@ -102,6 +108,34 @@ export default function RegistrationsTable() {
     }
     loadScholarshipTypes()
   }, [])
+
+  // Merge registration snapshot with live admission settings for test venue/date/time in details modal
+  useEffect(() => {
+    if (!viewingDetails) {
+      setDetailsMergedTest(null)
+      return
+    }
+    let cancelled = false
+    setDetailsMergedTest(null)
+    const reg = viewingDetails
+    const preferSetting = (fromSetting: string | undefined, fromReg: string | undefined) =>
+      fromSetting != null && String(fromSetting).trim() !== '' ? fromSetting : fromReg
+    getActiveAdmissionSetting()
+      .then((fresh) => {
+        if (cancelled || !fresh) return
+        setDetailsMergedTest({
+          testVenue: preferSetting(fresh.defaultTestVenue, reg.testVenue),
+          testDate: preferSetting(fresh.testStartDate, reg.testDate),
+          testTime: preferSetting(fresh.defaultTestTime, reg.testTime),
+        })
+      })
+      .catch(() => {
+        if (!cancelled) setDetailsMergedTest(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [viewingDetails])
 
   // Helper function to get payment status display text (using extracted utility)
   const getPaymentStatusDisplayMemo = useCallback((paymentStatus?: string, paymentMethod?: string): string => {
@@ -1104,15 +1138,25 @@ export default function RegistrationsTable() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Test Date</p>
-                  <p className="text-gray-900">{viewingDetails.testDate ? formatDate(viewingDetails.testDate) : '-'}</p>
+                  <p className="text-gray-900">
+                    {(detailsMergedTest?.testDate ?? viewingDetails.testDate)
+                      ? formatDate(detailsMergedTest?.testDate ?? viewingDetails.testDate!)
+                      : '-'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Test Time</p>
-                  <p className="text-gray-900">{viewingDetails.testTime ? formatTime(viewingDetails.testTime) : '-'}</p>
+                  <p className="text-gray-900">
+                    {(detailsMergedTest?.testTime ?? viewingDetails.testTime)
+                      ? formatTime(detailsMergedTest?.testTime ?? viewingDetails.testTime!)
+                      : '-'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Test Venue</p>
-                  <p className="text-gray-900">{viewingDetails.testVenue || '-'}</p>
+                  <p className="text-gray-900">
+                    {(detailsMergedTest?.testVenue ?? viewingDetails.testVenue) || '-'}
+                  </p>
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Status</p>

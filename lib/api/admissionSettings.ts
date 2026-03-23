@@ -166,6 +166,34 @@ export interface ScholarshipTypeUpdateDto extends Partial<ScholarshipTypeCreateD
 // Admission Settings API Functions
 // ============================================
 
+/**
+ * Normalize API payloads (.NET often returns PascalCase) so camelCase fields are populated.
+ */
+export function normalizeAdmissionSettingPayload(data: unknown): AdmissionSetting | null {
+  if (data == null || typeof data !== 'object') return null
+  const r = data as Record<string, unknown>
+  const base = data as AdmissionSetting
+  const coalesce = <T>(camel: string, pascal: string, fallback?: T): T | undefined =>
+    (r[camel] ?? r[pascal] ?? fallback) as T | undefined
+  return {
+    ...base,
+    id: coalesce<number>('id', 'Id', base.id) ?? base.id,
+    sessionId: coalesce<number>('sessionId', 'SessionId', base.sessionId) ?? base.sessionId,
+    academicYear: coalesce<string>('academicYear', 'AcademicYear', base.academicYear) ?? base.academicYear,
+    sessionName: coalesce<string>('sessionName', 'SessionName', base.sessionName),
+    testStartDate: coalesce<string>('testStartDate', 'TestStartDate', base.testStartDate),
+    testEndDate: coalesce<string>('testEndDate', 'TestEndDate', base.testEndDate),
+    defaultTestVenue: coalesce<string>('defaultTestVenue', 'DefaultTestVenue', base.defaultTestVenue),
+    defaultTestTime: coalesce<string>('defaultTestTime', 'DefaultTestTime', base.defaultTestTime),
+    registrationStartDate: coalesce<string>('registrationStartDate', 'RegistrationStartDate', base.registrationStartDate),
+    registrationEndDate: coalesce<string>('registrationEndDate', 'RegistrationEndDate', base.registrationEndDate),
+    isTestScheduled: (coalesce<boolean>('isTestScheduled', 'IsTestScheduled', base.isTestScheduled) ?? false) as boolean,
+    isRegistrationOpen: (coalesce<boolean>('isRegistrationOpen', 'IsRegistrationOpen', base.isRegistrationOpen) ?? false) as boolean,
+    registrationFee: coalesce<number>('registrationFee', 'RegistrationFee', base.registrationFee) ?? base.registrationFee,
+    testDurationMinutes: coalesce<number>('testDurationMinutes', 'TestDurationMinutes', base.testDurationMinutes) ?? base.testDurationMinutes,
+  }
+}
+
 export async function getAllAdmissionSettings(): Promise<AdmissionSetting[]> {
   try {
     const response = await api.get<AdmissionSetting[]>('/api/admission-settings');
@@ -189,7 +217,7 @@ export async function getAdmissionSettingById(id: number): Promise<AdmissionSett
 export async function getActiveAdmissionSetting(): Promise<AdmissionSetting | null> {
   try {
     const response = await api.get<AdmissionSetting>('/api/admission-settings/active');
-    return response as AdmissionSetting;
+    return normalizeAdmissionSettingPayload(response);
   } catch (error) {
     const apiError = error as ApiError;
     // If no active setting found, return null instead of throwing

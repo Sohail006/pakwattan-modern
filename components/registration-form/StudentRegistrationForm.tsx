@@ -430,32 +430,37 @@ export default function StudentRegistrationForm() {
         transactionReceiptUrl: formData.transactionReceiptUrl || undefined,
       })
 
-      setSuccess(response)
+      // Load current admission settings BEFORE setSuccess so the first paint is not stuck on
+      // stale API snapshot (response.testDate) while testInfoFromSettings is still null.
+      const preferSetting = (fromSetting: string | undefined, fromReg: string | undefined) =>
+        fromSetting != null && String(fromSetting).trim() !== '' ? fromSetting : fromReg
 
-      // Always merge with fresh active admission settings so Test Start Date / venue / time
-      // from the dashboard win over any stale values returned on the registration record.
+      let mergedTestInfo: {
+        testVenue?: string
+        testDate?: string
+        testTime?: string
+      } | null = null
       try {
         const fresh = await getActiveAdmissionSetting()
         if (fresh) {
-          setTestInfoFromSettings({
-            testVenue: fresh.defaultTestVenue || response.testVenue || undefined,
-            testDate: fresh.testStartDate || response.testDate || undefined,
-            testTime: fresh.defaultTestTime || response.testTime || undefined,
-          })
-        } else {
-          setTestInfoFromSettings(null)
+          mergedTestInfo = {
+            testVenue: preferSetting(fresh.defaultTestVenue, response.testVenue),
+            testDate: preferSetting(fresh.testStartDate, response.testDate),
+            testTime: preferSetting(fresh.defaultTestTime, response.testTime),
+          }
         }
       } catch {
         if (activeSetting) {
-          setTestInfoFromSettings({
-            testVenue: activeSetting.defaultTestVenue || response.testVenue || undefined,
-            testDate: activeSetting.testStartDate || response.testDate || undefined,
-            testTime: activeSetting.defaultTestTime || response.testTime || undefined,
-          })
-        } else {
-          setTestInfoFromSettings(null)
+          mergedTestInfo = {
+            testVenue: preferSetting(activeSetting.defaultTestVenue, response.testVenue),
+            testDate: preferSetting(activeSetting.testStartDate, response.testDate),
+            testTime: preferSetting(activeSetting.defaultTestTime, response.testTime),
+          }
         }
       }
+
+      setTestInfoFromSettings(mergedTestInfo)
+      setSuccess(response)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to submit registration. Please try again.')
       // Scroll to error message
