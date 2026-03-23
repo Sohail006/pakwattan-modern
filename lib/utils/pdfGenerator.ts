@@ -414,7 +414,7 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
       { label: 'WhatsApp:', value: registration.whatsApp || 'N/A', col: 2 },
       { label: 'Email:', value: registration.email || 'N/A', col: 2 },
       { label: 'Payment Status:', value: paymentStatusDisplay, col: 1 },
-      { label: 'Payment Method:', value: registration.paymentMethod || 'N/A', col: 2 },
+      { label: 'Payment Method:', value: formatPaymentMethod(registration.paymentMethod) || 'N/A', col: 2 },
     ]
 
     let col1Y = yPos
