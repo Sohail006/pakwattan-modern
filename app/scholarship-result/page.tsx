@@ -4,11 +4,9 @@ import StructuredData from '@/components/seo/StructuredData'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 
 export default function ScholarshipResultPage() {
-  const announcementDate = '28th March 2026'
-  
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: 'https://pakwattan.edu.pk' },
-    { name: 'Scholarship Result', url: 'https://pakwattan.edu.pk/scholarship-result' },
+    { name: 'Scholarship Results', url: 'https://pakwattan.edu.pk/scholarship-result' },
   ])
 
   return (
@@ -31,14 +29,14 @@ export default function ScholarshipResultPage() {
               </div>
               
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-josefin mb-4 sm:mb-6 leading-tight">
-                Scholarship Result
+                Scholarship Results
                 <span className="block text-gradient bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">
                   Announcement
                 </span>
               </h1>
               
               <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed">
-                Good Will Scholarship Test 2026-27
+                Good Will Scholarship Test 2026–27
               </p>
             </div>
           </Container>
@@ -58,9 +56,8 @@ export default function ScholarshipResultPage() {
                   
                   {/* Main Message */}
                   <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-                    Scholarship Result will be announced on{' '}
                     <span className="text-gradient bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                      {announcementDate}
+                      The date for announcing scholarship results will be shared soon.
                     </span>
                   </h2>
                   
@@ -69,7 +66,7 @@ export default function ScholarshipResultPage() {
                     <div className="flex items-center justify-center space-x-3 text-gray-600">
                       <Clock className="w-5 h-5 text-primary-600" />
                       <p className="text-base sm:text-lg">
-                        Results will be published on the official website
+                        Results will be published on this official website.
                       </p>
                     </div>
                   </div>
@@ -90,7 +87,7 @@ export default function ScholarshipResultPage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Result Publication</h4>
                       <p className="text-gray-600 text-sm sm:text-base">
-                        Scholarship test results will be announced on <strong>{announcementDate}</strong> on our official website and notice boards.
+                        Scholarship test results will be published on this official website and on school notice boards once the announcement date is confirmed. Please check back soon.
                       </p>
                     </div>
                   </div>
@@ -102,7 +99,7 @@ export default function ScholarshipResultPage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Notification</h4>
                       <p className="text-gray-600 text-sm sm:text-base">
-                        All applicants will receive notifications via email and SMS when results are published.
+                        All applicants will be notified by email and SMS when the results are published.
                       </p>
                     </div>
                   </div>
@@ -114,7 +111,7 @@ export default function ScholarshipResultPage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Result Checking</h4>
                       <p className="text-gray-600 text-sm sm:text-base">
-                        Results can be checked online using your registration number or CNIC/B-Form number.
+                        You will be able to check your results online using your registration number or CNIC / B-Form number.
                       </p>
                     </div>
                   </div>
@@ -126,7 +123,7 @@ export default function ScholarshipResultPage() {
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">Next Steps</h4>
                       <p className="text-gray-600 text-sm sm:text-base">
-                        Selected candidates will be required to complete admission formalities within the specified deadline.
+                        Shortlisted candidates must complete admission formalities within the deadline communicated with the results.
                       </p>
                     </div>
                   </div>

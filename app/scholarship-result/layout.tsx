@@ -2,9 +2,11 @@ import { Metadata } from 'next'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Scholarship Result Announcement - Good Will Scholarship Test 2026-27',
-  description: 'Scholarship Result will be announced on 28th March 2026. Check your Good Will Scholarship Test 2026-27 results online. All applicants will be notified via email and SMS.',
-  keywords: 'scholarship result, good will scholarship test 2026-27, scholarship test result, pak wattan scholarship result, result announcement, march 28 2026',
+  title: 'Scholarship Results Announcement - Good Will Scholarship Test 2026–27',
+  description:
+    'The date for announcing Good Will Scholarship Test (2026–27) results will be shared soon. When results are published, you can check them on this website. Applicants will be notified by email and SMS.',
+  keywords:
+    'scholarship results, good will scholarship test 2026-27, scholarship test result, pak wattan scholarship result, result announcement',
   path: '/scholarship-result',
 })
 
