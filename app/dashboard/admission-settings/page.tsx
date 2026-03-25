@@ -829,8 +829,13 @@ function PassingMarksTab({
       setError(null)
 
       const hasSep = Boolean(formDataCriteria.hasSeparateTest)
+      const admissionSettingId =
+        typeof formDataCriteria.admissionSettingId === 'number' && formDataCriteria.admissionSettingId > 0
+          ? formDataCriteria.admissionSettingId
+          : editingCriteria?.admissionSettingId
       const basePayload: AdmissionCriteriaCreateDto = {
         gradeId: formDataCriteria.gradeId!,
+        admissionSettingId,
         minimumPassingMarks: formDataCriteria.minimumPassingMarks ?? 50,
         minimumMarksForScholarship: formDataCriteria.minimumMarksForScholarship ?? 80,
         totalTestMarks: formDataCriteria.totalTestMarks ?? 100,
@@ -862,6 +867,7 @@ function PassingMarksTab({
       setEditingCriteria(null)
       setFormDataCriteria({
         gradeId: 0,
+        admissionSettingId: undefined,
         minimumPassingMarks: 50,
         minimumMarksForScholarship: 80,
         totalTestMarks: 100,
@@ -917,6 +923,7 @@ function PassingMarksTab({
     setEditingCriteria(null)
     setFormDataCriteria({
       gradeId: 0,
+      admissionSettingId: undefined,
       minimumPassingMarks: 50,
       minimumMarksForScholarship: 80,
       totalTestMarks: 100,
@@ -983,6 +990,7 @@ function PassingMarksTab({
               setEditingCriteria(null)
               setFormDataCriteria({
                 gradeId: 0,
+                admissionSettingId: undefined,
                 minimumPassingMarks: 50,
                 minimumMarksForScholarship: 80,
                 totalTestMarks: 100,

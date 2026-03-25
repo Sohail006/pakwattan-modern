@@ -87,6 +87,7 @@ export interface AdmissionSettingUpdateDto extends Partial<AdmissionSettingCreat
 export interface AdmissionCriteria {
   id: number;
   gradeId: number;
+  admissionSettingId: number;
   gradeName?: string;
   minimumPassingMarks: number;
   minimumMarksForScholarship: number;
@@ -107,6 +108,7 @@ export interface AdmissionCriteria {
 
 export interface AdmissionCriteriaCreateDto {
   gradeId: number;
+  admissionSettingId?: number;
   minimumPassingMarks: number;
   minimumMarksForScholarship: number;
   totalTestMarks: number;
@@ -378,6 +380,12 @@ export function normalizeAdmissionCriteriaPayload(data: unknown): AdmissionCrite
     ...base,
     id: pickInt(r, 'id', 'Id', base.id ?? 0),
     gradeId: pickInt(r, 'gradeId', 'GradeId', base.gradeId ?? 0),
+    admissionSettingId: pickInt(
+      r,
+      'admissionSettingId',
+      'AdmissionSettingId',
+      (base as unknown as { admissionSettingId?: number }).admissionSettingId ?? 0
+    ),
     gradeName: pickOptionalString(r, 'gradeName', 'GradeName', base.gradeName),
     minimumPassingMarks: pickInt(r, 'minimumPassingMarks', 'MinimumPassingMarks', base.minimumPassingMarks ?? 0),
     minimumMarksForScholarship: pickInt(
