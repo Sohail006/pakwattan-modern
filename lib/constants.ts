@@ -140,7 +140,8 @@ export const ACHIEVEMENTS_DATA: Achievement[] = [
     icon: null, // Will be set in component
     count: 3000,
     label: 'STUDENTS',
-    color: 'text-blue-600'
+    color: 'text-blue-600',
+    countSuffix: ' +'
   },
   {
     icon: null,

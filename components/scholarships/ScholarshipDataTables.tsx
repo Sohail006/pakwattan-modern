@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Filter, Download, Users, Coins } from 'lucide-react'
+import { Search, Filter, Download, Users } from 'lucide-react'
 import { ScholarshipSession } from '@/types/scholarship'
 
 interface ScholarshipDataTablesProps {
@@ -22,86 +22,37 @@ const ScholarshipDataTables = ({ sessions }: ScholarshipDataTablesProps) => {
     return matchesSearch && matchesFilter
   }) || []
 
-  const totalAmount = filteredStudents.reduce((sum, student) => sum + student.amount, 0)
   const uniqueTypes = Array.from(new Set(currentSession?.students.map(s => s.scholarshipType) || []))
+
+  if (!currentSession) {
+    return null
+  }
 
   return (
     <section className="section-padding bg-gray-50">
       <div className="container-custom">
-        <div className="text-center mb-8 sm:mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
-            <span className="text-gradient">Scholarship Recipients</span>
-          </h2>
-          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
-            Complete list of scholarship recipients across all academic sessions
-          </p>
-        </div>
-
-        {/* Session Navigation */}
-        <div className="mb-6 sm:mb-8">
-          <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-4 sm:mb-6">
-            {sessions.map((session) => (
-              <button
-                key={session.year}
-                onClick={() => setActiveSession(session.year)}
-                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 text-sm sm:text-base touch-target min-h-[44px] ${
-                  activeSession === session.year
-                    ? 'bg-primary-600 text-white shadow-lg active:bg-primary-700'
-                    : 'bg-white text-secondary-600 hover:bg-primary-50 active:bg-primary-100 border border-gray-200'
-                }`}
-                aria-label={`View ${session.year} session`}
-                aria-pressed={activeSession === session.year}
-              >
-                {session.year}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Statistics Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
-          <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Total Students</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-primary-600">{filteredStudents.length}</p>
-              </div>
-              <Users className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-primary-600 flex-shrink-0 ml-2" />
+        {sessions.length > 1 && (
+          <div className="mb-6 sm:mb-8">
+            <div className="flex flex-wrap gap-2 sm:gap-3 justify-center">
+              {sessions.map((session) => (
+                <button
+                  key={session.year}
+                  type="button"
+                  onClick={() => setActiveSession(session.year)}
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 text-sm sm:text-base touch-target min-h-[44px] ${
+                    activeSession === session.year
+                      ? 'bg-primary-600 text-white shadow-lg active:bg-primary-700'
+                      : 'bg-white text-secondary-600 hover:bg-primary-50 active:bg-primary-100 border border-gray-200'
+                  }`}
+                  aria-label={`View ${session.year} session`}
+                  aria-pressed={activeSession === session.year}
+                >
+                  {session.year}
+                </button>
+              ))}
             </div>
           </div>
-          
-          <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Total Amount</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-accent-600 truncate">PKR {totalAmount.toLocaleString()}</p>
-              </div>
-              <Coins className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-accent-600 flex-shrink-0 ml-2" />
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Average Amount</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-green-600 truncate">
-                  PKR {filteredStudents.length > 0 ? Math.round(totalAmount / filteredStudents.length).toLocaleString() : 0}
-                </p>
-              </div>
-              <Coins className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-green-600 flex-shrink-0 ml-2" />
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100">
-            <div className="flex items-center justify-between">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-gray-600 mb-1 truncate">Scholarship Types</p>
-                <p className="text-lg sm:text-xl lg:text-2xl font-bold text-purple-600">{uniqueTypes.length}</p>
-              </div>
-              <Filter className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-purple-600 flex-shrink-0 ml-2" />
-            </div>
-          </div>
-        </div>
+        )}
 
         {/* Search and Filter */}
         <div className="bg-white rounded-xl p-3 sm:p-4 lg:p-6 shadow-lg border border-gray-100 mb-6 sm:mb-8">

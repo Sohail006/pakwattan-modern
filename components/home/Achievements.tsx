@@ -111,6 +111,7 @@ const Achievements = () => {
                   </div>
                   <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 text-white group-hover:text-accent-300 transition-colors duration-300 tabular-nums">
                     {Object.values(counts)[index].toLocaleString()}
+                    {achievement.countSuffix ?? ''}
                   </div>
                   <div className="text-xs sm:text-sm lg:text-lg font-semibold text-white/90 uppercase tracking-wide group-hover:text-white transition-colors duration-300 break-words">
                     {achievement.label}

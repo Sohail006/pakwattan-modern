@@ -20,6 +20,8 @@ export interface Achievement {
   count: number
   label: string
   color: string
+  /** Appended after the formatted count (e.g. " +" → "3,000 +") */
+  countSuffix?: string
 }
 
 export interface Event {
