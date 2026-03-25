@@ -81,14 +81,16 @@ const nextConfig = {
     unoptimized: false // ENABLED - Images will be optimized
   },
   
-  // API rewrites for production deployment
-  // Uses NEXT_PUBLIC_BACKEND_BASE_URL environment variable or defaults
+  // API rewrites: dev proxies /api to local ASP.NET (often HTTPS + self-signed cert).
+  // package.json "dev" sets NODE_TLS_REJECT_UNAUTHORIZED=0 for that case only (not used in production start/build).
   async rewrites() {
-    // Get API base URL from environment or use defaults
-    const apiBaseUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL || 
-      (process.env.NODE_ENV === 'production' 
-        ? 'https://sohailghsno4-001-site8.rtempurl.com' 
-        : 'https://localhost:7210');
+    // Get API base URL from environment or use defaults (no trailing slash — avoids //api in destination)
+    const raw =
+      process.env.NEXT_PUBLIC_BACKEND_BASE_URL ||
+      (process.env.NODE_ENV === 'production'
+        ? 'https://sohailghsno4-001-site8.rtempurl.com'
+        : 'https://localhost:7210')
+    const apiBaseUrl = String(raw).replace(/\/+$/, '')
     
     const rewrites = [
       {
