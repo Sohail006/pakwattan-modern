@@ -14,6 +14,7 @@ import {
   createAdmissionCriteria,
   updateAdmissionCriteria,
   deleteAdmissionCriteria,
+  normalizeAdmissionCriteriaPayload,
   getAllScholarshipTypes,
   createScholarshipType,
   updateScholarshipType,
@@ -742,9 +743,15 @@ function PassingMarksTab({
         getGrades(true),
       ])
 
-      // Filter criteria for current session if available
+      const sessionId = Number(formData.sessionId)
+      const year = String(formData.academicYear ?? '').trim()
       const filteredCriteria = formData.sessionId
-        ? criteriaData.filter(c => c.sessionId === formData.sessionId)
+        ? criteriaData.filter((c) => {
+            const sameSession = Number(c.sessionId) === sessionId
+            const rowYear = String(c.academicYear ?? '').trim()
+            const sameYear = !year || rowYear === year
+            return sameSession && sameYear
+          })
         : criteriaData
 
       setCriteria(filteredCriteria)
@@ -755,13 +762,13 @@ function PassingMarksTab({
     } finally {
       setLoading(false)
     }
-  }, [settings, formData.sessionId])
+  }, [settings, formData.sessionId, formData.academicYear])
 
   useEffect(() => {
     if (settings && formData.sessionId) {
       loadData()
     }
-  }, [settings, formData.sessionId, loadData])
+  }, [settings, formData.sessionId, formData.academicYear, loadData])
 
   const handleCriteriaInputChange = useCallback(
     <K extends keyof AdmissionCriteria>(field: K, value: AdmissionCriteria[K]) => {
@@ -821,23 +828,30 @@ function PassingMarksTab({
       setSaving(true)
       setError(null)
 
-      const criteriaPayload: Partial<AdmissionCriteria> = { ...formDataCriteria }
-      delete criteriaPayload.id
-      delete criteriaPayload.gradeName
-      delete criteriaPayload.sessionName
-      delete criteriaPayload.createdAt
-      delete criteriaPayload.updatedAt
-      delete criteriaPayload.isActive
+      const hasSep = Boolean(formDataCriteria.hasSeparateTest)
+      const basePayload: AdmissionCriteriaCreateDto = {
+        gradeId: formDataCriteria.gradeId!,
+        minimumPassingMarks: formDataCriteria.minimumPassingMarks ?? 50,
+        minimumMarksForScholarship: formDataCriteria.minimumMarksForScholarship ?? 80,
+        totalTestMarks: formDataCriteria.totalTestMarks ?? 100,
+        hasSeparateTest: hasSep,
+        gradeSpecificTestDate: hasSep ? formDataCriteria.gradeSpecificTestDate : undefined,
+        gradeSpecificTestVenue: hasSep ? formDataCriteria.gradeSpecificTestVenue || undefined : undefined,
+        gradeSpecificTestTime: hasSep ? formDataCriteria.gradeSpecificTestTime || undefined : undefined,
+        academicYear: formDataCriteria.academicYear!.trim(),
+        sessionId: Number(formDataCriteria.sessionId),
+        maximumSeats: formDataCriteria.maximumSeats,
+        scholarshipSeats: formDataCriteria.scholarshipSeats,
+      }
 
       if (editingCriteria) {
         const updatePayload: AdmissionCriteriaUpdateDto = {
           id: editingCriteria.id,
-          ...(criteriaPayload as Partial<AdmissionCriteriaCreateDto>),
+          ...basePayload,
         }
         await updateAdmissionCriteria(editingCriteria.id, updatePayload)
       } else {
-        const createPayload = criteriaPayload as AdmissionCriteriaCreateDto
-        await createAdmissionCriteria(createPayload)
+        await createAdmissionCriteria(basePayload)
       }
 
       const gradeName = grades.find(g => g.id === formDataCriteria.gradeId)?.name || 'the selected grade'
@@ -867,8 +881,9 @@ function PassingMarksTab({
   }, [formDataCriteria, editingCriteria, formData, loadData, grades])
 
   const handleEdit = useCallback((criterion: AdmissionCriteria) => {
-    setEditingCriteria(criterion)
-    setFormDataCriteria(criterion)
+    const normalized = normalizeAdmissionCriteriaPayload(criterion as unknown) ?? criterion
+    setEditingCriteria(normalized)
+    setFormDataCriteria(normalized)
     setShowForm(true)
   }, [])
 

@@ -343,34 +343,88 @@ export async function activateAdmissionSetting(id: number): Promise<AdmissionSet
 /**
  * Normalize a single criteria row (.NET PascalCase → camelCase used by the app).
  */
+function pickInt(
+  r: Record<string, unknown>,
+  camel: string,
+  pascal: string,
+  fallback: number
+): number {
+  const v = r[camel] ?? r[pascal];
+  if (v == null || v === '') return fallback;
+  const n = typeof v === 'number' && Number.isFinite(v) ? v : Number(v);
+  return Number.isFinite(n) ? Math.trunc(n) : fallback;
+}
+
+function pickOptionalString(
+  r: Record<string, unknown>,
+  camel: string,
+  pascal: string,
+  fallback?: string
+): string | undefined {
+  const v = r[camel] ?? r[pascal] ?? fallback;
+  if (v == null) return undefined;
+  const s = typeof v === 'string' ? v : String(v);
+  return s.trim() === '' ? undefined : s;
+}
+
 export function normalizeAdmissionCriteriaPayload(data: unknown): AdmissionCriteria | null {
   if (data == null || typeof data !== 'object') return null;
   const r = data as Record<string, unknown>;
   const base = data as AdmissionCriteria;
   const coalesce = <T>(camel: string, pascal: string, fallback?: T): T | undefined =>
     (r[camel] ?? r[pascal] ?? fallback) as T | undefined;
+  const hasSep = coalesce<boolean>('hasSeparateTest', 'HasSeparateTest', base.hasSeparateTest);
   return {
     ...base,
-    id: coalesce<number>('id', 'Id', base.id) ?? base.id,
-    gradeId: coalesce<number>('gradeId', 'GradeId', base.gradeId) ?? base.gradeId,
-    gradeName: coalesce<string>('gradeName', 'GradeName', base.gradeName),
-    minimumPassingMarks: coalesce<number>('minimumPassingMarks', 'MinimumPassingMarks', base.minimumPassingMarks) ?? base.minimumPassingMarks,
-    minimumMarksForScholarship:
-      coalesce<number>('minimumMarksForScholarship', 'MinimumMarksForScholarship', base.minimumMarksForScholarship) ??
-      base.minimumMarksForScholarship,
-    totalTestMarks: coalesce<number>('totalTestMarks', 'TotalTestMarks', base.totalTestMarks) ?? base.totalTestMarks,
-    hasSeparateTest: Boolean(coalesce<boolean>('hasSeparateTest', 'HasSeparateTest', base.hasSeparateTest)),
-    gradeSpecificTestDate: coalesce<string>('gradeSpecificTestDate', 'GradeSpecificTestDate', base.gradeSpecificTestDate),
-    gradeSpecificTestVenue: coalesce<string>('gradeSpecificTestVenue', 'GradeSpecificTestVenue', base.gradeSpecificTestVenue),
-    gradeSpecificTestTime: coalesce<string>('gradeSpecificTestTime', 'GradeSpecificTestTime', base.gradeSpecificTestTime),
-    academicYear: coalesce<string>('academicYear', 'AcademicYear', base.academicYear) ?? base.academicYear,
-    sessionId: coalesce<number>('sessionId', 'SessionId', base.sessionId) ?? base.sessionId,
-    sessionName: coalesce<string>('sessionName', 'SessionName', base.sessionName),
+    id: pickInt(r, 'id', 'Id', base.id ?? 0),
+    gradeId: pickInt(r, 'gradeId', 'GradeId', base.gradeId ?? 0),
+    gradeName: pickOptionalString(r, 'gradeName', 'GradeName', base.gradeName),
+    minimumPassingMarks: pickInt(r, 'minimumPassingMarks', 'MinimumPassingMarks', base.minimumPassingMarks ?? 0),
+    minimumMarksForScholarship: pickInt(
+      r,
+      'minimumMarksForScholarship',
+      'MinimumMarksForScholarship',
+      base.minimumMarksForScholarship ?? 0
+    ),
+    totalTestMarks: pickInt(r, 'totalTestMarks', 'TotalTestMarks', base.totalTestMarks ?? 0),
+    hasSeparateTest: hasSep === true,
+    gradeSpecificTestDate: pickOptionalString(
+      r,
+      'gradeSpecificTestDate',
+      'GradeSpecificTestDate',
+      base.gradeSpecificTestDate
+    ),
+    gradeSpecificTestVenue: pickOptionalString(
+      r,
+      'gradeSpecificTestVenue',
+      'GradeSpecificTestVenue',
+      base.gradeSpecificTestVenue
+    ),
+    gradeSpecificTestTime: pickOptionalString(
+      r,
+      'gradeSpecificTestTime',
+      'GradeSpecificTestTime',
+      base.gradeSpecificTestTime
+    ),
+    academicYear:
+      pickOptionalString(r, 'academicYear', 'AcademicYear', base.academicYear) ?? base.academicYear ?? '',
+    sessionId: pickInt(r, 'sessionId', 'SessionId', base.sessionId ?? 0),
+    sessionName: pickOptionalString(r, 'sessionName', 'SessionName', base.sessionName),
     isActive: coalesce<boolean>('isActive', 'IsActive', base.isActive) !== false,
-    createdAt: coalesce<string>('createdAt', 'CreatedAt', base.createdAt) ?? base.createdAt,
-    updatedAt: coalesce<string>('updatedAt', 'UpdatedAt', base.updatedAt),
-    maximumSeats: coalesce<number>('maximumSeats', 'MaximumSeats', base.maximumSeats),
-    scholarshipSeats: coalesce<number>('scholarshipSeats', 'ScholarshipSeats', base.scholarshipSeats),
+    createdAt: coalesce<string>('createdAt', 'CreatedAt', base.createdAt) ?? base.createdAt ?? '',
+    updatedAt: pickOptionalString(r, 'updatedAt', 'UpdatedAt', base.updatedAt),
+    maximumSeats: (() => {
+      const v = r.maximumSeats ?? r.MaximumSeats ?? base.maximumSeats;
+      if (v == null || v === '') return undefined;
+      const n = typeof v === 'number' ? v : Number(v);
+      return Number.isFinite(n) ? n : undefined;
+    })(),
+    scholarshipSeats: (() => {
+      const v = r.scholarshipSeats ?? r.ScholarshipSeats ?? base.scholarshipSeats;
+      if (v == null || v === '') return undefined;
+      const n = typeof v === 'number' ? v : Number(v);
+      return Number.isFinite(n) ? n : undefined;
+    })(),
   };
 }
 
@@ -398,12 +452,14 @@ export async function resolveTestScheduleForGrade(
   try {
     const allCriteria = await getAllAdmissionCriteria();
     const activeCriteria = allCriteria.filter((c) => {
-      const matchesSession = c.sessionId === active.sessionId;
-      const matchesYear = c.academicYear === active.academicYear;
+      const matchesSession = Number(c.sessionId) === Number(active.sessionId);
+      const y1 = String(c.academicYear ?? '').trim();
+      const y2 = String(active.academicYear ?? '').trim();
+      const matchesYear = y1 === y2;
       const rowActive = c.isActive !== false;
       return matchesSession && matchesYear && rowActive;
     });
-    const row = activeCriteria.find((c) => c.gradeId === gradeId);
+    const row = activeCriteria.find((c) => Number(c.gradeId) === Number(gradeId));
     if (row?.hasSeparateTest) {
       testDate = pick(row.gradeSpecificTestDate, testDate);
       testVenue = pick(row.gradeSpecificTestVenue, testVenue);
@@ -467,7 +523,8 @@ export async function getAdmissionCriteriaBySession(sessionId: number): Promise<
 export async function createAdmissionCriteria(data: AdmissionCriteriaCreateDto): Promise<AdmissionCriteria> {
   try {
     const response = await api.post<AdmissionCriteria>('/api/admission-criteria', data);
-    return response as AdmissionCriteria;
+    const normalized = normalizeAdmissionCriteriaPayload(response);
+    return normalized ?? (response as AdmissionCriteria);
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to create admission criteria.');
@@ -477,7 +534,8 @@ export async function createAdmissionCriteria(data: AdmissionCriteriaCreateDto):
 export async function updateAdmissionCriteria(id: number, data: AdmissionCriteriaUpdateDto): Promise<AdmissionCriteria> {
   try {
     const response = await api.put<AdmissionCriteria>(`/api/admission-criteria/${id}`, data);
-    return response as AdmissionCriteria;
+    const normalized = normalizeAdmissionCriteriaPayload(response);
+    return normalized ?? (response as AdmissionCriteria);
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to update admission criteria.');

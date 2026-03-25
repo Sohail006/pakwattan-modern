@@ -162,10 +162,23 @@ class ApiClient {
         }
       }
 
-      const body = data as { message?: string; error?: string; errors?: Record<string, string[]> };
-      
-      // Provide meaningful error messages based on status code
-      let errorMessage = body?.message || body?.error;
+      const body = data as {
+        message?: string;
+        error?: string;
+        detail?: string;
+        title?: string;
+        errors?: Record<string, string[]>;
+      };
+
+      // ASP.NET ProblemDetails: `detail` often has the real DB/SQL reason; `message` may be the generic EF wrapper.
+      let errorMessage = body?.message || body?.error || body?.title;
+      const detail = body?.detail?.trim();
+      if (detail && detail !== errorMessage) {
+        errorMessage = errorMessage ? `${errorMessage}\n\n${detail}` : detail;
+      }
+      if (!errorMessage && detail) {
+        errorMessage = detail;
+      }
       
       if (!errorMessage) {
         errorMessage = response.status === 400 
