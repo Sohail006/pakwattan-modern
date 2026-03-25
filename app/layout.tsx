@@ -91,7 +91,7 @@ export default function RootLayout({
     url: 'https://pakwattan.edu.pk',
     logo: 'https://pakwattan.edu.pk/images/logo/logo_150x150.png',
     contactPoint: {
-      telephone: '+92-318-0821377',
+      telephone: '+92-992-811555',
       contactType: 'Customer Service',
       email: 'pakwattan2020@gmail.com',
     },

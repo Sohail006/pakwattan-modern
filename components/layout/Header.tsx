@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Menu, X, Phone, Mail, Facebook, Youtube, Twitter, User, LogOut, Settings, Play } from 'lucide-react'
+import { Menu, X, PhoneCall, Mail, Facebook, Youtube, Twitter, User, LogOut, Settings, Play } from 'lucide-react'
 import { useScroll } from '@/hooks/useScroll'
 import { MAIN_NAVIGATION, SECONDARY_NAVIGATION, SCHOOL_INFO } from '@/lib/constants'
 import { getCampuses, Campus } from '@/lib/api/campuses'
@@ -43,6 +43,7 @@ const Header = () => {
   // Use main campus data if available, otherwise fallback to SCHOOL_INFO
   const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
   const email = mainCampus?.email || SCHOOL_INFO.contact.email
+  const telHref = phone ? `tel:${phone.replace(/[\s-]/g, '')}` : ''
 
   return (
     <>
@@ -56,10 +57,11 @@ const Header = () => {
               <div className="flex items-center gap-4 sm:gap-6">
                 {phone && (
                   <a 
-                    href={`tel:${phone.replace(/\s/g, '')}`}
+                    href={telHref}
                     className="flex items-center gap-1.5 hover:text-accent-300 transition-colors"
+                    aria-label={`Call landline ${phone}`}
                   >
-                    <Phone className="w-3.5 h-3.5 flex-shrink-0" />
+                    <PhoneCall className="w-3.5 h-3.5 flex-shrink-0" aria-hidden />
                     <span className="hidden xs:inline">{phone}</span>
                     <span className="xs:hidden">Call Us</span>
                   </a>

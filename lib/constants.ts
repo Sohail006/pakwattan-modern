@@ -10,7 +10,7 @@ export const SCHOOL_INFO: SchoolInfo = {
   description: 'Pak Wattan School & College of Sciences is committed to providing quality education with affordable expenses in Havelian, KPK.',
   logo: '/images/logo/logo_150x150.png',
   contact: {
-    phone: '0318 0821377',
+    phone: '0992-811555',
     email: 'pakwattan2020@gmail.com',
     address: 'Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan',
     socialMedia: {

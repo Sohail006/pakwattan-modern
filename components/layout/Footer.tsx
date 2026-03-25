@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Phone, Mail, MapPin, Facebook, Youtube, Twitter, Code } from 'lucide-react'
+import { PhoneCall, Mail, MapPin, Facebook, Youtube, Twitter, Code } from 'lucide-react'
 import { SCHOOL_INFO, MAIN_NAVIGATION, DEVELOPER_INFO } from '@/lib/constants'
 import { getCampuses, Campus } from '@/lib/api/campuses'
 import Container from '@/components/ui/Container'
@@ -35,6 +35,8 @@ const Footer = () => {
   const address = mainCampus?.address || SCHOOL_INFO.contact.address
   const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
   const email = mainCampus?.email || SCHOOL_INFO.contact.email
+  const telHref = phone ? `tel:${phone.replace(/[\s-]/g, '')}` : ''
+
   return (
     <footer className="bg-secondary-800 text-white">
       <Container className="py-8 sm:py-12 lg:py-16">
@@ -170,10 +172,11 @@ const Footer = () => {
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-primary-400 flex-shrink-0" />
+                <PhoneCall className="w-5 h-5 text-primary-400 flex-shrink-0" aria-hidden />
                 <a 
-                  href={`tel:${phone.replace(/\s/g, '')}`}
+                  href={telHref}
                   className="text-secondary-300 hover:text-white transition-colors text-sm sm:text-base touch-target min-h-[44px] flex items-center break-all"
+                  aria-label={`Call landline ${phone}`}
                 >
                   {phone}
                 </a>

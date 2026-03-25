@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { MapPin, PhoneCall, Mail, Clock } from 'lucide-react'
 import { getCampuses, Campus } from '@/lib/api/campuses'
 import { SCHOOL_INFO } from '@/lib/constants'
 
@@ -41,8 +41,8 @@ const ContactHero = () => {
       details: address
     },
     {
-      icon: <Phone className="w-6 h-6" />,
-      title: 'Phone',
+      icon: <PhoneCall className="w-6 h-6" aria-hidden />,
+      title: 'Landline',
       details: phone
     },
     {
@@ -87,8 +87,9 @@ const ContactHero = () => {
             <div className="flex flex-col sm:flex-row gap-4">
               {phone && (
                 <a 
-                  href={`tel:${phone.replace(/\s/g, '')}`}
+                  href={`tel:${phone.replace(/[\s-]/g, '')}`}
                   className="btn-accent text-center"
+                  aria-label={`Call landline ${phone}`}
                 >
                   Call Now
                 </a>
