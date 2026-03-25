@@ -1,5 +1,6 @@
 // Authentication API endpoints and utilities
 import { api, ApiError } from './client';
+import { normalizeRoleName, userHasMenuRole } from '@/lib/roles';
 
 export interface LoginRequest {
   email: string;
@@ -339,8 +340,7 @@ export function hasAnyPermission(...permissions: string[]): boolean {
   const userPermissions = getUserPermissions();
   const roles = getUserRoles();
   
-  // Admin always has all permissions
-  if (roles.includes('Admin')) {
+  if (roles.some((r) => normalizeRoleName(r) === 'admin')) {
     return true;
   }
   
@@ -356,8 +356,7 @@ export function hasAllPermissions(...permissions: string[]): boolean {
   const userPermissions = getUserPermissions();
   const roles = getUserRoles();
   
-  // Admin always has all permissions
-  if (roles.includes('Admin')) {
+  if (roles.some((r) => normalizeRoleName(r) === 'admin')) {
     return true;
   }
   
@@ -374,17 +373,14 @@ export function hasAllPermissions(...permissions: string[]): boolean {
 export function canPerform(permission?: string, allowedRoles?: string[]): boolean {
   const roles = getUserRoles();
   
-  // Admin can always perform any action
-  if (roles.includes('Admin')) {
+  if (roles.some((r) => normalizeRoleName(r) === 'admin')) {
     return true;
   }
   
-  // Check role-based access if allowedRoles provided
-  if (allowedRoles && allowedRoles.some(role => roles.includes(role))) {
+  if (allowedRoles && allowedRoles.some((allowed) => userHasMenuRole(roles, allowed))) {
     return true;
   }
   
-  // Check permission-based access if permission provided
   if (permission) {
     return hasPermission(permission);
   }

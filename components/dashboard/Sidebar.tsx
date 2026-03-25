@@ -27,11 +27,13 @@ import {
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { logout } from '@/lib/api/auth'
+import { userHasMenuRole, pickDashboardPath } from '@/lib/roles'
 
 interface SidebarProps {
   isOpen: boolean
   onToggle: () => void
-  userRole: string
+  /** All roles from the token / user_info — not only the first (order varies on server). */
+  userRoles: string[]
   currentPath: string
 }
 
@@ -43,27 +45,18 @@ interface MenuItem {
   badge?: number
 }
 
-export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: SidebarProps) {
+export default function Sidebar({ isOpen, onToggle, userRoles, currentPath }: SidebarProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Get dashboard route based on role
-  const getDashboardRoute = (role: string): string => {
-    const roleLower = role.toLowerCase()
-    if (roleLower === 'admin') return '/dashboard/admin'
-    if (roleLower === 'staff') return '/dashboard/staff'
-    if (roleLower === 'teacher') return '/dashboard/teacher'
-    if (roleLower === 'student') return '/dashboard/student'
-    if (roleLower === 'parent') return '/dashboard/parent'
-    return '/dashboard/admin' // Default fallback
-  }
+  const dashboardHref = pickDashboardPath(userRoles)
 
   // Define menu items based on roles
   const menuItems: MenuItem[] = [
     {
       name: 'Dashboard',
-      href: getDashboardRoute(userRole),
+      href: dashboardHref,
       icon: <LayoutDashboard className="w-5 h-5" />,
-      roles: ['Admin', 'Staff', 'Teacher', 'Student', 'Parent'],
+      roles: ['Admin', 'Staff', 'Teacher', 'Student', 'Parent', 'ManagerialStaff'],
     },
     {
       name: 'Students',
@@ -181,9 +174,9 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
     },
   ]
 
-  // Filter menu items based on user role
-  const filteredMenuItems = menuItems.filter(item =>
-    item.roles.some(role => role.toLowerCase() === userRole.toLowerCase())
+  // Show item if any of the user's roles matches (order in JWT no longer matters)
+  const filteredMenuItems = menuItems.filter((item) =>
+    item.roles.some((menuRole) => userHasMenuRole(userRoles, menuRole))
   )
 
   const handleLogout = () => {
@@ -213,7 +206,7 @@ export default function Sidebar({ isOpen, onToggle, userRole, currentPath }: Sid
       <div className="flex flex-col h-full">
         {/* Logo Section */}
         <div className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200">
-          <Link href={getDashboardRoute(userRole)} className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+          <Link href={dashboardHref} className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
             <div className="relative flex-shrink-0">
               <Image
                 src={SCHOOL_INFO.logo}

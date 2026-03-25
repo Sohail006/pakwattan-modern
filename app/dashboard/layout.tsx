@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import Sidebar from '@/components/dashboard/Sidebar'
 import DashboardHeader from '@/components/dashboard/DashboardHeader'
 import { isAuthenticated, getCurrentUser, getUserRoles } from '@/lib/api/auth'
+import { pickDashboardPath } from '@/lib/roles'
 
 export default function DashboardLayout({
   children,
@@ -39,20 +40,17 @@ export default function DashboardLayout({
     setUser(currentUser)
     setRoles(userRoles)
 
-    // Role-based route validation
-    // Only protect against accessing other role's main dashboard pages
-    // Allow access to shared routes like /dashboard/students, /dashboard/courses, etc.
-    const primaryRole = userRoles[0]?.toLowerCase() || ''
+    // Home dashboard segment from all roles (priority), not JWT role order
+    const primaryRole =
+      (pickDashboardPath(userRoles).split('/').pop() || 'admin').toLowerCase()
     const roleDashboardRoutes = ['admin', 'staff', 'teacher', 'student', 'parent']
-    
+
     if (pathname) {
       const pathSegments = pathname.split('/').filter(Boolean)
-      
-      // Check if accessing a role-specific dashboard page (e.g., /dashboard/teacher)
+
       if (pathSegments.length >= 2 && pathSegments[0] === 'dashboard') {
         const accessedRole = pathSegments[1]?.toLowerCase()
-        
-        // If accessing another role's main dashboard, redirect to their own
+
         if (accessedRole && roleDashboardRoutes.includes(accessedRole) && accessedRole !== primaryRole) {
           const roleRoutes: Record<string, string> = {
             admin: '/dashboard/admin',
@@ -82,10 +80,10 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar */}
-      <Sidebar 
+      <Sidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
-        userRole={roles[0] || ''}
+        userRoles={roles}
         currentPath={pathname || ''}
       />
       
