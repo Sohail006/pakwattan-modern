@@ -155,6 +155,10 @@ export default function JobsExcelImport({ isOpen, onClose, onSuccess }: JobsExce
 							fatherName: String(getValue(['FatherName', 'Father Name', 'fathername', 'father name']) || '').trim(),
 							gender: gender,
 							mobileNumber: String(getValue(['MobileNumber', 'Mobile', 'mobile', 'Phone', 'phone']) || '').trim(),
+							address: (() => {
+								const v = getValue(['Address', 'address', 'ADDRESS', 'ResidentialAddress', 'residential address'])
+								return v != null && String(v).trim() !== '' ? String(v).trim() : undefined
+							})(),
 							whatsAppNumber: getValue(['WhatsAppNumber', 'WhatsApp', 'whatsapp', 'WhatsApp Number']) 
 								? String(getValue(['WhatsAppNumber', 'WhatsApp', 'whatsapp', 'WhatsApp Number'])).trim() 
 								: undefined,
@@ -259,6 +263,7 @@ export default function JobsExcelImport({ isOpen, onClose, onSuccess }: JobsExce
 								<li><strong>Name</strong> (Required)</li>
 								<li><strong>FatherName</strong> or <strong>Father Name</strong> (Required)</li>
 								<li><strong>MobileNumber</strong> or <strong>Mobile</strong> (Required)</li>
+								<li><strong>Address</strong> or <strong>ResidentialAddress</strong> (Optional)</li>
 								<li><strong>Gender</strong> (Optional: Male/Female/Other or 0/1/2)</li>
 								<li><strong>WhatsAppNumber</strong> or <strong>WhatsApp</strong> (Optional)</li>
 								<li><strong>FieldExperiencedInYears</strong> or <strong>Experience</strong> (Optional)</li>

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { submitJobApplication, JobOpportunityCreateRequest } from '@/lib/api/jobs'
-import { CheckCircle, AlertCircle, Loader2, User, Phone, Calendar, Briefcase, Coins, BookOpen } from 'lucide-react'
+import { CheckCircle, AlertCircle, Loader2, User, Phone, Calendar, Briefcase, Coins, BookOpen, MapPin } from 'lucide-react'
 import { validatePakistanPhoneNumber } from '@/lib/utils'
 
 interface JobApplicationFormProps {
@@ -15,6 +15,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 		fatherName: '',
 		gender: undefined,
 		mobileNumber: '',
+		address: '',
 		whatsAppNumber: '',
 		fieldExperiencedInYears: undefined,
 		subjectTought: '',
@@ -57,6 +58,12 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 				const mobileValidation = validatePakistanPhoneNumber(stringValue as string, true)
 				if (mobileValidation.error) return mobileValidation.error
 				return null
+			case 'address': {
+				const a = (stringValue as string)?.trim() || ''
+				if (!a) return 'Residential address is required'
+				if (a.length < 8) return 'Please enter a complete address (at least 8 characters)'
+				return null
+			}
 			case 'whatsAppNumber':
 				if (stringValue && (stringValue as string).trim()) {
 					const whatsAppValidation = validatePakistanPhoneNumber(stringValue as string, false)
@@ -213,6 +220,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 			'fatherName',
 			'gender',
 			'mobileNumber',
+			'address',
 			'dob',
 			'fieldExperiencedInYears',
 			'subjectTought',
@@ -259,6 +267,7 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 					fatherName: '',
 					gender: undefined,
 					mobileNumber: '',
+					address: '',
 					whatsAppNumber: '',
 					fieldExperiencedInYears: undefined,
 					subjectTought: '',
@@ -482,6 +491,42 @@ export default function JobApplicationForm({ onSuccess }: JobApplicationFormProp
 									</p>
 								)}
 								<p className="mt-1 text-xs text-gray-500 break-words">Format: 03XX-XXXXXXX (11 digits)</p>
+							</div>
+
+							<div className="md:col-span-2">
+								<label htmlFor="address" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5 sm:mb-2 break-words">
+									Residential address <span className="text-red-500">*</span>
+								</label>
+								<div className="relative">
+									<MapPin className={`absolute left-3 top-3 w-4 h-4 sm:w-5 sm:h-5 transition-colors ${
+										fieldErrors.address ? 'text-red-500' : fieldValid.address ? 'text-green-500' : 'text-gray-400'
+									}`} />
+									<textarea
+										id="address"
+										name="address"
+										rows={3}
+										value={formData.address}
+										onChange={handleInputChange}
+										onBlur={handleBlur}
+										className={`w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-3 text-base border-2 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 min-h-[88px] resize-y ${
+											fieldErrors.address
+												? 'border-red-500 bg-red-50'
+												: fieldValid.address && touchedFields.address
+													? 'border-green-500 bg-green-50'
+													: 'border-gray-300 bg-white hover:border-gray-400'
+										}`}
+										placeholder="House / street, area, city"
+									/>
+									{fieldValid.address && touchedFields.address && !fieldErrors.address && (
+										<CheckCircle className="absolute right-3 top-3 w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+									)}
+								</div>
+								{fieldErrors.address && (
+									<p className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-red-600 flex items-center gap-1 break-words">
+										<AlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+										<span>{fieldErrors.address}</span>
+									</p>
+								)}
 							</div>
 
 							<div>

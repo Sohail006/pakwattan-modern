@@ -6,6 +6,7 @@ export interface JobOpportunity {
 	fatherName: string;
 	gender?: string;
 	mobileNumber: string;
+	address?: string;
 	whatsAppNumber?: string;
 	fieldExperiencedInYears?: number;
 	subjectTought?: string;
@@ -21,6 +22,7 @@ export interface JobOpportunityCreateRequest {
 	fatherName: string;
 	gender?: number; // 0 = Male, 1 = Female, 2 = Other
 	mobileNumber: string;
+	address?: string;
 	whatsAppNumber?: string;
 	fieldExperiencedInYears?: number;
 	subjectTought?: string;
@@ -35,6 +37,7 @@ export async function submitJobApplication(data: JobOpportunityCreateRequest): P
 			fatherName: data.fatherName,
 			gender: data.gender,
 			mobileNumber: data.mobileNumber,
+			address: data.address?.trim() || null,
 			whatsAppNumber: data.whatsAppNumber,
 			fieldExperiencedInYears: data.fieldExperiencedInYears,
 			subjectTought: data.subjectTought,
@@ -95,6 +98,7 @@ export async function bulkImportJobApplications(
 			fatherName: job.fatherName,
 			gender: job.gender,
 			mobileNumber: job.mobileNumber,
+			address: job.address?.trim() || null,
 			whatsAppNumber: job.whatsAppNumber,
 			fieldExperiencedInYears: job.fieldExperiencedInYears,
 			subjectTought: job.subjectTought,

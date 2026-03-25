@@ -1,6 +1,6 @@
 'use client'
 
-import { X, User, Phone, Calendar, Briefcase, BookOpen, Coins } from 'lucide-react'
+import { X, User, Phone, Calendar, Briefcase, BookOpen, Coins, MapPin } from 'lucide-react'
 import { JobOpportunity } from '@/lib/api/jobs'
 import { formatDate } from '@/lib/utils'
 
@@ -86,6 +86,13 @@ export default function JobApplicationModal({ job, onClose }: JobApplicationModa
 											</div>
 										</div>
 									)}
+									<div className="md:col-span-2">
+										<label className="block text-sm font-medium text-gray-500 mb-1">Address</label>
+										<div className="flex items-start text-gray-900">
+											<MapPin className="w-4 h-4 text-gray-400 mr-2 mt-0.5 flex-shrink-0" />
+											<span className="whitespace-pre-wrap">{job.address?.trim() || '—'}</span>
+										</div>
+									</div>
 								</div>
 							</div>
 

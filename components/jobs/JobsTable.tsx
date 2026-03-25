@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Search, X, Trash2, Download, Loader2, AlertCircle, Eye, Phone, User, Briefcase, Upload } from 'lucide-react'
+import { Search, X, Trash2, Download, Loader2, AlertCircle, Eye, Phone, User, Briefcase, Upload, MapPin } from 'lucide-react'
 import { JobOpportunity, getAllJobApplications, deleteJobApplication } from '@/lib/api/jobs'
 import { formatDate } from '@/lib/utils'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
@@ -55,6 +55,7 @@ export default function JobsTable() {
 					job.name.toLowerCase().includes(term) ||
 					job.fatherName.toLowerCase().includes(term) ||
 					job.mobileNumber.toLowerCase().includes(term) ||
+					job.address?.toLowerCase().includes(term) ||
 					job.subjectTought?.toLowerCase().includes(term) ||
 					job.packageDemand?.toLowerCase().includes(term)
 			)
@@ -88,12 +89,13 @@ export default function JobsTable() {
 
 	const handleExport = () => {
 		// Simple CSV export
-		const headers = ['Name', 'Father Name', 'Gender', 'Mobile', 'WhatsApp', 'Experience (Years)', 'Subject', 'Package', 'DOB', 'Applied Date']
+		const headers = ['Name', 'Father Name', 'Gender', 'Mobile', 'Address', 'WhatsApp', 'Experience (Years)', 'Subject', 'Package', 'DOB', 'Applied Date']
 		const rows = filteredJobs.map(job => [
 			job.name,
 			job.fatherName,
 			job.gender || '',
 			job.mobileNumber,
+			job.address || '',
 			job.whatsAppNumber || '',
 			job.fieldExperiencedInYears?.toString() || '',
 			job.subjectTought || '',
@@ -143,7 +145,7 @@ export default function JobsTable() {
 						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
 						<input
 							type="text"
-							placeholder="Search by name, mobile, subject..."
+							placeholder="Search by name, mobile, address, subject..."
 							value={searchTerm}
 							onChange={e => setSearchTerm(e.target.value)}
 							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -207,6 +209,7 @@ export default function JobsTable() {
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Father Name</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden xl:table-cell max-w-[200px]">Address</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied Date</th>
@@ -235,6 +238,16 @@ export default function JobsTable() {
 												<Phone className="w-4 h-4 text-gray-400 mr-2" />
 												{job.mobileNumber}
 											</div>
+										</td>
+										<td className="px-6 py-4 text-sm text-gray-600 hidden xl:table-cell max-w-[220px]">
+											{job.address ? (
+												<div className="flex items-start gap-1.5" title={job.address}>
+													<MapPin className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
+													<span className="line-clamp-2">{job.address}</span>
+												</div>
+											) : (
+												<span className="text-gray-400">—</span>
+											)}
 										</td>
 										<td className="px-6 py-4 whitespace-nowrap">
 											{job.fieldExperiencedInYears !== undefined ? (
