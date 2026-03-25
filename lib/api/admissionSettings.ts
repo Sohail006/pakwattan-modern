@@ -340,10 +340,91 @@ export async function activateAdmissionSetting(id: number): Promise<AdmissionSet
 // Admission Criteria API Functions
 // ============================================
 
+/**
+ * Normalize a single criteria row (.NET PascalCase → camelCase used by the app).
+ */
+export function normalizeAdmissionCriteriaPayload(data: unknown): AdmissionCriteria | null {
+  if (data == null || typeof data !== 'object') return null;
+  const r = data as Record<string, unknown>;
+  const base = data as AdmissionCriteria;
+  const coalesce = <T>(camel: string, pascal: string, fallback?: T): T | undefined =>
+    (r[camel] ?? r[pascal] ?? fallback) as T | undefined;
+  return {
+    ...base,
+    id: coalesce<number>('id', 'Id', base.id) ?? base.id,
+    gradeId: coalesce<number>('gradeId', 'GradeId', base.gradeId) ?? base.gradeId,
+    gradeName: coalesce<string>('gradeName', 'GradeName', base.gradeName),
+    minimumPassingMarks: coalesce<number>('minimumPassingMarks', 'MinimumPassingMarks', base.minimumPassingMarks) ?? base.minimumPassingMarks,
+    minimumMarksForScholarship:
+      coalesce<number>('minimumMarksForScholarship', 'MinimumMarksForScholarship', base.minimumMarksForScholarship) ??
+      base.minimumMarksForScholarship,
+    totalTestMarks: coalesce<number>('totalTestMarks', 'TotalTestMarks', base.totalTestMarks) ?? base.totalTestMarks,
+    hasSeparateTest: Boolean(coalesce<boolean>('hasSeparateTest', 'HasSeparateTest', base.hasSeparateTest)),
+    gradeSpecificTestDate: coalesce<string>('gradeSpecificTestDate', 'GradeSpecificTestDate', base.gradeSpecificTestDate),
+    gradeSpecificTestVenue: coalesce<string>('gradeSpecificTestVenue', 'GradeSpecificTestVenue', base.gradeSpecificTestVenue),
+    gradeSpecificTestTime: coalesce<string>('gradeSpecificTestTime', 'GradeSpecificTestTime', base.gradeSpecificTestTime),
+    academicYear: coalesce<string>('academicYear', 'AcademicYear', base.academicYear) ?? base.academicYear,
+    sessionId: coalesce<number>('sessionId', 'SessionId', base.sessionId) ?? base.sessionId,
+    sessionName: coalesce<string>('sessionName', 'SessionName', base.sessionName),
+    isActive: coalesce<boolean>('isActive', 'IsActive', base.isActive) !== false,
+    createdAt: coalesce<string>('createdAt', 'CreatedAt', base.createdAt) ?? base.createdAt,
+    updatedAt: coalesce<string>('updatedAt', 'UpdatedAt', base.updatedAt),
+    maximumSeats: coalesce<number>('maximumSeats', 'MaximumSeats', base.maximumSeats),
+    scholarshipSeats: coalesce<number>('scholarshipSeats', 'ScholarshipSeats', base.scholarshipSeats),
+  };
+}
+
+/**
+ * Resolve test venue / date / time for a grade: uses Passing Marks "separate test" fields when set,
+ * otherwise active admission setting defaults.
+ */
+export async function resolveTestScheduleForGrade(
+  gradeId: number
+): Promise<{ testVenue?: string; testDate?: string; testTime?: string } | null> {
+  const active = await getActiveAdmissionSetting();
+  if (!active) return null;
+
+  const pick = (specific: string | undefined, fallback: string | undefined) =>
+    specific != null && String(specific).trim() !== '' ? specific : fallback;
+
+  let testDate = active.testStartDate;
+  let testVenue = active.defaultTestVenue;
+  let testTime = active.defaultTestTime;
+
+  if (!gradeId) {
+    return { testVenue, testDate, testTime };
+  }
+
+  try {
+    const allCriteria = await getAllAdmissionCriteria();
+    const activeCriteria = allCriteria.filter((c) => {
+      const matchesSession = c.sessionId === active.sessionId;
+      const matchesYear = c.academicYear === active.academicYear;
+      const rowActive = c.isActive !== false;
+      return matchesSession && matchesYear && rowActive;
+    });
+    const row = activeCriteria.find((c) => c.gradeId === gradeId);
+    if (row?.hasSeparateTest) {
+      testDate = pick(row.gradeSpecificTestDate, testDate);
+      testVenue = pick(row.gradeSpecificTestVenue, testVenue);
+      testTime = pick(row.gradeSpecificTestTime, testTime);
+    }
+  } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('[resolveTestScheduleForGrade] Failed to load criteria:', err);
+    }
+  }
+
+  return { testVenue, testDate, testTime };
+}
+
 export async function getAllAdmissionCriteria(): Promise<AdmissionCriteria[]> {
   try {
     const response = await api.get<AdmissionCriteria[]>('/api/admission-criteria');
-    return response as AdmissionCriteria[];
+    const list = Array.isArray(response) ? response : [];
+    return list
+      .map((row) => normalizeAdmissionCriteriaPayload(row))
+      .filter((row): row is AdmissionCriteria => row != null);
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to fetch admission criteria.');

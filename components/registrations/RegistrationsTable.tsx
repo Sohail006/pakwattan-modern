@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image'
 import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt } from '@/lib/api/registrations'
-import { getAllScholarshipTypes, getActiveAdmissionSetting } from '@/lib/api/admissionSettings'
+import { getAllScholarshipTypes, resolveTestScheduleForGrade } from '@/lib/api/admissionSettings'
 import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
 import { debounce, formatDate, formatTime } from '@/lib/utils'
@@ -120,13 +120,13 @@ export default function RegistrationsTable() {
     const reg = viewingDetails
     const preferSetting = (fromSetting: string | undefined, fromReg: string | undefined) =>
       fromSetting != null && String(fromSetting).trim() !== '' ? fromSetting : fromReg
-    getActiveAdmissionSetting()
-      .then((fresh) => {
-        if (cancelled || !fresh) return
+    resolveTestScheduleForGrade(reg.gradeId)
+      .then((resolved) => {
+        if (cancelled || !resolved) return
         setDetailsMergedTest({
-          testVenue: preferSetting(fresh.defaultTestVenue, reg.testVenue),
-          testDate: preferSetting(fresh.testStartDate, reg.testDate),
-          testTime: preferSetting(fresh.defaultTestTime, reg.testTime),
+          testVenue: preferSetting(resolved.testVenue, reg.testVenue),
+          testDate: preferSetting(resolved.testDate, reg.testDate),
+          testTime: preferSetting(resolved.testTime, reg.testTime),
         })
       })
       .catch(() => {

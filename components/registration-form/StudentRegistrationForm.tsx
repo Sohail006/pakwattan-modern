@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { submitRegistration, RegistrationResponse } from '@/lib/api/registrations'
-import { getActiveAdmissionSetting, deriveRegistrationStatus, getAllScholarshipTypes, getAllAdmissionCriteria, type AdmissionSetting, type ScholarshipType } from '@/lib/api/admissionSettings'
+import { getActiveAdmissionSetting, deriveRegistrationStatus, getAllScholarshipTypes, getAllAdmissionCriteria, resolveTestScheduleForGrade, type AdmissionSetting, type ScholarshipType } from '@/lib/api/admissionSettings'
 import { getGrades, type Grade } from '@/lib/api/grades'
 import { CheckCircle, AlertCircle, Loader2, FileText, X, Calendar, Info, CreditCard, Phone, Copy, Building2, Wallet } from 'lucide-react'
 import ProfileImageUpload from '@/components/ui/ProfileImageUpload'
@@ -441,20 +441,34 @@ export default function StudentRegistrationForm() {
         testTime?: string
       } | null = null
       try {
-        const fresh = await getActiveAdmissionSetting()
-        if (fresh) {
+        const resolved = await resolveTestScheduleForGrade(response.gradeId)
+        if (resolved) {
           mergedTestInfo = {
-            testVenue: preferSetting(fresh.defaultTestVenue, response.testVenue),
-            testDate: preferSetting(fresh.testStartDate, response.testDate),
-            testTime: preferSetting(fresh.defaultTestTime, response.testTime),
+            testVenue: preferSetting(resolved.testVenue, response.testVenue),
+            testDate: preferSetting(resolved.testDate, response.testDate),
+            testTime: preferSetting(resolved.testTime, response.testTime),
           }
         }
       } catch {
-        if (activeSetting) {
-          mergedTestInfo = {
-            testVenue: preferSetting(activeSetting.defaultTestVenue, response.testVenue),
-            testDate: preferSetting(activeSetting.testStartDate, response.testDate),
-            testTime: preferSetting(activeSetting.defaultTestTime, response.testTime),
+        // ignore
+      }
+      if (!mergedTestInfo) {
+        try {
+          const fresh = await getActiveAdmissionSetting()
+          if (fresh) {
+            mergedTestInfo = {
+              testVenue: preferSetting(fresh.defaultTestVenue, response.testVenue),
+              testDate: preferSetting(fresh.testStartDate, response.testDate),
+              testTime: preferSetting(fresh.defaultTestTime, response.testTime),
+            }
+          }
+        } catch {
+          if (activeSetting) {
+            mergedTestInfo = {
+              testVenue: preferSetting(activeSetting.defaultTestVenue, response.testVenue),
+              testDate: preferSetting(activeSetting.testStartDate, response.testDate),
+              testTime: preferSetting(activeSetting.defaultTestTime, response.testTime),
+            }
           }
         }
       }

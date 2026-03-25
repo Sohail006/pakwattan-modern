@@ -2,7 +2,7 @@ import jsPDF from 'jspdf'
 import QRCode from 'qrcode'
 import { RegistrationResponse } from '@/lib/api/registrations'
 import { SCHOOL_INFO } from '@/lib/constants'
-import { getActiveAdmissionSetting } from '@/lib/api/admissionSettings'
+import { getActiveAdmissionSetting, resolveTestScheduleForGrade } from '@/lib/api/admissionSettings'
 import { getGradeById } from '@/lib/api/grades'
 import { formatDate, formatTime } from '@/lib/utils'
 import { getApiBaseUrl } from '@/lib/config'
@@ -469,20 +469,19 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     doc.setFont('helvetica', 'normal')
     doc.setTextColor(...darkColor)
     
-    // Prefer current active admission settings over registration snapshot so dashboard
-    // changes (e.g. Test Start Date) show on the slip even if the API returned stale values.
+    // Resolved schedule: per-grade "separate test" (Passing Marks) overrides global defaults.
     let testVenue = registration.testVenue || undefined
     let testDate = registration.testDate || undefined
     let testTime = registration.testTime || undefined
     try {
-      const activeSetting = await getActiveAdmissionSetting()
-      if (activeSetting) {
-        if (activeSetting.defaultTestVenue) testVenue = activeSetting.defaultTestVenue
-        if (activeSetting.testStartDate) testDate = activeSetting.testStartDate
-        if (activeSetting.defaultTestTime) testTime = activeSetting.defaultTestTime
+      const resolved = await resolveTestScheduleForGrade(registration.gradeId)
+      if (resolved) {
+        if (resolved.testVenue) testVenue = resolved.testVenue
+        if (resolved.testDate) testDate = resolved.testDate
+        if (resolved.testTime) testTime = resolved.testTime
       }
     } catch (error) {
-      console.warn('[PDF Generator] Failed to fetch active admission settings:', error)
+      console.warn('[PDF Generator] Failed to resolve test schedule:', error)
     }
     
     const formattedTestTime = testTime ? formatTime(testTime) : 'To Be Announced'
