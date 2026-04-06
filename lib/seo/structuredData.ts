@@ -153,6 +153,41 @@ export function generateFAQSchema(faqs: Array<{ question: string; answer: string
 }
 
 /**
+ * WebPage JSON-LD for key landing pages (helps search engines relate page to school + topic).
+ */
+export function generateWebPageSchema(opts: {
+  name: string
+  description: string
+  url: string
+}): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: opts.name,
+    description: opts.description,
+    url: opts.url,
+    inLanguage: 'en-PK',
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'Pak Wattan School & College of Sciences',
+      url: 'https://pakwattan.edu.pk',
+    },
+    about: {
+      '@type': 'EducationalOrganization',
+      name: 'Pak Wattan School & College of Sciences',
+      alternateName: ['Pak Wattan Havelian', 'Pak Wattan School Havelian'],
+      url: 'https://pakwattan.edu.pk',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Havelian',
+        addressRegion: 'Khyber Pakhtunkhwa',
+        addressCountry: 'PK',
+      },
+    },
+  }
+}
+
+/**
  * Generates WebSite structured data with search action
  */
 export function generateWebSiteSchema(siteUrl: string, searchUrl?: string): object {

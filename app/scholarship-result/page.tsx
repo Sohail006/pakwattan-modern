@@ -1,150 +1,165 @@
-import { Calendar, Award, Clock } from 'lucide-react'
+import { Award, Calendar, Sparkles } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import StructuredData from '@/components/seo/StructuredData'
-import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+import { generateBreadcrumbSchema, generateWebPageSchema } from '@/lib/seo/structuredData'
+import ScholarshipResultClassList from '@/components/scholarships/ScholarshipResultClassList'
 
 export default function ScholarshipResultPage() {
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: 'https://pakwattan.edu.pk' },
-    { name: 'Scholarship Results', url: 'https://pakwattan.edu.pk/scholarship-result' },
+    { name: 'Scholarship Test Result 2026-27', url: 'https://pakwattan.edu.pk/scholarship-result' },
   ])
+  const webPage = generateWebPageSchema({
+    name: 'Scholarship Test Result 2026-27 — Pak Wattan School & College of Sciences, Havelian',
+    description:
+      'Official Good Will scholarship test result 2026-27 for Pak Wattan School & College of Sciences, Havelian. Class-wise merit tables for 1st through 9th class.',
+    url: 'https://pakwattan.edu.pk/scholarship-result',
+  })
 
   return (
     <>
-      <StructuredData data={breadcrumbs} />
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
-        {/* Hero Section */}
-        <section className="relative py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-primary-600 via-primary-700 to-accent-600 text-white overflow-hidden">
-          {/* Background Pattern */}
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute inset-0 bg-[url('/images/pattern.svg')] bg-repeat"></div>
-          </div>
-          
-          <Container className="relative z-10">
-            <div className="text-center max-w-4xl mx-auto">
-              <div className="inline-flex items-center justify-center mb-6">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30">
-                  <Award className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
-                </div>
+      <StructuredData data={[breadcrumbs, webPage]} />
+      <div className="min-h-screen bg-gray-50">
+        {/* Hero — mobile-first: compact top, scales up */}
+        <header className="relative overflow-hidden bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.12]"
+            aria-hidden
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            }}
+          />
+          <Container className="relative py-10 sm:py-14 lg:py-16">
+            <div className="mx-auto max-w-3xl text-center">
+              <p className="mb-3 text-[0.7rem] font-medium uppercase tracking-[0.2em] text-white/75 sm:text-xs">
+                Pak Wattan School & College of Sciences, Havelian
+              </p>
+              <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/15 ring-1 ring-white/25 sm:h-16 sm:w-16">
+                <Award className="h-7 w-7 text-white sm:h-8 sm:w-8" strokeWidth={1.75} aria-hidden />
               </div>
-              
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-josefin mb-4 sm:mb-6 leading-tight">
-                Scholarship Results
-                <span className="block text-gradient bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">
-                  Announcement
+              <h1 className="font-josefin text-[1.65rem] font-bold leading-tight sm:text-4xl md:text-5xl">
+                Scholarship Test Result
+                <span className="mt-1 block bg-gradient-to-r from-amber-200 to-white bg-clip-text text-transparent sm:mt-2">
+                  2026–27
                 </span>
               </h1>
-              
-              <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed">
-                Good Will Scholarship Test 2026–27
+              <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/88 sm:text-base">
+                Good Will scholarship test — class-wise merit lists (1st–9th) below, as published by Pak Wattan
+                School & College, Havelian.
               </p>
             </div>
           </Container>
-        </section>
+        </header>
 
-        {/* Main Content */}
-        <section className="section-padding">
+        <main className="pb-12 pt-6 sm:pb-16 sm:pt-8 lg:pt-10">
           <Container>
-            <div className="max-w-3xl mx-auto">
-              {/* Announcement Card */}
-              <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-primary-200 p-6 sm:p-8 lg:p-12 mb-8">
-                <div className="text-center">
-                  {/* Icon */}
-                  <div className="inline-flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full mb-6 shadow-lg">
-                    <Calendar className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
-                  </div>
-                  
-                  {/* Main Message */}
-                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
-                    <span className="text-gradient bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">
-                      The date for announcing scholarship results will be shared soon.
-                    </span>
-                  </h2>
-                  
-                  {/* Additional Info */}
-                  <div className="mt-8 space-y-4">
-                    <div className="flex items-center justify-center space-x-3 text-gray-600">
-                      <Clock className="w-5 h-5 text-primary-600" />
-                      <p className="text-base sm:text-lg">
-                        Results will be published on this official website.
-                      </p>
-                    </div>
-                  </div>
+            <div className="mx-auto max-w-3xl lg:max-w-5xl">
+              {/* Announcement */}
+              <section
+                aria-labelledby="announcement-heading"
+                className="mb-8 rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm sm:mb-10 sm:rounded-3xl sm:p-8 lg:p-10"
+              >
+                <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 sm:h-14 sm:w-14">
+                  <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.75} aria-hidden />
                 </div>
-              </div>
+                <h2
+                  id="announcement-heading"
+                  className="text-center text-lg font-bold text-gray-900 sm:text-xl"
+                >
+                  Official announcement
+                </h2>
+                <div className="mx-auto mt-6 max-w-2xl space-y-4 text-[0.9375rem] leading-relaxed text-gray-600 sm:text-base">
+                  <p>The scholarship test result has been officially announced.</p>
+                  <p>
+                    We warmly congratulate all students who have secured merit-based scholarships through their
+                    hard work and outstanding performance.
+                  </p>
+                  <p>We wish all candidates continued success in their academic journey.</p>
+                </div>
+                <div className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-2 border-t border-gray-100 pt-6 text-center sm:flex-row sm:justify-center sm:gap-3">
+                  <span className="inline-flex items-center gap-2 text-sm text-gray-500">
+                    <Calendar className="h-4 w-4 shrink-0 text-primary-600" aria-hidden />
+                    Scholarship test · 2026–27
+                  </span>
+                </div>
+                <p className="mx-auto mt-4 max-w-lg text-center text-sm text-gray-500">
+                  Select your class to view the full table. Values shown are as in the official lists; blank
+                  cells are shown empty.
+                </p>
+              </section>
 
-              {/* Information Section */}
-              <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 sm:p-8">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 text-center">
-                  Important Information
+              {/* Results */}
+              <section aria-labelledby="results-heading" className="mb-10 sm:mb-12">
+                <h2
+                  id="results-heading"
+                  className="mb-4 text-center text-lg font-bold text-gray-900 sm:mb-6 sm:text-xl"
+                >
+                  Results by class
+                </h2>
+                <p className="mb-5 text-center text-sm text-gray-500 sm:text-base">
+                  1st through 9th class — open one section at a time
+                </p>
+                <ScholarshipResultClassList />
+              </section>
+
+              {/* Practical info — no “coming soon” or contradictory notices */}
+              <section
+                aria-labelledby="info-heading"
+                className="rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm sm:p-8"
+              >
+                <h3 id="info-heading" className="text-center text-base font-bold text-gray-900 sm:text-lg">
+                  Quick guide
                 </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-primary-600 font-bold text-sm">1</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Result Publication</h4>
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        Scholarship test results will be published on this official website and on school notice boards once the announcement date is confirmed. Please check back soon.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-primary-600 font-bold text-sm">2</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Notification</h4>
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        All applicants will be notified by email and SMS when the results are published.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-primary-600 font-bold text-sm">3</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Result Checking</h4>
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        You will be able to check your results online using your registration number or CNIC / B-Form number.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start space-x-4">
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                      <span className="text-primary-600 font-bold text-sm">4</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-gray-900 mb-1">Next Steps</h4>
-                      <p className="text-gray-600 text-sm sm:text-base">
-                        Shortlisted candidates must complete admission formalities within the deadline communicated with the results.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                <ul className="mx-auto mt-6 max-w-2xl space-y-4 text-sm text-gray-600 sm:text-base">
+                  <li className="flex gap-3">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-xs font-bold text-primary-800"
+                      aria-hidden
+                    >
+                      1
+                    </span>
+                    <span>
+                      Tables list roll number, names, marks, and totals as in the official class result
+                      sheets.
+                    </span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-xs font-bold text-primary-800"
+                      aria-hidden
+                    >
+                      2
+                    </span>
+                    <span>Open your class and use your roll number to find your row.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary-100 text-xs font-bold text-primary-800"
+                      aria-hidden
+                    >
+                      3
+                    </span>
+                    <span>
+                      Shortlisted students should complete admission steps by the deadline communicated by the
+                      school.
+                    </span>
+                  </li>
+                </ul>
+              </section>
 
-              {/* Call to Action */}
-              <div className="mt-8 text-center">
+              <div className="mt-8 text-center sm:mt-10">
                 <a
                   href="/scholarships"
-                  className="inline-flex items-center space-x-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-primary-600 to-primary-700 text-white rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-300 shadow-lg hover:shadow-xl font-semibold text-base sm:text-lg"
+                  className="inline-flex min-h-[3rem] w-full items-center justify-center gap-2 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-primary-700 sm:w-auto sm:px-8 sm:text-base"
                 >
-                  <Award className="w-5 h-5" />
-                  <span>Learn More About Scholarships</span>
+                  <Award className="h-5 w-5 shrink-0" aria-hidden />
+                  Learn more about scholarships
                 </a>
               </div>
             </div>
           </Container>
-        </section>
+        </main>
       </div>
     </>
   )
 }
-

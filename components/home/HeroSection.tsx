@@ -106,7 +106,7 @@ const HeroSection = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
                 <Button 
                   href="/admission" 
                   variant="accent" 
@@ -119,6 +119,16 @@ const HeroSection = () => {
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
                 <Button 
+                  href="/scholarship-result" 
+                  variant="primary"
+                  size="lg"
+                  className="group relative shadow-2xl hover:shadow-primary-400/45 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 font-bold border-2 border-white/40 ring-2 ring-white/25 animate-pulse-subtle transition-all duration-300 transform-gpu sm:ring-[3px]"
+                  aria-label="View scholarship test result 2026-27"
+                >
+                  <Award className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span>Scholarship Result</span>
+                </Button>
+                <Button 
                   href="/entry-test-model-papers" 
                   variant="secondary"
                   size="md"
@@ -127,16 +137,6 @@ const HeroSection = () => {
                 >
                   <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
                   <span>Model Papers</span>
-                </Button>
-                <Button 
-                  href="/scholarship-result" 
-                  variant="outline"
-                  size="md"
-                  className="group relative bg-white/10 backdrop-blur-md border-2 border-white/30 text-white hover:bg-white/20 hover:scale-105 active:scale-100 touch-target min-h-[44px] focus:outline-none focus:ring-4 focus:ring-white/20 focus:ring-offset-2 font-semibold transition-all duration-300 transform-gpu"
-                  aria-label="Check scholarship result date"
-                >
-                  <Calendar className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Result Date</span>
                 </Button>
               </div>
             </div>

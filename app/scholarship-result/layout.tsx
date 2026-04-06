@@ -2,11 +2,11 @@ import { Metadata } from 'next'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Scholarship Results Announcement - Good Will Scholarship Test 2026–27',
+  title: 'Scholarship Test Result 2026-27 — Pak Wattan Havelian',
   description:
-    'The date for announcing Good Will Scholarship Test (2026–27) results will be shared soon. When results are published, you can check them on this website. Applicants will be notified by email and SMS.',
+    'Pak Wattan School & College of Sciences Havelian: official Good Will scholarship test result 2026-27. Class-wise merit lists (1st–9th), roll numbers, and marks — published on the school website for students and parents in Abbottabad & KPK.',
   keywords:
-    'scholarship results, good will scholarship test 2026-27, scholarship test result, pak wattan scholarship result, result announcement',
+    'Pak Wattan scholarship result 2026-27, Pak Wattan School Havelian scholarship result, scholarship test result 2026 27, Good Will scholarship test result, Pak Wattan College Havelian merit list, my school scholarship result Havelian, Abbottabad school scholarship result, KPK scholarship test result, class wise scholarship result 1st to 9th, Pak Wattan official result',
   path: '/scholarship-result',
 })
 
