@@ -857,7 +857,7 @@ export default function RegistrationsTable() {
                       {sortBy === 'registrationDate' && (sortOrder === 'asc' ? <ChevronUp className="w-4 h-4 flex-shrink-0 drop-shadow-md" /> : <ChevronDown className="w-4 h-4 flex-shrink-0 drop-shadow-md" />)}
                     </div>
                   </th>
-                  <th className="sticky right-0 px-4 sm:px-5 py-4 text-right text-xs font-bold text-white uppercase tracking-wider bg-gradient-to-r from-primary-700 to-primary-600 z-30 border-l-2 border-white/30 whitespace-nowrap shadow-[4px_0_12px_rgba(0,0,0,0.15)]">
+                  <th className="px-4 sm:px-5 py-4 text-right text-xs font-bold text-white uppercase tracking-wider bg-gradient-to-r from-primary-700 to-primary-600 z-30 border-l-2 border-white/30 whitespace-nowrap shadow-[4px_0_12px_rgba(0,0,0,0.15)] lg:sticky lg:right-0">
                     <span className="drop-shadow-sm">Actions</span>
                   </th>
                 </tr>
@@ -971,7 +971,7 @@ export default function RegistrationsTable() {
                         <span className="text-sm font-medium text-gray-700 block">{formatDate(reg.registrationDate)}</span>
                       </div>
                     </td>
-                    <td className="sticky right-0 px-4 sm:px-5 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gradient-to-l group-hover:from-primary-50/50 group-hover:to-white z-10 border-l-2 border-gray-200 group-hover:border-primary-200 transition-all duration-300">
+                    <td className="px-4 sm:px-5 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gradient-to-l group-hover:from-primary-50/50 group-hover:to-white border-l-2 border-gray-200 group-hover:border-primary-200 transition-all duration-300 lg:sticky lg:right-0 lg:z-10">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => setViewingDetails(reg)}

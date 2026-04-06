@@ -36,6 +36,15 @@ function normalizeRow(row: string[] | undefined, width: number): string[] {
   return r.slice(0, width)
 }
 
+/** Section title already shows the class; drop redundant Class column if present. */
+function stripClassColumn(headers: string[], rows: string[][]): { headers: string[]; rows: string[][] } {
+  const classIdx = headers.findIndex((h) => h.trim().toLowerCase() === 'class')
+  if (classIdx < 0) return { headers, rows }
+  const nextHeaders = headers.filter((_, i) => i !== classIdx)
+  const nextRows = rows.map((r) => r.filter((_, i) => i !== classIdx))
+  return { headers: nextHeaders, rows: nextRows }
+}
+
 function ResultTable({ grade }: { grade: number }) {
   const table = getTableForGrade(grade)
   if (!table?.rows?.length) {
@@ -44,9 +53,10 @@ function ResultTable({ grade }: { grade: number }) {
     )
   }
 
-  const headers = normalizeHeaders(table)
-  const width = Math.max(headers.length, 1)
-  const rows = table.rows.map((r) => normalizeRow(r, width))
+  const rawHeaders = normalizeHeaders(table)
+  const width = Math.max(rawHeaders.length, 1)
+  const rawRows = table.rows.map((r) => normalizeRow(r, width))
+  const { headers, rows } = stripClassColumn(rawHeaders, rawRows)
 
   return (
     <div className="relative rounded-xl bg-white ring-1 ring-gray-200/80 shadow-sm">
