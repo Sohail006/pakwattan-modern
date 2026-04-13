@@ -194,7 +194,8 @@ export async function saveInterviewAssessment(
 
 		if (!response.ok) {
 			const err = data as { error?: string; message?: string } | null
-			throw new Error(err?.error || err?.message || 'Unable to save interview assessment.')
+			const statusInfo = `(${response.status} ${response.statusText})`
+			throw new Error(err?.error || err?.message || `Unable to save interview assessment ${statusInfo}.`)
 		}
 
 		return data as RegistrationResponse

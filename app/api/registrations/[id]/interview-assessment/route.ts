@@ -51,9 +51,23 @@ export async function PUT(
     })
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ message: 'Failed to save interview assessment' }))
+      const raw = await response.text()
+      let parsed: { message?: string; error?: string; detail?: string } | null = null
+      try {
+        parsed = raw ? JSON.parse(raw) : null
+      } catch {
+        parsed = null
+      }
+
+      const errorMessage =
+        parsed?.message ||
+        parsed?.error ||
+        parsed?.detail ||
+        (raw && raw.trim()) ||
+        `Backend request failed (${response.status} ${response.statusText})`
+
       return NextResponse.json(
-        { error: error.message || error.error || 'Unable to save interview assessment' },
+        { error: errorMessage },
         { status: response.status }
       )
     }
