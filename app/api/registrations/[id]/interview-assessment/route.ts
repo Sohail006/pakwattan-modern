@@ -3,6 +3,43 @@ import { getApiBaseUrl } from '@/lib/config'
 
 export const dynamic = 'force-dynamic'
 
+async function fetchInterviewAssessmentFromBackend(
+  backendUrl: string,
+  registrationId: string,
+  method: 'GET' | 'PUT',
+  authHeader: string | null,
+  body?: string
+) {
+  const primaryUrl = `${backendUrl}/api/registrations/${registrationId}`
+  const fallbackUrl = `${primaryUrl}/interview-assessment`
+  const baseHeaders = {
+    ...(authHeader && { Authorization: authHeader }),
+  }
+  const headers =
+    method === 'PUT'
+      ? {
+          'Content-Type': 'application/json',
+          ...baseHeaders,
+        }
+      : baseHeaders
+
+  const requestInit: RequestInit = {
+    method,
+    headers,
+    ...(body ? { body } : {}),
+  }
+
+  const primaryResponse = await fetch(primaryUrl, requestInit)
+
+  // Backend variants exist in different deployments.
+  // If one pattern is missing, retry using /interview-assessment path.
+  if (primaryResponse.status === 404) {
+    return fetch(fallbackUrl, requestInit)
+  }
+
+  return primaryResponse
+}
+
 function buildErrorResponse(
   status: number,
   statusText: string,
@@ -43,12 +80,12 @@ export async function GET(
     const resolvedParams = await Promise.resolve(params)
     const registrationId = resolvedParams.id
 
-    const response = await fetch(`${backendUrl}/api/registrations/${registrationId}`, {
-      method: 'GET',
-      headers: {
-        ...(authHeader && { Authorization: authHeader }),
-      },
-    })
+    const response = await fetchInterviewAssessmentFromBackend(
+      backendUrl,
+      registrationId,
+      'GET',
+      authHeader
+    )
 
     if (!response.ok) {
       const raw = await response.text()
@@ -101,17 +138,16 @@ export async function PUT(
       )
     }
 
-    const response = await fetch(`${backendUrl}/api/registrations/${registrationId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(authHeader && { Authorization: authHeader }),
-      },
-      body: JSON.stringify({
+    const response = await fetchInterviewAssessmentFromBackend(
+      backendUrl,
+      registrationId,
+      'PUT',
+      authHeader,
+      JSON.stringify({
         testMarks,
         interviewRemarks,
-      }),
-    })
+      })
+    )
 
     if (!response.ok) {
       const raw = await response.text()
