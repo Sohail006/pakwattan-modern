@@ -53,6 +53,8 @@ export interface RegistrationResponse {
 	testVenue?: string;
 	testDate?: string;
 	testTime?: string;
+	testMarks?: number;
+	interviewRemarks?: string;
 	registrationDate: string;
 	isActive: boolean;
 }
@@ -158,5 +160,46 @@ export async function verifyReceipt(
 	} catch (error) {
 		const apiError = error as ApiError
 		throw new Error(apiError.message || 'Unable to verify receipt.')
+	}
+}
+
+/**
+ * Save interview assessment details (Admin/Staff only)
+ */
+export async function saveInterviewAssessment(
+	registrationId: number,
+	testMarks: number,
+	interviewRemarks: string
+): Promise<RegistrationResponse> {
+	try {
+		const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+		const response = await fetch(`/api/registrations/${registrationId}/interview-assessment`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+				...(token ? { Authorization: `Bearer ${token}` } : {}),
+			},
+			body: JSON.stringify({
+				testMarks,
+				interviewRemarks,
+			}),
+		})
+
+		let data: unknown = null
+		try {
+			data = await response.json()
+		} catch {
+			data = null
+		}
+
+		if (!response.ok) {
+			const err = data as { error?: string; message?: string } | null
+			throw new Error(err?.error || err?.message || 'Unable to save interview assessment.')
+		}
+
+		return data as RegistrationResponse
+	} catch (error) {
+		const apiError = error as ApiError
+		throw new Error(apiError.message || 'Unable to save interview assessment.')
 	}
 }

@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image'
-import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock } from 'lucide-react'
-import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt } from '@/lib/api/registrations'
+import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react'
+import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt, saveInterviewAssessment } from '@/lib/api/registrations'
 import { getAllScholarshipTypes, resolveTestScheduleForGrade } from '@/lib/api/admissionSettings'
 import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
@@ -57,6 +57,11 @@ export default function RegistrationsTable() {
     testTime?: string
   } | null>(null)
   const [viewingReceipt, setViewingReceipt] = useState<RegistrationResponse | null>(null)
+  const [editingInterview, setEditingInterview] = useState<RegistrationResponse | null>(null)
+  const [interviewTestMarks, setInterviewTestMarks] = useState('')
+  const [interviewRemarks, setInterviewRemarks] = useState('')
+  const [interviewValidationError, setInterviewValidationError] = useState<string | null>(null)
+  const [savingInterview, setSavingInterview] = useState(false)
   const [showVerificationDialog, setShowVerificationDialog] = useState(false)
   const [verificationNotes, setVerificationNotes] = useState('')
   const [verificationAction, setVerificationAction] = useState<'verify' | 'reject' | null>(null)
@@ -419,6 +424,56 @@ export default function RegistrationsTable() {
 
   const handleViewReceipt = (registration: RegistrationResponse) => {
     setViewingReceipt(registration)
+  }
+
+  const openInterviewModal = (registration: RegistrationResponse) => {
+    setEditingInterview(registration)
+    setInterviewTestMarks(
+      registration.testMarks == null || Number.isNaN(Number(registration.testMarks))
+        ? ''
+        : String(registration.testMarks)
+    )
+    setInterviewRemarks(registration.interviewRemarks ?? '')
+    setInterviewValidationError(null)
+  }
+
+  const closeInterviewModal = () => {
+    setEditingInterview(null)
+    setInterviewTestMarks('')
+    setInterviewRemarks('')
+    setInterviewValidationError(null)
+  }
+
+  const handleSaveInterviewAssessment = async () => {
+    if (!editingInterview) return
+
+    const parsedMarks = Number(interviewTestMarks)
+    const normalizedRemarks = interviewRemarks.trim()
+
+    if (!interviewTestMarks.trim() || Number.isNaN(parsedMarks)) {
+      setInterviewValidationError('Test marks are required.')
+      return
+    }
+
+    if (!normalizedRemarks) {
+      setInterviewValidationError('Interview remarks are required.')
+      return
+    }
+
+    setInterviewValidationError(null)
+    setSavingInterview(true)
+    try {
+      await saveInterviewAssessment(editingInterview.id, parsedMarks, normalizedRemarks)
+      toastService.success('Interview assessment saved successfully.')
+      await loadRegistrations()
+      closeInterviewModal()
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to save interview assessment.'
+      setInterviewValidationError(message)
+      toastService.error(message)
+    } finally {
+      setSavingInterview(false)
+    }
   }
 
   const handleVerifyReceipt = async (registrationId: number, status: 'Verified' | 'Rejected', notes?: string) => {
@@ -990,6 +1045,14 @@ export default function RegistrationsTable() {
                           <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <button
+                          onClick={() => openInterviewModal(reg)}
+                          className="text-amber-600 hover:text-amber-700 active:text-amber-800 p-2 rounded-xl hover:bg-amber-50 active:bg-amber-100 transition-all duration-200 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110 active:scale-95 shadow-sm hover:shadow-md"
+                          title="Interview Remarks"
+                          aria-label="Open interview remarks form"
+                        >
+                          <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </button>
+                        <button
                           onClick={() => handleDelete(reg.id)}
                           disabled={deletingId === reg.id}
                           className="text-red-600 hover:text-red-700 active:text-red-800 p-2 rounded-xl hover:bg-red-50 active:bg-red-100 transition-all duration-200 disabled:opacity-50 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center hover:scale-110 active:scale-95 disabled:hover:scale-100 shadow-sm hover:shadow-md"
@@ -1159,6 +1222,18 @@ export default function RegistrationsTable() {
                   </p>
                 </div>
                 <div>
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Test Marks</p>
+                  <p className="text-gray-900">
+                    {viewingDetails.testMarks == null ? '-' : viewingDetails.testMarks}
+                  </p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Interview Remarks</p>
+                  <p className="text-gray-900 break-words whitespace-pre-wrap">
+                    {viewingDetails.interviewRemarks?.trim() || '-'}
+                  </p>
+                </div>
+                <div>
                   <p className="text-sm font-semibold text-gray-500 mb-1">Status</p>
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                     viewingDetails.isActive 
@@ -1189,6 +1264,86 @@ export default function RegistrationsTable() {
                 className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-all duration-200 hover:scale-105 active:scale-95"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Interview Assessment Modal */}
+      {editingInterview && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full animate-slide-up border border-gray-200">
+            <div className="sticky top-0 bg-gradient-to-r from-amber-600 to-orange-600 text-white p-5 flex items-center justify-between shadow-lg">
+              <div>
+                <h2 className="text-xl font-bold">Interview Remarks</h2>
+                <p className="text-amber-100 text-sm">
+                  {editingInterview.name} • Registration #{editingInterview.id}
+                </p>
+              </div>
+              <button
+                onClick={closeInterviewModal}
+                disabled={savingInterview}
+                className="text-white hover:text-amber-100 p-2 rounded-lg hover:bg-white/10 transition-all duration-200 disabled:opacity-60"
+                aria-label="Close interview modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-5 space-y-4">
+              <div>
+                <label htmlFor="interview-test-marks" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Test Marks <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="interview-test-marks"
+                  type="number"
+                  value={interviewTestMarks}
+                  onChange={(e) => setInterviewTestMarks(e.target.value)}
+                  placeholder="Enter test marks"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="interview-remarks" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Interview Remarks <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  id="interview-remarks"
+                  value={interviewRemarks}
+                  onChange={(e) => setInterviewRemarks(e.target.value)}
+                  rows={5}
+                  placeholder="Write interview remarks..."
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              {interviewValidationError && (
+                <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {interviewValidationError}
+                </div>
+              )}
+            </div>
+
+            <div className="px-5 py-4 border-t border-gray-200 bg-gray-50 flex items-center justify-end gap-3">
+              <button
+                onClick={closeInterviewModal}
+                disabled={savingInterview}
+                className="px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-all duration-200 disabled:opacity-60"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveInterviewAssessment}
+                disabled={savingInterview}
+                className="px-4 py-2.5 bg-amber-600 text-white rounded-lg font-semibold hover:bg-amber-700 transition-all duration-200 disabled:opacity-60 inline-flex items-center gap-2"
+              >
+                {savingInterview && <Loader2 className="w-4 h-4 animate-spin" />}
+                Save
               </button>
             </div>
           </div>
