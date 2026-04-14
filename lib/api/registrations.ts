@@ -53,10 +53,23 @@ export interface RegistrationResponse {
 	testVenue?: string;
 	testDate?: string;
 	testTime?: string;
+	/** Entry / written test marks (separate from interview marks). */
 	testMarks?: number;
+	interviewMarks?: number;
 	interviewRemarks?: string;
 	registrationDate: string;
 	isActive: boolean;
+}
+
+/** Interview marks for display/save; falls back to legacy data stored in testMarks when remarks exist. */
+export function resolveInterviewMarks(reg: RegistrationResponse): number | undefined {
+	if (reg.interviewMarks != null && !Number.isNaN(Number(reg.interviewMarks))) {
+		return Number(reg.interviewMarks);
+	}
+	if (reg.interviewRemarks?.trim() && reg.testMarks != null && !Number.isNaN(Number(reg.testMarks))) {
+		return Number(reg.testMarks);
+	}
+	return undefined;
 }
 
 export async function submitRegistration(data: RegistrationRequest): Promise<RegistrationResponse> {
@@ -166,19 +179,19 @@ export async function verifyReceipt(
 /**
  * Save interview assessment details (Admin/Staff only).
  *
- * Calls PUT /api/registrations/{id} on the backend (RegistrationUpdateDto: testMarks, interviewRemarks).
+ * Calls PUT /api/registrations/{id} on the backend (RegistrationUpdateDto: interviewMarks, interviewRemarks).
  * Do not use fetch('/api/.../interview-assessment'): next.config.js rewrites all /api/* to the ASP.NET host,
  * so that URL hits the API directly — and there is no interview-assessment route there (404).
  * The shared api client uses NEXT_PUBLIC_BACKEND_BASE_URL and bypasses the rewrite.
  */
 export async function saveInterviewAssessment(
 	registrationId: number,
-	testMarks: number,
+	interviewMarks: number,
 	interviewRemarks: string
 ): Promise<RegistrationResponse> {
 	try {
 		const response = await api.put<RegistrationResponse>(`/api/registrations/${registrationId}`, {
-			testMarks,
+			interviewMarks,
 			interviewRemarks,
 		})
 		return response as RegistrationResponse

@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Image from 'next/image'
 import { Search, X, Trash2, Download, FileText, Loader2, AlertCircle, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Users, Calendar, GraduationCap, TrendingUp, Eye, CheckCircle2, Sparkles, Receipt, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react'
-import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt, saveInterviewAssessment } from '@/lib/api/registrations'
+import { RegistrationResponse, getAllRegistrations, deleteRegistration, verifyReceipt, saveInterviewAssessment, resolveInterviewMarks } from '@/lib/api/registrations'
 import { getAllScholarshipTypes, resolveTestScheduleForGrade } from '@/lib/api/admissionSettings'
 import type { ScholarshipType } from '@/lib/api/admissionSettings'
 import { generateRollNumberSlipPDF } from '@/lib/utils/pdfGenerator'
@@ -18,6 +18,11 @@ import SkeletonLoader from '@/components/ui/SkeletonLoader'
 type SortField = 'name' | 'rollNumber' | 'gradeId' | 'registrationDate' | 'fatherName' | 'scholarship' | 'paymentStatus' | 'receipt' | null
 type SortOrder = 'asc' | 'desc'
 
+/** Non-empty trimmed interview remarks text */
+function hasInterviewRemarks(reg: RegistrationResponse): boolean {
+  return Boolean(reg.interviewRemarks?.trim())
+}
+
 export default function RegistrationsTable() {
   const [registrations, setRegistrations] = useState<RegistrationResponse[]>([])
   const [loading, setLoading] = useState(true)
@@ -30,6 +35,8 @@ export default function RegistrationsTable() {
   const [filterGrade, setFilterGrade] = useState<string>('')
   const [filterScholarship, setFilterScholarship] = useState<string>('')
   const [filterPayment, setFilterPayment] = useState<string>('')
+  /** '' | 'recorded' = remarks saved; 'pending' = no remarks yet */
+  const [filterInterviewRemarks, setFilterInterviewRemarks] = useState<string>('')
 
   // Debounce search to reduce filtering cost
   const debouncedSetSearch = useRef(
@@ -183,6 +190,12 @@ export default function RegistrationsTable() {
       filtered = filtered.filter(reg => reg.paymentMethod.toLowerCase() === filterPayment.toLowerCase())
     }
 
+    if (filterInterviewRemarks === 'recorded') {
+      filtered = filtered.filter(reg => hasInterviewRemarks(reg))
+    } else if (filterInterviewRemarks === 'pending') {
+      filtered = filtered.filter(reg => !hasInterviewRemarks(reg))
+    }
+
     if (sortBy) {
       filtered.sort((a, b) => {
         let aVal: string | number
@@ -232,7 +245,7 @@ export default function RegistrationsTable() {
     }
 
     return filtered
-  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, sortBy, sortOrder, getPaymentStatusDisplayMemo])
+  }, [registrations, debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, filterInterviewRemarks, sortBy, sortOrder, getPaymentStatusDisplayMemo])
 
   // Create ID-to-name mapping for scholarship types
   const scholarshipTypeMap = useMemo(() => {
@@ -364,7 +377,7 @@ export default function RegistrationsTable() {
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [debouncedSearchTerm, filterGrade, filterScholarship, filterPayment])
+  }, [debouncedSearchTerm, filterGrade, filterScholarship, filterPayment, filterInterviewRemarks])
 
   // Clamp current page if filtered results shrink
   useEffect(() => {
@@ -428,11 +441,8 @@ export default function RegistrationsTable() {
 
   const openInterviewModal = (registration: RegistrationResponse) => {
     setEditingInterview(registration)
-    setInterviewTestMarks(
-      registration.testMarks == null || Number.isNaN(Number(registration.testMarks))
-        ? ''
-        : String(registration.testMarks)
-    )
+    const im = resolveInterviewMarks(registration)
+    setInterviewTestMarks(im == null || Number.isNaN(im) ? '' : String(im))
     setInterviewRemarks(registration.interviewRemarks ?? '')
     setInterviewValidationError(null)
   }
@@ -451,7 +461,7 @@ export default function RegistrationsTable() {
     const normalizedRemarks = interviewRemarks.trim()
 
     if (!interviewTestMarks.trim() || Number.isNaN(parsedMarks)) {
-      setInterviewValidationError('Test marks are required.')
+      setInterviewValidationError('Interview marks are required.')
       return
     }
 
@@ -528,6 +538,7 @@ export default function RegistrationsTable() {
     setFilterGrade('')
     setFilterScholarship('')
     setFilterPayment('')
+    setFilterInterviewRemarks('')
   }
 
   // Handle scroll indicators
@@ -695,7 +706,7 @@ export default function RegistrationsTable() {
 
       {/* Filters */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4 transition-shadow hover:shadow-md">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 sm:gap-4">
           {/* Search */}
           <div className="sm:col-span-2 lg:col-span-2 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 transition-colors pointer-events-none" />
@@ -747,9 +758,20 @@ export default function RegistrationsTable() {
             <option value="bankaccount">Bank Account</option>
             <option value="byhandontestdate">By Hand on Test Date</option>
           </select>
+
+          <select
+            value={filterInterviewRemarks}
+            onChange={(e) => setFilterInterviewRemarks(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 min-h-[44px] hover:border-gray-400 cursor-pointer"
+            aria-label="Filter by interview remarks status"
+          >
+            <option value="">All (remarks)</option>
+            <option value="recorded">Remarks recorded</option>
+            <option value="pending">Remarks pending</option>
+          </select>
         </div>
 
-        {(searchTerm || filterGrade || filterScholarship || filterPayment) && (
+        {(searchTerm || filterGrade || filterScholarship || filterPayment || filterInterviewRemarks) && (
           <div className="mt-3 sm:mt-4 flex flex-wrap items-center gap-2 animate-fade-in">
             <span className="text-xs sm:text-sm font-semibold text-gray-700 flex items-center gap-1">
               <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary-600" />
@@ -783,6 +805,14 @@ export default function RegistrationsTable() {
               <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs sm:text-sm font-medium hover:bg-green-200 transition-colors shadow-sm">
                 Payment: <span className="truncate max-w-[100px] sm:max-w-none">{filterPayment}</span>
                 <button onClick={() => setFilterPayment('')} className="hover:text-green-900 active:text-green-800 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-green-300 transition-colors" aria-label="Clear payment filter">
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+            {filterInterviewRemarks && (
+              <span className="inline-flex items-center gap-1 px-2 sm:px-3 py-1 bg-amber-100 text-amber-900 rounded-full text-xs sm:text-sm font-medium hover:bg-amber-200 transition-colors shadow-sm">
+                Remarks: {filterInterviewRemarks === 'recorded' ? 'Recorded' : 'Pending'}
+                <button onClick={() => setFilterInterviewRemarks('')} className="hover:text-amber-950 active:text-amber-900 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center rounded-full hover:bg-amber-300 transition-colors" aria-label="Clear interview remarks filter">
                   <X className="w-3 h-3" />
                 </button>
               </span>
@@ -927,11 +957,11 @@ export default function RegistrationsTable() {
                       </div>
                       <p className="text-lg font-semibold text-gray-900 mb-2">No registrations found</p>
                       <p className="text-sm text-gray-500 mb-4 text-center max-w-md">
-                        {searchTerm || filterGrade || filterScholarship || filterPayment
+                        {searchTerm || filterGrade || filterScholarship || filterPayment || filterInterviewRemarks
                           ? 'Try adjusting your filters to see more results'
                           : 'No registrations have been submitted yet'}
                       </p>
-                      {(searchTerm || filterGrade || filterScholarship || filterPayment) && (
+                      {(searchTerm || filterGrade || filterScholarship || filterPayment || filterInterviewRemarks) && (
                         <button
                           onClick={clearFilters}
                           className="text-sm text-primary-600 hover:text-primary-700 font-semibold px-4 py-2 rounded-lg hover:bg-primary-50 transition-colors"
@@ -1222,9 +1252,18 @@ export default function RegistrationsTable() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-500 mb-1">Test Marks</p>
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Test marks</p>
                   <p className="text-gray-900">
                     {viewingDetails.testMarks == null ? '-' : viewingDetails.testMarks}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-500 mb-1">Interview marks</p>
+                  <p className="text-gray-900">
+                    {(() => {
+                      const m = resolveInterviewMarks(viewingDetails)
+                      return m == null ? '-' : m
+                    })()}
                   </p>
                 </div>
                 <div className="col-span-2">
@@ -1294,14 +1333,14 @@ export default function RegistrationsTable() {
             <div className="p-5 space-y-4">
               <div>
                 <label htmlFor="interview-test-marks" className="block text-sm font-semibold text-gray-700 mb-1.5">
-                  Test Marks <span className="text-red-500">*</span>
+                  Interview Marks <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="interview-test-marks"
                   type="number"
                   value={interviewTestMarks}
                   onChange={(e) => setInterviewTestMarks(e.target.value)}
-                  placeholder="Enter test marks"
+                  placeholder="Enter interview marks"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   required
                 />

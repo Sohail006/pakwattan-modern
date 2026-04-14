@@ -1,5 +1,5 @@
 import * as XLSX from 'xlsx'
-import { RegistrationResponse } from '@/lib/api/registrations'
+import { RegistrationResponse, resolveInterviewMarks } from '@/lib/api/registrations'
 import { formatDate, formatTime } from '@/lib/utils'
 import { getPaymentStatusDisplay, getReceiptStatusDisplay } from '@/lib/utils/paymentHelpers'
 
@@ -40,6 +40,7 @@ export function exportRegistrationsToExcel(
         reg.paymentMethod
       )
       const receiptVerifiedAt = reg.receiptVerifiedAt ? formatDate(reg.receiptVerifiedAt) : ''
+      const remarksRecorded = reg.interviewRemarks?.trim() ? 'Yes' : 'No'
       
       // Convert scholarship type ID to name if mapping is available
       let scholarshipTypeDisplay = ''
@@ -74,7 +75,9 @@ export function exportRegistrationsToExcel(
         'Test Venue': reg.testVenue || '',
         'Test Date': testDate,
         'Test Time': testTime,
-        'Test Marks': reg.testMarks ?? '',
+        'Test marks': reg.testMarks ?? '',
+        'Interview marks': resolveInterviewMarks(reg) ?? '',
+        'Remarks recorded': remarksRecorded,
         'Interview Remarks': reg.interviewRemarks || '',
         'Registration Date': registrationDate,
       }
@@ -107,7 +110,9 @@ export function exportRegistrationsToExcel(
       { wch: 30 }, // Test Venue
       { wch: 12 }, // Test Date
       { wch: 12 }, // Test Time
-      { wch: 12 }, // Test Marks
+      { wch: 12 }, // Test marks
+      { wch: 14 }, // Interview marks
+      { wch: 16 }, // Remarks recorded
       { wch: 45 }, // Interview Remarks
       { wch: 15 }, // Registration Date
     ]
