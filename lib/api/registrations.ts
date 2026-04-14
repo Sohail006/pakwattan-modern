@@ -61,6 +61,39 @@ export interface RegistrationResponse {
 	isActive: boolean;
 }
 
+function pickOptionalNumber(obj: Record<string, unknown>, ...keys: string[]): number | undefined {
+	for (const key of keys) {
+		const v = obj[key];
+		if (v == null || v === '') continue;
+		const n = Number(v);
+		if (Number.isFinite(n)) return n;
+	}
+	return undefined;
+}
+
+function pickOptionalString(obj: Record<string, unknown>, ...keys: string[]): string | undefined {
+	for (const key of keys) {
+		const v = obj[key];
+		if (v == null) continue;
+		const s = String(v);
+		if (s !== '') return s;
+	}
+	return undefined;
+}
+
+/**
+ * Aligns API JSON with RegistrationResponse (camelCase / PascalCase from proxies or older clients).
+ * Keeps testMarks, interviewMarks, interviewRemarks in sync with the database fields.
+ */
+export function normalizeRegistration(data: unknown): RegistrationResponse {
+	const base = data as RegistrationResponse;
+	const r = data as Record<string, unknown>;
+	const testMarks = pickOptionalNumber(r, 'testMarks', 'TestMarks') ?? base.testMarks;
+	const interviewMarks = pickOptionalNumber(r, 'interviewMarks', 'InterviewMarks') ?? base.interviewMarks;
+	const interviewRemarks = pickOptionalString(r, 'interviewRemarks', 'InterviewRemarks') ?? base.interviewRemarks;
+	return { ...base, testMarks, interviewMarks, interviewRemarks };
+}
+
 /** Interview marks for display/save; falls back to legacy data stored in testMarks when remarks exist. */
 export function resolveInterviewMarks(reg: RegistrationResponse): number | undefined {
 	if (reg.interviewMarks != null && !Number.isNaN(Number(reg.interviewMarks))) {
@@ -97,7 +130,7 @@ export async function submitRegistration(data: RegistrationRequest): Promise<Reg
         };
 
         const response = await api.post<RegistrationResponse>('/api/registrations', payload);
-        return response as RegistrationResponse;
+        return normalizeRegistration(response);
 	} catch (error) {
 		const apiError = error as ApiError;
 		throw new Error(apiError.message || 'Unable to submit registration. Please check your information and try again.');
@@ -107,7 +140,7 @@ export async function submitRegistration(data: RegistrationRequest): Promise<Reg
 export async function getAllRegistrations(): Promise<RegistrationResponse[]> {
 	try {
 		const response = await api.get<RegistrationResponse[]>('/api/registrations');
-		return response as RegistrationResponse[];
+		return (response as unknown[]).map((row) => normalizeRegistration(row));
 	} catch (error) {
 		const apiError = error as ApiError;
 		throw new Error(apiError.message || 'Unable to fetch registrations.');
@@ -117,7 +150,7 @@ export async function getAllRegistrations(): Promise<RegistrationResponse[]> {
 export async function getRegistrationById(id: number): Promise<RegistrationResponse> {
 	try {
 		const response = await api.get<RegistrationResponse>(`/api/registrations/${id}`);
-		return response as RegistrationResponse;
+		return normalizeRegistration(response);
 	} catch (error) {
 		const apiError = error as ApiError;
 		throw new Error(apiError.message || 'Unable to fetch registration.');
@@ -169,7 +202,7 @@ export async function verifyReceipt(
 				verificationNotes,
 			}
 		)
-		return response
+		return normalizeRegistration(response)
 	} catch (error) {
 		const apiError = error as ApiError
 		throw new Error(apiError.message || 'Unable to verify receipt.')
@@ -179,7 +212,7 @@ export async function verifyReceipt(
 /**
  * Save interview assessment details (Admin/Staff only).
  *
- * Calls PUT /api/registrations/{id} on the backend (RegistrationUpdateDto: interviewMarks, interviewRemarks).
+ * Calls PUT /api/registrations/{id} on the backend (RegistrationUpdateDto: testMarks, interviewMarks, interviewRemarks).
  * Do not use fetch('/api/.../interview-assessment'): next.config.js rewrites all /api/* to the ASP.NET host,
  * so that URL hits the API directly — and there is no interview-assessment route there (404).
  * The shared api client uses NEXT_PUBLIC_BACKEND_BASE_URL and bypasses the rewrite.
@@ -192,9 +225,11 @@ export async function saveInterviewAssessment(
 	try {
 		const response = await api.put<RegistrationResponse>(`/api/registrations/${registrationId}`, {
 			interviewMarks,
+			// Same value as InterviewMarks column so TestMarks stays aligned with DB (API mirrors both).
+			testMarks: interviewMarks,
 			interviewRemarks,
 		})
-		return response as RegistrationResponse
+		return normalizeRegistration(response)
 	} catch (error) {
 		const apiError = error as ApiError
 		throw new Error(apiError.message || 'Unable to save interview assessment.')
