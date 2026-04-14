@@ -219,14 +219,14 @@ export async function verifyReceipt(
  */
 export async function saveInterviewAssessment(
 	registrationId: number,
+	testMarks: number,
 	interviewMarks: number,
 	interviewRemarks: string
 ): Promise<RegistrationResponse> {
 	try {
 		const response = await api.put<RegistrationResponse>(`/api/registrations/${registrationId}`, {
+			testMarks,
 			interviewMarks,
-			// Same value as InterviewMarks column so TestMarks stays aligned with DB (API mirrors both).
-			testMarks: interviewMarks,
 			interviewRemarks,
 		})
 		return normalizeRegistration(response)

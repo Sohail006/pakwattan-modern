@@ -65,7 +65,8 @@ export default function RegistrationsTable() {
   } | null>(null)
   const [viewingReceipt, setViewingReceipt] = useState<RegistrationResponse | null>(null)
   const [editingInterview, setEditingInterview] = useState<RegistrationResponse | null>(null)
-  const [interviewTestMarks, setInterviewTestMarks] = useState('')
+  const [testMarksInput, setTestMarksInput] = useState('')
+  const [interviewMarksInput, setInterviewMarksInput] = useState('')
   const [interviewRemarks, setInterviewRemarks] = useState('')
   const [interviewValidationError, setInterviewValidationError] = useState<string | null>(null)
   const [savingInterview, setSavingInterview] = useState(false)
@@ -441,15 +442,21 @@ export default function RegistrationsTable() {
 
   const openInterviewModal = (registration: RegistrationResponse) => {
     setEditingInterview(registration)
+    setTestMarksInput(
+      registration.testMarks == null || Number.isNaN(Number(registration.testMarks))
+        ? ''
+        : String(registration.testMarks)
+    )
     const im = resolveInterviewMarks(registration)
-    setInterviewTestMarks(im == null || Number.isNaN(im) ? '' : String(im))
+    setInterviewMarksInput(im == null || Number.isNaN(im) ? '' : String(im))
     setInterviewRemarks(registration.interviewRemarks ?? '')
     setInterviewValidationError(null)
   }
 
   const closeInterviewModal = () => {
     setEditingInterview(null)
-    setInterviewTestMarks('')
+    setTestMarksInput('')
+    setInterviewMarksInput('')
     setInterviewRemarks('')
     setInterviewValidationError(null)
   }
@@ -457,10 +464,16 @@ export default function RegistrationsTable() {
   const handleSaveInterviewAssessment = async () => {
     if (!editingInterview) return
 
-    const parsedMarks = Number(interviewTestMarks)
+    const parsedTestMarks = Number(testMarksInput)
+    const parsedInterviewMarks = Number(interviewMarksInput)
     const normalizedRemarks = interviewRemarks.trim()
 
-    if (!interviewTestMarks.trim() || Number.isNaN(parsedMarks)) {
+    if (!testMarksInput.trim() || Number.isNaN(parsedTestMarks)) {
+      setInterviewValidationError('Test marks are required.')
+      return
+    }
+
+    if (!interviewMarksInput.trim() || Number.isNaN(parsedInterviewMarks)) {
       setInterviewValidationError('Interview marks are required.')
       return
     }
@@ -473,7 +486,12 @@ export default function RegistrationsTable() {
     setInterviewValidationError(null)
     setSavingInterview(true)
     try {
-      await saveInterviewAssessment(editingInterview.id, parsedMarks, normalizedRemarks)
+      await saveInterviewAssessment(
+        editingInterview.id,
+        parsedTestMarks,
+        parsedInterviewMarks,
+        normalizedRemarks
+      )
       toastService.success('Interview assessment saved successfully.')
       await loadRegistrations()
       closeInterviewModal()
@@ -1315,7 +1333,7 @@ export default function RegistrationsTable() {
           <div className="bg-white rounded-xl shadow-2xl max-w-xl w-full animate-slide-up border border-gray-200">
             <div className="sticky top-0 bg-gradient-to-r from-amber-600 to-orange-600 text-white p-5 flex items-center justify-between shadow-lg">
               <div>
-                <h2 className="text-xl font-bold">Interview Remarks</h2>
+                <h2 className="text-xl font-bold">Interview Assessment</h2>
                 <p className="text-amber-100 text-sm">
                   {editingInterview.name} • Registration #{editingInterview.id}
                 </p>
@@ -1332,14 +1350,29 @@ export default function RegistrationsTable() {
 
             <div className="p-5 space-y-4">
               <div>
-                <label htmlFor="interview-test-marks" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                <label htmlFor="test-marks" className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  Test Marks <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="test-marks"
+                  type="number"
+                  value={testMarksInput}
+                  onChange={(e) => setTestMarksInput(e.target.value)}
+                  placeholder="Enter test marks"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="interview-marks" className="block text-sm font-semibold text-gray-700 mb-1.5">
                   Interview Marks <span className="text-red-500">*</span>
                 </label>
                 <input
-                  id="interview-test-marks"
+                  id="interview-marks"
                   type="number"
-                  value={interviewTestMarks}
-                  onChange={(e) => setInterviewTestMarks(e.target.value)}
+                  value={interviewMarksInput}
+                  onChange={(e) => setInterviewMarksInput(e.target.value)}
                   placeholder="Enter interview marks"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                   required
