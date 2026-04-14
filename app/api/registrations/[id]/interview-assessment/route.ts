@@ -3,41 +3,88 @@ import { getApiBaseUrl } from '@/lib/config'
 
 export const dynamic = 'force-dynamic'
 
-async function fetchInterviewAssessmentFromBackend(
+const jsonHeaders = (authHeader: string | null) =>
+  ({
+    'Content-Type': 'application/json',
+    ...(authHeader && { Authorization: authHeader }),
+  }) as Record<string, string>
+
+const authOnlyHeaders = (authHeader: string | null) =>
+  ({
+    ...(authHeader && { Authorization: authHeader }),
+  }) as Record<string, string>
+
+/**
+ * Proxies GET to the backend. Tries GET /api/registrations/{id}, then
+ * GET /api/registrations/{id}/interview-assessment if the first returns 404/405.
+ */
+async function fetchRegistrationGetFromBackend(
   backendUrl: string,
   registrationId: string,
-  method: 'GET' | 'PUT',
+  authHeader: string | null
+): Promise<Response> {
+  const urls = [
+    `${backendUrl}/api/registrations/${registrationId}`,
+    `${backendUrl}/api/registrations/${registrationId}/interview-assessment`,
+  ]
+
+  let lastResponse: Response | null = null
+  for (const url of urls) {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: authOnlyHeaders(authHeader),
+    })
+    lastResponse = response
+    if (response.ok) return response
+    if (response.status === 401 || response.status === 403) return response
+    if (response.status === 404 || response.status === 405) continue
+    return response
+  }
+  return lastResponse!
+}
+
+/**
+ * Saves interview assessment on the backend. Matches verify-receipt style (POST on sub-path)
+ * and supports multiple API shapes across deployments:
+ * POST /api/registrations/{id}/interview-assessment
+ * PUT  /api/registrations/{id}/interview-assessment
+ * PUT  /api/registrations/{id}
+ */
+async function saveInterviewAssessmentToBackend(
+  backendUrl: string,
+  registrationId: string,
   authHeader: string | null,
-  body?: string
-) {
-  const primaryUrl = `${backendUrl}/api/registrations/${registrationId}`
-  const fallbackUrl = `${primaryUrl}/interview-assessment`
-  const baseHeaders = {
-    ...(authHeader && { Authorization: authHeader }),
+  body: string
+): Promise<Response> {
+  const attempts: { url: string; method: 'POST' | 'PUT' }[] = [
+    {
+      url: `${backendUrl}/api/registrations/${registrationId}/interview-assessment`,
+      method: 'POST',
+    },
+    {
+      url: `${backendUrl}/api/registrations/${registrationId}/interview-assessment`,
+      method: 'PUT',
+    },
+    {
+      url: `${backendUrl}/api/registrations/${registrationId}`,
+      method: 'PUT',
+    },
+  ]
+
+  let lastResponse: Response | null = null
+  for (const { url, method } of attempts) {
+    const response = await fetch(url, {
+      method,
+      headers: jsonHeaders(authHeader),
+      body,
+    })
+    lastResponse = response
+    if (response.ok) return response
+    if (response.status === 401 || response.status === 403) return response
+    if (response.status === 404 || response.status === 405) continue
+    return response
   }
-  const headers =
-    method === 'PUT'
-      ? {
-          'Content-Type': 'application/json',
-          ...baseHeaders,
-        }
-      : baseHeaders
-
-  const requestInit: RequestInit = {
-    method,
-    headers,
-    ...(body ? { body } : {}),
-  }
-
-  const primaryResponse = await fetch(primaryUrl, requestInit)
-
-  // Backend variants exist in different deployments.
-  // If one pattern is missing, retry using /interview-assessment path.
-  if (primaryResponse.status === 404) {
-    return fetch(fallbackUrl, requestInit)
-  }
-
-  return primaryResponse
+  return lastResponse!
 }
 
 function buildErrorResponse(
@@ -80,10 +127,9 @@ export async function GET(
     const resolvedParams = await Promise.resolve(params)
     const registrationId = resolvedParams.id
 
-    const response = await fetchInterviewAssessmentFromBackend(
+    const response = await fetchRegistrationGetFromBackend(
       backendUrl,
       registrationId,
-      'GET',
       authHeader
     )
 
@@ -105,8 +151,7 @@ export async function GET(
 
 /**
  * PUT /api/registrations/[id]/interview-assessment
- * Proxy to backend: PUT /api/registrations/{id}
- * Saves interview assessment fields on registration.
+ * Proxies to backend using POST or PUT on the interview-assessment sub-path or PUT on the registration (see saveInterviewAssessmentToBackend).
  */
 export async function PUT(
   request: NextRequest,
@@ -138,10 +183,9 @@ export async function PUT(
       )
     }
 
-    const response = await fetchInterviewAssessmentFromBackend(
+    const response = await saveInterviewAssessmentToBackend(
       backendUrl,
       registrationId,
-      'PUT',
       authHeader,
       JSON.stringify({
         testMarks,
