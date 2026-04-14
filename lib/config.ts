@@ -48,11 +48,12 @@ export const YOUTUBE_SETUP_INSTRUCTIONS = {
 //   - Local: Create .env.local with NEXT_PUBLIC_BACKEND_BASE_URL=https://localhost:7210
 //   - Production: Set NEXT_PUBLIC_BACKEND_BASE_URL=https://sohailghsno4-001-site8.rtempurl.com
 //
-// Option 2: Change the default URL below if you prefer hardcoding
-//   - Local: 'https://localhost:7210'
-//   - Production: 'https://sohailghsno4-001-site8.rtempurl.com'
-
-const DEFAULT_API_BASE_URL = 'https://sohailghsno4-001-site8.rtempurl.com'; // Change this for hardcoded URL
+// Option 2: Change the default URL below if you prefer hardcoding.
+// Use local API in development and production API otherwise.
+const DEFAULT_API_BASE_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:5267'
+    : 'https://sohailghsno4-001-site8.rtempurl.com';
 
 /**
  * Get the API base URL

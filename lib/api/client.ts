@@ -2,7 +2,12 @@
 // Centralized API service layer with JWT authentication support
 import { getApiBaseUrl } from '@/lib/config';
 
-const API_BASE_URL = getApiBaseUrl();
+// In browser dev mode, use same-origin /api and rely on next.config.js rewrites.
+// This avoids browser HTTPS certificate/CORS issues against local ASP.NET endpoints.
+const API_BASE_URL =
+  typeof window !== 'undefined' && process.env.NODE_ENV === 'development'
+    ? ''
+    : getApiBaseUrl();
 
 export interface ApiResponse<T> {
   data?: T;
