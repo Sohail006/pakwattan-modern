@@ -164,7 +164,12 @@ export async function verifyReceipt(
 }
 
 /**
- * Save interview assessment details (Admin/Staff only)
+ * Save interview assessment details (Admin/Staff only).
+ *
+ * Calls PUT /api/registrations/{id} on the backend (RegistrationUpdateDto: testMarks, interviewRemarks).
+ * Do not use fetch('/api/.../interview-assessment'): next.config.js rewrites all /api/* to the ASP.NET host,
+ * so that URL hits the API directly — and there is no interview-assessment route there (404).
+ * The shared api client uses NEXT_PUBLIC_BACKEND_BASE_URL and bypasses the rewrite.
  */
 export async function saveInterviewAssessment(
 	registrationId: number,
@@ -172,33 +177,11 @@ export async function saveInterviewAssessment(
 	interviewRemarks: string
 ): Promise<RegistrationResponse> {
 	try {
-		const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
-		const response = await fetch(`/api/registrations/${registrationId}/interview-assessment`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-				...(token ? { Authorization: `Bearer ${token}` } : {}),
-			},
-			body: JSON.stringify({
-				testMarks,
-				interviewRemarks,
-			}),
+		const response = await api.put<RegistrationResponse>(`/api/registrations/${registrationId}`, {
+			testMarks,
+			interviewRemarks,
 		})
-
-		let data: unknown = null
-		try {
-			data = await response.json()
-		} catch {
-			data = null
-		}
-
-		if (!response.ok) {
-			const err = data as { error?: string; message?: string } | null
-			const statusInfo = `(${response.status} ${response.statusText})`
-			throw new Error(err?.error || err?.message || `Unable to save interview assessment ${statusInfo}.`)
-		}
-
-		return data as RegistrationResponse
+		return response as RegistrationResponse
 	} catch (error) {
 		const apiError = error as ApiError
 		throw new Error(apiError.message || 'Unable to save interview assessment.')

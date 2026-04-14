@@ -91,7 +91,10 @@ const nextConfig = {
         ? 'https://sohailghsno4-001-site8.rtempurl.com'
         : 'https://localhost:7210')
     const apiBaseUrl = String(raw).replace(/\/+$/, '')
-    
+
+    // Proxies same-origin /api/* to the ASP.NET API. Client code that uses lib/api/client (getApiBaseUrl())
+    // talks to the API directly and does not use this rewrite. App Router handlers under app/api/ are not
+    // reachable for paths matched here (the rewrite runs first for those requests).
     const rewrites = [
       {
         source: '/api/:path*',
