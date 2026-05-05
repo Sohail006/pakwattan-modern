@@ -2,6 +2,7 @@ import { Award, Calendar, Sparkles } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import StructuredData from '@/components/seo/StructuredData'
 import { generateBreadcrumbSchema, generateWebPageSchema } from '@/lib/seo/structuredData'
+import ScholarshipFscPart1Section from '@/components/scholarships/ScholarshipFscPart1Section'
 import ScholarshipResultClassList from '@/components/scholarships/ScholarshipResultClassList'
 
 export default function ScholarshipResultPage() {
@@ -12,7 +13,7 @@ export default function ScholarshipResultPage() {
   const webPage = generateWebPageSchema({
     name: 'Scholarship Test Result 2026-27 — Pak Wattan School & College of Sciences, Havelian',
     description:
-      'Official Good Will scholarship test result 2026-27 for Pak Wattan School & College of Sciences, Havelian. Class-wise merit tables for 1st through 9th class.',
+      'Official Good Will scholarship test result 2026-27 for Pak Wattan School & College of Sciences, Havelian. FSC Part 1 (by group) and class-wise merit tables for 1st through 9th class.',
     url: 'https://pakwattan.edu.pk/scholarship-result',
   })
 
@@ -44,8 +45,8 @@ export default function ScholarshipResultPage() {
                 </span>
               </h1>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/88 sm:text-base">
-                Good Will scholarship test — class-wise merit lists (1st–9th) below, as published by Pak Wattan
-                School & College, Havelian.
+                Good Will scholarship test — FSC Part 1 (Ist Year groups) and class-wise merit lists (1st–9th)
+                below, as published by Pak Wattan School & College, Havelian.
               </p>
             </div>
           </Container>
@@ -94,12 +95,15 @@ export default function ScholarshipResultPage() {
                   id="results-heading"
                   className="mb-4 text-center text-lg font-bold text-gray-900 sm:mb-6 sm:text-xl"
                 >
-                  Results by class
+                  Results
                 </h2>
                 <p className="mb-5 text-center text-sm text-gray-500 sm:text-base">
-                  1st through 9th class — open one section at a time
+                  FSC Part 1 first, then 1st through 9th class — open one section at a time
                 </p>
-                <ScholarshipResultClassList />
+                <div className="flex flex-col gap-2 sm:gap-3">
+                  <ScholarshipFscPart1Section />
+                  <ScholarshipResultClassList />
+                </div>
               </section>
 
               {/* Practical info — no “coming soon” or contradictory notices */}
