@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronDown, ChevronUp, GraduationCap } from 'lucide-react'
 import {
   SCHOLARSHIP_RESULTS_TABLES,
   type ScholarshipResultTable,
 } from '@/lib/scholarship-results-tables'
+import { rowMatchesScholarshipQuery } from '@/lib/scholarship-table-filter'
+import ScholarshipResultSearchBar from '@/components/scholarships/ScholarshipResultSearchBar'
 
 const GRADES = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const
 
@@ -45,7 +47,16 @@ function stripClassColumn(headers: string[], rows: string[][]): { headers: strin
   return { headers: nextHeaders, rows: nextRows }
 }
 
-function ResultTable({ grade }: { grade: number }) {
+function getStrippedRowsForGrade(grade: number): string[][] {
+  const table = getTableForGrade(grade)
+  if (!table?.rows?.length) return []
+  const rawHeaders = normalizeHeaders(table)
+  const width = Math.max(rawHeaders.length, 1)
+  const rawRows = table.rows.map((r) => normalizeRow(r, width))
+  return stripClassColumn(rawHeaders, rawRows).rows
+}
+
+function ResultTable({ grade, query }: { grade: number; query: string }) {
   const table = getTableForGrade(grade)
   if (!table?.rows?.length) {
     return (
@@ -56,7 +67,18 @@ function ResultTable({ grade }: { grade: number }) {
   const rawHeaders = normalizeHeaders(table)
   const width = Math.max(rawHeaders.length, 1)
   const rawRows = table.rows.map((r) => normalizeRow(r, width))
-  const { headers, rows } = stripClassColumn(rawHeaders, rawRows)
+  const { headers, rows: allRows } = stripClassColumn(rawHeaders, rawRows)
+  const rows = query.trim()
+    ? allRows.filter((r) => rowMatchesScholarshipQuery(r, query))
+    : allRows
+
+  if (!rows.length) {
+    return (
+      <p className="text-center text-gray-500 text-sm py-8 px-4">
+        No rows match your search. Try another name, roll number, or keyword.
+      </p>
+    )
+  }
 
   return (
     <div className="relative rounded-xl bg-white ring-1 ring-gray-200/80 shadow-sm">
@@ -104,6 +126,11 @@ function ResultTable({ grade }: { grade: number }) {
 
 export default function ScholarshipResultClassList() {
   const [openGrade, setOpenGrade] = useState<number | null>(1)
+  const [classQuery, setClassQuery] = useState('')
+
+  useEffect(() => {
+    setClassQuery('')
+  }, [openGrade])
 
   return (
     <div className="flex flex-col gap-2 sm:gap-3">
@@ -111,6 +138,17 @@ export default function ScholarshipResultClassList() {
         const isOpen = openGrade === grade
         const table = getTableForGrade(grade)
         const count = table?.rows?.length ?? 0
+
+        let totalStripped = 0
+        let filteredStripped = 0
+        if (isOpen) {
+          const allStripped = getStrippedRowsForGrade(grade)
+          totalStripped = allStripped.length
+          filteredStripped =
+            classQuery.trim() === ''
+              ? totalStripped
+              : allStripped.filter((r) => rowMatchesScholarshipQuery(r, classQuery)).length
+        }
 
         return (
           <div
@@ -154,12 +192,19 @@ export default function ScholarshipResultClassList() {
 
             {isOpen && (
               <div className="border-t border-gray-100 bg-gray-50/70 px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-4">
+                <ScholarshipResultSearchBar
+                  id={`scholarship-class-${grade}-search`}
+                  value={classQuery}
+                  onChange={setClassQuery}
+                  filteredCount={filteredStripped}
+                  totalCount={totalStripped}
+                />
                 <div
                   className="max-h-[min(72vh,36rem)] overflow-auto rounded-xl"
                   role="region"
                   aria-label={`Results for ${ordinalLabel(grade)}`}
                 >
-                  <ResultTable grade={grade} />
+                  <ResultTable grade={grade} query={classQuery} />
                 </div>
               </div>
             )}

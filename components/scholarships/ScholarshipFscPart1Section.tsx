@@ -6,6 +6,8 @@ import {
   FSC_PART1_GROUP_TABLES,
   type FscPart1GroupTable,
 } from '@/lib/scholarship-fsc-part1-data'
+import { rowMatchesScholarshipQuery } from '@/lib/scholarship-table-filter'
+import ScholarshipResultSearchBar from '@/components/scholarships/ScholarshipResultSearchBar'
 
 function normalizeHeaders(table: FscPart1GroupTable): string[] {
   const colCount = Math.max(
@@ -24,7 +26,7 @@ function normalizeRow(row: string[] | undefined, width: number): string[] {
   return r.slice(0, width)
 }
 
-function GroupResultTable({ group }: { group: FscPart1GroupTable }) {
+function GroupResultTable({ group, query }: { group: FscPart1GroupTable; query: string }) {
   if (!group?.rows?.length) {
     return (
       <p className="text-center text-gray-500 text-sm py-6 px-4">No results for this group.</p>
@@ -35,7 +37,18 @@ function GroupResultTable({ group }: { group: FscPart1GroupTable }) {
   const width = Math.max(rawHeaders.length, 1)
   const rawRows = group.rows.map((r) => normalizeRow(r, width))
   const headers = rawHeaders
-  const rows = rawRows
+  const allRows = rawRows
+  const rows = query.trim()
+    ? allRows.filter((r) => rowMatchesScholarshipQuery(r, query))
+    : allRows
+
+  if (!rows.length) {
+    return (
+      <p className="text-center text-gray-500 text-sm py-6 px-4">
+        No rows match your search. Try another name, roll number, or keyword.
+      </p>
+    )
+  }
 
   return (
     <div className="relative rounded-xl bg-white ring-1 ring-gray-200/80 shadow-sm">
@@ -80,6 +93,7 @@ function GroupResultTable({ group }: { group: FscPart1GroupTable }) {
 
 export default function ScholarshipFscPart1Section() {
   const [open, setOpen] = useState(true)
+  const [fscQuery, setFscQuery] = useState('')
   const totalRecords = FSC_PART1_GROUP_TABLES.reduce((n, g) => n + (g.rows?.length ?? 0), 0)
 
   return (
@@ -121,21 +135,42 @@ export default function ScholarshipFscPart1Section() {
 
       {open && (
         <div className="border-t border-gray-100 bg-gray-50/70 px-3 pb-3 pt-3 sm:px-4 sm:pb-4 sm:pt-4">
+          <ScholarshipResultSearchBar
+            id="scholarship-fsc-part1-search"
+            value={fscQuery}
+            onChange={setFscQuery}
+            placeholder="Quick search — name, father name, serial no., percentage…"
+          />
           <div className="flex flex-col gap-6 sm:gap-8">
-            {FSC_PART1_GROUP_TABLES.map((group) => (
-              <div key={group.title} className="space-y-3">
-                <h3 className="text-sm font-bold text-gray-800 sm:text-base border-l-4 border-primary-500 pl-3">
-                  {group.title}
-                </h3>
-                <div
-                  className="max-h-[min(72vh,36rem)] overflow-auto rounded-xl"
-                  role="region"
-                  aria-label={`Results for ${group.title}`}
-                >
-                  <GroupResultTable group={group} />
+            {FSC_PART1_GROUP_TABLES.map((group) => {
+              const nTotal = group.rows?.length ?? 0
+              const rawHeaders = normalizeHeaders(group)
+              const width = Math.max(rawHeaders.length, 1)
+              const normalizedRows = group.rows.map((r) => normalizeRow(r, width))
+              const nShown =
+                fscQuery.trim() === ''
+                  ? nTotal
+                  : normalizedRows.filter((r) => rowMatchesScholarshipQuery(r, fscQuery)).length
+              return (
+                <div key={group.title} className="space-y-3">
+                  <div className="border-l-4 border-primary-500 pl-3">
+                    <h3 className="text-sm font-bold text-gray-800 sm:text-base">{group.title}</h3>
+                    {fscQuery.trim() !== '' && (
+                      <p className="mt-1 text-xs text-gray-500 sm:text-sm" aria-live="polite">
+                        Showing {nShown} of {nTotal} rows
+                      </p>
+                    )}
+                  </div>
+                  <div
+                    className="max-h-[min(72vh,36rem)] overflow-auto rounded-xl"
+                    role="region"
+                    aria-label={`Results for ${group.title}`}
+                  >
+                    <GroupResultTable group={group} query={fscQuery} />
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
