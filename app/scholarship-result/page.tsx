@@ -58,10 +58,10 @@ export default function ScholarshipResultPage() {
               {/* Announcement */}
               <section
                 aria-labelledby="announcement-heading"
-                className="mb-8 rounded-2xl border border-gray-200/90 bg-white p-5 shadow-sm sm:mb-10 sm:rounded-3xl sm:p-8 lg:p-10"
+                className="mb-6 rounded-2xl border border-gray-200/90 bg-white p-4 shadow-sm sm:mb-8 sm:rounded-3xl sm:p-6"
               >
-                <div className="mx-auto mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 sm:h-14 sm:w-14">
-                  <Sparkles className="h-6 w-6 sm:h-7 sm:w-7" strokeWidth={1.75} aria-hidden />
+                <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-primary-50 text-primary-600 sm:h-11 sm:w-11">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.75} aria-hidden />
                 </div>
                 <h2
                   id="announcement-heading"
@@ -69,7 +69,7 @@ export default function ScholarshipResultPage() {
                 >
                   Official announcement
                 </h2>
-                <div className="mx-auto mt-6 max-w-2xl space-y-4 text-[0.9375rem] leading-relaxed text-gray-600 sm:text-base">
+                <div className="mx-auto mt-3 max-w-2xl space-y-2 text-[0.9375rem] leading-snug text-gray-600 sm:text-base sm:leading-relaxed">
                   <p>The scholarship test result has been officially announced.</p>
                   <p>
                     We warmly congratulate all students who have secured merit-based scholarships through their
@@ -77,13 +77,13 @@ export default function ScholarshipResultPage() {
                   </p>
                   <p>We wish all candidates continued success in their academic journey.</p>
                 </div>
-                <div className="mx-auto mt-8 flex max-w-xl flex-col items-center gap-2 border-t border-gray-100 pt-6 text-center sm:flex-row sm:justify-center sm:gap-3">
+                <div className="mx-auto mt-4 flex max-w-xl flex-col items-center gap-1 border-t border-gray-100 pt-4 text-center sm:flex-row sm:justify-center sm:gap-2">
                   <span className="inline-flex items-center gap-2 text-sm text-gray-500">
                     <Calendar className="h-4 w-4 shrink-0 text-primary-600" aria-hidden />
                     Scholarship test · 2026–27
                   </span>
                 </div>
-                <p className="mx-auto mt-4 max-w-lg text-center text-sm text-gray-500">
+                <p className="mx-auto mt-3 max-w-lg text-center text-sm text-gray-500">
                   Select your class to view the full table. Values shown are as in the official lists; blank
                   cells are shown empty.
                 </p>
