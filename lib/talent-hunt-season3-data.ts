@@ -1,7 +1,7 @@
 export const TALENT_HUNT_SEASON3_TAGLINE = 'DREAM • DARE • DEVELOP'
 
 export const TALENT_HUNT_SEASON3_FLYER = {
-  src: '/images/talent-hunt/season-3-flyer.jpg',
+  src: '/images/talent-hunt/Talenthunt3fliyer.jpeg',
   width: 1146,
   height: 1600,
   alt: 'Talent Hunt Season 3 flyer — Grand Opening 25 July 2026, Jalal Baba Auditorium Abbottabad',
