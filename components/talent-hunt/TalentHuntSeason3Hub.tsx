@@ -46,8 +46,8 @@ export default function TalentHuntSeason3Hub() {
               width={TALENT_HUNT_SEASON3_FLYER.width}
               height={TALENT_HUNT_SEASON3_FLYER.height}
               className="w-full h-auto"
+              loading="lazy"
               sizes="(max-width: 1024px) 100vw, 480px"
-              priority
             />
           </Link>
         </div>
