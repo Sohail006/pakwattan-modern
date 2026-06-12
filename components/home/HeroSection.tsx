@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Trophy, BookOpen, Award, GraduationCap, Calendar, Briefcase, FileText, ArrowDown } from 'lucide-react'
+import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, ArrowDown } from 'lucide-react'
+import { TALENT_HUNT_SEASON3_OPENING, TALENT_HUNT_SEASON3_TAGLINE } from '@/lib/talent-hunt-season3-data'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
@@ -97,9 +98,15 @@ const HeroSection = () => {
                     Good Will Scholarship Test 2026-27
                   </p>
                   <p className="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
-                    Experience quality education with affordable expenses and comprehensive scholarship programs. 
-                    Admissions are now open for <strong className="text-accent-300">Academic Session 2026-27</strong>. 
-                    Limited seats available - Apply today!
+                    Experience quality education with affordable expenses and comprehensive scholarship programs.
+                    Admissions are now open for <strong className="text-accent-300">Academic Session 2026-27</strong>.
+                    Limited seats available — apply today!
+                  </p>
+                  <p className="mt-3 text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed border-t border-white/15 pt-3">
+                    <strong className="text-accent-300">Talent Hunt Season 3</strong> —{' '}
+                    <span className="tracking-wide">{TALENT_HUNT_SEASON3_TAGLINE}</span>. A district-wide
+                    inter-school talent platform for literary, science, entrepreneurship, and sports streams.
+                    Opening ceremony {TALENT_HUNT_SEASON3_OPENING.date} at {TALENT_HUNT_SEASON3_OPENING.venue}.
                     <span className="inline-flex items-center ml-2 text-accent-300 animate-pulse" aria-hidden="true">
                       <ArrowDown className="w-4 h-4 sm:w-5 sm:h-5 animate-bounce-y" />
                     </span>
@@ -107,36 +114,26 @@ const HeroSection = () => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
-                <Button 
-                  href="/admission" 
-                  variant="accent" 
+                <Button
+                  href="/talent-hunt/season-3#register-participant"
+                  variant="accent"
                   size="lg"
                   className="group relative shadow-2xl hover:shadow-accent-500/50 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-accent-300 focus:ring-offset-2 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-bold animate-pulse-subtle border-2 border-accent-300/50 transition-all duration-300 transform-gpu"
-                  aria-label="Apply for admission to Pak Wattan School 2026-27"
+                  aria-label="Register as a Talent Hunt Season 3 participant"
                 >
-                  <GraduationCap className="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-300" />
-                  <span className="relative z-10">Apply Now for 2026-27</span>
+                  <Users className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span className="relative z-10">Participants Registration</span>
                   <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-accent-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </Button>
-                <Button 
-                  href="/scholarship-result" 
+                <Button
+                  href="/talent-hunt/season-3#register-institution"
                   variant="primary"
                   size="lg"
                   className="group relative shadow-2xl hover:shadow-primary-400/45 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 font-bold border-2 border-white/40 ring-2 ring-white/25 animate-pulse-subtle transition-all duration-300 transform-gpu sm:ring-[3px]"
-                  aria-label="View scholarship test result 2026-27"
+                  aria-label="Register your institution for Talent Hunt Season 3"
                 >
-                  <Award className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Scholarship Result</span>
-                </Button>
-                <Button 
-                  href="/entry-test-model-papers" 
-                  variant="secondary"
-                  size="md"
-                  className="group relative bg-white/20 backdrop-blur-md border-2 border-white/40 text-white hover:bg-white/30 hover:scale-105 active:scale-100 touch-target min-h-[44px] focus:outline-none focus:ring-4 focus:ring-white/30 focus:ring-offset-2 font-semibold transition-all duration-300 transform-gpu"
-                  aria-label="View entry test model papers"
-                >
-                  <FileText className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Model Papers</span>
+                  <Building2 className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span>Institution Registration</span>
                 </Button>
               </div>
             </div>

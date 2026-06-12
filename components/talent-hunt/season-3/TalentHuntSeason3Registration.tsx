@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Award, Building2, CheckCircle, Phone, User } from 'lucide-react'
 import {
   submitTalentHuntSeason3Registration,
@@ -28,6 +28,12 @@ const grades = [
   'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6',
   'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12',
 ]
+
+function tabFromHash(hash: string): Tab {
+  const normalized = hash.toLowerCase()
+  if (normalized.includes('institution')) return 'institution'
+  return 'participant'
+}
 
 export default function TalentHuntSeason3Registration() {
   const [tab, setTab] = useState<Tab>('participant')
@@ -65,6 +71,19 @@ export default function TalentHuntSeason3Registration() {
     focalPersonMobile: '',
     transactionReceiptUrl: null as string | null,
   })
+
+  useEffect(() => {
+    const applyHash = () => {
+      if (typeof window === 'undefined') return
+      const hash = window.location.hash
+      if (!hash || !hash.includes('register')) return
+      setTab(tabFromHash(hash))
+    }
+
+    applyHash()
+    window.addEventListener('hashchange', applyHash)
+    return () => window.removeEventListener('hashchange', applyHash)
+  }, [])
 
   const clearParticipantFieldError = (name: keyof ParticipantFieldErrors) => {
     setParticipantFieldErrors((prev) => {
