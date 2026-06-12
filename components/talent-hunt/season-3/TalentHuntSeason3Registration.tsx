@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { Award, Building2, CheckCircle, Phone, User } from 'lucide-react'
 import {
   submitTalentHuntSeason3Registration,
@@ -35,8 +35,26 @@ function tabFromHash(hash: string): Tab {
   return 'participant'
 }
 
+function scrollToRegistrationHash(hash: string) {
+  if (!hash || hash === '#') return
+  const target = document.querySelector(hash)
+  target?.scrollIntoView({ behavior: 'instant', block: 'start' })
+}
+
+function subscribeToHash(onChange: () => void) {
+  window.addEventListener('hashchange', onChange)
+  return () => window.removeEventListener('hashchange', onChange)
+}
+
+function getHashTab(): Tab {
+  const hash = window.location.hash
+  if (!hash || !hash.includes('register')) return 'participant'
+  return tabFromHash(hash)
+}
+
 export default function TalentHuntSeason3Registration() {
-  const [tab, setTab] = useState<Tab>('participant')
+  const hashTab = useSyncExternalStore(subscribeToHash, getHashTab, () => 'participant' as Tab)
+  const [tab, setTab] = useState<Tab>(hashTab)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [receiptError, setReceiptError] = useState('')
@@ -73,17 +91,14 @@ export default function TalentHuntSeason3Registration() {
   })
 
   useEffect(() => {
-    const applyHash = () => {
-      if (typeof window === 'undefined') return
-      const hash = window.location.hash
-      if (!hash || !hash.includes('register')) return
-      setTab(tabFromHash(hash))
-    }
+    setTab(hashTab)
+  }, [hashTab])
 
-    applyHash()
-    window.addEventListener('hashchange', applyHash)
-    return () => window.removeEventListener('hashchange', applyHash)
-  }, [])
+  useEffect(() => {
+    const hash = window.location.hash
+    if (!hash || !hash.includes('register')) return
+    requestAnimationFrame(() => scrollToRegistrationHash(hash))
+  }, [hashTab])
 
   const clearParticipantFieldError = (name: keyof ParticipantFieldErrors) => {
     setParticipantFieldErrors((prev) => {
@@ -211,7 +226,10 @@ export default function TalentHuntSeason3Registration() {
 
   if (isSubmitted) {
     return (
-      <section id="register" className="py-12 bg-gradient-to-br from-green-50 to-primary-50 scroll-mt-20">
+      <section className="py-12 bg-gradient-to-br from-green-50 to-primary-50">
+        <div id="register" className="scroll-mt-24" aria-hidden="true" />
+        <div id="register-institution" className="scroll-mt-24" aria-hidden="true" />
+        <div id="register-participant" className="scroll-mt-24" aria-hidden="true" />
         <div className="container-custom max-w-2xl mx-auto text-center">
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
@@ -237,7 +255,10 @@ export default function TalentHuntSeason3Registration() {
   }
 
   return (
-    <section id="register" className="py-12 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50 scroll-mt-20">
+    <section className="py-12 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+      <div id="register" className="scroll-mt-24" aria-hidden="true" />
+      <div id="register-participant" className="scroll-mt-24" aria-hidden="true" />
+      <div id="register-institution" className="scroll-mt-24" aria-hidden="true" />
       <div className="container-custom max-w-4xl">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-gray-900 mb-3">

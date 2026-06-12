@@ -55,7 +55,7 @@ export default function TalentHuntSeason3Hero() {
                 width={TALENT_HUNT_SEASON3_FLYER.width}
                 height={TALENT_HUNT_SEASON3_FLYER.height}
                 className="h-auto w-full object-cover"
-                priority
+                loading="lazy"
                 sizes="(max-width: 1024px) 100vw, 480px"
               />
             </div>

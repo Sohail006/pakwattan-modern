@@ -1,10 +1,34 @@
 import { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import TalentHuntSeason3Hero from '@/components/talent-hunt/season-3/TalentHuntSeason3Hero'
-import TalentHuntSeason3Details from '@/components/talent-hunt/season-3/TalentHuntSeason3Details'
-import TalentHuntSeason3Registration from '@/components/talent-hunt/season-3/TalentHuntSeason3Registration'
 import StructuredData from '@/components/seo/StructuredData'
+import SkeletonLoader from '@/components/ui/SkeletonLoader'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+
+const TalentHuntSeason3Registration = dynamic(
+  () => import('@/components/talent-hunt/season-3/TalentHuntSeason3Registration'),
+  {
+    loading: () => (
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+        <div className="container-custom max-w-4xl">
+          <SkeletonLoader variant="section" className="min-h-[520px]" />
+        </div>
+      </section>
+    ),
+  }
+)
+
+const TalentHuntSeason3Details = dynamic(
+  () => import('@/components/talent-hunt/season-3/TalentHuntSeason3Details'),
+  {
+    loading: () => (
+      <div className="container-custom py-10">
+        <SkeletonLoader variant="section" className="min-h-[360px]" />
+      </div>
+    ),
+  }
+)
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Talent Hunt Season 3',
@@ -27,8 +51,8 @@ export default function TalentHuntSeason3Page() {
       <StructuredData data={breadcrumbs} />
       <div className="min-h-screen">
         <TalentHuntSeason3Hero />
-        <TalentHuntSeason3Details />
         <TalentHuntSeason3Registration />
+        <TalentHuntSeason3Details />
       </div>
     </>
   )
