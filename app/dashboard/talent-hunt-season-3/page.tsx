@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Loader2, AlertCircle, GraduationCap } from 'lucide-react'
+import { Loader2, AlertCircle, Trophy } from 'lucide-react'
 import TalentHuntSeason3RegistrationsTable from '@/components/talent-hunt-season3/TalentHuntSeason3RegistrationsTable'
 import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
@@ -52,15 +52,19 @@ export default function TalentHuntSeason3DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-8 flex items-center gap-3">
-        <GraduationCap className="h-8 w-8 text-primary-600" />
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Talent Hunt Season 3</h1>
-          <p className="text-sm text-gray-600">
-            Participant (PKR 500) and institution (PKR 1000) registrations — verify receipts like admission
-            registrations.
-          </p>
+    <div className="container mx-auto max-w-7xl px-4 py-6 sm:py-8">
+      <div className="mb-6 sm:mb-8 rounded-2xl border border-primary-100 bg-gradient-to-r from-primary-50 to-white p-5 sm:p-6 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="rounded-xl bg-primary-600 p-3 text-white shadow-md">
+            <Trophy className="h-7 w-7" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold font-josefin text-gray-900">Talent Hunt Season 3</h1>
+            <p className="mt-1 text-sm sm:text-base text-gray-600 max-w-2xl">
+              Manage participant (PKR 500) and institution (PKR 1000) registrations. Search, filter, export to Excel,
+              and verify payment receipts.
+            </p>
+          </div>
         </div>
       </div>
       <TalentHuntSeason3RegistrationsTable />
