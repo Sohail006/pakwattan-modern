@@ -154,7 +154,11 @@ export default function TalentHuntSeason3RegistrationsTable() {
                   <tr key={row.id} className="hover:bg-gray-50/80">
                     <td className="px-4 py-3 font-medium">{row.registrationType}</td>
                     <td className="px-4 py-3">{displayName(row)}</td>
-                    <td className="px-4 py-3">{row.phone || row.focalPersonMobile || row.email || '—'}</td>
+                    <td className="px-4 py-3">
+                      {row.registrationType === 'Participant'
+                        ? [row.phone, row.gender].filter(Boolean).join(' · ') || '—'
+                        : row.focalPersonMobile || '—'}
+                    </td>
                     <td className="px-4 py-3 max-w-[12rem] truncate">
                       {row.contestCategory || row.focalPersonName || '—'}
                     </td>

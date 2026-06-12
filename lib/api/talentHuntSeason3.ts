@@ -6,8 +6,7 @@ export interface TalentHuntSeason3ParticipantRequest {
   registrationType: 'Participant'
   studentName: string
   fatherName: string
-  motherName: string
-  email: string
+  gender: string
   phone: string
   grade: string
   school: string
@@ -38,8 +37,7 @@ export interface TalentHuntSeason3RegistrationResponse {
   registrationType: TalentHuntSeason3RegistrationType
   studentName?: string
   fatherName?: string
-  motherName?: string
-  email?: string
+  gender?: string
   phone?: string
   grade?: string
   school?: string
@@ -69,6 +67,7 @@ function normalizeRow(data: unknown): TalentHuntSeason3RegistrationResponse {
     id: Number(r.id ?? r.Id),
     registrationType: String(r.registrationType ?? r.RegistrationType ?? '') as TalentHuntSeason3RegistrationType,
     studentName: String(r.studentName ?? r.StudentName ?? base.studentName ?? ''),
+    gender: String(r.gender ?? r.Gender ?? base.gender ?? ''),
     institutionName: String(r.institutionName ?? r.InstitutionName ?? base.institutionName ?? ''),
     focalPersonName: String(r.focalPersonName ?? r.FocalPersonName ?? base.focalPersonName ?? ''),
     focalPersonMobile: String(r.focalPersonMobile ?? r.FocalPersonMobile ?? base.focalPersonMobile ?? ''),

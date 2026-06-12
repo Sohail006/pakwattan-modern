@@ -1,15 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Award, Building2, CheckCircle, Mail, Phone, User } from 'lucide-react'
+import { Award, Building2, CheckCircle, Phone, User } from 'lucide-react'
 import {
   submitTalentHuntSeason3Registration,
   type TalentHuntSeason3SubmitRequest,
 } from '@/lib/api/talentHuntSeason3'
 import {
+  TALENT_HUNT_GENDER_OPTIONS,
   TALENT_HUNT_INSTITUTION_FEE,
   TALENT_HUNT_PARTICIPANT_FEE,
-  TALENT_HUNT_SEASON3_CONTEST_OPTIONS,
+  TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS,
 } from '@/lib/talent-hunt-season3-data'
 import TalentHuntPaymentFields from '@/components/talent-hunt/shared/TalentHuntPaymentFields'
 
@@ -29,8 +30,7 @@ export default function TalentHuntSeason3Registration() {
   const [participant, setParticipant] = useState({
     studentName: '',
     fatherName: '',
-    motherName: '',
-    email: '',
+    gender: '',
     phone: '',
     grade: '',
     school: '',
@@ -40,6 +40,14 @@ export default function TalentHuntSeason3Registration() {
     paymentMethod: 0,
     transactionReceiptUrl: null as string | null,
   })
+
+  const contestGroups = TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS.reduce<
+    Record<string, (typeof TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS)[number][]>
+  >((groups, contest) => {
+    if (!groups[contest.group]) groups[contest.group] = []
+    groups[contest.group].push(contest)
+    return groups
+  }, {})
 
   const [institution, setInstitution] = useState({
     institutionName: '',
@@ -196,8 +204,6 @@ export default function TalentHuntSeason3Registration() {
                   {[
                     { name: 'studentName', label: 'Student Name', icon: User },
                     { name: 'fatherName', label: "Father's Name", icon: User },
-                    { name: 'motherName', label: "Mother's Name", icon: User },
-                    { name: 'email', label: 'Email', icon: Mail, type: 'email' },
                     { name: 'phone', label: 'Phone Number', icon: Phone, type: 'tel' },
                   ].map(({ name, label, icon: Icon, type = 'text' }) => (
                     <div key={name}>
@@ -215,6 +221,23 @@ export default function TalentHuntSeason3Registration() {
                       </div>
                     </div>
                   ))}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-1">Gender *</label>
+                    <select
+                      name="gender"
+                      required
+                      value={participant.gender}
+                      onChange={handleParticipantChange}
+                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px] bg-white"
+                    >
+                      <option value="">Select Gender</option>
+                      {TALENT_HUNT_GENDER_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Grade *</label>
                     <select
@@ -249,9 +272,15 @@ export default function TalentHuntSeason3Registration() {
                       onChange={handleParticipantChange}
                       className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px] bg-white"
                     >
-                      <option value="">Select Contest</option>
-                      {TALENT_HUNT_SEASON3_CONTEST_OPTIONS.map((c) => (
-                        <option key={c} value={c}>{c}</option>
+                      <option value="">Select Season 3 contest</option>
+                      {Object.entries(contestGroups).map(([group, contests]) => (
+                        <optgroup key={group} label={group}>
+                          {contests.map((contest) => (
+                            <option key={contest.value} value={contest.value}>
+                              {contest.value} — {contest.date}
+                            </option>
+                          ))}
+                        </optgroup>
                       ))}
                     </select>
                   </div>

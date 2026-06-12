@@ -57,6 +57,27 @@ export const TALENT_HUNT_SEASON3_CONTESTS = [
 
 export const TALENT_HUNT_SEASON3_CONTEST_OPTIONS = TALENT_HUNT_SEASON3_CONTESTS.map((c) => c.name)
 
+/** Participant registration dropdown — Season 3 streams only (sports listed per event). */
+export const TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS = [
+  { value: 'Poetry Competition / Mushaira', group: 'Literary Arts', date: '15 August 2026' },
+  { value: 'Drama / Skit Competition', group: 'Literary Arts', date: '12 September 2026' },
+  { value: 'Storytelling Championship', group: 'Literary Arts', date: '31 October 2026' },
+  { value: 'Science Model Competition', group: 'Science & Innovation', date: '21 November 2026' },
+  { value: 'Young Entrepreneur Pitch', group: 'Entrepreneurship', date: '12 December 2026' },
+  { value: 'Badminton', group: 'Sports', date: 'To be decided soon' },
+  { value: 'Chess', group: 'Sports', date: 'To be decided soon' },
+  { value: 'Ludo', group: 'Sports', date: 'To be decided soon' },
+  { value: 'Tug of War', group: 'Sports', date: 'To be decided soon' },
+] as const
+
+export const TALENT_HUNT_SEASON3_REGISTRATION_CONTEST_VALUES =
+  TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS.map((c) => c.value)
+
+export const TALENT_HUNT_GENDER_OPTIONS = [
+  { value: 'Male', label: 'Male' },
+  { value: 'Female', label: 'Female' },
+] as const
+
 export const TALENT_HUNT_SEASON3_EXPERTS = [
   {
     title: 'Academicians',
