@@ -92,19 +92,13 @@ const HeroSection = () => {
                 <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
                   School & College of Sciences
                 </p>
-                {/* Admission Content - Prominent */}
+                {/* Talent Hunt Season 3 — Prominent */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-white/20 shadow-xl">
                   <p className="text-base sm:text-lg md:text-xl text-white font-semibold mb-2 sm:mb-3 leading-tight">
-                    Good Will Scholarship Test 2026-27
+                    Talent Hunt Season 3
                   </p>
                   <p className="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
-                    Experience quality education with affordable expenses and comprehensive scholarship programs.
-                    Admissions are now open for <strong className="text-accent-300">Academic Session 2026-27</strong>.
-                    Limited seats available — apply today!
-                  </p>
-                  <p className="mt-3 text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed border-t border-white/15 pt-3">
-                    <strong className="text-accent-300">Talent Hunt Season 3</strong> —{' '}
-                    <span className="tracking-wide">{TALENT_HUNT_SEASON3_TAGLINE}</span>. A district-wide
+                    <span className="tracking-wide text-accent-300">{TALENT_HUNT_SEASON3_TAGLINE}</span>. A district-wide
                     inter-school talent platform for literary, science, entrepreneurship, and sports streams.
                     Opening ceremony {TALENT_HUNT_SEASON3_OPENING.date} at {TALENT_HUNT_SEASON3_OPENING.venue}.
                     <span className="inline-flex items-center ml-2 text-accent-300 animate-pulse" aria-hidden="true">
