@@ -10,48 +10,100 @@ export const TALENT_HUNT_SEASON3_FLYER = {
 export const TALENT_HUNT_PARTICIPANT_FEE = 500
 export const TALENT_HUNT_INSTITUTION_FEE = 1000
 
+export const TALENT_HUNT_SEASON3_INTRO =
+  'A district-wide talent development initiative designed to identify, nurture, and celebrate student talent across literary, scientific, entrepreneurial, creative, and sports-based competitions.'
+
+export const TALENT_HUNT_SEASON3_EXECUTIVE_SUMMARY =
+  'Talent Hunt with PWSCS – Season 3 is a district-wide talent development initiative designed to identify, nurture, and celebrate student talent through literary, scientific, entrepreneurial, creative, and sports-based competitions. This multi-stream program brings together students from across the district to compete, showcase their abilities, and grow under the guidance of national and international experts. Season 3 builds on the legacy of previous editions, offering a broader platform for student achievement and institutional collaboration.'
+
+export const TALENT_HUNT_SEASON3_PILLARS = [
+  {
+    title: 'Literary Arts',
+    description:
+      'Poetry, Drama, and Storytelling competitions celebrating language, expression, and creative performance.',
+  },
+  {
+    title: 'Science & Innovation',
+    description:
+      'Science Model Competition encouraging research, experimentation, and scientific thinking among students.',
+  },
+  {
+    title: 'Entrepreneurship',
+    description:
+      'Young Entrepreneur Pitch fostering business acumen, innovation, and leadership in young minds.',
+  },
+  {
+    title: 'Sports',
+    description:
+      'Badminton, Chess, Ludo & Tug of War competitions promoting teamwork, strategy, and physical excellence.',
+  },
+] as const
+
 export const TALENT_HUNT_SEASON3_OPENING = {
   title: 'Grand Opening Ceremony',
+  subtitle: 'Season 3 Kickoff',
   date: '25 July 2026',
   venue: 'Jalal Baba Auditorium, Abbottabad',
+  description:
+    'The Grand Opening Ceremony marks the official launch of Talent Hunt with PWSCS Season 3. This flagship event will bring together students, educators, and community leaders from across the district to celebrate the spirit of talent, competition, and growth. The Jalal Baba Auditorium in Abbottabad will serve as the central stage for this momentous occasion, setting the tone for a season of excellence and discovery.',
+  institutionCommitment:
+    'Partner institutions are expected to register at least 5 educational institutions for the Opening Ceremony as part of their participation commitment.',
 }
 
 export const TALENT_HUNT_SEASON3_CONTESTS = [
   {
     id: 'poetry',
-    name: 'Poetry Competition / Mushaira',
+    name: 'Poetry / Mushaira',
     date: '15 August 2026',
     category: 'Literary Arts',
+    section: 'literary' as const,
+    description:
+      'A celebration of Urdu and regional poetry, giving students the stage to recite original and classic verses before expert judges.',
   },
   {
     id: 'drama',
     name: 'Drama / Skit Competition',
     date: '12 September 2026',
     category: 'Literary Arts',
+    section: 'literary' as const,
+    description:
+      'Teams perform original or adapted dramatic pieces, showcasing acting talent, scriptwriting, and stagecraft.',
   },
   {
     id: 'storytelling',
     name: 'Storytelling Championship',
     date: '31 October 2026',
     category: 'Literary Arts',
+    section: 'literary' as const,
+    description:
+      'Individual participants captivate audiences and judges with compelling narratives, building oratory and creative thinking skills.',
   },
   {
     id: 'science',
     name: 'Science Model Competition',
     date: '21 November 2026',
     category: 'Science & Innovation',
+    section: 'innovation' as const,
+    description:
+      'Students present innovative science models and experiments, demonstrating research skills and scientific understanding before a panel of expert judges.',
   },
   {
     id: 'entrepreneur',
     name: 'Young Entrepreneur Pitch',
     date: '12 December 2026',
     category: 'Entrepreneurship',
+    section: 'innovation' as const,
+    description:
+      'Aspiring young entrepreneurs present business ideas to a panel of industry professionals, developing pitch skills, strategic thinking, and confidence.',
   },
   {
     id: 'sports',
-    name: 'Sports (Badminton, Chess, Ludo & Tug of War)',
-    date: 'To be decided soon',
+    name: 'Sports Competition',
+    date: 'Dates to be announced',
     category: 'Sports',
+    section: 'innovation' as const,
+    description:
+      'Badminton, Chess, Ludo & Tug of War competitions promoting teamwork, strategy, and physical excellence. Dates will be confirmed closer to the season.',
   },
 ] as const
 
@@ -78,6 +130,9 @@ export const TALENT_HUNT_GENDER_OPTIONS = [
   { value: 'Female', label: 'Female' },
 ] as const
 
+export const TALENT_HUNT_SEASON3_EXPERTS_INTRO =
+  'Each competition stream will be guided and judged by a panel of National & International Level Experts, ensuring a world-class evaluation experience for all participants. These experts bring credibility, mentorship, and inspiration to every stage of the competition.'
+
 export const TALENT_HUNT_SEASON3_EXPERTS = [
   {
     title: 'Academicians',
@@ -100,6 +155,19 @@ export const TALENT_HUNT_SEASON3_EXPERTS = [
       'Seasoned professionals from various sectors who bring practical expertise and industry standards to the judging panels.',
   },
 ]
+
+export const TALENT_HUNT_SEASON3_CONTACT = {
+  institution: 'Pak Wattan School & College of Sciences',
+  website: 'https://www.pakwattan.edu.pk',
+  websiteLabel: 'www.pakwattan.edu.pk',
+  email: 'pakwattan2020@gmail.com',
+  phone: '0992-811555',
+  socialMedia: '@pakwattan2020',
+  socialUrl: 'https://www.facebook.com/PAKWATTAN2020',
+  location: 'Beside Mubarak plaza, Havelian city, Havelian, Pakistan',
+  closingLine:
+    "Let's Build Something Great Together. Partner with PWSCS Season 3 and help your students DREAM • DARE • DEVELOP.",
+}
 
 export const TALENT_HUNT_PAST_SEASONS = [
   {

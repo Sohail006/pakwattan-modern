@@ -33,7 +33,7 @@ const TalentHuntSeason3Details = dynamic(
 export const metadata: Metadata = generatePageMetadata({
   title: 'Talent Hunt Season 3',
   description:
-    'Talent Hunt with Pak Wattan Season 3 — district-wide talent development. Grand opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad. Register as participant or institution.',
+    'Talent Hunt with Pak Wattan Season 3 — DREAM • DARE • DEVELOP. District-wide literary, science, entrepreneurship and sports competitions. Grand opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad.',
   keywords:
     'talent hunt season 3, pak wattan, havelian, district talent, poetry mushaira, science model, entrepreneur pitch, 2026-27',
   path: '/talent-hunt/season-3',

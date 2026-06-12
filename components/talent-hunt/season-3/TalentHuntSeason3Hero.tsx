@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { Calendar, MapPin, Sparkles } from 'lucide-react'
 import {
   TALENT_HUNT_SEASON3_FLYER,
+  TALENT_HUNT_SEASON3_INTRO,
   TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
 } from '@/lib/talent-hunt-season3-data'
@@ -25,8 +26,7 @@ export default function TalentHuntSeason3Hero() {
             </h1>
             <p className="text-lg sm:text-xl font-semibold tracking-widest text-white/90">{TALENT_HUNT_SEASON3_TAGLINE}</p>
             <p className="text-sm sm:text-base text-white/85 leading-relaxed max-w-xl">
-              A district-wide inter-school talent development initiative bringing together students, educational
-              institutions, and national & international experts on one prestigious platform.
+              {TALENT_HUNT_SEASON3_INTRO}
             </p>
             <div className="flex flex-wrap gap-3 text-sm">
               <span className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2">
