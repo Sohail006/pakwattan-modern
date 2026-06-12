@@ -68,6 +68,10 @@ export function getApiBaseUrl(): string {
   // Priority 1: Environment variable (recommended for production)
   if (process.env.NEXT_PUBLIC_BACKEND_BASE_URL) {
     let envUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL.replace(/\/$/, '');
+    // Endpoints already include /api/... — strip a trailing /api from the base URL if set by mistake
+    if (envUrl.endsWith('/api')) {
+      envUrl = envUrl.slice(0, -4);
+    }
     
     // Ensure HTTPS in production if frontend is HTTPS
     if (typeof window !== 'undefined' && 
@@ -90,6 +94,9 @@ export function getApiBaseUrl(): string {
   
   // Priority 2: Default URL (from DEFAULT_API_BASE_URL constant)
   let defaultUrl = DEFAULT_API_BASE_URL.replace(/\/$/, '');
+  if (defaultUrl.endsWith('/api')) {
+    defaultUrl = defaultUrl.slice(0, -4);
+  }
   
   // Ensure HTTPS in production if frontend is HTTPS
   if (typeof window !== 'undefined' && 
