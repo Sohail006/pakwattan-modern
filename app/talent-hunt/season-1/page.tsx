@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import TalentHuntPastSeasonBanner from '@/components/talent-hunt/shared/TalentHuntPastSeasonBanner'
 import TalentHuntSeason1Hero from '@/components/talent-hunt/season-1/TalentHuntSeason1Hero'
 import TalentHuntSeason1Details from '@/components/talent-hunt/season-1/TalentHuntSeason1Details'
 import TalentHuntSeason1Results from '@/components/talent-hunt/season-1/TalentHuntSeason1Results'
@@ -23,6 +24,7 @@ export default function TalentHuntSeason1Page() {
   return (
     <>
       <StructuredData data={breadcrumbs} />
+      <TalentHuntPastSeasonBanner />
       <div className="min-h-screen">
         <TalentHuntSeason1Hero />
         <TalentHuntSeason1Details />

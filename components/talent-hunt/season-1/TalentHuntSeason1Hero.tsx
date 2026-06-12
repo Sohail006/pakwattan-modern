@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { Trophy, Calendar, Users, Award } from 'lucide-react'
 
 const TalentHuntSeason1Hero = () => {
@@ -53,12 +54,12 @@ const TalentHuntSeason1Hero = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="btn-accent text-center touch-target min-h-[44px] text-sm sm:text-base">
+              <Link href="#results" className="btn-accent text-center touch-target min-h-[44px] text-sm sm:text-base">
                 View Results
-              </button>
-              <button className="btn-secondary text-center touch-target min-h-[44px] text-sm sm:text-base">
-                Season-II Details
-              </button>
+              </Link>
+              <Link href="/talent-hunt/season-3" className="btn-secondary text-center touch-target min-h-[44px] text-sm sm:text-base">
+                Current Season 3
+              </Link>
             </div>
           </div>
 

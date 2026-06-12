@@ -123,8 +123,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/talent-hunt/season-2`,
       lastModified: currentDate,
-      changeFrequency: 'monthly' as const,
-      priority: 0.6,
+      changeFrequency: 'yearly' as const,
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/talent-hunt/season-3`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
     },
     {
       url: `${baseUrl}/academic/montessori`,

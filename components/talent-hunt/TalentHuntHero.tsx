@@ -1,7 +1,7 @@
 'use client'
 
-// import Image from 'next/image'
-import { Trophy, Star, Users, Award } from 'lucide-react'
+import Link from 'next/link'
+import { Trophy, Star, Users, Award, ArrowRight } from 'lucide-react'
 
 const TalentHuntHero = () => {
   const features = [
@@ -50,20 +50,20 @@ const TalentHuntHero = () => {
                 and inspire young minds to explore their full potential.
               </p>
               <p className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed break-words">
-                After the remarkable success of <strong>Season-I</strong> in the academic year 
-                <strong> 2024–25</strong>, that had featured talented participants 
-                <strong> exclusively from Pak Wattan</strong>. We are proud to fulfill our 
-                promise by <strong>expanding Season-II to the district level in 2025–26</strong>.
+                After successful Season I (2024–25) and Season II (2025–26), we proudly launch{' '}
+                <strong>Season 3</strong> — a district-wide platform for literary, scientific, entrepreneurial,
+                and sports talent.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="btn-accent text-center touch-target min-h-[44px]">
-                Register Now
-              </button>
-              <button className="btn-secondary text-center touch-target min-h-[44px]">
-                Learn More
-              </button>
+              <Link href="/talent-hunt/season-3#register" className="btn-accent text-center touch-target min-h-[44px] inline-flex items-center justify-center gap-2">
+                Register for Season 3
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+              <Link href="/talent-hunt/season-3" className="btn-secondary text-center touch-target min-h-[44px]">
+                Season 3 Details
+              </Link>
             </div>
           </div>
 

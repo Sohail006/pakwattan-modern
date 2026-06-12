@@ -77,6 +77,12 @@ export default function Sidebar({ isOpen, onToggle, userRoles, currentPath }: Si
       roles: ['Admin', 'Staff'],
     },
     {
+      name: 'Talent Hunt S3',
+      href: '/dashboard/talent-hunt-season-3',
+      icon: <GraduationCap className="w-5 h-5" />,
+      roles: ['Admin', 'Staff'],
+    },
+    {
       name: 'Admissions',
       href: '/dashboard/admissions',
       icon: <FileText className="w-5 h-5" />,

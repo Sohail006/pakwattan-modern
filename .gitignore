@@ -106,7 +106,7 @@ temp/
 # Exclude nested repositories and old files
 frontend/
 backend/
-shared/
+/shared/
 src/
 
 # Exclude problematic files
