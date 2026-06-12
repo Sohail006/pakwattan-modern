@@ -13,8 +13,16 @@ import {
   TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS,
 } from '@/lib/talent-hunt-season3-data'
 import TalentHuntPaymentFields from '@/components/talent-hunt/shared/TalentHuntPaymentFields'
+import {
+  cleanPhoneNumber,
+  maskPakistanPhoneNumber,
+  validatePakistanPhoneNumber,
+} from '@/lib/utils'
 
 type Tab = 'participant' | 'institution'
+
+type ParticipantFieldErrors = Partial<Record<'phone' | 'emergencyContact', string>>
+type InstitutionFieldErrors = Partial<Record<'focalPersonMobile', string>>
 
 const grades = [
   'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6',
@@ -26,6 +34,8 @@ export default function TalentHuntSeason3Registration() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [receiptError, setReceiptError] = useState('')
+  const [participantFieldErrors, setParticipantFieldErrors] = useState<ParticipantFieldErrors>({})
+  const [institutionFieldErrors, setInstitutionFieldErrors] = useState<InstitutionFieldErrors>({})
 
   const [participant, setParticipant] = useState({
     studentName: '',
@@ -56,20 +66,65 @@ export default function TalentHuntSeason3Registration() {
     transactionReceiptUrl: null as string | null,
   })
 
+  const clearParticipantFieldError = (name: keyof ParticipantFieldErrors) => {
+    setParticipantFieldErrors((prev) => {
+      if (!prev[name]) return prev
+      const next = { ...prev }
+      delete next[name]
+      return next
+    })
+  }
+
+  const clearInstitutionFieldError = (name: keyof InstitutionFieldErrors) => {
+    setInstitutionFieldErrors((prev) => {
+      if (!prev[name]) return prev
+      const next = { ...prev }
+      delete next[name]
+      return next
+    })
+  }
+
   const handleParticipantChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
+    if (name === 'phone' || name === 'emergencyContact') {
+      clearParticipantFieldError(name)
+      setParticipant((p) => ({ ...p, [name]: maskPakistanPhoneNumber(value) }))
+      return
+    }
     setParticipant((p) => ({ ...p, [name]: value }))
   }
 
   const handleInstitutionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
+    if (name === 'focalPersonMobile') {
+      clearInstitutionFieldError('focalPersonMobile')
+      setInstitution((p) => ({ ...p, focalPersonMobile: maskPakistanPhoneNumber(value) }))
+      return
+    }
     setInstitution((p) => ({ ...p, [name]: value }))
+  }
+
+  const validateParticipantPhones = (): boolean => {
+    const phoneError = validatePakistanPhoneNumber(participant.phone, true).error
+    const emergencyError = validatePakistanPhoneNumber(participant.emergencyContact, true).error
+    const errors: ParticipantFieldErrors = {}
+    if (phoneError) errors.phone = phoneError
+    if (emergencyError) errors.emergencyContact = emergencyError
+    setParticipantFieldErrors(errors)
+    return !phoneError && !emergencyError
+  }
+
+  const validateInstitutionPhone = (): boolean => {
+    const mobileError = validatePakistanPhoneNumber(institution.focalPersonMobile, true).error
+    setInstitutionFieldErrors(mobileError ? { focalPersonMobile: mobileError } : {})
+    return !mobileError
   }
 
   const validateParticipant = (): boolean => {
     setReceiptError('')
+    if (!validateParticipantPhones()) return false
     if (
       (participant.paymentMethod === 0 || participant.paymentMethod === 1) &&
       !participant.transactionReceiptUrl
@@ -82,6 +137,7 @@ export default function TalentHuntSeason3Registration() {
 
   const validateInstitution = (): boolean => {
     setReceiptError('')
+    if (!validateInstitutionPhone()) return false
     if (!institution.transactionReceiptUrl) {
       setReceiptError('Bank transfer receipt is required for institution registration.')
       return false
@@ -97,6 +153,8 @@ export default function TalentHuntSeason3Registration() {
       const payload: TalentHuntSeason3SubmitRequest = {
         registrationType: 'Participant',
         ...participant,
+        phone: cleanPhoneNumber(participant.phone),
+        emergencyContact: cleanPhoneNumber(participant.emergencyContact),
         registrationFee: TALENT_HUNT_PARTICIPANT_FEE,
         transactionReceiptUrl: participant.transactionReceiptUrl,
       }
@@ -118,7 +176,7 @@ export default function TalentHuntSeason3Registration() {
         registrationType: 'Institution',
         institutionName: institution.institutionName,
         focalPersonName: institution.focalPersonName,
-        focalPersonMobile: institution.focalPersonMobile,
+        focalPersonMobile: cleanPhoneNumber(institution.focalPersonMobile),
         paymentMethod: 1,
         transactionReceiptUrl: institution.transactionReceiptUrl!,
         registrationFee: TALENT_HUNT_INSTITUTION_FEE,
@@ -204,7 +262,6 @@ export default function TalentHuntSeason3Registration() {
                   {[
                     { name: 'studentName', label: 'Student Name', icon: User },
                     { name: 'fatherName', label: "Father's Name", icon: User },
-                    { name: 'phone', label: 'Phone Number', icon: Phone, type: 'tel' },
                   ].map(({ name, label, icon: Icon, type = 'text' }) => (
                     <div key={name}>
                       <label className="block text-sm font-semibold text-gray-700 mb-1">{label} *</label>
@@ -221,6 +278,36 @@ export default function TalentHuntSeason3Registration() {
                       </div>
                     </div>
                   ))}
+                  <div>
+                    <label htmlFor="participant-phone" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Phone Number *
+                    </label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <input
+                        id="participant-phone"
+                        type="tel"
+                        name="phone"
+                        required
+                        inputMode="numeric"
+                        autoComplete="tel"
+                        placeholder="03XX-XXXXXXX"
+                        value={participant.phone}
+                        onChange={handleParticipantChange}
+                        onBlur={validateParticipantPhones}
+                        className={`w-full pl-10 pr-3 py-2.5 border rounded-lg min-h-[44px] text-base ${
+                          participantFieldErrors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                        }`}
+                        aria-invalid={!!participantFieldErrors.phone}
+                        aria-describedby={participantFieldErrors.phone ? 'participant-phone-error' : undefined}
+                      />
+                    </div>
+                    {participantFieldErrors.phone && (
+                      <p id="participant-phone-error" className="mt-1 text-sm text-red-600" role="alert">
+                        {participantFieldErrors.phone}
+                      </p>
+                    )}
+                  </div>
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Gender *</label>
                     <select
@@ -296,15 +383,33 @@ export default function TalentHuntSeason3Registration() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Emergency Contact *</label>
+                    <label htmlFor="emergency-contact" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Emergency Contact *
+                    </label>
                     <input
+                      id="emergency-contact"
                       name="emergencyContact"
                       type="tel"
                       required
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      placeholder="03XX-XXXXXXX"
                       value={participant.emergencyContact}
                       onChange={handleParticipantChange}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px]"
+                      onBlur={validateParticipantPhones}
+                      className={`w-full px-3 py-2.5 border rounded-lg min-h-[44px] ${
+                        participantFieldErrors.emergencyContact ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
+                      aria-invalid={!!participantFieldErrors.emergencyContact}
+                      aria-describedby={
+                        participantFieldErrors.emergencyContact ? 'emergency-contact-error' : undefined
+                      }
                     />
+                    {participantFieldErrors.emergencyContact && (
+                      <p id="emergency-contact-error" className="mt-1 text-sm text-red-600" role="alert">
+                        {participantFieldErrors.emergencyContact}
+                      </p>
+                    )}
                   </div>
                 </div>
 
@@ -361,15 +466,33 @@ export default function TalentHuntSeason3Registration() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Focal Person Mobile *</label>
+                    <label htmlFor="focal-person-mobile" className="block text-sm font-semibold text-gray-700 mb-1">
+                      Focal Person Mobile *
+                    </label>
                     <input
+                      id="focal-person-mobile"
                       name="focalPersonMobile"
                       type="tel"
                       required
+                      inputMode="numeric"
+                      autoComplete="tel"
+                      placeholder="03XX-XXXXXXX"
                       value={institution.focalPersonMobile}
                       onChange={handleInstitutionChange}
-                      className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px]"
+                      onBlur={validateInstitutionPhone}
+                      className={`w-full px-3 py-2.5 border rounded-lg min-h-[44px] ${
+                        institutionFieldErrors.focalPersonMobile ? 'border-red-500 bg-red-50' : 'border-gray-300'
+                      }`}
+                      aria-invalid={!!institutionFieldErrors.focalPersonMobile}
+                      aria-describedby={
+                        institutionFieldErrors.focalPersonMobile ? 'focal-person-mobile-error' : undefined
+                      }
                     />
+                    {institutionFieldErrors.focalPersonMobile && (
+                      <p id="focal-person-mobile-error" className="mt-1 text-sm text-red-600" role="alert">
+                        {institutionFieldErrors.focalPersonMobile}
+                      </p>
+                    )}
                   </div>
                 </div>
 
