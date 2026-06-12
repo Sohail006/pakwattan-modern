@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { ArrowRight, Calendar, Sparkles } from 'lucide-react'
 import {
   TALENT_HUNT_PAST_SEASONS,
+  TALENT_HUNT_SEASON3_FLYER,
   TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
 } from '@/lib/talent-hunt-season3-data'
@@ -40,12 +41,13 @@ export default function TalentHuntSeason3Hub() {
           </div>
           <Link href="/talent-hunt/season-3" className="block overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-200 hover:shadow-xl transition-shadow">
             <Image
-              src="/images/talent-hunt/season-3-flyer.png"
-              alt="Talent Hunt Season 3 flyer"
-              width={500}
-              height={650}
+              src={TALENT_HUNT_SEASON3_FLYER.src}
+              alt={TALENT_HUNT_SEASON3_FLYER.alt}
+              width={TALENT_HUNT_SEASON3_FLYER.width}
+              height={TALENT_HUNT_SEASON3_FLYER.height}
               className="w-full h-auto"
               sizes="(max-width: 1024px) 100vw, 480px"
+              priority
             />
           </Link>
         </div>

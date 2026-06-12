@@ -3,7 +3,11 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Calendar, MapPin, Sparkles } from 'lucide-react'
-import { TALENT_HUNT_SEASON3_TAGLINE, TALENT_HUNT_SEASON3_OPENING } from '@/lib/talent-hunt-season3-data'
+import {
+  TALENT_HUNT_SEASON3_FLYER,
+  TALENT_HUNT_SEASON3_OPENING,
+  TALENT_HUNT_SEASON3_TAGLINE,
+} from '@/lib/talent-hunt-season3-data'
 
 export default function TalentHuntSeason3Hero() {
   return (
@@ -46,10 +50,10 @@ export default function TalentHuntSeason3Hero() {
           <div className="relative mx-auto w-full max-w-md lg:max-w-lg">
             <div className="overflow-hidden rounded-2xl shadow-2xl ring-2 ring-white/20">
               <Image
-                src="/images/talent-hunt/season-3-flyer.png"
-                alt="Talent Hunt Season 3 official flyer"
-                width={600}
-                height={800}
+                src={TALENT_HUNT_SEASON3_FLYER.src}
+                alt={TALENT_HUNT_SEASON3_FLYER.alt}
+                width={TALENT_HUNT_SEASON3_FLYER.width}
+                height={TALENT_HUNT_SEASON3_FLYER.height}
                 className="h-auto w-full object-cover"
                 priority
                 sizes="(max-width: 1024px) 100vw, 480px"
