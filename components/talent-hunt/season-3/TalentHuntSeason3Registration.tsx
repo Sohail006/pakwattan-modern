@@ -262,13 +262,13 @@ export default function TalentHuntSeason3Registration() {
                   {[
                     { name: 'studentName', label: 'Student Name', icon: User },
                     { name: 'fatherName', label: "Father's Name", icon: User },
-                  ].map(({ name, label, icon: Icon, type = 'text' }) => (
+                  ].map(({ name, label, icon: Icon }) => (
                     <div key={name}>
                       <label className="block text-sm font-semibold text-gray-700 mb-1">{label} *</label>
                       <div className="relative">
                         <Icon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <input
-                          type={type}
+                          type="text"
                           name={name}
                           required
                           value={participant[name as keyof typeof participant] as string}
