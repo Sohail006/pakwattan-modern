@@ -83,11 +83,8 @@ export default function TalentHuntSeason3Details() {
               {TALENT_HUNT_SEASON3_OPENING.venue}
             </span>
           </div>
-          <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4">
+          <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
             {TALENT_HUNT_SEASON3_OPENING.description}
-          </p>
-          <p className="text-sm font-medium text-primary-900 bg-white/70 rounded-lg px-4 py-3 border border-primary-100">
-            {TALENT_HUNT_SEASON3_OPENING.institutionCommitment}
           </p>
         </div>
 

@@ -46,8 +46,6 @@ export const TALENT_HUNT_SEASON3_OPENING = {
   venue: 'Jalal Baba Auditorium, Abbottabad',
   description:
     'The Grand Opening Ceremony marks the official launch of Talent Hunt with PWSCS Season 3. This flagship event will bring together students, educators, and community leaders from across the district to celebrate the spirit of talent, competition, and growth. The Jalal Baba Auditorium in Abbottabad will serve as the central stage for this momentous occasion, setting the tone for a season of excellence and discovery.',
-  institutionCommitment:
-    'Partner institutions are expected to register at least 5 educational institutions for the Opening Ceremony as part of their participation commitment.',
 }
 
 export const TALENT_HUNT_SEASON3_CONTESTS = [
