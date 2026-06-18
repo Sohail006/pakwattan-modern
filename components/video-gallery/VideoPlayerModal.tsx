@@ -17,6 +17,7 @@ interface VideoPlayerModalProps {
     publishedAt: string
     channelTitle: string
     videoUrl: string
+    embedUrl?: string
     isYouTube?: boolean
   }
 }
@@ -86,7 +87,15 @@ const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => 
 
         {/* Video Player */}
         <div className="aspect-video bg-gray-900 relative">
-          {video.isYouTube ? (
+          {video.isYouTube && video.embedUrl ? (
+            <iframe
+              src={`${video.embedUrl}?autoplay=1&rel=0`}
+              title={video.title}
+              className="h-full w-full"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          ) : video.isYouTube ? (
             <div className="w-full h-full flex items-center justify-center">
               <div className="text-center">
                 <div className="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">

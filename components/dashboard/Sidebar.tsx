@@ -24,6 +24,7 @@ import {
   Calendar,
   Briefcase,
   Shield,
+  Video,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
@@ -135,6 +136,12 @@ export default function Sidebar({ isOpen, onToggle, userRoles, currentPath }: Si
       name: 'News',
       href: '/dashboard/news',
       icon: <Newspaper className="w-5 h-5" />,
+      roles: ['Admin', 'Staff', 'ManagerialStaff'],
+    },
+    {
+      name: 'Video Gallery',
+      href: '/dashboard/video-gallery',
+      icon: <Video className="w-5 h-5" />,
       roles: ['Admin', 'Staff', 'ManagerialStaff'],
     },
     {

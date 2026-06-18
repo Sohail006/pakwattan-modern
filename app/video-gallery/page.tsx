@@ -6,17 +6,8 @@ import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
-// Lazy load below-fold components for better performance
-const LatestVideos = dynamic(() => import('@/components/video-gallery/LatestVideos'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
-})
-
-const VideoGalleryVideos = dynamic(() => import('@/components/video-gallery/VideoGalleryVideos'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
-})
-
-const VideoGalleryCategories = dynamic(() => import('@/components/video-gallery/VideoGalleryCategories'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
+const VideoGalleryGrid = dynamic(() => import('@/components/video-gallery/VideoGalleryGrid'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />,
 })
 
 export const metadata: Metadata = generatePageMetadata({
@@ -36,9 +27,7 @@ export default function VideoGallery() {
       <StructuredData data={breadcrumbs} />
       <div className="min-h-screen">
         <VideoGalleryHero />
-        <LatestVideos />
-        <VideoGalleryVideos />
-        <VideoGalleryCategories />
+        <VideoGalleryGrid />
       </div>
     </>
   )
