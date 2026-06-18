@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { Trophy, Star, Users, Award, ArrowRight } from 'lucide-react'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const TalentHuntHero = () => {
   const features = [
@@ -51,18 +52,18 @@ const TalentHuntHero = () => {
               </p>
               <p className="text-sm sm:text-base lg:text-lg text-white/80 leading-relaxed break-words">
                 After successful Season I (2024–25) and Season II (2025–26), we proudly launch{' '}
-                <strong>Season 3</strong> — a district-wide platform for literary, scientific, entrepreneurial,
+                <strong>{TALENT_HUNT_SEASON3_TITLE}</strong> — a district-wide platform for literary, scientific, entrepreneurial,
                 and sports talent.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link href="/talent-hunt/season-3#register" className="btn-accent text-center touch-target min-h-[44px] inline-flex items-center justify-center gap-2">
-                Register for Season 3
+                Register Now
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/talent-hunt/season-3" className="btn-secondary text-center touch-target min-h-[44px]">
-                Season 3 Details
+                {TALENT_HUNT_SEASON3_TITLE} Details
               </Link>
             </div>
           </div>

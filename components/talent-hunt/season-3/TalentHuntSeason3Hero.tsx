@@ -8,6 +8,7 @@ import {
   TALENT_HUNT_SEASON3_INTRO,
   TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
+  TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
 
 export default function TalentHuntSeason3Hero() {
@@ -21,8 +22,7 @@ export default function TalentHuntSeason3Hero() {
               Current Season · 2026–27
             </p>
             <h1 className="font-josefin text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">
-              Talent Hunt with Pak Wattan
-              <span className="mt-2 block text-amber-200">Season 3</span>
+              {TALENT_HUNT_SEASON3_TITLE}
             </h1>
             <p className="text-lg sm:text-xl font-semibold tracking-widest text-white/90">{TALENT_HUNT_SEASON3_TAGLINE}</p>
             <p className="text-sm sm:text-base text-white/85 leading-relaxed max-w-xl">

@@ -1,4 +1,5 @@
 import { api, ApiError } from './client'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 export type TalentHuntSeason3RegistrationType = 'Participant' | 'Institution'
 
@@ -99,7 +100,7 @@ export async function getAllTalentHuntSeason3Registrations(): Promise<TalentHunt
     return (response as unknown[]).map((row) => normalizeRow(row))
   } catch (error) {
     const apiError = error as ApiError
-    throw new Error(apiError.message || 'Unable to fetch Talent Hunt Season 3 registrations.')
+    throw new Error(apiError.message || `Unable to fetch ${TALENT_HUNT_SEASON3_TITLE} registrations.`)
   }
 }
 

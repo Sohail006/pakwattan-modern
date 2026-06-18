@@ -8,6 +8,7 @@ import {
   TALENT_HUNT_SEASON3_FLYER,
   TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
+  TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
 
 export default function TalentHuntSeason3Hub() {
@@ -20,7 +21,7 @@ export default function TalentHuntSeason3Hub() {
               <Sparkles className="h-3.5 w-3.5" /> Current Season
             </span>
             <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-gray-900 mb-3">
-              Season 3 — <span className="text-gradient">{TALENT_HUNT_SEASON3_TAGLINE}</span>
+              {TALENT_HUNT_SEASON3_TITLE} — <span className="text-gradient">{TALENT_HUNT_SEASON3_TAGLINE}</span>
             </h2>
             <p className="text-gray-600 mb-4 leading-relaxed">
               District-wide inter-school talent development. Opening ceremony {TALENT_HUNT_SEASON3_OPENING.date} at{' '}
@@ -31,7 +32,7 @@ export default function TalentHuntSeason3Hub() {
                 Register Now <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/talent-hunt/season-3" className="btn-secondary min-h-[44px]">
-                Full Season 3 Details
+                Full Details
               </Link>
             </div>
             <p className="text-sm text-gray-500 flex items-center gap-2">

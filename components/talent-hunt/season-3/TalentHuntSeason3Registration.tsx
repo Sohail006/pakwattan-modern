@@ -11,6 +11,7 @@ import {
   TALENT_HUNT_INSTITUTION_FEE,
   TALENT_HUNT_PARTICIPANT_FEE,
   TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS,
+  TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
 import TalentHuntPaymentFields from '@/components/talent-hunt/shared/TalentHuntPaymentFields'
 import {
@@ -235,7 +236,7 @@ export default function TalentHuntSeason3Registration() {
             <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Registration Submitted</h2>
             <p className="text-gray-600 mb-6">
-              Thank you for registering for Talent Hunt Season 3. Our team will verify your payment and contact you
+              Thank you for registering for {TALENT_HUNT_SEASON3_TITLE}. Our team will verify your payment and contact you
               with further details.
             </p>
             <button
@@ -262,7 +263,7 @@ export default function TalentHuntSeason3Registration() {
       <div className="container-custom max-w-4xl">
         <div className="text-center mb-8">
           <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-gray-900 mb-3">
-            Register for <span className="text-gradient">Season 3</span>
+            Register for <span className="text-gradient">{TALENT_HUNT_SEASON3_TITLE}</span>
           </h2>
           <p className="text-gray-600">Choose participant or institution registration below.</p>
         </div>
@@ -399,7 +400,7 @@ export default function TalentHuntSeason3Registration() {
                       onChange={handleParticipantChange}
                       className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px] bg-white"
                     >
-                      <option value="">Select Season 3 contest</option>
+                      <option value="">Select contest</option>
                       {Object.entries(contestGroups).map(([group, contests]) => (
                         <optgroup key={group} label={group}>
                           {contests.map((contest) => (

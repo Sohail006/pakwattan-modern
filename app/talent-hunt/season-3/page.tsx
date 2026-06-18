@@ -5,6 +5,7 @@ import StructuredData from '@/components/seo/StructuredData'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const TalentHuntSeason3Registration = dynamic(
   () => import('@/components/talent-hunt/season-3/TalentHuntSeason3Registration'),
@@ -31,11 +32,11 @@ const TalentHuntSeason3Details = dynamic(
 )
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Talent Hunt Season 3',
+  title: TALENT_HUNT_SEASON3_TITLE,
   description:
-    'Talent Hunt with Pak Wattan Season 3 — DREAM • DARE • DEVELOP. District-wide literary, science, entrepreneurship and sports competitions. Grand opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad.',
+    `${TALENT_HUNT_SEASON3_TITLE} — DREAM • DARE • DEVELOP. District-wide literary, science, entrepreneurship and sports competitions. Grand opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad.`,
   keywords:
-    'talent hunt season 3, pak wattan, havelian, district talent, poetry mushaira, science model, entrepreneur pitch, 2026-27',
+    'talent hunt with pak wattan season 3, pak wattan, havelian, district talent, poetry mushaira, science model, entrepreneur pitch, 2026-27',
   path: '/talent-hunt/season-3',
 })
 
@@ -43,7 +44,7 @@ export default function TalentHuntSeason3Page() {
   const breadcrumbs = generateBreadcrumbSchema([
     { name: 'Home', url: 'https://pakwattan.edu.pk' },
     { name: 'Talent Hunt', url: 'https://pakwattan.edu.pk/talent-hunt' },
-    { name: 'Season 3', url: 'https://pakwattan.edu.pk/talent-hunt/season-3' },
+    { name: TALENT_HUNT_SEASON3_TITLE, url: 'https://pakwattan.edu.pk/talent-hunt/season-3' },
   ])
 
   return (

@@ -5,6 +5,7 @@ import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const TalentHuntSeason3Hub = dynamic(() => import('@/components/talent-hunt/TalentHuntSeason3Hub'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />,
@@ -13,8 +14,8 @@ const TalentHuntSeason3Hub = dynamic(() => import('@/components/talent-hunt/Tale
 export const metadata: Metadata = generatePageMetadata({
   title: 'Talent Hunt',
   description:
-    'Talent Hunt with Pak Wattan — Season 3 is now open (2026–27). District-wide talent development. View past seasons and register for Season 3.',
-  keywords: 'talent hunt, pak wattan, season 3, havelian, student talent, district competition',
+    `${TALENT_HUNT_SEASON3_TITLE} is now open (2026–27). District-wide talent development. View past seasons and register for the current season.`,
+  keywords: 'talent hunt with pak wattan season 3, pak wattan, havelian, student talent, district competition',
   path: '/talent-hunt',
 })
 

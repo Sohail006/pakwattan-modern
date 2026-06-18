@@ -26,6 +26,7 @@ import {
   Shield,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 import { logout } from '@/lib/api/auth'
 import { userHasMenuRole, pickDashboardPath } from '@/lib/roles'
 
@@ -77,7 +78,7 @@ export default function Sidebar({ isOpen, onToggle, userRoles, currentPath }: Si
       roles: ['Admin', 'Staff'],
     },
     {
-      name: 'Talent Hunt S3',
+      name: TALENT_HUNT_SEASON3_TITLE,
       href: '/dashboard/talent-hunt-season-3',
       icon: <GraduationCap className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],

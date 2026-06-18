@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Archive } from 'lucide-react'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 type Props = {
   currentSeasonLabel?: string
@@ -7,7 +8,7 @@ type Props = {
 }
 
 export default function TalentHuntPastSeasonBanner({
-  currentSeasonLabel = 'Season 3',
+  currentSeasonLabel = TALENT_HUNT_SEASON3_TITLE,
   currentSeasonHref = '/talent-hunt/season-3',
 }: Props) {
   return (

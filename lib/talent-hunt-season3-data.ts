@@ -1,10 +1,12 @@
 export const TALENT_HUNT_SEASON3_TAGLINE = 'DREAM • DARE • DEVELOP'
 
+export const TALENT_HUNT_SEASON3_TITLE = 'Talent Hunt with Pak Wattan-Season 3'
+
 export const TALENT_HUNT_SEASON3_FLYER = {
   src: '/images/talent-hunt/Talenthunt3fliyer.webp',
   width: 1146,
   height: 1600,
-  alt: 'Talent Hunt Season 3 flyer — Grand Opening 25 July 2026, Jalal Baba Auditorium Abbottabad',
+  alt: 'Talent Hunt with Pak Wattan-Season 3 flyer — Grand Opening 25 July 2026, Jalal Baba Auditorium Abbottabad',
 } as const
 
 export const TALENT_HUNT_PARTICIPANT_FEE = 500

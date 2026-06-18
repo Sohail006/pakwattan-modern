@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { Trophy, Calendar, Users, Award } from 'lucide-react'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const TalentHuntSeason1Hero = () => {
   return (
@@ -58,7 +59,7 @@ const TalentHuntSeason1Hero = () => {
                 View Results
               </Link>
               <Link href="/talent-hunt/season-3" className="btn-secondary text-center touch-target min-h-[44px] text-sm sm:text-base">
-                Current Season 3
+                {TALENT_HUNT_SEASON3_TITLE}
               </Link>
             </div>
           </div>

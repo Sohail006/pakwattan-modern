@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2, AlertCircle, Trophy } from 'lucide-react'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 import TalentHuntSeason3RegistrationsTable from '@/components/talent-hunt-season3/TalentHuntSeason3RegistrationsTable'
 import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
@@ -59,7 +60,7 @@ export default function TalentHuntSeason3DashboardPage() {
             <Trophy className="h-7 w-7" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold font-josefin text-gray-900">Talent Hunt Season 3</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold font-josefin text-gray-900">{TALENT_HUNT_SEASON3_TITLE}</h1>
             <p className="mt-1 text-sm sm:text-base text-gray-600 max-w-2xl">
               Manage participant (PKR 500) and institution (PKR 1000) registrations. Search, filter, export to Excel,
               and verify payment receipts.

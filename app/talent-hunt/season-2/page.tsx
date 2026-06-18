@@ -7,11 +7,12 @@ import TalentHuntSeason2Contests from '@/components/talent-hunt/season-2/TalentH
 import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Talent Hunt Season-II (Archive)',
   description:
-    'Archive: Talent Hunt Season-II with Pak Wattan (2025–26). District-level talent hunt — completed. Season 3 is now open for registration.',
+    `Archive: Talent Hunt Season-II with Pak Wattan (2025–26). District-level talent hunt — completed. ${TALENT_HUNT_SEASON3_TITLE} is now open for registration.`,
   keywords: 'talent hunt season 2, archive, pak wattan, 2025-26, past season',
   path: '/talent-hunt/season-2',
 })

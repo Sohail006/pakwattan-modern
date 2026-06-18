@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, ArrowDown } from 'lucide-react'
-import { TALENT_HUNT_SEASON3_OPENING, TALENT_HUNT_SEASON3_TAGLINE } from '@/lib/talent-hunt-season3-data'
+import { TALENT_HUNT_SEASON3_OPENING, TALENT_HUNT_SEASON3_TAGLINE, TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
 import Button from '@/components/ui/Button'
@@ -92,10 +92,10 @@ const HeroSection = () => {
                 <p className="text-lg sm:text-xl md:text-2xl text-white/90 leading-relaxed font-medium">
                   School & College of Sciences
                 </p>
-                {/* Talent Hunt Season 3 — Prominent */}
+                {/* Talent Hunt with Pak Wattan-Season 3 — Prominent */}
                 <div className="bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-white/20 shadow-xl">
                   <p className="text-base sm:text-lg md:text-xl text-white font-semibold mb-2 sm:mb-3 leading-tight">
-                    Talent Hunt Season 3
+                    {TALENT_HUNT_SEASON3_TITLE}
                   </p>
                   <p className="text-sm sm:text-base text-white/90 max-w-2xl leading-relaxed">
                     <span className="tracking-wide text-accent-300">{TALENT_HUNT_SEASON3_TAGLINE}</span>. A district-wide
@@ -113,7 +113,7 @@ const HeroSection = () => {
                   variant="accent"
                   size="lg"
                   className="group relative shadow-2xl hover:shadow-accent-500/50 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-accent-300 focus:ring-offset-2 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-600 hover:to-accent-700 text-white font-bold animate-pulse-subtle border-2 border-accent-300/50 transition-all duration-300 transform-gpu"
-                  aria-label="Register as a Talent Hunt Season 3 participant"
+                  aria-label={`Register as a ${TALENT_HUNT_SEASON3_TITLE} participant`}
                 >
                   <Users className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                   <span className="relative z-10">Participants Registration</span>
@@ -124,7 +124,7 @@ const HeroSection = () => {
                   variant="primary"
                   size="lg"
                   className="group relative shadow-2xl hover:shadow-primary-400/45 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2 font-bold border-2 border-white/40 ring-2 ring-white/25 animate-pulse-subtle transition-all duration-300 transform-gpu sm:ring-[3px]"
-                  aria-label="Register your institution for Talent Hunt Season 3"
+                  aria-label={`Register your institution for ${TALENT_HUNT_SEASON3_TITLE}`}
                 >
                   <Building2 className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                   <span>Institution Registration</span>
