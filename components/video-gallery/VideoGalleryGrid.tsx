@@ -201,7 +201,10 @@ export default function VideoGalleryGrid() {
         {selectedVideo && (
           <VideoPlayerModal
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => {
+              setIsModalOpen(false)
+              setSelectedVideo(null)
+            }}
             video={{
               id: selectedVideo.youtubeVideoId,
               title: selectedVideo.title,

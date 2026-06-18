@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { createPortal } from 'react-dom'
 import { X, ExternalLink, Share2, ThumbsUp, Eye } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 
@@ -25,18 +26,37 @@ interface VideoPlayerModalProps {
 const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => {
   const [isLiked, setIsLiked] = useState(false)
   const [shareCount, setShareCount] = useState(0)
+  const [mounted, setMounted] = useState(false)
+
+  const handleClose = useCallback(() => {
+    onClose()
+  }, [onClose])
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = ''
+      return
     }
 
-    return () => {
-      document.body.style.overflow = 'unset'
+    document.body.style.overflow = 'hidden'
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        handleClose()
+      }
     }
-  }, [isOpen])
+
+    window.addEventListener('keydown', onKeyDown)
+
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [isOpen, handleClose])
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -61,32 +81,49 @@ const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => 
     setIsLiked(!isLiked)
   }
 
-  if (!isOpen) return null
+  if (!isOpen || !mounted) return null
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-4xl mx-4 bg-white rounded-2xl shadow-2xl overflow-hidden">
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm sm:items-center"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) {
+          handleClose()
+        }
+      }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="video-modal-title"
+    >
+      <div
+        className="relative my-4 w-full max-w-4xl overflow-hidden rounded-2xl bg-white shadow-2xl"
+        onClick={(event) => event.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold text-lg">📹</span>
+        <div className="flex items-center justify-between border-b border-gray-200 p-4 sm:p-6">
+          <div className="flex min-w-0 items-center space-x-3 pr-12 sm:space-x-4 sm:pr-0">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-accent-500 sm:h-12 sm:w-12">
+              <span className="text-lg font-bold text-white">📹</span>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">{video.title}</h2>
-              <p className="text-sm text-gray-500">{video.channelTitle}</p>
+            <div className="min-w-0">
+              <h2 id="video-modal-title" className="truncate text-lg font-bold text-gray-900 sm:text-xl">
+                {video.title}
+              </h2>
+              <p className="truncate text-sm text-gray-500">{video.channelTitle}</p>
             </div>
           </div>
           <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            type="button"
+            onClick={handleClose}
+            className="absolute right-3 top-3 z-30 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200 sm:static sm:rounded-full sm:bg-transparent sm:hover:bg-gray-100"
+            aria-label="Close video"
           >
-            <X className="w-6 h-6 text-gray-500" />
+            <X className="h-6 w-6" />
           </button>
         </div>
 
         {/* Video Player */}
-        <div className="aspect-video bg-gray-900 relative">
+        <div className="relative aspect-video bg-gray-900">
           {video.isYouTube && video.embedUrl ? (
             <iframe
               src={`${video.embedUrl}?autoplay=1&rel=0`}
@@ -124,6 +161,14 @@ const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => 
               </div>
             </div>
           )}
+          <button
+            type="button"
+            onClick={handleClose}
+            className="absolute right-3 top-3 z-20 flex h-10 w-10 items-center justify-center rounded-full bg-black/70 text-white shadow-lg transition-colors hover:bg-black/90"
+            aria-label="Close video player"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
         {/* Video Info */}
@@ -198,7 +243,8 @@ const VideoPlayerModal = ({ isOpen, onClose, video }: VideoPlayerModalProps) => 
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
