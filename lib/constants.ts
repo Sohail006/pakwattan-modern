@@ -131,6 +131,11 @@ export const HERO_QUICK_LINKS: QuickLink[] = [
     icon: null,
     title: 'Pakians Coaching Academy (PCA)',
     href: '/pakians-coaching-academy'
+  },
+  {
+    icon: null,
+    title: 'Pakians Events',
+    href: '/pakians-events'
   }
 ]
 

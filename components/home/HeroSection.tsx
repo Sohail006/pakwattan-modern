@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, ArrowDown } from 'lucide-react'
+import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, CalendarDays, ArrowDown } from 'lucide-react'
 import { TALENT_HUNT_SEASON3_OPENING, TALENT_HUNT_SEASON3_TAGLINE, TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
@@ -13,11 +13,13 @@ const HeroSection = () => {
   const [videoError, setVideoError] = useState(false)
   const [videoLoaded, setVideoLoaded] = useState(false)
 
+  const quickLinkIcons = [Briefcase, Award, Trophy, BookOpen, CalendarDays]
+
   const quickLinks = HERO_QUICK_LINKS.map((link, index) => {
-    const IconComponent = [Briefcase, Award, Trophy, BookOpen][index]
+    const IconComponent = quickLinkIcons[index]
     return {
       ...link,
-      icon: IconComponent ? <IconComponent className="w-6 h-6" /> : null
+      icon: IconComponent ? <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" /> : null
     }
   })
 
@@ -79,10 +81,14 @@ const HeroSection = () => {
             <div className="text-white space-y-4 sm:space-y-5 md:space-y-6 animate-fade-in-up">
               <div className="space-y-2 sm:space-y-3">
                 {/* Session Badge - Prominent */}
-                <div className="inline-flex items-center space-x-2 bg-accent-500/90 backdrop-blur-sm rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-sm sm:text-base font-bold text-white shadow-lg mb-3 sm:mb-4 animate-pulse">
-                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
+                <Link
+                  href="/admission"
+                  className="inline-flex items-center space-x-2 bg-accent-500/90 backdrop-blur-sm rounded-full px-4 py-2 sm:px-5 sm:py-2.5 text-sm sm:text-base font-bold text-white shadow-lg mb-3 sm:mb-4 animate-pulse transition-transform hover:scale-105 hover:bg-accent-400/90 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-primary-800"
+                  aria-label="Admissions Open for Session 2026-27 — view admission details and apply"
+                >
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5" aria-hidden />
                   <span>Admissions Open for Session 2026-27</span>
-                </div>
+                </Link>
                 <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin leading-tight">
                   Welcome to{' '}
                   <span className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-600 bg-clip-text text-transparent">
@@ -133,35 +139,32 @@ const HeroSection = () => {
             </div>
           </div>
 
-          {/* Mobile-Style Quick Links - Responsive Design */}
+          {/* Quick Links — compact 5-item layout (fixed visual height) */}
           <div className="lg:col-span-1 mt-6 lg:mt-0">
-            <div className="bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl border-2 border-primary-200/50 hover:border-primary-300/50 transition-all duration-300 animate-fade-in-right">
-              <div className="space-y-2 sm:space-y-3">
+            <div className="bg-white/95 backdrop-blur-md rounded-2xl p-3 sm:p-4 shadow-2xl border-2 border-primary-200/50 hover:border-primary-300/50 transition-all duration-300 animate-fade-in-right">
+              <div className="space-y-1">
                 {quickLinks.map((link, index) => (
                   <Link
                     key={index}
                     href={link.href}
-                    className="group flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 rounded-xl sm:rounded-2xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 active:bg-gradient-to-r active:from-primary-100 active:to-accent-100 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:-translate-y-0.5 active:scale-100 touch-target min-h-[44px] focus:outline-none focus:ring-4 focus:ring-primary-300 focus:ring-offset-2"
+                    className="group flex items-center gap-2.5 sm:gap-3 px-2 py-2 sm:px-2.5 sm:py-2 rounded-xl hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 active:from-primary-100 active:to-accent-100 transition-all duration-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary-300 focus:ring-offset-1 touch-target min-h-[40px]"
                     title={link.title}
                     aria-label={`Navigate to ${link.title}`}
                   >
-                    {/* Icon with colored background */}
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-100 to-accent-100 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300 flex-shrink-0">
-                      <div className="text-primary-600 group-hover:text-primary-700 transition-colors text-sm sm:text-base">
+                    <div className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-100 to-accent-100 group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-300">
+                      <div className="text-primary-600 group-hover:text-primary-700 transition-colors">
                         {link.icon}
                       </div>
                     </div>
-                    
-                    {/* Content */}
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-sm sm:text-lg font-bold text-gray-900 group-hover:text-primary-700 transition-colors leading-tight">
+
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-xs sm:text-sm font-bold text-gray-900 group-hover:text-primary-700 transition-colors leading-snug line-clamp-2">
                         {link.title}
                       </h3>
                     </div>
-                    
-                    {/* Arrow */}
-                    <div className="text-primary-500 group-hover:text-primary-600 group-hover:translate-x-1 transition-all duration-300 flex-shrink-0">
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                    <div className="shrink-0 text-primary-500 group-hover:text-primary-600 group-hover:translate-x-0.5 transition-all duration-300">
+                      <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </div>
