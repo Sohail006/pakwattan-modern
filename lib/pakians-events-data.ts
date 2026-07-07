@@ -23,6 +23,7 @@ export interface PakiansEvent {
   category: PakiansEventCategory
   description: string
   highlight?: string
+  images?: { src: string; alt: string }[]
 }
 
 export const PAKIANS_EVENTS: PakiansEvent[] = [
@@ -34,6 +35,48 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
     category: 'Symposium',
     description:
       'A delegation of our students attended the Marka-e-Haq Symposium at NUST, where they engaged with students and professionals from across Pakistan. Beyond gaining valuable insights from the event, they explored academic opportunities at one of the country\'s leading universities while expanding their professional and educational networks.',
+    images: [
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-1.png',
+        alt: 'Pak Wattan students sitting together at a stepped venue during Marka-e-Haq Symposium visit',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-2.png',
+        alt: 'Group of students at public monument steps during Marka-e-Haq Symposium trip',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-3.png',
+        alt: 'Pak Wattan students group photo at Lok Virsa Heritage Museum entrance',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-4.png',
+        alt: 'Students and teacher in front of Lok Virsa Heritage Museum during educational tour',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-5.png',
+        alt: 'Students sharing meal outdoors during Marka-e-Haq Symposium educational visit',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-6.png',
+        alt: 'Student holding Marka-e-Haq participation certificate outside NUST entrance',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-7.png',
+        alt: 'Student at NUST stage during Marka-e-Haq strategic reflections session',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-8.png',
+        alt: 'Girls delegation seated together in NUST courtyard during symposium visit',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-9.png',
+        alt: 'Students holding participation certificates in front of military leadership display',
+      },
+      {
+        src: '/images/pakians-events/marka-e-haq-nust-10.png',
+        alt: 'Additional certificate group photo from Marka-e-Haq Symposium visit',
+      },
+    ],
   },
   {
     id: 'mpmun',
@@ -72,6 +115,28 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
     description:
       'At the Umeed Youth Summit held at the District Council Hall, Abbottabad, our students engaged with industry experts, innovators, and young leaders from diverse fields. Six of our teams presented their business ideas in the pitching competition, securing distinctions and sponsorship opportunities. The summit provided invaluable mentorship, networking, and practical exposure, empowering students to transform their entrepreneurial ideas into impactful ventures.',
     highlight: '6 teams — distinctions & sponsorships',
+    images: [
+      {
+        src: '/images/pakians-events/umeed-youth-summit-1.png',
+        alt: 'Student speaker presenting at Umeed Youth Summit 2026',
+      },
+      {
+        src: '/images/pakians-events/umeed-youth-summit-2.png',
+        alt: 'Close-up of student delivering speech during Umeed Youth Summit session',
+      },
+      {
+        src: '/images/pakians-events/umeed-youth-summit-3.png',
+        alt: 'Side profile of student speaker addressing the Umeed Youth Summit audience',
+      },
+      {
+        src: '/images/pakians-events/umeed-youth-summit-4.png',
+        alt: 'Panel discussion on stage at Umeed Youth Summit 2026',
+      },
+      {
+        src: '/images/pakians-events/umeed-youth-summit-5.png',
+        alt: 'Wide panel and stage view from Umeed Youth Summit event',
+      },
+    ],
   },
   {
     id: 'fakhar-e-hazara-summit',
@@ -82,6 +147,48 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
     description:
       'As the Academic Partner of the Fakhar-e-Hazara Summit held at Jalal Baba Auditorium, our institution proudly facilitated student participation in this prestigious event. Students had the unique opportunity to interact with and learn from distinguished personalities who have brought national and international recognition to the Hazara region, inspiring them to pursue excellence in their own journeys.',
     highlight: 'Academic Partner',
+    images: [
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-1.png',
+        alt: 'Pak Wattan girls delegation group photo at Fakhar-e-Hazara Summit venue',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-2.png',
+        alt: 'Pak Wattan boys students standing together at summit event hall',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-3.png',
+        alt: 'Students and mentor group portrait inside summit venue',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-4.png',
+        alt: 'Students receiving certificates after participation in summit activities',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-5.png',
+        alt: 'Second certificate ceremony group photo with participants and mentors',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-6.png',
+        alt: 'Wide audience view from Fakhar-e-Hazara Summit auditorium session',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-7.png',
+        alt: 'Stage panel discussion in progress at Fakhar-e-Hazara Summit',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-8.png',
+        alt: 'Wide stage and audience shot during summit program',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-9.png',
+        alt: 'Large outdoor group photo of Pak Wattan boys participants',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-10.png',
+        alt: 'Additional girls delegation portrait at the summit location',
+      },
+    ],
   },
   {
     id: 'regional-business-idea',
@@ -112,5 +219,15 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
     description:
       'Our students participated in the Regional Seerat-un-Nabi (PBUH) Naat and Tilawat Competition hosted by FG High School. Demonstrating exceptional recitation skills and devotion, they earned distinction while proudly representing the values and excellence of our institution.',
     highlight: 'Distinction',
+    images: [
+      {
+        src: '/images/pakians-events/seerat-naat-tilawat-1.png',
+        alt: 'Student speaking at Regional Seerat-un-Nabi (PBUH) Naat and Tilawat competition stage',
+      },
+      {
+        src: '/images/pakians-events/seerat-naat-tilawat-2.png',
+        alt: 'Participant delivering speech at Regional Seerat-un-Nabi (PBUH) event podium',
+      },
+    ],
   },
 ]

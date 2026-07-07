@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import Image from 'next/image'
 import {
   BookOpen,
   Globe,
@@ -78,6 +79,22 @@ export default function PakiansEventsContent() {
               )}
 
               <p className="flex-1 text-sm leading-relaxed text-gray-600">{event.description}</p>
+
+              {event.images && event.images.length > 0 && (
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {event.images.map((image) => (
+                    <div key={image.src} className="relative aspect-[4/5] overflow-hidden rounded-lg border border-gray-200">
+                      <Image
+                        src={image.src}
+                        alt={image.alt}
+                        fill
+                        sizes="(max-width: 768px) 45vw, 20vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </article>
           ))}
         </div>
