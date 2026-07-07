@@ -134,7 +134,7 @@ export const HERO_QUICK_LINKS: QuickLink[] = [
   },
   {
     icon: null,
-    title: 'Pakians Events',
+    title: 'Academic and Co-curricular Exposure',
     href: '/pakians-events'
   }
 ]
