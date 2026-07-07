@@ -47,11 +47,11 @@ export default function PakiansEventsContent() {
           <p className="mt-4 text-sm sm:text-base font-medium text-primary-800">{PAKIANS_EVENTS_INTRO.subtitle}</p>
         </div>
 
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <div className="columns-1 gap-5 md:columns-2 xl:columns-3">
           {PAKIANS_EVENTS.map((event) => (
             <article
               key={event.id}
-              className="group flex flex-col rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm transition-all duration-300 hover:border-primary-200 hover:shadow-lg"
+              className="group mb-5 inline-block w-full break-inside-avoid rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm transition-all duration-300 hover:border-primary-200 hover:shadow-lg"
             >
               <div className="mb-4 flex items-start justify-between gap-3">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 text-sm font-bold text-white">
@@ -78,7 +78,7 @@ export default function PakiansEventsContent() {
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-accent-700">{event.highlight}</p>
               )}
 
-              <p className="flex-1 text-sm leading-relaxed text-gray-600">{event.description}</p>
+              <p className="text-sm leading-relaxed text-gray-600">{event.description}</p>
 
               {event.images && event.images.length > 0 && (
                 <div className="mt-4 grid grid-cols-2 gap-2">
