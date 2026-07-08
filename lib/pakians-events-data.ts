@@ -118,23 +118,23 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
     images: [
       {
         src: '/images/pakians-events/umeed-youth-summit-1.png',
-        alt: 'Student speaker presenting at Umeed Youth Summit 2026',
+        alt: 'Idea Pitch participant receiving Umeed Youth Summit certificate from guest presenter',
       },
       {
         src: '/images/pakians-events/umeed-youth-summit-2.png',
-        alt: 'Close-up of student delivering speech during Umeed Youth Summit session',
+        alt: 'Pak Wattan students receiving Idea Pitch participant certificates at Umeed Youth Summit',
       },
       {
         src: '/images/pakians-events/umeed-youth-summit-3.png',
-        alt: 'Side profile of student speaker addressing the Umeed Youth Summit audience',
+        alt: 'Certificate presentation to Pak Wattan delegation at Umeed Youth Summit',
       },
       {
         src: '/images/pakians-events/umeed-youth-summit-4.png',
-        alt: 'Panel discussion on stage at Umeed Youth Summit 2026',
+        alt: 'Panel discussion at Umeed Youth Summit 2026 — Lead. Innovate. Impact.',
       },
       {
         src: '/images/pakians-events/umeed-youth-summit-5.png',
-        alt: 'Wide panel and stage view from Umeed Youth Summit event',
+        alt: 'Pak Wattan representatives at Umeed Pakistan outdoor summit backdrop',
       },
     ],
   },
@@ -153,24 +153,8 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
         alt: 'Pak Wattan girls delegation group photo at Fakhar-e-Hazara Summit venue',
       },
       {
-        src: '/images/pakians-events/fakhar-e-hazara-2.png',
-        alt: 'Pak Wattan boys students standing together at summit event hall',
-      },
-      {
-        src: '/images/pakians-events/fakhar-e-hazara-3.png',
-        alt: 'Students and mentor group portrait inside summit venue',
-      },
-      {
-        src: '/images/pakians-events/fakhar-e-hazara-4.png',
-        alt: 'Students receiving certificates after participation in summit activities',
-      },
-      {
         src: '/images/pakians-events/fakhar-e-hazara-5.png',
-        alt: 'Second certificate ceremony group photo with participants and mentors',
-      },
-      {
-        src: '/images/pakians-events/fakhar-e-hazara-6.png',
-        alt: 'Wide audience view from Fakhar-e-Hazara Summit auditorium session',
+        alt: 'Certificate ceremony group photo with participants and mentors at Fakhar-e-Hazara Summit',
       },
       {
         src: '/images/pakians-events/fakhar-e-hazara-7.png',
@@ -178,15 +162,15 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
       },
       {
         src: '/images/pakians-events/fakhar-e-hazara-8.png',
-        alt: 'Wide stage and audience shot during summit program',
-      },
-      {
-        src: '/images/pakians-events/fakhar-e-hazara-9.png',
-        alt: 'Large outdoor group photo of Pak Wattan boys participants',
+        alt: 'Pak Wattan girls delegation portrait inside the summit venue',
       },
       {
         src: '/images/pakians-events/fakhar-e-hazara-10.png',
-        alt: 'Additional girls delegation portrait at the summit location',
+        alt: 'Large outdoor group photo of Pak Wattan boys participants',
+      },
+      {
+        src: '/images/pakians-events/fakhar-e-hazara-11.png',
+        alt: 'Pak Wattan students and faculty group photo at Fakhar-e-Hazara Summit 2024 banner',
       },
     ],
   },
