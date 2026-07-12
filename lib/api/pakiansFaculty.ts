@@ -70,6 +70,9 @@ function normalizeRow(data: unknown): PakiansFacultyRegistrationResponse {
 
 function extractErrorMessage(error: unknown): string {
   const apiError = error as ApiError
+  if (apiError.statusCode === 404) {
+    return 'Faculty registration is temporarily unavailable on the server. Please try again shortly or contact the school office for assistance.'
+  }
   return apiError.message || 'Something went wrong. Please try again.'
 }
 
