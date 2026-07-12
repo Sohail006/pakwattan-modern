@@ -66,15 +66,13 @@ export default function PakiansFacultyRegistrationForm() {
 
   const validatePhones = (): boolean => {
     const next: FieldErrors = {}
-    const mobile = cleanPhoneNumber(form.mobileNumber)
-    const whatsApp = cleanPhoneNumber(form.whatsAppNumber)
 
-    const mobileValidation = validatePakistanPhoneNumber(mobile, true)
+    const mobileValidation = validatePakistanPhoneNumber(form.mobileNumber, true)
     if (!mobileValidation.valid) {
       next.mobileNumber = mobileValidation.error || 'Invalid mobile number'
     }
 
-    const whatsAppValidation = validatePakistanPhoneNumber(whatsApp, true)
+    const whatsAppValidation = validatePakistanPhoneNumber(form.whatsAppNumber, true)
     if (!whatsAppValidation.valid) {
       next.whatsAppNumber = whatsAppValidation.error || 'Invalid WhatsApp number'
     }
@@ -288,12 +286,24 @@ export default function PakiansFacultyRegistrationForm() {
                   type="tel"
                   required
                   inputMode="numeric"
-                  value={maskPakistanPhoneNumber(form.mobileNumber)}
+                  value={form.mobileNumber}
                   onChange={(e) => {
-                    updateField('mobileNumber', cleanPhoneNumber(e.target.value))
+                    updateField('mobileNumber', maskPakistanPhoneNumber(e.target.value))
                     setFieldErrors((prev) => {
                       const next = { ...prev }
                       delete next.mobileNumber
+                      return next
+                    })
+                  }}
+                  onBlur={() => {
+                    const result = validatePakistanPhoneNumber(form.mobileNumber, true)
+                    setFieldErrors((prev) => {
+                      const next = { ...prev }
+                      if (result.valid) {
+                        delete next.mobileNumber
+                      } else if (form.mobileNumber.trim()) {
+                        next.mobileNumber = result.error || 'Invalid mobile number'
+                      }
                       return next
                     })
                   }}
@@ -313,12 +323,24 @@ export default function PakiansFacultyRegistrationForm() {
                   type="tel"
                   required
                   inputMode="numeric"
-                  value={maskPakistanPhoneNumber(form.whatsAppNumber)}
+                  value={form.whatsAppNumber}
                   onChange={(e) => {
-                    updateField('whatsAppNumber', cleanPhoneNumber(e.target.value))
+                    updateField('whatsAppNumber', maskPakistanPhoneNumber(e.target.value))
                     setFieldErrors((prev) => {
                       const next = { ...prev }
                       delete next.whatsAppNumber
+                      return next
+                    })
+                  }}
+                  onBlur={() => {
+                    const result = validatePakistanPhoneNumber(form.whatsAppNumber, true)
+                    setFieldErrors((prev) => {
+                      const next = { ...prev }
+                      if (result.valid) {
+                        delete next.whatsAppNumber
+                      } else if (form.whatsAppNumber.trim()) {
+                        next.whatsAppNumber = result.error || 'Invalid WhatsApp number'
+                      }
                       return next
                     })
                   }}
