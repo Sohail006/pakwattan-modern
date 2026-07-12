@@ -139,11 +139,11 @@ const HeroSection = () => {
                   href="/pakians-faculty-registration"
                   variant="secondary"
                   size="lg"
-                  className="group relative shadow-2xl hover:shadow-white/30 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-white/50 focus:ring-offset-2 font-bold border-2 border-white/50 bg-white/15 backdrop-blur-sm text-white hover:bg-white/25 transition-all duration-300 transform-gpu"
+                  className="group relative shadow-2xl hover:shadow-white/30 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-white/50 focus:ring-offset-2 font-bold border-2 border-white/50 bg-white/15 backdrop-blur-sm text-white hover:bg-white/25 transition-all duration-300 transform-gpu text-sm sm:text-base px-5 sm:px-6 py-3 sm:py-3.5"
                   aria-label="Register as Pak Wattan faculty — teaching or non-teaching staff"
                 >
-                  <GraduationCap className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
-                  <span>Pakians Faculty Registration</span>
+                  <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 mr-2 group-hover:scale-110 transition-transform duration-300 shrink-0" />
+                  <span className="leading-tight">Pakians Faculty Registration</span>
                 </Button>
               </div>
             </div>
