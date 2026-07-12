@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, CalendarDays, ArrowDown } from 'lucide-react'
+import { Trophy, BookOpen, Award, Users, Building2, Calendar, Briefcase, CalendarDays, ArrowDown, GraduationCap } from 'lucide-react'
 import { TALENT_HUNT_SEASON3_OPENING, TALENT_HUNT_SEASON3_TAGLINE, TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 import { HERO_QUICK_LINKS } from '@/lib/constants'
 import Container from '@/components/ui/Container'
@@ -134,6 +134,16 @@ const HeroSection = () => {
                 >
                   <Building2 className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
                   <span>Institution Registration</span>
+                </Button>
+                <Button
+                  href="/pakians-faculty-registration"
+                  variant="secondary"
+                  size="lg"
+                  className="group relative shadow-2xl hover:shadow-white/30 hover:scale-105 active:scale-100 touch-target min-h-[48px] focus:outline-none focus:ring-4 focus:ring-white/50 focus:ring-offset-2 font-bold border-2 border-white/50 bg-white/15 backdrop-blur-sm text-white hover:bg-white/25 transition-all duration-300 transform-gpu"
+                  aria-label="Register as Pak Wattan faculty — teaching or non-teaching staff"
+                >
+                  <GraduationCap className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform duration-300" />
+                  <span>Pakians Faculty Registration</span>
                 </Button>
               </div>
             </div>

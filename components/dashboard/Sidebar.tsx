@@ -85,6 +85,12 @@ export default function Sidebar({ isOpen, onToggle, userRoles, currentPath }: Si
       roles: ['Admin', 'Staff'],
     },
     {
+      name: 'Pakians Faculty',
+      href: '/dashboard/pakians-faculty',
+      icon: <Users className="w-5 h-5" />,
+      roles: ['Admin', 'Staff'],
+    },
+    {
       name: 'Admissions',
       href: '/dashboard/admissions',
       icon: <FileText className="w-5 h-5" />,

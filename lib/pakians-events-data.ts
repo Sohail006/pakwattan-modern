@@ -37,26 +37,6 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
       'A delegation of our students attended the Marka-e-Haq Symposium at NUST, where they engaged with students and professionals from across Pakistan. Beyond gaining valuable insights from the event, they explored academic opportunities at one of the country\'s leading universities while expanding their professional and educational networks.',
     images: [
       {
-        src: '/images/pakians-events/marka-e-haq-nust-1.png',
-        alt: 'Pak Wattan students sitting together at a stepped venue during Marka-e-Haq Symposium visit',
-      },
-      {
-        src: '/images/pakians-events/marka-e-haq-nust-2.png',
-        alt: 'Group of students at public monument steps during Marka-e-Haq Symposium trip',
-      },
-      {
-        src: '/images/pakians-events/marka-e-haq-nust-3.png',
-        alt: 'Pak Wattan students group photo at Lok Virsa Heritage Museum entrance',
-      },
-      {
-        src: '/images/pakians-events/marka-e-haq-nust-4.png',
-        alt: 'Students and teacher in front of Lok Virsa Heritage Museum during educational tour',
-      },
-      {
-        src: '/images/pakians-events/marka-e-haq-nust-5.png',
-        alt: 'Students sharing meal outdoors during Marka-e-Haq Symposium educational visit',
-      },
-      {
         src: '/images/pakians-events/marka-e-haq-nust-6.png',
         alt: 'Student holding Marka-e-Haq participation certificate outside NUST entrance',
       },
@@ -65,16 +45,8 @@ export const PAKIANS_EVENTS: PakiansEvent[] = [
         alt: 'Student at NUST stage during Marka-e-Haq strategic reflections session',
       },
       {
-        src: '/images/pakians-events/marka-e-haq-nust-8.png',
-        alt: 'Girls delegation seated together in NUST courtyard during symposium visit',
-      },
-      {
         src: '/images/pakians-events/marka-e-haq-nust-9.png',
         alt: 'Students holding participation certificates in front of military leadership display',
-      },
-      {
-        src: '/images/pakians-events/marka-e-haq-nust-10.png',
-        alt: 'Additional certificate group photo from Marka-e-Haq Symposium visit',
       },
     ],
   },
