@@ -10,8 +10,8 @@ import { getPublicPakiansFacultyByWing } from '@/lib/api/pakiansFaculty'
 
 const MONTESSORI_WING = 'Montessori wing'
 
-/** Refresh verified faculty every 5 minutes without a full redeploy */
-export const revalidate = 300
+/** Always load latest verified faculty (avoid stale static build cache) */
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'Montessori Education',

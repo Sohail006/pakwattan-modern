@@ -164,7 +164,7 @@ export async function getPublicPakiansFacultyByWing(wing: string): Promise<Pakia
   const url = `${base}/api/pakians-faculty/public?wing=${encodeURIComponent(wing)}`
 
   try {
-    const response = await fetch(url, { next: { revalidate: 300 } })
+    const response = await fetch(url, { cache: 'no-store' })
     if (!response.ok) return []
     const data = (await response.json()) as unknown[]
     return (data ?? []).map(normalizePublicMember)

@@ -9,6 +9,14 @@ function profileImageSrc(url?: string): string {
   return `${getApiBaseUrl()}${url.startsWith('/') ? url : `/${url}`}`
 }
 
+function isWingIncharge(roleType?: string | null): boolean {
+  return String(roleType ?? '').toLowerCase() === 'wingincharge'
+}
+
+function isTeacher(roleType?: string | null): boolean {
+  return String(roleType ?? '').toLowerCase() === 'teacher'
+}
+
 function experienceLabel(years: number): string {
   if (years === 1) return '1 year'
   return `${years} years`
@@ -110,8 +118,8 @@ export default function WingFacultyShowcase({
   introTitle = 'Our Faculty',
   introDescription,
 }: WingFacultyShowcaseProps) {
-  const wingIncharge = members.find((m) => m.roleType === 'WingIncharge')
-  const teachers = members.filter((m) => m.roleType === 'Teacher')
+  const wingIncharge = members.find((m) => isWingIncharge(m.roleType))
+  const teachers = members.filter((m) => isTeacher(m.roleType))
 
   if (!wingIncharge && teachers.length === 0) {
     return null
