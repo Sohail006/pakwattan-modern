@@ -19,6 +19,17 @@ export interface PakiansFacultySubmitRequest {
   experienceYears: number
 }
 
+export interface PakiansFacultyPublicMember {
+  id: number
+  name: string
+  profileImageUrl: string
+  roleType?: string | null
+  wing?: string | null
+  subjectTaught?: string | null
+  highestQualification: string
+  experienceYears: number
+}
+
 export interface PakiansFacultyRegistrationResponse {
   id: number
   name: string
@@ -39,6 +50,20 @@ export interface PakiansFacultyRegistrationResponse {
   verificationNotes?: string | null
   isActive: boolean
   registrationDate: string
+}
+
+function normalizePublicMember(data: unknown): PakiansFacultyPublicMember {
+  const r = data as Record<string, unknown>
+  return {
+    id: Number(r.id ?? r.Id),
+    name: String(r.name ?? r.Name ?? ''),
+    profileImageUrl: String(r.profileImageUrl ?? r.ProfileImageUrl ?? ''),
+    roleType: (r.roleType ?? r.RoleType) as string | null | undefined,
+    wing: (r.wing ?? r.Wing) as string | null | undefined,
+    subjectTaught: (r.subjectTaught ?? r.SubjectTaught) as string | null | undefined,
+    highestQualification: String(r.highestQualification ?? r.HighestQualification ?? ''),
+    experienceYears: Number(r.experienceYears ?? r.ExperienceYears ?? 0),
+  }
 }
 
 function normalizeRow(data: unknown): PakiansFacultyRegistrationResponse {
@@ -129,5 +154,21 @@ export async function deletePakiansFacultyRegistration(id: number): Promise<void
     await api.delete(`/api/pakians-faculty/${id}`)
   } catch (error) {
     throw new Error(extractErrorMessage(error))
+  }
+}
+
+/** Server-safe fetch: verified School Faculty + active teaching staff only (API-enforced). */
+export async function getPublicPakiansFacultyByWing(wing: string): Promise<PakiansFacultyPublicMember[]> {
+  const { getApiBaseUrl } = await import('@/lib/config')
+  const base = getApiBaseUrl().replace(/\/$/, '')
+  const url = `${base}/api/pakians-faculty/public?wing=${encodeURIComponent(wing)}`
+
+  try {
+    const response = await fetch(url, { next: { revalidate: 300 } })
+    if (!response.ok) return []
+    const data = (await response.json()) as unknown[]
+    return (data ?? []).map(normalizePublicMember)
+  } catch {
+    return []
   }
 }
