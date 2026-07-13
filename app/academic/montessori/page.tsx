@@ -10,6 +10,9 @@ import { getPublicPakiansFacultyByWing } from '@/lib/api/pakiansFaculty'
 
 const MONTESSORI_WING = 'Montessori wing'
 
+/** Refresh verified faculty every 5 minutes without a full redeploy */
+export const revalidate = 300
+
 export const metadata: Metadata = generatePageMetadata({
   title: 'Montessori Education',
   description:
@@ -21,24 +24,24 @@ export const metadata: Metadata = generatePageMetadata({
 
 const features = [
   {
-    icon: <BookOpen className="w-8 h-8" />,
+    icon: BookOpen,
     title: 'Play-Based Learning',
-    description: 'Learning through interactive play activities that stimulate creativity and imagination.',
+    description: 'Interactive play that builds creativity and imagination.',
   },
   {
-    icon: <Users className="w-8 h-8" />,
+    icon: Users,
     title: 'Social Development',
-    description: 'Building social skills through group activities and peer interaction.',
+    description: 'Group activities that strengthen communication and teamwork.',
   },
   {
-    icon: <Calendar className="w-8 h-8" />,
+    icon: Calendar,
     title: 'Structured Schedule',
-    description: 'Age-appropriate daily routines that balance learning, play, and rest.',
+    description: 'Balanced routines for learning, play, and rest.',
   },
   {
-    icon: <Award className="w-8 h-8" />,
+    icon: Award,
     title: 'Character Building',
-    description: 'Instilling moral values and good habits from an early age.',
+    description: 'Moral values and positive habits from an early age.',
   },
 ]
 
@@ -64,21 +67,20 @@ export default async function MontessoriPage() {
   return (
     <>
       <StructuredData data={breadcrumbs} />
-      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50/60">
+      <div className="min-h-screen bg-gray-50">
         {/* Hero */}
-        <section className="relative overflow-hidden py-16 sm:py-20 text-white">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_45%)]" />
-          <Container className="relative">
-            <div className="max-w-3xl">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-1.5 text-sm font-semibold backdrop-blur-sm">
-                <Sparkles className="h-4 w-4 text-accent-300" />
-                Ages 3–5 · Early Years
+        <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(255,255,255,0.12),transparent_55%)]" />
+          <Container className="relative py-12 sm:py-14">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 text-accent-300" />
+                Ages 3–5
               </span>
-              <h1 className="mt-5 font-josefin text-4xl font-bold sm:text-5xl lg:text-6xl">
+              <h1 className="mt-4 font-josefin text-3xl font-bold sm:text-4xl lg:text-5xl">
                 Montessori Education
               </h1>
-              <p className="mt-4 text-lg text-primary-100 sm:text-xl leading-relaxed">
+              <p className="mt-3 max-w-xl text-base leading-relaxed text-primary-100 sm:text-lg">
                 Holistic early childhood education with nurturing teachers, purposeful play, and a
                 strong foundation for lifelong learning.
               </p>
@@ -86,84 +88,81 @@ export default async function MontessoriPage() {
           </Container>
         </section>
 
+        {/* Faculty — directly below hero */}
+        <WingFacultyShowcase
+          wingName="Montessori Wing"
+          members={faculty}
+          introTitle="Leadership & Faculty"
+          introDescription="Verified School Faculty only — active profiles from our faculty registration system."
+        />
+
         {/* Program overview */}
-        <section className="py-16 sm:py-20">
+        <section className="py-12 sm:py-16">
           <Container>
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
               <div>
-                <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl font-josefin">
+                <h2 className="font-josefin text-2xl font-bold text-gray-900 sm:text-3xl">
                   Our Montessori Program
                 </h2>
-                <p className="mt-5 text-lg leading-relaxed text-gray-600">
-                  Our Montessori program provides a nurturing environment where young children can
-                  explore, discover, and learn at their own pace. We focus on developing the whole
-                  child through hands-on activities and experiential learning.
+                <p className="mt-4 text-gray-600 leading-relaxed">
+                  A nurturing environment where young children explore, discover, and learn at their
+                  own pace through hands-on activities and experiential learning.
                 </p>
-                <p className="mt-4 text-lg leading-relaxed text-gray-600">
-                  Experienced educators create a supportive atmosphere that encourages curiosity,
-                  independence, and a love for learning that lasts a lifetime.
+                <p className="mt-3 text-gray-600 leading-relaxed">
+                  Our educators encourage curiosity, independence, and a lasting love for learning.
                 </p>
 
-                <div className="mt-8 grid grid-cols-2 gap-4">
-                  <div className="rounded-2xl border border-primary-100 bg-white p-5 text-center shadow-sm">
-                    <div className="text-3xl font-bold text-primary-600">3–5</div>
-                    <div className="mt-1 text-sm text-gray-600">Age Range</div>
+                <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs">
+                  <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-center">
+                    <div className="text-2xl font-bold text-primary-600">3–5</div>
+                    <div className="text-xs text-gray-500">Age Range</div>
                   </div>
-                  <div className="rounded-2xl border border-primary-100 bg-white p-5 text-center shadow-sm">
-                    <div className="text-3xl font-bold text-primary-600">2</div>
-                    <div className="mt-1 text-sm text-gray-600">Years Duration</div>
+                  <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-center">
+                    <div className="text-2xl font-bold text-primary-600">2</div>
+                    <div className="text-xs text-gray-500">Years</div>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-primary-100 bg-white p-8 shadow-xl shadow-primary-900/5">
-                <h3 className="text-2xl font-bold text-gray-900">Program Features</h3>
-                <div className="mt-6 space-y-5">
-                  {features.map((feature, index) => (
-                    <div key={index} className="flex items-start gap-4">
-                      <div className="rounded-xl bg-primary-50 p-2 text-primary-600">{feature.icon}</div>
+              <div className="rounded-xl border border-gray-200 bg-white p-6 sm:p-7">
+                <h3 className="text-lg font-semibold text-gray-900">Program Features</h3>
+                <ul className="mt-5 space-y-4">
+                  {features.map((feature) => (
+                    <li key={feature.title} className="flex gap-3">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                        <feature.icon className="h-4 w-4" />
+                      </span>
                       <div>
-                        <h4 className="font-semibold text-gray-900">{feature.title}</h4>
-                        <p className="text-sm leading-relaxed text-gray-600">{feature.description}</p>
+                        <h4 className="text-sm font-semibold text-gray-900">{feature.title}</h4>
+                        <p className="text-sm text-gray-500">{feature.description}</p>
                       </div>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </div>
           </Container>
         </section>
 
-        {/* Faculty from Pakians Faculty Registration */}
-        <WingFacultyShowcase
-          wingName="Montessori Wing"
-          members={faculty}
-          introTitle="Montessori Leadership & Faculty"
-          introDescription="Wing Incharge appears at the top right. Teachers are listed below. Only profiles marked School Faculty (admin verified) and Active in the faculty dashboard are shown."
-        />
-
         {/* Subjects */}
-        <section className="py-16 sm:py-20 bg-white">
+        <section className="border-t border-gray-100 bg-white py-12 sm:py-16">
           <Container>
-            <div className="mb-12 text-center">
-              <h2 className="text-3xl font-bold text-gray-900 sm:text-4xl font-josefin">
+            <div className="mb-8 text-center">
+              <h2 className="font-josefin text-2xl font-bold text-gray-900 sm:text-3xl">
                 Subjects & Activities
               </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-lg text-gray-600">
-                A comprehensive curriculum covering all essential areas of early childhood development
+              <p className="mx-auto mt-2 max-w-lg text-sm text-gray-500 sm:text-base">
+                Essential areas of early childhood development
               </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {subjects.map((subject, index) => (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {subjects.map((subject) => (
                 <Card
-                  key={index}
-                  className="group p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:border-primary-200"
+                  key={subject}
+                  className="border-gray-100 p-4 text-center transition-colors hover:border-primary-200 hover:bg-primary-50/30"
                 >
-                  <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary-50 text-2xl transition-colors group-hover:bg-primary-100">
-                    📚
-                  </div>
-                  <h3 className="font-semibold text-gray-900">{subject}</h3>
+                  <h3 className="text-sm font-medium text-gray-800">{subject}</h3>
                 </Card>
               ))}
             </div>
@@ -171,26 +170,25 @@ export default async function MontessoriPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-16 sm:py-20 bg-gradient-to-r from-primary-700 to-primary-800 text-white">
+        <section className="bg-primary-700 py-12 text-white sm:py-14">
           <Container>
             <div className="text-center">
-              <h2 className="text-3xl font-bold sm:text-4xl font-josefin">
-                Ready to Start Your Child&apos;s Educational Journey?
+              <h2 className="font-josefin text-2xl font-bold sm:text-3xl">
+                Start Your Child&apos;s Journey
               </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-primary-100">
-                Join our Montessori program and give your child the best foundation for future learning
-                and success.
+              <p className="mx-auto mt-3 max-w-md text-sm text-primary-100 sm:text-base">
+                Give your child a strong foundation for future learning and success.
               </p>
-              <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
                 <a
                   href="/admission"
-                  className="rounded-xl bg-white px-8 py-3.5 font-semibold text-primary-700 shadow-lg transition hover:bg-gray-100"
+                  className="rounded-lg bg-white px-6 py-2.5 text-sm font-semibold text-primary-700 transition hover:bg-gray-100"
                 >
                   Apply Now
                 </a>
                 <a
                   href="/contact"
-                  className="rounded-xl border-2 border-white px-8 py-3.5 font-semibold text-white transition hover:bg-white hover:text-primary-700"
+                  className="rounded-lg border border-white/80 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
                 >
                   Contact Us
                 </a>
