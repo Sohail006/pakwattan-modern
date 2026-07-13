@@ -1,8 +1,20 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import Container from '@/components/ui/Container'
-import Card from '@/components/ui/Card'
 import WingFacultyShowcase from '@/components/academic/shared/WingFacultyShowcase'
-import { BookOpen, Users, Calendar, Award, Sparkles } from 'lucide-react'
+import {
+  Award,
+  BookOpen,
+  Calculator,
+  Calendar,
+  ChevronRight,
+  Leaf,
+  Music,
+  Palette,
+  Sparkles,
+  Users,
+  Activity,
+} from 'lucide-react'
 import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
@@ -10,7 +22,6 @@ import { getPublicPakiansFacultyByWing } from '@/lib/api/pakiansFaculty'
 
 const MONTESSORI_WING = 'Montessori wing'
 
-/** Always load latest verified faculty (avoid stale static build cache) */
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = generatePageMetadata({
@@ -26,33 +37,39 @@ const features = [
   {
     icon: BookOpen,
     title: 'Play-Based Learning',
-    description: 'Interactive play that builds creativity and imagination.',
+    description: 'Hands-on activities that spark creativity, curiosity, and joy in learning.',
   },
   {
     icon: Users,
     title: 'Social Development',
-    description: 'Group activities that strengthen communication and teamwork.',
+    description: 'Collaborative play that builds confidence, empathy, and communication.',
   },
   {
     icon: Calendar,
-    title: 'Structured Schedule',
-    description: 'Balanced routines for learning, play, and rest.',
+    title: 'Balanced Routine',
+    description: 'Structured days that blend learning, movement, rest, and discovery.',
   },
   {
     icon: Award,
     title: 'Character Building',
-    description: 'Moral values and positive habits from an early age.',
+    description: 'Values, manners, and positive habits nurtured from the earliest years.',
   },
 ]
 
 const subjects = [
-  'Basic Mathematics',
-  'Language Development',
-  'Art & Craft',
-  'Physical Activities',
-  'Music & Movement',
-  'Social Skills',
-  'Environmental Awareness',
+  { name: 'Basic Mathematics', icon: Calculator },
+  { name: 'Language Development', icon: BookOpen },
+  { name: 'Art & Craft', icon: Palette },
+  { name: 'Physical Activities', icon: Activity },
+  { name: 'Music & Movement', icon: Music },
+  { name: 'Social Skills', icon: Users },
+  { name: 'Environmental Awareness', icon: Leaf },
+]
+
+const highlights = [
+  { value: '3–5', label: 'Years of Age' },
+  { value: '2', label: 'Program Years' },
+  { value: '1:12', label: 'Care Ratio' },
 ]
 
 export default async function MontessoriPage() {
@@ -67,132 +84,157 @@ export default async function MontessoriPage() {
   return (
     <>
       <StructuredData data={breadcrumbs} />
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-secondary-50">
         {/* Hero */}
-        <section className="relative bg-gradient-to-br from-primary-700 via-primary-600 to-primary-800 text-white">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_0%,rgba(255,255,255,0.12),transparent_55%)]" />
-          <Container className="relative py-12 sm:py-14">
-            <div className="max-w-2xl">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur-sm">
-                <Sparkles className="h-3.5 w-3.5 text-accent-300" />
-                Ages 3–5
+        <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white">
+          <div className="absolute inset-0 opacity-[0.07]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,white,transparent_50%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,white,transparent_40%)]" />
+          </div>
+
+          <Container className="relative py-14 sm:py-16 lg:py-20">
+            <nav className="mb-6 flex items-center gap-1 text-sm text-white/70">
+              <Link href="/" className="transition hover:text-white">
+                Home
+              </Link>
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-white/90">Montessori</span>
+            </nav>
+
+            <div className="max-w-3xl">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold backdrop-blur-sm">
+                <Sparkles className="h-3.5 w-3.5 text-accent-400" />
+                Early Years Program
               </span>
-              <h1 className="mt-4 font-josefin text-3xl font-bold sm:text-4xl lg:text-5xl">
-                Montessori Education
+              <h1 className="mt-5 font-josefin text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                Montessori{' '}
+                <span className="bg-gradient-to-r from-accent-300 to-accent-500 bg-clip-text text-transparent">
+                  Education
+                </span>
               </h1>
-              <p className="mt-3 max-w-xl text-base leading-relaxed text-primary-100 sm:text-lg">
+              <p className="mt-5 max-w-2xl text-lg leading-relaxed text-white/90 sm:text-xl">
                 Holistic early childhood education with nurturing teachers, purposeful play, and a
                 strong foundation for lifelong learning.
               </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                {highlights.map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-xl border border-white/15 bg-white/10 px-5 py-3 backdrop-blur-sm"
+                  >
+                    <div className="text-2xl font-bold text-white">{item.value}</div>
+                    <div className="text-xs font-medium text-white/75">{item.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </Container>
+
+          {/* Wave into faculty section */}
+          <div className="absolute bottom-0 left-0 right-0">
+            <svg
+              viewBox="0 0 1440 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="block w-full"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M0 48h1440V24C1200 48 960 0 720 24 480 48 240 24 0 48Z"
+                className="fill-white"
+              />
+            </svg>
+          </div>
         </section>
 
-        {/* Faculty — directly below hero */}
+        {/* Faculty */}
         <WingFacultyShowcase
           wingName="Montessori Wing"
           members={faculty}
           introTitle="Leadership & Faculty"
-          introDescription="Verified School Faculty only — active profiles from our faculty registration system."
+          introDescription="Meet our wing incharge and teaching team — caring educators dedicated to your child's growth."
         />
 
-        {/* Program overview */}
-        <section className="py-12 sm:py-16">
+        {/* Program */}
+        <section className="section-padding">
           <Container>
-            <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
-              <div>
-                <h2 className="font-josefin text-2xl font-bold text-gray-900 sm:text-3xl">
-                  Our Montessori Program
-                </h2>
-                <p className="mt-4 text-gray-600 leading-relaxed">
-                  A nurturing environment where young children explore, discover, and learn at their
-                  own pace through hands-on activities and experiential learning.
-                </p>
-                <p className="mt-3 text-gray-600 leading-relaxed">
-                  Our educators encourage curiosity, independence, and a lasting love for learning.
-                </p>
+            <div className="mb-10 text-center sm:mb-12">
+              <h2 className="font-josefin text-3xl font-bold text-secondary-800 sm:text-4xl">
+                Our <span className="text-gradient">Montessori Program</span>
+              </h2>
+              <p className="mx-auto mt-3 max-w-2xl text-secondary-600">
+                A child-centred approach where exploration, independence, and joyful learning come
+                together every day.
+              </p>
+            </div>
 
-                <div className="mt-6 grid grid-cols-2 gap-3 max-w-xs">
-                  <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-center">
-                    <div className="text-2xl font-bold text-primary-600">3–5</div>
-                    <div className="text-xs text-gray-500">Age Range</div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+              {features.map((feature) => (
+                <div
+                  key={feature.title}
+                  className="group rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary-200 hover:shadow-lg"
+                >
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 text-primary-600 transition-colors group-hover:bg-primary-100">
+                    <feature.icon className="h-6 w-6" />
                   </div>
-                  <div className="rounded-lg border border-gray-200 bg-white px-4 py-3 text-center">
-                    <div className="text-2xl font-bold text-primary-600">2</div>
-                    <div className="text-xs text-gray-500">Years</div>
-                  </div>
+                  <h3 className="font-semibold text-gray-900">{feature.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-gray-500">{feature.description}</p>
                 </div>
-              </div>
-
-              <div className="rounded-xl border border-gray-200 bg-white p-6 sm:p-7">
-                <h3 className="text-lg font-semibold text-gray-900">Program Features</h3>
-                <ul className="mt-5 space-y-4">
-                  {features.map((feature) => (
-                    <li key={feature.title} className="flex gap-3">
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
-                        <feature.icon className="h-4 w-4" />
-                      </span>
-                      <div>
-                        <h4 className="text-sm font-semibold text-gray-900">{feature.title}</h4>
-                        <p className="text-sm text-gray-500">{feature.description}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              ))}
             </div>
           </Container>
         </section>
 
         {/* Subjects */}
-        <section className="border-t border-gray-100 bg-white py-12 sm:py-16">
+        <section className="section-padding bg-white">
           <Container>
-            <div className="mb-8 text-center">
-              <h2 className="font-josefin text-2xl font-bold text-gray-900 sm:text-3xl">
-                Subjects & Activities
+            <div className="mb-10 text-center">
+              <h2 className="font-josefin text-3xl font-bold text-secondary-800 sm:text-4xl">
+                Subjects & <span className="text-gradient">Activities</span>
               </h2>
-              <p className="mx-auto mt-2 max-w-lg text-sm text-gray-500 sm:text-base">
-                Essential areas of early childhood development
+              <p className="mx-auto mt-3 max-w-xl text-secondary-600">
+                A rich blend of academic, creative, and physical experiences for whole-child
+                development.
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {subjects.map((subject) => (
-                <Card
-                  key={subject}
-                  className="border-gray-100 p-4 text-center transition-colors hover:border-primary-200 hover:bg-primary-50/30"
+                <div
+                  key={subject.name}
+                  className="flex items-center gap-4 rounded-xl border border-gray-100 bg-secondary-50/50 p-4 transition-colors hover:border-primary-200 hover:bg-primary-50/30"
                 >
-                  <h3 className="text-sm font-medium text-gray-800">{subject}</h3>
-                </Card>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-primary-600 shadow-sm">
+                    <subject.icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-sm font-medium text-gray-800">{subject.name}</span>
+                </div>
               ))}
             </div>
           </Container>
         </section>
 
         {/* CTA */}
-        <section className="bg-primary-700 py-12 text-white sm:py-14">
-          <Container>
-            <div className="text-center">
-              <h2 className="font-josefin text-2xl font-bold sm:text-3xl">
-                Start Your Child&apos;s Journey
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-primary-100 sm:text-base">
-                Give your child a strong foundation for future learning and success.
-              </p>
-              <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-                <a
-                  href="/admission"
-                  className="rounded-lg bg-white px-6 py-2.5 text-sm font-semibold text-primary-700 transition hover:bg-gray-100"
-                >
-                  Apply Now
-                </a>
-                <a
-                  href="/contact"
-                  className="rounded-lg border border-white/80 px-6 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10"
-                >
-                  Contact Us
-                </a>
-              </div>
+        <section className="relative overflow-hidden bg-gradient-to-r from-primary-700 via-primary-600 to-primary-700 py-14 text-white sm:py-16">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),transparent_70%)]" />
+          <Container className="relative text-center">
+            <h2 className="font-josefin text-3xl font-bold sm:text-4xl">
+              Begin Your Child&apos;s Learning Journey
+            </h2>
+            <p className="mx-auto mt-4 max-w-lg text-primary-100">
+              Join our Montessori program and give your child the best start in education.
+            </p>
+            <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
+              <Link href="/admission" className="btn-accent inline-flex justify-center">
+                Apply for Admission
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex items-center justify-center rounded-lg border-2 border-white/80 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Contact Us
+              </Link>
             </div>
           </Container>
         </section>
