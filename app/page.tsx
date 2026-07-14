@@ -65,10 +65,6 @@ const AnnualDistributionCeremony = dynamic(() => import('@/components/home/Annua
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
 
-const HonorableFounders = dynamic(() => import('@/components/home/HonorableFounders'), {
-  loading: () => <SkeletonLoader variant="section" className="my-8" />
-})
-
 const GrowthOverYears = dynamic(() => import('@/components/home/GrowthOverYears'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
@@ -171,11 +167,6 @@ export default function Home() {
       {/* Annual Distribution Ceremony */}
       <ErrorBoundary>
         <AnnualDistributionCeremony />
-      </ErrorBoundary>
-      
-      {/* Our Honorable Founders */}
-      <ErrorBoundary>
-        <HonorableFounders />
       </ErrorBoundary>
       
       {/* Growth Over Years */}
