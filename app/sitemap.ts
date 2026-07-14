@@ -151,13 +151,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/academic/primary`,
+      url: `${baseUrl}/academic/primary-wing`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/academic/matric`,
+      url: `${baseUrl}/academic/boys-middle-wing`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/academic/boys-senior-wing`,
+      lastModified: currentDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/academic/girls-wing`,
       lastModified: currentDate,
       changeFrequency: 'monthly' as const,
       priority: 0.7,

@@ -126,18 +126,34 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
-                  href="/academic/primary" 
+                  href="/academic/primary-wing" 
                   className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
                 >
-                  Primary
+                  Primary Wing
                 </Link>
               </li>
               <li>
                 <Link 
-                  href="/academic/matric" 
+                  href="/academic/boys-middle-wing" 
                   className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
                 >
-                  Matric
+                  Boys Middle Wing
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/academic/boys-senior-wing" 
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                >
+                  Boys Senior Wing
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/academic/girls-wing" 
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                >
+                  Girls Wing
                 </Link>
               </li>
               <li>

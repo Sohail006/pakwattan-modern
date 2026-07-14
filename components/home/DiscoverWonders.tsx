@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { GraduationCap, BookOpen, Trophy } from 'lucide-react'
+import { GraduationCap, BookOpen, Trophy, Users, Heart } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
@@ -21,14 +21,26 @@ const DiscoverWonders = () => {
     {
       icon: <BookOpen className="w-12 h-12" />,
       title: 'Primary Wing',
-      href: '/academic/primary',
-      description: 'Foundation years building strong academic and character foundations'
+      href: '/academic/primary-wing',
+      description: 'Foundation years for classes 1st to 7th with core academics and character'
+    },
+    {
+      icon: <Users className="w-12 h-12" />,
+      title: 'Boys Middle Wing',
+      href: '/academic/boys-middle-wing',
+      description: 'Boys section for classes 5th to 7th preparing students for senior studies'
     },
     {
       icon: <Trophy className="w-12 h-12" />,
-      title: 'High School and College Wing',
-      href: '/academic/matric',
-      description: 'Advanced education preparing students for higher studies and careers'
+      title: 'Boys Senior Wing',
+      href: '/academic/boys-senior-wing',
+      description: 'Boys education from 8th class to Intermediate 2nd year'
+    },
+    {
+      icon: <Heart className="w-12 h-12" />,
+      title: 'Girls Wing',
+      href: '/academic/girls-wing',
+      description: 'Girls section from 8th class to Intermediate 2nd year'
     }
   ]
 
@@ -50,7 +62,7 @@ const DiscoverWonders = () => {
           </p>
         </div>
 
-        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-6">
           {wings.map((wing, index) => {
             const isVisible = entry?.isIntersecting
             return (

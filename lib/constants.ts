@@ -47,8 +47,10 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
       { name: 'Entry Test Result', href: '/entry-test-result' },
       { name: 'Yearly Academic Schedule', href: '/yearly-academic-schedule' },
       { name: 'Montessori', href: '/academic/montessori' },
-      { name: 'Primary', href: '/academic/primary' },
-      { name: 'Matric', href: '/academic/matric' },
+      { name: 'Primary Wing', href: '/academic/primary-wing' },
+      { name: 'Boys Middle Wing', href: '/academic/boys-middle-wing' },
+      { name: 'Boys Senior Wing', href: '/academic/boys-senior-wing' },
+      { name: 'Girls Wing', href: '/academic/girls-wing' },
     ]
   },
   { name: 'School Life', href: '/school-life' },
