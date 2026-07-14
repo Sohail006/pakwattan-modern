@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Users, Heart, BookOpen, Trophy, Globe, Shield, Calendar } from 'lucide-react'
 
 const StudentLife = () => {
@@ -183,9 +184,12 @@ const StudentLife = () => {
             Become part of the Pak Wattan family and experience a transformative educational journey that will shape your future.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-primary-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300">
+            <Link
+              href="/admission"
+              className="inline-flex items-center justify-center bg-white text-primary-600 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-colors duration-300"
+            >
               Apply Now
-            </button>
+            </Link>
             <button className="border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-colors duration-300">
               Learn More
             </button>
