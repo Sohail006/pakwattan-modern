@@ -96,14 +96,14 @@ const Footer = () => {
           </div>
 
           {/* Quick Links */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-2 sm:space-y-3">
             <h4 className="text-base sm:text-lg font-semibold text-white">Quick Links</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-0.5">
               {MAIN_NAVIGATION.slice(0, 5).map((item) => (
                 <li key={item.name}>
                   <Link 
                     href={item.href} 
-                    className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                    className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                   >
                     {item.name}
                   </Link>
@@ -113,13 +113,13 @@ const Footer = () => {
           </div>
 
           {/* Academic Links */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-2 sm:space-y-3">
             <h4 className="text-base sm:text-lg font-semibold text-white">Academic</h4>
-            <ul className="space-y-2">
+            <ul className="space-y-0.5">
               <li>
                 <Link 
                   href="/academic/montessori" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Montessori
                 </Link>
@@ -127,7 +127,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/academic/primary-wing" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Primary Wing
                 </Link>
@@ -135,7 +135,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/academic/boys-middle-wing" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Boys Middle Wing
                 </Link>
@@ -143,7 +143,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/academic/boys-senior-wing" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Boys Senior Wing
                 </Link>
@@ -151,7 +151,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/academic/girls-wing" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Girls Wing
                 </Link>
@@ -159,7 +159,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/talent-hunt" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Talent Hunt
                 </Link>
@@ -167,7 +167,7 @@ const Footer = () => {
               <li>
                 <Link 
                   href="/awards" 
-                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-1 touch-target min-h-[44px] flex items-center"
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >
                   Awards
                 </Link>
@@ -176,13 +176,13 @@ const Footer = () => {
           </div>
 
           {/* Contact Info */}
-          <div className="space-y-3 sm:space-y-4">
+          <div className="space-y-2 sm:space-y-3">
             <h4 className="text-base sm:text-lg font-semibold text-white">Contact Info</h4>
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               <div className="flex items-start space-x-3">
-                <MapPin className="w-5 h-5 text-primary-400 mt-1 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-primary-400 mt-0.5 flex-shrink-0" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-secondary-300 text-xs sm:text-sm break-words">
+                  <p className="text-secondary-300 text-xs sm:text-sm break-words leading-snug">
                     {address}
                   </p>
                 </div>
@@ -191,7 +191,7 @@ const Footer = () => {
                 <PhoneCall className="w-5 h-5 text-primary-400 flex-shrink-0" aria-hidden />
                 <a 
                   href={telHref}
-                  className="text-secondary-300 hover:text-white transition-colors text-sm sm:text-base touch-target min-h-[44px] flex items-center break-all"
+                  className="text-secondary-300 hover:text-white transition-colors text-sm sm:text-base break-all"
                   aria-label={`Call landline ${phone}`}
                 >
                   {phone}
@@ -201,7 +201,7 @@ const Footer = () => {
                 <Mail className="w-5 h-5 text-primary-400 flex-shrink-0" />
                 <a 
                   href={`mailto:${email}`}
-                  className="text-secondary-300 hover:text-white transition-colors text-sm sm:text-base touch-target min-h-[44px] flex items-center break-all"
+                  className="text-secondary-300 hover:text-white transition-colors text-sm sm:text-base break-all"
                 >
                   {email}
                 </a>
