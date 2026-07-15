@@ -3,9 +3,11 @@ import { api, ApiError } from './client';
 import { normalizeRoleName, userHasMenuRole } from '@/lib/roles';
 
 export interface LoginRequest {
-  email: string;
-  password: string;
-  userType?: string; // Optional: student, parent, teacher, admin
+  /** Username or email (API field name remains `email` for compatibility) */
+  email: string
+  password: string
+  /** @deprecated Ignored by API — role is taken from the account */
+  userType?: string
 }
 
 export interface GuardianInfo {
@@ -72,16 +74,16 @@ export interface RefreshTokenResponse {
 }
 
 /**
- * Login user with email and password
+ * Login with username/email and password. Role is returned from the account.
  */
 export async function login(credentials: LoginRequest): Promise<LoginResponse> {
   try {
-    // Debug: Log what we're sending (only in development)
-    if (process.env.NODE_ENV === 'development') {
-      console.log('[Auth] Login request payload:', JSON.stringify(credentials, null, 2));
+    const payload = {
+      email: credentials.email.trim(),
+      password: credentials.password,
     }
-    
-    const response = await api.post<LoginResponse>('/api/auth/login', credentials);
+
+    const response = await api.post<LoginResponse>('/api/auth/login', payload)
     
     // Store token if login successful
     if (response.token) {

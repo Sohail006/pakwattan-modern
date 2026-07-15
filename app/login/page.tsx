@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Login - Pak Wattan School & College of Sciences',
-  description: 'Login to access your account at Pak Wattan School & College of Sciences. Secure login for students, parents, and staff.',
+  description: 'Login to access your account at Pak Wattan School & College of Sciences. Secure single login with username/email and password.',
 }
 
 export default function LoginPage() {
