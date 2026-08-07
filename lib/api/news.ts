@@ -30,6 +30,21 @@ function setCache<T>(key: string, data: T) {
   newsCache.set(key, { data, timestamp: Date.now() });
 }
 
+/** Clear all cached news responses (call after create/update/delete). */
+export function clearNewsCache() {
+  newsCache.clear();
+}
+
+function normalizeNewsArray(payload: unknown): News[] {
+  if (Array.isArray(payload)) return payload as News[];
+  if (payload && typeof payload === 'object') {
+    const obj = payload as Record<string, unknown>;
+    if (Array.isArray(obj.data)) return obj.data as News[];
+    if (Array.isArray(obj.items)) return obj.items as News[];
+  }
+  return [];
+}
+
 export interface News {
   id: number;
   title: string;
@@ -76,6 +91,8 @@ export interface PaginatedNewsParams {
   pageSize?: number;
   category?: string;
   isPublished?: boolean;
+  isFeatured?: boolean;
+  isInMarquee?: boolean;
   search?: string;
   sortBy?: 'date' | 'title' | 'displayOrder';
   sortOrder?: 'asc' | 'desc';
@@ -99,6 +116,8 @@ export async function getNews(params?: PaginatedNewsParams): Promise<PaginatedNe
     if (params?.pageSize) queryParams.append('pageSize', params.pageSize.toString());
     if (params?.category) queryParams.append('category', params.category);
     if (params?.isPublished !== undefined) queryParams.append('isPublished', params.isPublished.toString());
+    if (params?.isFeatured !== undefined) queryParams.append('isFeatured', params.isFeatured.toString());
+    if (params?.isInMarquee !== undefined) queryParams.append('isInMarquee', params.isInMarquee.toString());
     if (params?.search) queryParams.append('search', params.search);
     if (params?.sortBy) queryParams.append('sortBy', params.sortBy);
     if (params?.sortOrder) queryParams.append('sortOrder', params.sortOrder);
@@ -180,19 +199,21 @@ export async function getFeaturedNews(limit: number = 5): Promise<News[]> {
 }
 
 /**
- * Get marquee news items
+ * Get marquee news items (homepage top ticker).
+ * Does not use long-lived cache so dashboard Marquee changes appear quickly.
+ * Defensively filters to published + isInMarquee only.
  */
 export async function getMarqueeNews(limit: number = 10): Promise<News[]> {
   try {
     const path = `/api/news/marquee?limit=${limit}`;
-    const cacheKey = getCacheKey(path);
+    const result = await api.get<unknown>(path);
+    const items = normalizeNewsArray(result);
 
-    const cached = getFromCache<News[]>(cacheKey);
-    if (cached) return cached;
-
-    const result = await api.get<News[]>(path);
-    setCache(cacheKey, result);
-    return result;
+    return items.filter((item) => {
+      const published = item.isPublished === true || (item as { IsPublished?: boolean }).IsPublished === true;
+      const inMarquee = item.isInMarquee === true || (item as { IsInMarquee?: boolean }).IsInMarquee === true;
+      return published && inMarquee;
+    });
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load marquee news. Please try again.');
@@ -204,7 +225,9 @@ export async function getMarqueeNews(limit: number = 10): Promise<News[]> {
  */
 export async function createNews(data: CreateNewsRequest): Promise<News> {
   try {
-    return await api.post<News>('/api/news', data);
+    const created = await api.post<News>('/api/news', data);
+    clearNewsCache();
+    return created;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to create news item. Please check your input and try again.');
@@ -217,7 +240,9 @@ export async function createNews(data: CreateNewsRequest): Promise<News> {
 export async function updateNews(data: UpdateNewsRequest): Promise<News> {
   try {
     const { id, ...updateData } = data;
-    return await api.put<News>(`/api/news/${id}`, updateData);
+    const updated = await api.put<News>(`/api/news/${id}`, updateData);
+    clearNewsCache();
+    return updated;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to update news item. Please check your input and try again.');
@@ -230,6 +255,7 @@ export async function updateNews(data: UpdateNewsRequest): Promise<News> {
 export async function deleteNews(id: number): Promise<void> {
   try {
     await api.delete(`/api/news/${id}`);
+    clearNewsCache();
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to delete news item. Please try again.');
@@ -262,6 +288,7 @@ export async function uploadNewsImage(file: File): Promise<string> {
 export async function bulkDeleteNews(ids: number[]): Promise<void> {
   try {
     await api.post('/api/news/bulk-delete', { ids });
+    clearNewsCache();
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to delete news items. Please try again.');
@@ -269,11 +296,15 @@ export async function bulkDeleteNews(ids: number[]): Promise<void> {
 }
 
 /**
- * Bulk update news items (publish/unpublish)
+ * Bulk update news items (publish / featured / marquee / category)
  */
-export async function bulkUpdateNews(ids: number[], updates: { isPublished?: boolean; category?: string }): Promise<void> {
+export async function bulkUpdateNews(
+  ids: number[],
+  updates: { isPublished?: boolean; isFeatured?: boolean; isInMarquee?: boolean; category?: string }
+): Promise<void> {
   try {
     await api.post('/api/news/bulk-update', { ids, ...updates });
+    clearNewsCache();
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to update news items. Please try again.');

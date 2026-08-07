@@ -339,14 +339,19 @@ export default function NewsForm({ news, mode, onClose, onSuccess }: NewsFormPro
               <span className="text-sm font-medium text-gray-700">Featured News</span>
             </label>
 
-            <label className="flex items-center space-x-3 cursor-pointer">
+            <label className="flex items-start space-x-3 cursor-pointer rounded-xl border border-secondary-200 bg-secondary-50/80 p-3">
               <input
                 type="checkbox"
                 checked={formData.isInMarquee}
                 onChange={(e) => handleInputChange('isInMarquee', e.target.checked)}
-                className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+                className="mt-0.5 w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
               />
-              <span className="text-sm font-medium text-gray-700">Show in Top Marquee</span>
+              <span className="text-sm text-gray-700">
+                <span className="font-semibold text-gray-900">Show in Top Marquee</span>
+                <span className="mt-0.5 block text-xs text-gray-500">
+                  Only check this for short ticker headlines on the homepage. Leave off for regular news articles.
+                </span>
+              </span>
             </label>
           </div>
 

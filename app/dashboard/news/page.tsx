@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
 import { News } from '@/lib/api/news'
-import { Plus, Loader2, AlertCircle, Newspaper, CheckCircle } from 'lucide-react'
+import { Plus, Loader2, AlertCircle, Newspaper, CheckCircle, Megaphone } from 'lucide-react'
 import NewsTable from '@/components/news/NewsTable'
 import NewsForm from '@/components/news/NewsForm'
 
@@ -13,13 +13,12 @@ export default function NewsPage() {
   const router = useRouter()
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [authError, setAuthError] = useState<string | null>(null)
-  
+
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingNews, setEditingNews] = useState<News | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const [success, setSuccess] = useState<string | null>(null)
 
-  // Check authentication and authorization
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -28,7 +27,6 @@ export default function NewsPage() {
           return
         }
 
-        // Permission-based check (with role fallback for backward compatibility)
         const hasAccess = canPerform(PERMISSIONS.NEWS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
 
         if (!hasAccess) {
@@ -44,8 +42,6 @@ export default function NewsPage() {
 
     checkAuth()
   }, [router])
-
-  // Permission checks are handled in NewsTable component
 
   const handleAddNew = () => {
     setEditingNews(null)
@@ -65,36 +61,38 @@ export default function NewsPage() {
   const handleFormSuccess = (message?: string) => {
     if (message) {
       setSuccess(message)
-      setTimeout(() => setSuccess(null), 3000)
+      setTimeout(() => setSuccess(null), 3500)
     }
-    setRefreshKey(prev => prev + 1)
+    setRefreshKey((prev) => prev + 1)
     handleFormClose()
   }
 
   const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1)
+    setRefreshKey((prev) => prev + 1)
   }
 
   if (checkingAuth) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-600" aria-hidden />
+        <span className="sr-only">Loading news management</span>
       </div>
     )
   }
 
   if (authError) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-          <div className="flex items-center space-x-3 mb-4">
-            <AlertCircle className="w-8 h-8 text-red-500" />
-            <h2 className="text-xl font-bold text-gray-900">Access Denied</h2>
+      <div className="flex min-h-[50vh] items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-2xl border border-red-100 bg-white p-6 sm:p-8 shadow-sm">
+          <div className="mb-4 flex items-center gap-3">
+            <AlertCircle className="h-7 w-7 text-red-500" aria-hidden />
+            <h2 className="text-xl font-bold text-secondary-900">Access Denied</h2>
           </div>
-          <p className="text-gray-600 mb-6">{authError}</p>
+          <p className="mb-6 text-secondary-600">{authError}</p>
           <button
+            type="button"
             onClick={() => router.push('/dashboard/admin')}
-            className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            className="w-full min-h-[44px] rounded-xl bg-primary-700 px-4 py-2.5 font-semibold text-white hover:bg-primary-600"
           >
             Go to Dashboard
           </button>
@@ -103,48 +101,67 @@ export default function NewsPage() {
     )
   }
 
+  const canCreate = canPerform(PERMISSIONS.NEWS_CREATE, ['Admin', 'Staff', 'ManagerialStaff'])
+  const canUpdate = canPerform(PERMISSIONS.NEWS_UPDATE, ['Admin', 'Staff', 'ManagerialStaff'])
+
   return (
-    <div className="space-y-6">
-      {/* Success Message */}
+    <div className="space-y-5 sm:space-y-6 pb-8">
       {success && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center space-x-3">
-          <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
-          <p className="text-green-700 text-sm">{success}</p>
+        <div
+          className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3"
+          role="status"
+        >
+          <CheckCircle className="mt-0.5 h-5 w-5 shrink-0 text-green-600" aria-hidden />
+          <p className="text-sm text-green-800">{success}</p>
         </div>
       )}
 
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-primary-100 rounded-lg">
-              <Newspaper className="w-6 h-6 text-primary-600" />
+      <header className="overflow-hidden rounded-2xl border border-secondary-100 bg-white shadow-sm">
+        <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex items-start gap-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-700">
+              <Newspaper className="h-6 w-6" aria-hidden />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">News Management</h1>
-              <p className="text-sm text-gray-500 mt-1">Manage news items and announcements</p>
+              <h1 className="font-josefin text-2xl font-bold text-secondary-900 sm:text-3xl">
+                News Management
+              </h1>
+              <p className="mt-1 text-sm text-secondary-600">
+                Create announcements, control publish status, and choose what scrolls in the homepage
+                marquee.
+              </p>
             </div>
           </div>
-          {canPerform(PERMISSIONS.NEWS_CREATE, ['Admin', 'Staff', 'ManagerialStaff']) && (
+          {canCreate && (
             <button
+              type="button"
               onClick={handleAddNew}
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors flex items-center space-x-2"
+              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white hover:bg-primary-600"
             >
-              <Plus className="w-5 h-5" />
-              <span>Add News</span>
+              <Plus className="h-5 w-5" aria-hidden />
+              Add News
             </button>
           )}
         </div>
-      </div>
 
-      {/* News Table */}
-      <NewsTable 
+        <div className="border-t border-secondary-100 bg-primary-50/60 px-5 py-3 sm:px-6">
+          <p className="flex items-start gap-2 text-xs sm:text-sm text-primary-900">
+            <Megaphone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+            <span>
+              <strong>Marquee tip:</strong> Only news with <em>Show in Top Marquee</em> checked (and
+              Published) appear in the yellow homepage ticker. Use the Marquee filter below to review
+              and toggle those items quickly.
+            </span>
+          </p>
+        </div>
+      </header>
+
+      <NewsTable
         key={refreshKey}
-        onEdit={canPerform(PERMISSIONS.NEWS_UPDATE, ['Admin', 'Staff', 'ManagerialStaff']) ? handleEdit : undefined}
+        onEdit={canUpdate ? handleEdit : undefined}
         onRefresh={handleRefresh}
       />
 
-      {/* News Form Modal */}
       {isFormOpen && (
         <NewsForm
           news={editingNews}
@@ -156,4 +173,3 @@ export default function NewsPage() {
     </div>
   )
 }
-

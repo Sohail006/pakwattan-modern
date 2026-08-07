@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import { Edit, Trash2, Loader2, Search, X, Filter, Calendar, Image as ImageIcon, CheckSquare, Square, Trash, Eye, EyeOff } from 'lucide-react'
-import { News, getNews, deleteNews, bulkDeleteNews, bulkUpdateNews, PaginatedNewsParams } from '@/lib/api/news'
+import { Edit, Trash2, Loader2, Search, X, Filter, Calendar, Image as ImageIcon, CheckSquare, Square, Trash, Eye, EyeOff, Megaphone } from 'lucide-react'
+import { News, getNews, deleteNews, bulkDeleteNews, bulkUpdateNews, updateNews, PaginatedNewsParams } from '@/lib/api/news'
 import { formatDate } from '@/lib/utils'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import Image from 'next/image'
@@ -43,6 +43,8 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [publishedFilter, setPublishedFilter] = useState<string>('all') // 'all', 'published', 'draft'
+  const [marqueeFilter, setMarqueeFilter] = useState<string>('all') // 'all', 'marquee', 'not-marquee'
+  const [togglingId, setTogglingId] = useState<number | null>(null)
   
   // Bulk selection state
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
@@ -83,6 +85,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
         search: debouncedSearchTerm || undefined,
         category: selectedCategory || undefined,
         isPublished: publishedFilter === 'all' ? undefined : publishedFilter === 'published',
+        isInMarquee: marqueeFilter === 'all' ? undefined : marqueeFilter === 'marquee',
         sortBy: 'date',
         sortOrder: 'desc'
       }
@@ -96,7 +99,7 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
     } finally {
       setLoading(false)
     }
-  }, [page, pageSize, debouncedSearchTerm, selectedCategory, publishedFilter])
+  }, [page, pageSize, debouncedSearchTerm, selectedCategory, publishedFilter, marqueeFilter])
 
   useEffect(() => {
     loadNews()
@@ -144,6 +147,39 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
       setError(err instanceof Error ? err.message : `Unable to ${publish ? 'publish' : 'unpublish'} news items.`)
     } finally {
       setBulkLoading(false)
+    }
+  }
+
+  const handleBulkMarquee = async (inMarquee: boolean) => {
+    if (selectedIds.size === 0) return
+
+    try {
+      setBulkLoading(true)
+      await bulkUpdateNews(Array.from(selectedIds), { isInMarquee: inMarquee })
+      setSelectedIds(new Set())
+      loadNews()
+      onRefresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Unable to update marquee settings.`)
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleToggleMarquee = async (item: News) => {
+    try {
+      setTogglingId(item.id)
+      setError(null)
+      await updateNews({
+        id: item.id,
+        isInMarquee: !item.isInMarquee,
+      })
+      loadNews()
+      onRefresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unable to update marquee setting.')
+    } finally {
+      setTogglingId(null)
     }
   }
 
@@ -211,6 +247,26 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
               <span className="hidden sm:inline">Unpublish</span>
             </button>
             <button
+              type="button"
+              onClick={() => handleBulkMarquee(true)}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center space-x-2 text-sm touch-target min-h-[44px]"
+              title="Add selected to homepage marquee"
+            >
+              <Megaphone className="w-4 h-4" />
+              <span className="hidden sm:inline">To Marquee</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleBulkMarquee(false)}
+              disabled={bulkLoading}
+              className="px-3 sm:px-4 py-2 bg-slate-500 text-white rounded-lg hover:bg-slate-600 transition-colors disabled:opacity-50 flex items-center space-x-2 text-sm touch-target min-h-[44px]"
+              title="Remove selected from homepage marquee"
+            >
+              <Megaphone className="w-4 h-4 opacity-60" />
+              <span className="hidden sm:inline">Clear Marquee</span>
+            </button>
+            <button
               onClick={() => setDeleteConfirm({
                 isOpen: true,
                 newsId: null,
@@ -236,23 +292,26 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
       )}
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 sm:p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-secondary-100 p-3 sm:p-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+            <label htmlFor="news-table-search" className="sr-only">Search news</label>
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" aria-hidden />
             <input
-              type="text"
+              id="news-table-search"
+              type="search"
               placeholder="Search news..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
+              className="w-full pl-9 sm:pl-10 pr-9 sm:pr-10 py-2.5 sm:py-2 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
             />
             {searchTerm && (
               <button
+                type="button"
                 onClick={() => {
                   setSearchTerm('')
                   setPage(1)
@@ -267,14 +326,16 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
 
           {/* Category Filter */}
           <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 pointer-events-none" />
+            <label htmlFor="news-category-filter" className="sr-only">Filter by category</label>
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5 pointer-events-none" aria-hidden />
             <select
+              id="news-category-filter"
               value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value)
                 setPage(1)
               }}
-              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white min-h-[44px]"
+              className="w-full pl-9 sm:pl-10 pr-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none bg-white min-h-[44px]"
             >
               <option value="">All Categories</option>
               {NEWS_CATEGORIES.map((cat) => (
@@ -286,18 +347,38 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
           </div>
 
           {/* Published Filter */}
-          <div className="sm:col-span-2 lg:col-span-1">
+          <div>
+            <label htmlFor="news-published-filter" className="sr-only">Filter by publish status</label>
             <select
+              id="news-published-filter"
               value={publishedFilter}
               onChange={(e) => {
                 setPublishedFilter(e.target.value)
                 setPage(1)
               }}
-              className="w-full px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
+              className="w-full px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
             >
               <option value="all">All Status</option>
               <option value="published">Published</option>
               <option value="draft">Draft</option>
+            </select>
+          </div>
+
+          {/* Marquee Filter */}
+          <div>
+            <label htmlFor="news-marquee-filter" className="sr-only">Filter by marquee</label>
+            <select
+              id="news-marquee-filter"
+              value={marqueeFilter}
+              onChange={(e) => {
+                setMarqueeFilter(e.target.value)
+                setPage(1)
+              }}
+              className="w-full px-4 py-2.5 sm:py-2 text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent min-h-[44px]"
+            >
+              <option value="all">All Marquee</option>
+              <option value="marquee">In Marquee only</option>
+              <option value="not-marquee">Not in Marquee</option>
             </select>
           </div>
         </div>
@@ -454,6 +535,24 @@ export default function NewsTable({ onEdit, onRefresh }: NewsTableProps) {
                       </td>
                       <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-1 sm:space-x-2">
+                          <button
+                            type="button"
+                            onClick={() => handleToggleMarquee(item)}
+                            disabled={togglingId === item.id}
+                            className={`p-1.5 sm:p-2 rounded-lg transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center disabled:opacity-50 ${
+                              item.isInMarquee
+                                ? 'text-blue-700 bg-blue-50 hover:bg-blue-100'
+                                : 'text-secondary-500 hover:text-blue-700 hover:bg-blue-50'
+                            }`}
+                            title={item.isInMarquee ? 'Remove from marquee' : 'Add to marquee'}
+                            aria-label={item.isInMarquee ? 'Remove from homepage marquee' : 'Add to homepage marquee'}
+                          >
+                            {togglingId === item.id ? (
+                              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                            ) : (
+                              <Megaphone className="w-4 h-4 sm:w-5 sm:h-5" />
+                            )}
+                          </button>
                           <button
                             onClick={() => onEdit?.(item)}
                             className="text-primary-600 hover:text-primary-900 active:text-primary-800 p-1.5 sm:p-2 rounded-lg hover:bg-primary-50 active:bg-primary-100 transition-colors touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
