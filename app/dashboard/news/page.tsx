@@ -127,8 +127,7 @@ export default function NewsPage() {
                 News Management
               </h1>
               <p className="mt-1 text-sm text-secondary-600">
-                Create announcements, control publish status, and choose what scrolls in the homepage
-                marquee.
+                Manage news items and announcements — filter by Published, Featured, and Top Marquee.
               </p>
             </div>
           </div>
