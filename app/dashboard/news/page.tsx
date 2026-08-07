@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
-import { News } from '@/lib/api/news'
+import { News, unmarkLegacyMarqueeNews } from '@/lib/api/news'
 import { Plus, Loader2, AlertCircle, Newspaper, CheckCircle, Megaphone } from 'lucide-react'
 import NewsTable from '@/components/news/NewsTable'
 import NewsForm from '@/components/news/NewsForm'
@@ -13,11 +13,13 @@ export default function NewsPage() {
   const router = useRouter()
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [authError, setAuthError] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
 
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingNews, setEditingNews] = useState<News | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const [success, setSuccess] = useState<string | null>(null)
+  const [clearingLegacy, setClearingLegacy] = useState(false)
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -71,6 +73,30 @@ export default function NewsPage() {
     setRefreshKey((prev) => prev + 1)
   }
 
+  const handleClearLegacyMarquee = async () => {
+    if (
+      !confirm(
+        'Remove old static ticker items (e.g. Umama Hafeez Marks) from the homepage marquee? News records stay; only the Marquee flag is turned off.'
+      )
+    ) {
+      return
+    }
+
+    setClearingLegacy(true)
+    setActionError(null)
+    try {
+      const result = await unmarkLegacyMarqueeNews()
+      setSuccess(result.message)
+      setTimeout(() => setSuccess(null), 5000)
+      setRefreshKey((prev) => prev + 1)
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Failed to clear legacy marquee items.')
+      setTimeout(() => setActionError(null), 5000)
+    } finally {
+      setClearingLegacy(false)
+    }
+  }
+
   if (checkingAuth) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center">
@@ -116,6 +142,16 @@ export default function NewsPage() {
         </div>
       )}
 
+      {actionError && (
+        <div
+          className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3"
+          role="alert"
+        >
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" aria-hidden />
+          <p className="text-sm text-red-800">{actionError}</p>
+        </div>
+      )}
+
       <header className="overflow-hidden rounded-2xl border border-secondary-100 bg-white shadow-sm">
         <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
           <div className="flex items-start gap-4">
@@ -131,16 +167,33 @@ export default function NewsPage() {
               </p>
             </div>
           </div>
-          {canCreate && (
-            <button
-              type="button"
-              onClick={handleAddNew}
-              className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white hover:bg-primary-600"
-            >
-              <Plus className="h-5 w-5" aria-hidden />
-              Add News
-            </button>
-          )}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            {canUpdate && (
+              <button
+                type="button"
+                onClick={handleClearLegacyMarquee}
+                disabled={clearingLegacy}
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-amber-300 bg-amber-50 px-4 py-2.5 text-sm font-semibold text-amber-900 hover:bg-amber-100 disabled:opacity-60"
+              >
+                {clearingLegacy ? (
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                ) : (
+                  <Megaphone className="h-4 w-4" aria-hidden />
+                )}
+                Clear old static ticker
+              </button>
+            )}
+            {canCreate && (
+              <button
+                type="button"
+                onClick={handleAddNew}
+                className="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 font-semibold text-white hover:bg-primary-600"
+              >
+                <Plus className="h-5 w-5" aria-hidden />
+                Add News
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="border-t border-secondary-100 bg-primary-50/60 px-5 py-3 sm:px-6">
@@ -148,8 +201,8 @@ export default function NewsPage() {
             <Megaphone className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
             <span>
               <strong>Marquee tip:</strong> Only news with <em>Show in Top Marquee</em> checked (and
-              Published) appear in the yellow homepage ticker. Use the Marquee filter below to review
-              and toggle those items quickly.
+              Published) appear in the yellow homepage ticker. If you still see old seeded items
+              (e.g. Umama Hafeez Marks), use <em>Clear old static ticker</em> once after deploying the API.
             </span>
           </p>
         </div>

@@ -311,3 +311,20 @@ export async function bulkUpdateNews(
   }
 }
 
+/**
+ * Turn off marquee for news matching the old static ticker seed titles.
+ * Keeps the records; only removes them from the homepage marquee.
+ */
+export async function unmarkLegacyMarqueeNews(): Promise<{ unmarked: number; message: string }> {
+  try {
+    const result = await api.post<{ unmarked: number; message: string }>(
+      '/api/news/unmark-legacy-marquee'
+    );
+    clearNewsCache();
+    return result;
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to clear legacy marquee items. Please try again.');
+  }
+}
+

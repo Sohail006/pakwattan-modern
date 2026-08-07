@@ -196,18 +196,9 @@ export const EVENTS_DATA: Event[] = [
   }
 ]
 
-// News Marquee Data
-export const NEWS_MARQUEE_ITEMS = [
-  '🏆 Once again, honored to top the Havelian Circle',
-  '🎓 FSC 2025 Abbottabad Board Results Congratulations to the Havelian Circle Topper!',
-  '🥇 Qasim Zaib | 202835 | Marks: 1035 (Pak Wattan Boys Wing) Overall First Position in the Havelian Circle in HSSC (Boys) Board Results 2024, Computer Science Group',
-  '🥇 Umme Habiba | Marks:534| Overall First Position in the Havelian Circle in HSSC Part-I Board Results 2025, Pre Medical Group',
-  '🥇 Rashail Waheed |Marks: 524| (Overall First Position in HSSC-Part 1 (Pre-Engeneering Group) Board Results 2024',
-  '🥇 Toheed Ahmed |Marks: 528| 1st Position in the Computer Science Group (Havelian Circle)',
-  '🥈 Haleema Waqar | Marks: 1135 | (Pak Wattan Girls Campus) 2nd Position in the Pre-Medical Group (Overall in Havelian Circle) in HSSC',
-  '🏅 Laiba Ashraf Marks | 1103 |',
-  '🏅 Umama Hafeez Marks | 1103 |'
-]
+// News Marquee is managed only via dashboard flag IsInMarquee (API).
+// The old static ticker list was removed so migrate/seed cannot re-add
+// items like "Umama Hafeez Marks | 1103 |" to the homepage marquee.
 
 // Helper function to parse date string and create ISO date for sorting
 const parseDate = (dateStr: string): string => {

@@ -6,7 +6,6 @@ import { isAuthenticated, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
 import { NEWS_ITEMS } from '@/lib/constants'
 import { EVENTS_DATA } from '@/lib/constants'
-import { NEWS_MARQUEE_ITEMS } from '@/lib/constants'
 import { createNews, CreateNewsRequest } from '@/lib/api/news'
 import { createEvent, CreateEventRequest } from '@/lib/api/events'
 import { Loader2, AlertCircle, CheckCircle, Database, FileText, Calendar } from 'lucide-react'
@@ -97,17 +96,14 @@ export default function MigrateNewsEventsPage() {
   const [migrating, setMigrating] = useState(false)
   const [progress, setProgress] = useState({
     news: { total: 0, completed: 0, failed: 0 },
-    events: { total: 0, completed: 0, failed: 0 },
-    marquee: { total: 0, completed: 0, failed: 0 }
+    events: { total: 0, completed: 0, failed: 0 }
   })
   const [results, setResults] = useState<{
     news: Array<{ title: string; status: 'success' | 'failed'; error?: string }>
     events: Array<{ title: string; status: 'success' | 'failed'; error?: string }>
-    marquee: Array<{ title: string; status: 'success' | 'failed'; error?: string }>
   }>({
     news: [],
-    events: [],
-    marquee: []
+    events: []
   })
   const [completed, setCompleted] = useState(false)
 
@@ -245,80 +241,22 @@ export default function MigrateNewsEventsPage() {
     return eventResults
   }
 
-  const migrateMarquee = async () => {
-    const marqueeResults: Array<{ title: string; status: 'success' | 'failed'; error?: string }> = []
-    let completed = 0
-    let failed = 0
-
-    for (const item of NEWS_MARQUEE_ITEMS) {
-      try {
-        // Convert marquee string to news item
-        // Extract title (remove emoji and take first part)
-        const title = item.replace(/^[^\w\s]+/, '').trim().substring(0, 500)
-        const slug = title
-          .toLowerCase()
-          .replace(/[^\w\s-]/g, '')
-          .replace(/[\s_-]+/g, '-')
-          .replace(/^-+|-+$/g, '')
-          .substring(0, 500)
-
-        const newsData: CreateNewsRequest = {
-          title: title || 'Marquee News Item',
-          slug: slug || `marquee-${Date.now()}`,
-          description: item.substring(0, 2000),
-          category: 'Announcements',
-          date: new Date().toISOString(),
-          isPublished: true,
-          isFeatured: false,
-          isInMarquee: true, // Mark as marquee news
-          displayOrder: 0
-        }
-
-        await createNews(newsData)
-        completed++
-        marqueeResults.push({ title: title || 'Marquee Item', status: 'success' })
-        setProgress(prev => ({
-          ...prev,
-          marquee: { total: NEWS_MARQUEE_ITEMS.length, completed, failed }
-        }))
-      } catch (error) {
-        failed++
-        const errorMsg = error instanceof Error ? error.message : 'Unknown error'
-        marqueeResults.push({ title: item.substring(0, 50), status: 'failed', error: errorMsg })
-        setProgress(prev => ({
-          ...prev,
-          marquee: { total: NEWS_MARQUEE_ITEMS.length, completed, failed }
-        }))
-      }
-    }
-
-    return marqueeResults
-  }
-
   const handleMigrate = async () => {
     setMigrating(true)
     setProgress({
       news: { total: NEWS_ITEMS.length, completed: 0, failed: 0 },
-      events: { total: EVENTS_DATA.length, completed: 0, failed: 0 },
-      marquee: { total: NEWS_MARQUEE_ITEMS.length, completed: 0, failed: 0 }
+      events: { total: EVENTS_DATA.length, completed: 0, failed: 0 }
     })
-    setResults({ news: [], events: [], marquee: [] })
+    setResults({ news: [], events: [] })
     setCompleted(false)
 
     try {
-      // Migrate News Items
       const newsResults = await migrateNews()
-      
-      // Migrate Events
       const eventResults = await migrateEvents()
-      
-      // Migrate Marquee Items
-      const marqueeResults = await migrateMarquee()
 
       setResults({
         news: newsResults,
-        events: eventResults,
-        marquee: marqueeResults
+        events: eventResults
       })
       setCompleted(true)
     } catch (error) {
@@ -328,9 +266,9 @@ export default function MigrateNewsEventsPage() {
     }
   }
 
-  const totalItems = NEWS_ITEMS.length + EVENTS_DATA.length + NEWS_MARQUEE_ITEMS.length
-  const totalCompleted = progress.news.completed + progress.events.completed + progress.marquee.completed
-  const totalFailed = progress.news.failed + progress.events.failed + progress.marquee.failed
+  const totalItems = NEWS_ITEMS.length + EVENTS_DATA.length
+  const totalCompleted = progress.news.completed + progress.events.completed
+  const totalFailed = progress.news.failed + progress.events.failed
 
   return (
     <div className="space-y-6 p-6">
@@ -352,7 +290,7 @@ export default function MigrateNewsEventsPage() {
       {/* Summary */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Migration Summary</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="flex items-center space-x-3 p-4 bg-blue-50 rounded-lg">
             <FileText className="w-5 h-5 text-blue-600" />
             <div>
@@ -367,13 +305,10 @@ export default function MigrateNewsEventsPage() {
               <p className="text-lg font-bold text-gray-900">{EVENTS_DATA.length}</p>
             </div>
           </div>
-          <div className="flex items-center space-x-3 p-4 bg-purple-50 rounded-lg">
-            <FileText className="w-5 h-5 text-purple-600" />
-            <div>
-              <p className="text-sm text-gray-600">Marquee Items</p>
-              <p className="text-lg font-bold text-gray-900">{NEWS_MARQUEE_ITEMS.length}</p>
-            </div>
-          </div>
+        </div>
+        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          Homepage marquee items are no longer migrated from a static list. Manage them in{' '}
+          <strong>News Management</strong> with the <em>Show in Top Marquee</em> flag.
         </div>
         <div className="mt-4 pt-4 border-t border-gray-200">
           <p className="text-sm text-gray-600">
@@ -416,22 +351,6 @@ export default function MigrateNewsEventsPage() {
                 <div
                   className="bg-green-600 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${(progress.events.completed / progress.events.total) * 100}%` }}
-                />
-              </div>
-            </div>
-
-            {/* Marquee Progress */}
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Marquee Items</span>
-                <span className="text-sm text-gray-600">
-                  {progress.marquee.completed} / {progress.marquee.total} ({progress.marquee.failed} failed)
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div
-                  className="bg-purple-600 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${(progress.marquee.completed / progress.marquee.total) * 100}%` }}
                 />
               </div>
             </div>
@@ -498,36 +417,6 @@ export default function MigrateNewsEventsPage() {
               </h3>
               <div className="space-y-2 max-h-60 overflow-y-auto">
                 {results.events.map((result, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-center justify-between p-2 rounded ${
-                      result.status === 'success' ? 'bg-green-50' : 'bg-red-50'
-                    }`}
-                  >
-                    <div className="flex items-center space-x-2">
-                      {result.status === 'success' ? (
-                        <CheckCircle className="w-4 h-4 text-green-600" />
-                      ) : (
-                        <AlertCircle className="w-4 h-4 text-red-600" />
-                      )}
-                      <span className="text-sm text-gray-700">{result.title}</span>
-                    </div>
-                    {result.error && (
-                      <span className="text-xs text-red-600">{result.error}</span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Marquee Results */}
-            <div>
-              <h3 className="text-md font-semibold text-gray-800 mb-3 flex items-center">
-                <FileText className="w-4 h-4 mr-2" />
-                Marquee Items ({progress.marquee.completed} successful, {progress.marquee.failed} failed)
-              </h3>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {results.marquee.map((result, index) => (
                   <div
                     key={index}
                     className={`flex items-center justify-between p-2 rounded ${
