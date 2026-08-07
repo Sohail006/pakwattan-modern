@@ -13,7 +13,7 @@ const TopNewsMarquee = () => {
     const fetchMarqueeNews = async () => {
       try {
         setLoading(true)
-        const news = await getMarqueeNews(15)
+        const news = await getMarqueeNews(50)
         // Convert news items to display strings
         const items = news.map(item => item.title)
         setMarqueeItems(items)
