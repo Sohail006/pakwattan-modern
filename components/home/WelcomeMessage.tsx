@@ -26,12 +26,12 @@ const WelcomeMessage = () => {
               </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold font-josefin animate-pulse-subtle break-words rtl:text-right" dir="rtl">
               <strong className="bg-gradient-to-r from-accent-300 to-accent-100 bg-clip-text text-transparent">
-                مسلسل پانچ سال میں پانچ مرتبہ حویلیاں سرکل ٹاپ
+                مسلسل چھ سال میں چھ مرتبہ حویلیاں سرکل ٹاپ
               </strong>
             </h2>
           </div>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed break-words px-4 sm:px-0 font-medium">
-            Five consecutive years of being the top school in Havelian Circle
+            Six consecutive years of being the top school in Havelian Circle
           </p>
         </div>
       </Container>

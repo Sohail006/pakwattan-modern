@@ -9,19 +9,24 @@ const SSCBISE2024_25 = () => {
 
   const slides = [
     {
-      title: "5th time in a row - SSC Havelian Circle's top achiever!",
-      image: "/images/ssc-results/573.jpeg",
-      description: "Celebrating our continued excellence in SSC Board Results"
+      title: "6th time in a row - SSC Havelian Circle's top achiever!",
+      image: "/images/ssc-results/harram-saleem-topper.png",
+      description: "Harram Saleem — 1st in Havelian Circle & 4th in ATD Board (9th Class)"
     },
     {
-      title: "Outstanding Performance",
-      image: "/images/ssc-results/572.jpeg", 
-      description: "Our students continue to excel in board examinations"
+      title: "Top 3 Positions in Havelian Circle",
+      image: "/images/ssc-results/grade9-girls-top3.png", 
+      description: "Grade 9 girls secure 1st, 2nd and 3rd positions in Havelian Circle"
     },
     {
-      title: "Academic Excellence",
-      image: "/images/ssc-results/570.jpeg",
-      description: "Maintaining our position as the top school in Havelian Circle"
+      title: "Outstanding Result Grade 9th (Boys)",
+      image: "/images/ssc-results/grade9-boys-outstanding.png",
+      description: "Celebrating our boys' outstanding performance in board examinations"
+    },
+    {
+      title: "Outstanding Result Grade 9th (Girls)",
+      image: "/images/ssc-results/grade9-girls-outstanding.png",
+      description: "Celebrating our girls' outstanding performance in board examinations"
     }
   ]
 
@@ -47,7 +52,7 @@ const SSCBISE2024_25 = () => {
             </span>
           </h2>
           <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto break-words">
-            5th time in a row - SSC Havelian Circle&apos;s top achiever!
+            6th time in a row - SSC Havelian Circle&apos;s top achiever!
           </p>
         </div>
 
@@ -88,16 +93,15 @@ const SSCBISE2024_25 = () => {
                       </div>
                       
                       <div className="relative">
-                        <div className="aspect-video rounded-lg sm:rounded-xl overflow-hidden shadow-lg">
+                        <div className="relative aspect-[3/4] rounded-lg sm:rounded-xl overflow-hidden shadow-lg bg-gray-100">
                           <Image
                             src={slide.image}
                             alt={slide.title}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                             sizes="(max-width: 1024px) 100vw, 50vw"
                           />
                         </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg sm:rounded-xl"></div>
                       </div>
                     </div>
                   </div>
