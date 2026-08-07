@@ -109,6 +109,7 @@ export interface ContactInfo {
   phone: string
   email: string
   address: string
+  whatsapp?: string
   socialMedia: {
     facebook: string
     youtube: string

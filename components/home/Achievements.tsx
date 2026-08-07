@@ -74,7 +74,7 @@ const Achievements = () => {
   }, [entry?.isIntersecting])
 
   return (
-    <section ref={ref} className="relative bg-gradient-to-br from-secondary-900 via-primary-900 to-accent-900 text-white py-16 overflow-hidden">
+    <section ref={ref} className="relative bg-gradient-to-br from-secondary-900 via-primary-900 to-accent-900 text-white py-10 sm:py-12 lg:py-14 overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-72 h-72 bg-accent-500/10 rounded-full blur-3xl"></div>
@@ -83,40 +83,39 @@ const Achievements = () => {
       </div>
       
       <Container className="relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12 sm:mb-16 lg:mb-20">
-          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-white/90 mb-4 sm:mb-6 shadow-lg">
+        <div className="text-center mb-8 sm:mb-10">
+          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md rounded-full px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium text-white/90 mb-3 sm:mb-4 shadow-lg">
             <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent-400 rounded-full animate-pulse"></div>
             <span>Excellence in Numbers</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold font-josefin mb-4 sm:mb-6 break-words tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin mb-3 tracking-tight">
             OUR <span className="bg-gradient-to-r from-accent-400 via-accent-500 to-accent-600 bg-clip-text text-transparent">ACHIEVEMENTS</span>
           </h2>
-          <p className="text-base sm:text-lg lg:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed break-words px-4 sm:px-0">
-            Numbers that speak for our commitment to excellence in education and student success
+          <p className="text-sm sm:text-base lg:text-lg text-white/80 max-w-2xl mx-auto leading-relaxed px-4 sm:px-0">
+            Numbers that reflect our commitment to excellence and student success
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
           {achievements.map((achievement, index) => (
             <div
               key={index}
               className="group relative"
               style={{ animationDelay: `${index * 0.1}s` }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl sm:rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-              <div className="relative bg-white/10 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border-2 border-white/20 hover:border-white/40 hover:bg-white/20 active:bg-white/15 transition-all duration-500 group-hover:scale-105 group-hover:rotate-1 active:scale-100 group-hover:shadow-2xl transform-gpu">
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-white/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+              <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20 hover:border-white/40 hover:bg-white/20 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-2xl transform-gpu">
                 <div className="text-center">
-                  <div className={`w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto mb-4 sm:mb-6 lg:mb-8 rounded-xl sm:rounded-2xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center ${achievement.color} group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-xl`}>
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl bg-gradient-to-br from-white/20 to-white/10 flex items-center justify-center ${achievement.color} group-hover:scale-110 transition-all duration-500 shadow-xl`}>
                     {achievement.icon}
                   </div>
-                  <div className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-2 sm:mb-3 text-white group-hover:text-accent-300 transition-colors duration-300 tabular-nums">
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-1 sm:mb-2 text-white group-hover:text-accent-300 transition-colors duration-300 tabular-nums">
                     {Object.values(counts)[index].toLocaleString()}
                     {achievement.countSuffix ?? ''}
                   </div>
-                  <div className="text-xs sm:text-sm lg:text-lg font-semibold text-white/90 uppercase tracking-wide group-hover:text-white transition-colors duration-300 break-words">
+                  <div className="text-[11px] sm:text-sm font-semibold text-white/90 uppercase tracking-wide">
                     {achievement.label}
                   </div>
-                  <div className="mt-4 sm:mt-6 h-0.5 sm:h-1 bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
               </div>
             </div>

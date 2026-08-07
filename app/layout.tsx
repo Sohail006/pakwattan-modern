@@ -9,6 +9,8 @@ import FontLoader from '@/components/layout/FontLoader'
 import YouTubeScript from '@/components/layout/YouTubeScript'
 import StructuredData from '@/components/seo/StructuredData'
 import BackToTop from '@/components/ui/BackToTop'
+import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp'
+import StickyApplyNow from '@/components/ui/StickyApplyNow'
 import { generateOrganizationSchema } from '@/lib/seo/structuredData'
 import { generateWebSiteSchema } from '@/lib/seo/structuredData'
 // Initialize token refresh service
@@ -147,6 +149,8 @@ export default function RootLayout({
           <ToastContainer />
           <Analytics />
           <BackToTop />
+          <FloatingWhatsApp />
+          <StickyApplyNow />
         </NotificationProvider>
       </body>
     </html>

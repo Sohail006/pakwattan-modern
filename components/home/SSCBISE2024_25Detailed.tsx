@@ -86,7 +86,7 @@ const SSCBISE2024_25Detailed = () => {
 
   return (
     <>
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-br from-yellow-50 via-primary-50 to-accent-50 relative overflow-hidden">
+      <section className="py-10 sm:py-12 lg:py-14 bg-gradient-to-br from-yellow-50 via-primary-50 to-accent-50 relative overflow-hidden">
         {/* Decorative Background Elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-200/30 rounded-full blur-3xl"></div>
@@ -95,19 +95,19 @@ const SSCBISE2024_25Detailed = () => {
 
         <Container className="px-4 sm:px-0 relative z-10">
           {/* Enhanced Header */}
-          <div className="text-center mb-10 sm:mb-12 lg:mb-16">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full px-6 sm:px-8 py-2 sm:py-3 mb-6 shadow-lg">
-              <Trophy className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
-              <span className="text-sm sm:text-base md:text-lg font-bold text-black">Top Achiever</span>
+          <div className="text-center mb-8 sm:mb-10">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-full px-5 sm:px-6 py-2 mb-4 shadow-lg">
+              <Trophy className="w-5 h-5 text-black" />
+              <span className="text-sm sm:text-base font-bold text-black">Top Achiever</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6 break-words">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-3 break-words">
               <span className="bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 bg-clip-text text-transparent">
                 6th time in a row
               </span>
               <br />
               <span className="text-secondary-800">SSC Havelian Circle&apos;s Top Achiever!</span>
             </h2>
-            <p className="text-base sm:text-lg text-secondary-600 max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-secondary-600 max-w-2xl mx-auto">
               Celebrating continued excellence and outstanding academic achievements
             </p>
           </div>
@@ -140,8 +140,8 @@ const SSCBISE2024_25Detailed = () => {
                                   alt={slide.leftAlt}
                                   fill
                                   className="object-contain transition-transform duration-500 group-hover:scale-105"
-                                  loading="eager"
-                                  priority={index === 0}
+                                  loading="lazy"
+                                  priority={false}
                                   sizes="(max-width: 1024px) 100vw, 50vw"
                                   unoptimized
                                   onError={() => setImageErrors(prev => new Set(prev).add(slide.left))}
@@ -169,8 +169,8 @@ const SSCBISE2024_25Detailed = () => {
                                   alt={slide.rightAlt}
                                   fill
                                   className="object-contain transition-transform duration-500 group-hover:scale-105"
-                                  loading="eager"
-                                  priority={index === 0}
+                                  loading="lazy"
+                                  priority={false}
                                   sizes="(max-width: 1024px) 100vw, 50vw"
                                   unoptimized
                                   onError={() => setImageErrors(prev => new Set(prev).add(slide.right))}

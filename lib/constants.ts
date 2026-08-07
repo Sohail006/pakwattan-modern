@@ -13,6 +13,7 @@ export const SCHOOL_INFO: SchoolInfo = {
     phone: '0992-811555',
     email: 'pakwattan2020@gmail.com',
     address: 'Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan',
+    whatsapp: '03348113302',
     socialMedia: {
       facebook: 'https://web.facebook.com/PAKWATTAN2020/',
       youtube: 'https://youtu.be/edf2-HxPxxs?si=Az95EFwCE2cY1UJP',
@@ -460,3 +461,100 @@ export const COMMON_CLASSES = {
     marquee: 'animate-marquee'
   }
 }
+
+/** Homepage social proof & conversion content */
+export const GOOGLE_RATING = {
+  rating: 4.9,
+  reviewCount: 180,
+  label: 'Google Reviews',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Pak+Wattan+School+College+of+Sciences+Havelian',
+}
+
+export const HOME_TESTIMONIALS = [
+  {
+    name: 'Aisha Khan',
+    role: 'Grade 10 Student',
+    quote:
+      'Pak Wattan has given me the confidence to pursue my dreams. The teachers are supportive and the environment is truly inspiring.',
+  },
+  {
+    name: 'Ahmed Ali',
+    role: 'FSc Pre-Engineering',
+    quote:
+      'From academics to activities, everything is well organized. My board results improved a lot after joining Pak Wattan.',
+  },
+  {
+    name: 'Fatima Sheikh',
+    role: 'Grade 9 Student',
+    quote:
+      'I love the sense of community here. Everyone is friendly and supportive, making learning enjoyable every day.',
+  },
+  {
+    name: 'Hassan Raza',
+    role: 'HSSC Computer Science',
+    quote:
+      'The faculty guided me step by step for board exams. Securing a top circle position was possible because of their dedication.',
+  },
+]
+
+export const PARENT_REVIEWS = [
+  {
+    name: 'Mrs. Sana Javed',
+    relation: 'Parent of Grade 8 student',
+    rating: 5,
+    quote:
+      'Transparent communication and strong discipline. We appreciate how teachers keep parents updated on progress.',
+  },
+  {
+    name: 'Mr. Imran Khan',
+    relation: 'Parent of FSc student',
+    rating: 5,
+    quote:
+      'Affordable quality education with real board results. Our daughter feels safe and motivated at campus.',
+  },
+  {
+    name: 'Mrs. Nadia Rehman',
+    relation: 'Parent of Grade 5 student',
+    rating: 5,
+    quote:
+      'From Montessori onwards, the academic foundation is excellent. Staff is cooperative and caring.',
+  },
+]
+
+export const TRUST_BADGES = [
+  { title: '6 Years Top in Circle', subtitle: 'Havelian SSC excellence' },
+  { title: 'BISE Affiliated', subtitle: 'Abbottabad Board' },
+  { title: '4 Campuses', subtitle: 'Boys & Girls wings' },
+  { title: '3000+ Students', subtitle: 'Trusted by families' },
+  { title: 'Qualified Faculty', subtitle: 'Experienced educators' },
+  { title: 'Scholarship Support', subtitle: 'Talent Hunt & aid' },
+]
+
+export const HOME_FAQS = [
+  {
+    question: 'How can I apply for admission at Pak Wattan?',
+    answer:
+      'Visit our online Admission page, fill the application form, or contact the campus office on Azam Khan Road, Havelian. You can also message us on WhatsApp for guidance.',
+  },
+  {
+    question: 'Which classes and wings are offered?',
+    answer:
+      'We offer Montessori, Primary, Boys Middle & Senior wings, and Girls Wing, along with FSc and coaching programs through Pakians Coaching Academy.',
+  },
+  {
+    question: 'Is Pak Wattan affiliated with BISE Abbottabad?',
+    answer:
+      'Yes. Our students appear in BISE Abbottabad examinations and have consistently secured top positions in Havelian Circle.',
+  },
+  {
+    question: 'Do you provide scholarships or fee concessions?',
+    answer:
+      'Talent Hunt and need-based scholarships are available for deserving students. Visit the Scholarships page or inquire at the admission office.',
+  },
+  {
+    question: 'How can parents stay updated about results and events?',
+    answer:
+      'Follow our website news section and official Facebook page. Campus offices also share important notices with parents directly.',
+  },
+]
+
