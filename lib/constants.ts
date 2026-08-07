@@ -549,7 +549,7 @@ export const HOME_FAQS = [
   {
     question: 'Do you provide scholarships or fee concessions?',
     answer:
-      'Talent Hunt and need-based scholarships are available for deserving students. Visit the Scholarships page or inquire at the admission office.',
+      'Yes. Pakians Scholarship and need-based scholarships are available for deserving students. Visit the Scholarships page or inquire at the admission office for eligibility and how to apply.',
   },
   {
     question: 'How can parents stay updated about results and events?',
