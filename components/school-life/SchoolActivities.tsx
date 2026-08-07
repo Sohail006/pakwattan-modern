@@ -110,7 +110,7 @@ const SchoolActivities = () => {
     : activities.filter(activity => activity.category === selectedCategory)
 
   return (
-    <section className="section-padding bg-gradient-to-br from-primary-50 to-accent-50">
+    <section id="school-activities" className="scroll-mt-20 section-padding bg-gradient-to-br from-primary-50 to-accent-50">
       <div className="container-custom">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-0">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">

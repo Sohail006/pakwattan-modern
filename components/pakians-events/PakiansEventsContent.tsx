@@ -36,7 +36,7 @@ const CATEGORY_STYLES: Record<PakiansEventCategory, string> = {
 
 export default function PakiansEventsContent() {
   return (
-    <section className="bg-white py-12 sm:py-16 md:py-20">
+    <section id="pakians-events" className="scroll-mt-20 bg-white py-12 sm:py-16 md:py-20">
       <div className="container-custom space-y-12 sm:space-y-16">
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary-50 px-4 py-1.5 text-sm font-semibold text-primary-700">

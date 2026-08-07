@@ -1,10 +1,14 @@
 import LoginForm from '@/components/auth/LoginForm'
 import { Metadata } from 'next'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata: Metadata = {
-  title: 'Login - Pak Wattan School & College of Sciences',
-  description: 'Login to access your account at Pak Wattan School & College of Sciences. Secure single login with username/email and password.',
-}
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Login',
+  description:
+    'Secure login for Pak Wattan School & College of Sciences accounts using username/email and password.',
+  path: '/login',
+  indexable: false,
+})
 
 export default function LoginPage() {
   return (

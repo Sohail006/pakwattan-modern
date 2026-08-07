@@ -110,7 +110,7 @@ export default function VideoGalleryGrid() {
 
   if (loading) {
     return (
-      <section className="py-16 bg-white">
+      <section id="video-gallery" className="scroll-mt-20 py-16 bg-white" aria-busy="true">
         <div className="container-custom text-center">
           <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
           <p className="text-gray-600">Loading videos...</p>
@@ -121,7 +121,7 @@ export default function VideoGalleryGrid() {
 
   if (error) {
     return (
-      <section className="py-16 bg-white">
+      <section id="video-gallery" className="scroll-mt-20 py-16 bg-white">
         <div className="container-custom text-center">
           <p className="mb-4 text-gray-600">{error}</p>
           <button type="button" onClick={() => window.location.reload()} className="btn-primary">
@@ -133,7 +133,7 @@ export default function VideoGalleryGrid() {
   }
 
   return (
-    <section className="py-16 bg-white">
+    <section id="video-gallery" className="scroll-mt-20 py-16 bg-white">
       <div className="container-custom">
         <div className="mb-12 text-center">
           <h2 className="mb-6 font-josefin text-4xl font-bold md:text-5xl">

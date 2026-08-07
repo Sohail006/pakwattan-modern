@@ -39,7 +39,7 @@ const GoldMedalsRecipients = () => {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+    <section id="gold-medal-recipients" className="scroll-mt-20 py-16 bg-gradient-to-br from-primary-50 to-accent-50">
       <div className="container-custom">
         <div className="text-center mb-12">
           <div className="inline-flex items-center space-x-2 bg-primary-100 rounded-full px-6 py-3 text-sm font-medium text-primary-700 mb-6">

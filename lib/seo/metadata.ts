@@ -10,15 +10,32 @@ export interface PageMetadata {
   publishedTime?: string
   modifiedTime?: string
   author?: string
+  /** Set false to noindex/nofollow (auth, thank-you, etc.) */
+  indexable?: boolean
+  /** Override Open Graph / Twitter image dimensions when known */
+  imageWidth?: number
+  imageHeight?: number
 }
 
-const SITE_NAME = 'Pak Wattan School & College of Sciences'
-const SITE_URL = 'https://pakwattan.edu.pk'
-const DEFAULT_IMAGE = '/images/logo/logo_150x150.png'
-const DEFAULT_KEYWORDS = 'Pak Wattan, Havelian school, Abbottabad education, KPK schools, best school in Pakistan, quality education'
+export const SITE_NAME = 'Pak Wattan School & College of Sciences'
+export const SITE_URL = 'https://pakwattan.edu.pk'
+export const DEFAULT_IMAGE = '/images/logo/logo_150x150.png'
+export const DEFAULT_KEYWORDS =
+  'Pak Wattan, PWSCS, Havelian school, Abbottabad education, KPK schools, best school in Havelian, quality education Pakistan'
 
 /**
- * Generates complete metadata for a page
+ * Builds absolute URL for a site path or external URL.
+ */
+export function absoluteUrl(pathOrUrl = ''): string {
+  if (!pathOrUrl) return SITE_URL
+  if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) return pathOrUrl
+  const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`
+  return `${SITE_URL}${path}`
+}
+
+/**
+ * Generates complete metadata: Title, Description, Keywords, Canonical,
+ * Robots, Open Graph, and Twitter Cards.
  */
 export function generateMetadata({
   title,
@@ -30,18 +47,29 @@ export function generateMetadata({
   publishedTime,
   modifiedTime,
   author,
+  indexable = true,
+  imageWidth = 150,
+  imageHeight = 150,
 }: PageMetadata): Metadata {
-  const fullTitle = path ? `${title} - ${SITE_NAME}` : title
-  const url = path ? `${SITE_URL}${path}` : SITE_URL
-  const imageUrl = image.startsWith('http') ? image : `${SITE_URL}${image}`
+  const isHome = !path || path === '/'
+  const fullTitle = isHome ? title : `${title} | ${SITE_NAME}`
+  const url = absoluteUrl(isHome ? '/' : path)
+  const imageUrl = absoluteUrl(image)
+  const keywordString = keywords
+    ? `${keywords}, ${DEFAULT_KEYWORDS}`
+    : DEFAULT_KEYWORDS
 
   return {
-    title: fullTitle,
+    title: {
+      absolute: fullTitle,
+    },
     description,
-    keywords: keywords || DEFAULT_KEYWORDS,
+    keywords: keywordString,
     authors: [{ name: author || SITE_NAME }],
     creator: SITE_NAME,
     publisher: SITE_NAME,
+    applicationName: SITE_NAME,
+    category: 'education',
     metadataBase: new URL(SITE_URL),
     alternates: {
       canonical: url,
@@ -54,33 +82,45 @@ export function generateMetadata({
       images: [
         {
           url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: title,
+          width: imageWidth,
+          height: imageHeight,
+          alt: `${title} — ${SITE_NAME}`,
         },
       ],
-      locale: 'en_US',
+      locale: 'en_PK',
       type,
       ...(publishedTime && { publishedTime }),
       ...(modifiedTime && { modifiedTime }),
     },
     twitter: {
-      card: 'summary_large_image',
+      // Logo is square; summary fits better than summary_large_image
+      card: imageWidth >= 600 && imageHeight >= 314 ? 'summary_large_image' : 'summary',
       title: fullTitle,
       description,
       images: [imageUrl],
     },
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        'max-video-preview': -1,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-      },
-    },
+    robots: indexable
+      ? {
+          index: true,
+          follow: true,
+          googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+          },
+        }
+      : {
+          index: false,
+          follow: false,
+          nocache: true,
+          googleBot: {
+            index: false,
+            follow: false,
+            noimageindex: true,
+          },
+        },
   }
 }
 
@@ -96,6 +136,7 @@ export function generateArticleMetadata({
   publishedTime,
   modifiedTime,
   author,
+  indexable,
 }: Omit<PageMetadata, 'type'>): Metadata {
   return generateMetadata({
     title,
@@ -107,6 +148,8 @@ export function generateArticleMetadata({
     publishedTime,
     modifiedTime,
     author,
+    indexable,
+    imageWidth: 1200,
+    imageHeight: 630,
   })
 }
-

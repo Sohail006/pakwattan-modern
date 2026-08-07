@@ -1,10 +1,14 @@
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm'
 import { Metadata } from 'next'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata: Metadata = {
-  title: 'Forgot Password - Pak Wattan School & College of Sciences',
-  description: 'Reset your password for your Pak Wattan School account. Secure password recovery process.',
-}
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Forgot Password',
+  description:
+    'Reset your Pak Wattan School & College of Sciences account password securely.',
+  path: '/forgot-password',
+  indexable: false,
+})
 
 export default function ForgotPasswordPage() {
   return (

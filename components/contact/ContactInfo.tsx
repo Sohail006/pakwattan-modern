@@ -1,204 +1,86 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { MapPin, Phone, Mail, Users, Award, BookOpen, GraduationCap, MessageCircle, Clock } from 'lucide-react'
-import { getCampuses, Campus } from '@/lib/api/campuses'
+import { Users, Award, BookOpen, GraduationCap, RefreshCw } from 'lucide-react'
+import { useCampuses } from '@/hooks/useCampuses'
+import ContactCard from '@/components/contact/ContactCard'
+import { CONTACT_OFFICE_PHOTOS } from '@/lib/contact-utils'
+import Container from '@/components/ui/Container'
 
 const ContactInfo = () => {
-  const [campuses, setCampuses] = useState<Campus[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchCampuses = async () => {
-      try {
-        const data = await getCampuses(true) // Get only active campuses
-        // Sort by priority (highest first), then by name
-        const sorted = data.sort((a, b) => {
-          const priorityA = a.priority || 0
-          const priorityB = b.priority || 0
-          if (priorityB !== priorityA) return priorityB - priorityA
-          return a.name.localeCompare(b.name)
-        })
-        setCampuses(sorted)
-      } catch (error) {
-        console.error('[ContactInfo] Failed to load campuses:', error)
-        // Keep empty array on error (graceful degradation)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchCampuses()
-  }, [])
+  const { campuses, loading, error, usingFallback, refetch } = useCampuses(true)
 
   const quickStats = [
-    {
-      icon: <Users className="w-8 h-8" />,
-      value: '3000+',
-      label: 'Students',
-      color: 'text-blue-600'
-    },
-    {
-      icon: <Award className="w-8 h-8" />,
-      value: '2000+',
-      label: 'Awards',
-      color: 'text-yellow-600'
-    },
-    {
-      icon: <BookOpen className="w-8 h-8" />,
-      value: campuses.length.toString(),
-      label: 'Campuses',
-      color: 'text-green-600'
-    },
-    {
-      icon: <GraduationCap className="w-8 h-8" />,
-      value: '1353+',
-      label: 'Alumni',
-      color: 'text-purple-600'
-    }
+    { icon: Users, value: '3000+', label: 'Students', color: 'text-blue-600' },
+    { icon: Award, value: '2000+', label: 'Awards', color: 'text-yellow-600' },
+    { icon: BookOpen, value: String(Math.max(campuses.length, 1)), label: 'Campuses', color: 'text-green-600' },
+    { icon: GraduationCap, value: '1353+', label: 'Alumni', color: 'text-purple-600' },
   ]
 
   return (
-    <section className="section-padding bg-white">
-      <div className="container-custom">
-        <div className="text-center mb-8 sm:mb-12 lg:mb-16 px-4 sm:px-0">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6">
+    <section className="py-10 sm:py-12 lg:py-14 bg-white">
+      <Container>
+        <div className="text-center mb-8 sm:mb-10">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-secondary-800 font-josefin mb-3">
             <span className="text-gradient">Our Campuses</span>
           </h2>
-          <p className="text-base sm:text-lg text-secondary-600 max-w-3xl mx-auto break-words">
-            {campuses.length > 0 
-              ? `Visit us at any of our ${campuses.length} campus${campuses.length > 1 ? 'es' : ''} located in Havelian, Abbottabad`
-              : 'Visit us at our campuses located in Havelian, Abbottabad'
-            }
+          <p className="text-sm sm:text-base text-secondary-600 max-w-2xl mx-auto">
+            Visit any campus in Havelian — call, WhatsApp, or get directions in one tap.
           </p>
         </div>
 
-        {/* Campus Cards */}
+        {error && (
+          <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <span>{error}</span>
+            <button
+              type="button"
+              onClick={() => refetch()}
+              className="inline-flex items-center justify-center gap-2 min-h-[40px] px-3 py-2 rounded-lg bg-amber-600 text-white font-semibold hover:bg-amber-700"
+            >
+              <RefreshCw className="w-4 h-4" />
+              Retry
+            </button>
+          </div>
+        )}
+
         {loading ? (
           <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600" />
             <p className="mt-4 text-secondary-600">Loading campus information...</p>
           </div>
-        ) : campuses.length === 0 ? (
-          <div className="text-center py-12 bg-gray-50 rounded-2xl">
-            <MapPin className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-600">No campus information available at the moment.</p>
-          </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16">
-            {campuses.map((campus) => (
-              <div
-                key={campus.id}
-                className="bg-white rounded-2xl shadow-xl hover:shadow-2xl active:shadow-lg transition-all duration-300 overflow-hidden border border-secondary-100"
-              >
-                <div className="p-4 sm:p-6 lg:p-8">
-                  <h3 className="text-lg sm:text-xl font-bold text-secondary-800 mb-3 sm:mb-4 flex items-center min-w-0">
-                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary-600 flex-shrink-0" />
-                    <span className="truncate">{campus.name}</span>
-                  </h3>
-                  {campus.principalName && (
-                    <p className="text-secondary-600 mb-4 text-sm">
-                      Principal: {campus.principalName}
-                    </p>
-                  )}
-                  
-                  <div className="space-y-3">
-                    {campus.address && (
-                      <div className="flex items-start space-x-3">
-                        <MapPin className="w-4 h-4 text-primary-600 mt-1 flex-shrink-0" />
-                        <span className="text-sm text-secondary-700">{campus.address}</span>
-                      </div>
-                    )}
-                    {campus.mobileNumber && (
-                      <div className="flex items-center space-x-3">
-                        <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                        <a 
-                          href={`tel:${campus.mobileNumber.replace(/\s/g, '')}`}
-                          className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                        >
-                          {campus.mobileNumber}
-                        </a>
-                      </div>
-                    )}
-                    {!campus.mobileNumber && campus.phone && (
-                      <div className="flex items-center space-x-3">
-                        <Phone className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                        <a 
-                          href={`tel:${campus.phone.replace(/\s/g, '')}`}
-                          className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                        >
-                          {campus.phone}
-                        </a>
-                      </div>
-                    )}
-                    {campus.whatsAppNumber && (
-                      <div className="flex items-center space-x-3">
-                        <MessageCircle className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                        <a 
-                          href={`https://wa.me/${campus.whatsAppNumber.replace(/\D/g, '')}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                        >
-                          WhatsApp: {campus.whatsAppNumber}
-                        </a>
-                      </div>
-                    )}
-                    {campus.email && (
-                      <div className="flex items-center space-x-3">
-                        <Mail className="w-4 h-4 text-primary-600 flex-shrink-0" />
-                        <a 
-                          href={`mailto:${campus.email}`}
-                          className="text-sm text-primary-600 hover:text-primary-700 transition-colors"
-                        >
-                          {campus.email}
-                        </a>
-                      </div>
-                    )}
-                    {campus.officeHours && (
-                      <div className="flex items-start space-x-3 pt-2 border-t border-gray-200">
-                        <Clock className="w-4 h-4 text-primary-600 mt-1 flex-shrink-0" />
-                        <span className="text-sm text-secondary-700">{campus.officeHours}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6 mb-10">
+            {campuses.map((campus, index) => (
+              <ContactCard
+                key={campus.id || campus.name}
+                campus={campus}
+                featured={index === 0 && !usingFallback}
+                photoSrc={CONTACT_OFFICE_PHOTOS[index % CONTACT_OFFICE_PHOTOS.length]?.src}
+              />
             ))}
           </div>
         )}
 
-        {/* Quick Stats */}
-        <div className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8">
-          <div className="text-center mb-6 sm:mb-8">
-            <h3 className="text-xl sm:text-2xl font-bold text-secondary-800 mb-3 sm:mb-4">
-              By the Numbers
-            </h3>
-            <p className="text-sm sm:text-base text-secondary-600">
-              Our impact in the community
-            </p>
+        <div className="bg-gradient-to-br from-primary-50 to-accent-50 rounded-2xl p-5 sm:p-8">
+          <div className="text-center mb-6">
+            <h3 className="text-xl sm:text-2xl font-bold text-secondary-800 mb-2">By the Numbers</h3>
+            <p className="text-sm text-secondary-600">Our impact in the community</p>
           </div>
-          
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            {quickStats.map((stat, index) => (
-              <div
-                key={index}
-                className="text-center group hover:scale-105 active:scale-100 transition-all duration-300"
-              >
-                <div className={`w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 mx-auto mb-3 sm:mb-4 rounded-full bg-white shadow-lg flex items-center justify-center ${stat.color} group-hover:scale-110 transition-transform duration-300`}>
-                  {stat.icon}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            {quickStats.map((stat) => {
+              const Icon = stat.icon
+              return (
+                <div key={stat.label} className="text-center">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 mx-auto mb-3 rounded-full bg-white shadow-md flex items-center justify-center ${stat.color}`}>
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-bold text-secondary-800 mb-1">{stat.value}</div>
+                  <div className="text-sm font-semibold text-secondary-600">{stat.label}</div>
                 </div>
-                <div className="text-2xl sm:text-3xl font-bold text-secondary-800 mb-1 sm:mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-sm sm:text-base lg:text-lg font-semibold text-secondary-600 truncate">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

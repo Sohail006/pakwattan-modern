@@ -133,7 +133,7 @@ const TalentHuntSeason2Contests = () => {
   ]
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-white">
+    <section id="contests" className="scroll-mt-20 py-8 sm:py-12 lg:py-16 bg-white">
       <div className="container-custom">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <div className="inline-flex items-center space-x-2 bg-accent-100 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-accent-700 mb-4 sm:mb-6">

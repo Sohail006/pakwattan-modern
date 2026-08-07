@@ -39,7 +39,19 @@ export interface UpdateCampusRequest extends Partial<CreateCampusRequest> {
 export async function getCampuses(isActive?: boolean): Promise<Campus[]> {
   try {
     const query = isActive !== undefined ? `?isActive=${isActive}` : '';
-    return await api.get<Campus[]>(`/api/campuses${query}`);
+    const response = await api.get<Campus[] | { data?: Campus[]; campuses?: Campus[]; items?: Campus[] }>(
+      `/api/campuses${query}`
+    );
+
+    if (Array.isArray(response)) return response;
+    if (response && typeof response === 'object') {
+      const wrapped = response as { data?: Campus[]; campuses?: Campus[]; items?: Campus[]; result?: Campus[] };
+      if (Array.isArray(wrapped.data)) return wrapped.data;
+      if (Array.isArray(wrapped.campuses)) return wrapped.campuses;
+      if (Array.isArray(wrapped.items)) return wrapped.items;
+      if (Array.isArray(wrapped.result)) return wrapped.result;
+    }
+    return [];
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load campus list. Please refresh the page and try again.');

@@ -771,7 +771,7 @@ export default function StudentRegistrationForm() {
   }
 
   return (
-    <section className="section-padding bg-white">
+    <section id="registration-form" className="scroll-mt-20 section-padding bg-white">
       <div className="container-custom">
         <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">

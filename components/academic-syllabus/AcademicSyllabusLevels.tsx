@@ -45,7 +45,7 @@ const AcademicSyllabusLevels = () => {
   ]
 
   return (
-    <section className="py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+    <section id="syllabus-levels" className="scroll-mt-20 py-16 bg-gradient-to-br from-primary-50 to-accent-50">
       <div className="container-custom">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold font-josefin mb-6">

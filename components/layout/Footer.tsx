@@ -134,6 +134,22 @@ const Footer = () => {
               </li>
               <li>
                 <Link 
+                  href="/faculty" 
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
+                >
+                  Faculty
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  href="/faqs" 
+                  className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
+                >
+                  FAQs
+                </Link>
+              </li>
+              <li>
+                <Link 
                   href="/academic/boys-middle-wing" 
                   className="text-sm sm:text-base text-secondary-300 hover:text-white transition-colors block py-0.5"
                 >

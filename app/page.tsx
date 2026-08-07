@@ -1,20 +1,32 @@
 // Above-fold components - load immediately
+import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import TopNewsMarquee from '@/components/home/TopNewsMarquee'
 import HeroSection from '@/components/home/HeroSection'
+import HeroQuickLinks from '@/components/home/HeroQuickLinks'
 import BreakingNewsSidebar from '@/components/home/BreakingNewsSidebar'
 import WelcomeMessage from '@/components/home/WelcomeMessage'
 import StructuredData from '@/components/seo/StructuredData'
+import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import SkeletonLoader from '@/components/ui/SkeletonLoader'
 import { HOME_FAQS } from '@/lib/constants'
 import {
   generateBreadcrumbSchema,
   generateFAQSchema,
 } from '@/lib/seo/structuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
+import { getHomeReviewSchema, getFeaturedVideoSchemas } from '@/lib/seo/siteSchemas'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
+  description:
+    'Pak Wattan School & College of Sciences, Havelian — 6th consecutive year as SSC Havelian Circle top school. Quality education, scholarships, Montessori to FSc since 2020.',
+  keywords:
+    'best school in Havelian, Pak Wattan Havelian, SSC circle topper, FSc college Havelian, scholarships Havelian, Montessori Havelian, Abbottabad board school',
+  path: '/',
+})
 
 // Below-fold components - lazy load for better performance
-import dynamic from 'next/dynamic'
-import ErrorBoundary from '@/components/ui/ErrorBoundary'
-import SkeletonLoader from '@/components/ui/SkeletonLoader'
-
 const Achievements = dynamic(() => import('@/components/home/Achievements'), {
   loading: () => <SkeletonLoader variant="section" className="my-6" />
 })
@@ -98,10 +110,12 @@ export default function Home() {
     { name: 'Home', url: SITE_URL },
   ])
   const faqSchema = generateFAQSchema(HOME_FAQS)
+  const reviewSchema = getHomeReviewSchema()
+  const videoSchemas = getFeaturedVideoSchemas()
 
   return (
     <div className="min-h-screen pb-20 md:pb-0">
-      <StructuredData data={[breadcrumbSchema, faqSchema]} />
+      <StructuredData data={[breadcrumbSchema, faqSchema, reviewSchema, ...videoSchemas]} />
 
       <ErrorBoundary>
         <TopNewsMarquee />
@@ -109,6 +123,10 @@ export default function Home() {
 
       <ErrorBoundary>
         <HeroSection />
+      </ErrorBoundary>
+
+      <ErrorBoundary>
+        <HeroQuickLinks />
       </ErrorBoundary>
       
       <ErrorBoundary>

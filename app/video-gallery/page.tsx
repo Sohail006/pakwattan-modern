@@ -4,6 +4,7 @@ import VideoGalleryHero from '@/components/video-gallery/VideoGalleryHero'
 import StructuredData from '@/components/seo/StructuredData'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
+import { getFeaturedVideoSchemas } from '@/lib/seo/siteSchemas'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 
 const VideoGalleryGrid = dynamic(() => import('@/components/video-gallery/VideoGalleryGrid'), {
@@ -22,9 +23,10 @@ export default function VideoGallery() {
     { name: 'Home', url: 'https://pakwattan.edu.pk' },
     { name: 'Video Gallery', url: 'https://pakwattan.edu.pk/video-gallery' },
   ])
+  const videos = getFeaturedVideoSchemas()
   return (
     <>
-      <StructuredData data={breadcrumbs} />
+      <StructuredData data={[breadcrumbs, ...videos]} />
       <div className="min-h-screen">
         <VideoGalleryHero />
         <VideoGalleryGrid />

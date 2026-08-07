@@ -1,10 +1,14 @@
 import RegisterForm from '@/components/auth/RegisterForm'
 import { Metadata } from 'next'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata: Metadata = {
-  title: 'Register - Pak Wattan School & College of Sciences',
-  description: 'Create your account at Pak Wattan School & College of Sciences. Register as a student, parent, or staff member.',
-}
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Register',
+  description:
+    'Create a Pak Wattan School & College of Sciences account for students, parents, or staff.',
+  path: '/register',
+  indexable: false,
+})
 
 export default function RegisterPage() {
   return (

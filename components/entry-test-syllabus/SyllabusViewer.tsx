@@ -48,7 +48,7 @@ const SyllabusViewer = ({ selectedGradeId }: SyllabusViewerProps) => {
   }, [selectedGradeId]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <section id="syllabus-viewer" className="section-padding bg-white">
+    <section id="syllabus-viewer" className="scroll-mt-20 section-padding bg-white">
       <div className="container-custom">
 
         {!selectedGradeId ? (

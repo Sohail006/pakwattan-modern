@@ -29,13 +29,11 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
     name: 'Who We Are', 
     href: '/about',
     submenu: [
-      { name: 'Background & History', href: '/about#background' },
+      { name: 'History', href: '/about#history' },
       { name: 'Vision, Mission & Values', href: '/about#vision' },
-      { name: 'Staff Entrance Test', href: '/about#staff-test' },
-      { name: 'Prize Distribution Ceremony', href: '/about#prize-distribution' },
-      { name: 'Growth Chart', href: '/about#growth-chart' },
-      { name: 'Executive Director\'s Message', href: '/about#director-message' },
-      { name: 'Principal\'s Message', href: '/about#principal-message' },
+      { name: 'Faculty', href: '/faculty' },
+      { name: 'Leadership', href: '/about#leadership' },
+      { name: 'Achievements', href: '/about#achievements' },
     ]
   },
   { name: 'Admission', href: '/admission' },
@@ -56,6 +54,7 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
   },
   { name: 'School Life', href: '/school-life' },
   { name: 'Awards', href: '/awards' },
+  { name: 'FAQs', href: '/faqs' },
   { name: 'Contact Us', href: '/contact' },
 ]
 
@@ -69,6 +68,7 @@ export const SECONDARY_NAVIGATION: NavigationItem[] = [
     submenu: [
       { name: 'Pakians Coaching Academy', href: '/pakians-coaching-academy' },
       { name: 'Talent Hunt', href: '/talent-hunt' },
+      { name: 'Events', href: '/events' },
       { name: 'Registration Form', href: '/registration-form' },
     ]
   },
@@ -555,6 +555,31 @@ export const HOME_FAQS = [
     question: 'How can parents stay updated about results and events?',
     answer:
       'Follow our website news section and official Facebook page. Campus offices also share important notices with parents directly.',
+  },
+]
+
+/** Combined FAQ set for the dedicated /faqs page */
+export const SITE_FAQS = [
+  ...HOME_FAQS,
+  {
+    question: 'What are the main campus office hours?',
+    answer:
+      'Monday to Friday 8:00 AM – 4:00 PM, and Saturday 8:00 AM – 1:00 PM. The office is closed on Sunday.',
+  },
+  {
+    question: 'Where is Pak Wattan located?',
+    answer:
+      'Azam Khan Road, beside Mubarak Plaza, Havelian, Abbottabad, KPK. Use Get Directions on the Contact page for navigation.',
+  },
+  {
+    question: 'How do I contact the school on WhatsApp?',
+    answer:
+      'Message 0334-8113302 or use the floating WhatsApp button on the website for a quick response about admissions and campus queries.',
+  },
+  {
+    question: 'Are there careers or faculty openings?',
+    answer:
+      'Open positions are listed on the Careers (Jobs) page. Faculty applicants can also use the Pakians Faculty Registration form.',
   },
 ]
 

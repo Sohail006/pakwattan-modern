@@ -1,9 +1,20 @@
+import { Metadata } from 'next'
 import { Award, Calendar, Sparkles } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import StructuredData from '@/components/seo/StructuredData'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema, generateWebPageSchema } from '@/lib/seo/structuredData'
 import ScholarshipFscPart1Section from '@/components/scholarships/ScholarshipFscPart1Section'
 import ScholarshipResultClassList from '@/components/scholarships/ScholarshipResultClassList'
+
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Scholarship Test Result 2026-27',
+  description:
+    'Official Good Will scholarship test result 2026-27 for Pak Wattan School & College of Sciences, Havelian. View FSC Part 1 and class-wise merit lists.',
+  keywords:
+    'Pak Wattan scholarship result, Good Will scholarship 2026, Havelian scholarship merit list, FSC scholarship result',
+  path: '/scholarship-result',
+})
 
 export default function ScholarshipResultPage() {
   const breadcrumbs = generateBreadcrumbSchema([

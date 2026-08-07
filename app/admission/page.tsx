@@ -11,9 +11,11 @@ import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
 
 export const metadata: Metadata = generatePageMetadata({
-  title: 'Admission',
-  description: 'Apply for admission to Pak Wattan School & College of Sciences. Learn about our admission process, requirements, fee structure, age limits, and application procedures for 2026-27 session.',
-  keywords: 'admission, school admission, pak wattan admission, havelian school admission, fee structure, age limits, apply now, 2026-27 admission',
+  title: 'Admission 2026-27 — Apply Online',
+  description:
+    'Apply online for admission to Pak Wattan School & College of Sciences, Havelian. Process, requirements, fees, age limits, and 2026-27 application form.',
+  keywords:
+    'Pak Wattan admission, apply online Havelian, school admission 2026, fee structure, age limits, PWSCS admission form',
   path: '/admission',
 })
 

@@ -11,30 +11,34 @@ import StructuredData from '@/components/seo/StructuredData'
 import BackToTop from '@/components/ui/BackToTop'
 import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp'
 import StickyApplyNow from '@/components/ui/StickyApplyNow'
-import { generateOrganizationSchema } from '@/lib/seo/structuredData'
-import { generateWebSiteSchema } from '@/lib/seo/structuredData'
+import { getGlobalStructuredData } from '@/lib/seo/siteSchemas'
 // Initialize token refresh service
 import '@/lib/services/tokenRefresh'
 
 export const metadata: Metadata = {
-  title: 'Pak Wattan School & College of Sciences - Havelian',
-  description: 'Pak Wattan School & College of Sciences is one of the best schools in Havelian, KPK, established in 2020 providing best quality education in Pakistan.',
-  keywords: 'Abbottabad schools, top-ranked schools in Pakistan, Pakistan best schools, top 10 schools in Pakistan, best school in Pakistan, best school in Abbottabad, best school in Havelian, best college in Abbottabad, best college in Havelian, Pakians Abbottabad, PWSC, Pak Wattan, Pak Wattan Coaching Academy',
+  title: {
+    default: 'Pak Wattan School & College of Sciences | Best School in Havelian',
+    template: `%s | Pak Wattan School & College of Sciences`,
+  },
+  description:
+    'Pak Wattan School & College of Sciences, Havelian — quality education since 2020. SSC Havelian Circle toppers, scholarships, Montessori to FSc, and affordable excellence in KPK.',
+  keywords:
+    'Pak Wattan, PWSCS, Havelian school, best school in Havelian, Abbottabad schools, KPK education, SSC toppers, FSc college Havelian, Pak Wattan admission',
   authors: [{ name: 'Pak Wattan School & College of Sciences Havelian' }],
   creator: 'Pak Wattan School & College of Sciences',
   publisher: 'Pak Wattan School & College of Sciences',
+  applicationName: 'Pak Wattan School & College of Sciences',
+  category: 'education',
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   metadataBase: new URL('https://pakwattan.edu.pk'),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
-    title: 'Pak Wattan School & College of Sciences Havelian',
-    description: 'Pak Wattan School & College of Sciences is one of the best schools in Havelian, KPK, established in 2020 providing best quality education in Pakistan.',
+    title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
+    description:
+      'Quality education in Havelian, KPK since 2020. Circle toppers, scholarships, and campuses for boys and girls.',
     url: 'https://pakwattan.edu.pk',
     siteName: 'Pak Wattan School & College of Sciences',
     images: [
@@ -45,13 +49,14 @@ export const metadata: Metadata = {
         alt: 'Pak Wattan School & College of Sciences',
       },
     ],
-    locale: 'en_US',
+    locale: 'en_PK',
     type: 'website',
   },
   twitter: {
-    card: 'summary_large_image',
-    title: 'Pak Wattan School & College of Sciences Havelian',
-    description: 'Pak Wattan School & College of Sciences is one of the best schools in Havelian, KPK, established in 2020 providing best quality education in Pakistan.',
+    card: 'summary',
+    title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
+    description:
+      'Quality education in Havelian, KPK since 2020. Circle toppers, scholarships, and campuses for boys and girls.',
     images: ['/images/logo/logo_150x150.png'],
   },
   robots: {
@@ -87,41 +92,30 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Organization structured data
-  const organizationSchema = generateOrganizationSchema({
-    name: 'Pak Wattan School & College of Sciences',
-    url: 'https://pakwattan.edu.pk',
-    logo: 'https://pakwattan.edu.pk/images/logo/logo_150x150.png',
-    contactPoint: {
-      telephone: '+92-992-811555',
-      contactType: 'Customer Service',
-      email: 'pakwattan2020@gmail.com',
-    },
-    address: {
-      addressLocality: 'Havelian',
-      addressRegion: 'Khyber Pakhtunkhwa',
-      addressCountry: 'PK',
-    },
-    sameAs: [
-      'https://www.facebook.com/PAKWATTAN2020',
-    ],
-  })
-
-  // Website structured data
-  const websiteSchema = generateWebSiteSchema('https://pakwattan.edu.pk')
+  // Global structured data: Organization, School, LocalBusiness, WebSite + SearchAction
+  const globalSchemas = getGlobalStructuredData()
 
   return (
     <html lang="en" className="font-sans">
       <head>
-        <StructuredData data={[organizationSchema, websiteSchema]} />
+        <StructuredData data={globalSchemas} />
         {/* Resource hints for external domains - improve connection speed */}
-        {/* Google Fonts - Critical for initial render */}
-        {/* eslint-disable @next/next/google-font-preconnect */}
+        {/* Google Fonts - Critical for initial render (preload + stylesheet reduces CLS) */}
+        {/* eslint-disable @next/next/google-font-preconnect, @next/next/no-page-custom-font */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
-        {/* eslint-enable @next/next/google-font-preconnect */}
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Josefin+Sans:wght@100..700&display=swap"
+        />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Josefin+Sans:wght@100..700&display=swap"
+        />
+        {/* eslint-enable @next/next/google-font-preconnect, @next/next/no-page-custom-font */}
         {/* YouTube & Google APIs */}
         <link rel="preconnect" href="https://www.googleapis.com" />
         <link rel="dns-prefetch" href="https://www.googleapis.com" />

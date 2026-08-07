@@ -314,6 +314,29 @@ html {
   animation: fadeInUp 0.6s ease-out;
 }
 
+@keyframes heroKenBurns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.animate-hero-kenburns {
+  animation: heroKenBurns 18s ease-out forwards;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-kenburns {
+    animation: none;
+  }
+  .animate-fade-in-up {
+    animation: none;
+  }
+}
+
 .animate-fade-in-left {
   animation: fadeInLeft 0.6s ease-out;
 }

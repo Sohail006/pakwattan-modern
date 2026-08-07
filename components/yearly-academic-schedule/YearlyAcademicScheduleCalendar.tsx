@@ -53,7 +53,7 @@ const YearlyAcademicScheduleCalendar = () => {
   ]
 
   return (
-    <section className="py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+    <section id="academic-calendar" className="scroll-mt-20 py-8 sm:py-12 lg:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
       <div className="container-custom">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin mb-4 sm:mb-6 break-words">
