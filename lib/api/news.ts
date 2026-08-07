@@ -198,25 +198,49 @@ export async function getFeaturedNews(limit: number = 5): Promise<News[]> {
   }
 }
 
+/** Titles from the retired static marquee seed — never show these in the homepage ticker. */
+const LEGACY_MARQUEE_TITLE_MARKERS = [
+  'Umama Hafeez Marks',
+  'Laiba Ashraf Marks',
+  'Once again, honored to top the Havelian Circle',
+  'FSC 2025 Abbottabad Board Results Congratulations',
+  'Qasim Zaib | 202835',
+  'Umme Habiba | Marks:534',
+  'Rashail Waheed |Marks: 524',
+  'Toheed Ahmed |Marks: 528',
+  'Haleema Waqar | Marks: 1135',
+] as const
+
+function isLegacyMarqueeTitle(title: string | undefined): boolean {
+  if (!title) return false
+  return LEGACY_MARQUEE_TITLE_MARKERS.some((marker) =>
+    title.toLowerCase().includes(marker.toLowerCase())
+  )
+}
+
 /**
  * Get marquee news items (homepage top ticker).
- * Does not use long-lived cache so dashboard Marquee changes appear quickly.
- * Defensively filters to published + isInMarquee only.
+ * Avoids the poisoned CDN cache entry for ?limit=10 on production.
+ * Defensively filters to published + isInMarquee and drops legacy seed titles.
  */
-export async function getMarqueeNews(limit: number = 10): Promise<News[]> {
+export async function getMarqueeNews(limit: number = 15): Promise<News[]> {
   try {
-    const path = `/api/news/marquee?limit=${limit}`;
-    const result = await api.get<unknown>(path);
-    const items = normalizeNewsArray(result);
+    // Do not use limit=10 — production CDN has a stale cached response for that exact URL.
+    const safeLimit = limit === 10 ? 15 : Math.min(Math.max(limit, 1), 50)
+    const path = `/api/news/marquee?limit=${safeLimit}&_cb=2`
+    const result = await api.get<unknown>(path)
+    const items = normalizeNewsArray(result)
 
     return items.filter((item) => {
-      const published = item.isPublished === true || (item as { IsPublished?: boolean }).IsPublished === true;
-      const inMarquee = item.isInMarquee === true || (item as { IsInMarquee?: boolean }).IsInMarquee === true;
-      return published && inMarquee;
-    });
+      const published =
+        item.isPublished === true || (item as { IsPublished?: boolean }).IsPublished === true
+      const inMarquee =
+        item.isInMarquee === true || (item as { IsInMarquee?: boolean }).IsInMarquee === true
+      return published && inMarquee && !isLegacyMarqueeTitle(item.title)
+    })
   } catch (error) {
-    const apiError = error as ApiError;
-    throw new Error(apiError.message || 'Unable to load marquee news. Please try again.');
+    const apiError = error as ApiError
+    throw new Error(apiError.message || 'Unable to load marquee news. Please try again.')
   }
 }
 

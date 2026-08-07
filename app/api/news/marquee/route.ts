@@ -23,6 +23,9 @@ export async function GET(request: NextRequest) {
           'Content-Type': 'application/json',
           ...(authHeader && { Authorization: authHeader }),
         },
+        // Critical: Next.js caches fetch() by default; old marquee lists were sticky for limit=10.
+        cache: 'no-store',
+        next: { revalidate: 0 },
       }
     )
     
@@ -39,7 +42,12 @@ export async function GET(request: NextRequest) {
     }
     
     const data = await response.json()
-    return NextResponse.json(data)
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        Pragma: 'no-cache',
+      },
+    })
   } catch (error) {
     console.error('Error in news marquee API route:', error)
     // Return empty array as fallback to prevent page crash

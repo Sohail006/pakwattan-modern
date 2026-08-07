@@ -23,6 +23,8 @@ export async function GET(request: NextRequest) {
           'Content-Type': 'application/json',
           ...(authHeader && { Authorization: authHeader }),
         },
+        cache: 'no-store',
+        next: { revalidate: 0 },
       }
     )
     
