@@ -27,38 +27,31 @@ const HeroQuickLinks = () => {
 
   return (
     <section
-      className="border-b border-secondary-100 bg-white py-6 sm:py-8"
+      className="border-b border-secondary-100 bg-white py-2.5 sm:py-3"
       aria-label="Popular destinations"
     >
       <Container>
-        <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary-700">Explore</p>
-            <h2 className="font-josefin text-xl sm:text-2xl font-bold text-secondary-900">
-              Popular destinations
-            </h2>
-          </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
+          <h2 className="shrink-0 font-josefin text-sm font-bold text-secondary-800 sm:text-base">
+            Popular destinations
+          </h2>
+          <ul className="flex flex-wrap gap-1.5 sm:gap-2">
+            {links.map((link) => {
+              const Icon = link.icon
+              return (
+                <li key={link.href + link.title}>
+                  <Link
+                    href={link.href}
+                    className="group inline-flex h-8 items-center gap-1.5 rounded-md border border-secondary-100 bg-secondary-50/70 px-2.5 text-xs font-semibold text-secondary-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-800 sm:h-9 sm:px-3 sm:text-sm"
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-primary-700" aria-hidden />
+                    <span className="whitespace-nowrap">{link.title}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
         </div>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-          {links.map((link) => {
-            const Icon = link.icon
-            return (
-              <li key={link.href + link.title}>
-                <Link
-                  href={link.href}
-                  className="group flex min-h-[52px] items-center gap-3 rounded-xl border border-secondary-100 bg-secondary-50/60 px-4 py-3 transition-colors hover:border-primary-200 hover:bg-primary-50"
-                >
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-primary-700 shadow-sm">
-                    <Icon className="h-4 w-4" aria-hidden />
-                  </span>
-                  <span className="text-sm font-semibold text-secondary-900 group-hover:text-primary-800">
-                    {link.title}
-                  </span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
       </Container>
     </section>
   )
