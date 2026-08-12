@@ -79,34 +79,36 @@ const HeroQuickLinks = () => {
 
   return (
     <section
-      className="border-b border-secondary-100 bg-white py-2.5 sm:py-3"
+      className="border-b border-secondary-100 bg-white py-2 sm:py-2.5"
       aria-label="Popular destinations"
     >
       <Container>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-          <h2 className="shrink-0 font-josefin text-sm font-bold text-secondary-800 sm:text-base">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <h2 className="shrink-0 font-josefin text-xs font-bold text-secondary-800 sm:text-sm">
             Popular destinations
           </h2>
-          <ul className="flex flex-wrap gap-1.5 sm:gap-2">
-            {links.map((link) => {
-              const Icon = link.icon
-              return (
-                <li key={link.href + link.title}>
-                  <Link
-                    href={link.href}
-                    className="group inline-flex h-8 items-center gap-1.5 rounded-md border border-secondary-100 bg-secondary-50/70 px-2.5 text-xs font-semibold text-secondary-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-800 sm:h-9 sm:px-3 sm:text-sm"
-                  >
-                    <Icon
-                      className={`h-3.5 w-3.5 shrink-0 transition-transform group-hover:scale-110 ${link.iconClass}`}
-                      strokeWidth={2.25}
-                      aria-hidden
-                    />
-                    <span className="whitespace-nowrap">{link.title}</span>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
+          <div className="min-w-0 flex-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <ul className="flex w-max flex-nowrap items-center gap-1.5 sm:gap-2">
+              {links.map((link) => {
+                const Icon = link.icon
+                return (
+                  <li key={link.href + link.title} className="shrink-0">
+                    <Link
+                      href={link.href}
+                      className="group inline-flex h-8 items-center gap-1.5 rounded-md border border-secondary-100 bg-secondary-50/70 px-2.5 text-xs font-semibold text-secondary-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-800 sm:px-3 sm:text-sm"
+                    >
+                      <Icon
+                        className={`h-3.5 w-3.5 shrink-0 transition-transform group-hover:scale-110 ${link.iconClass}`}
+                        strokeWidth={2.25}
+                        aria-hidden
+                      />
+                      <span className="whitespace-nowrap">{link.title}</span>
+                    </Link>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         </div>
       </Container>
     </section>
