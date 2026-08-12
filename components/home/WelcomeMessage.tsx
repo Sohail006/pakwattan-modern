@@ -3,36 +3,36 @@ import Container from '@/components/ui/Container'
 
 const WelcomeMessage = () => {
   return (
-    <section className="bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white py-8 sm:py-10 lg:py-12 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-accent-400 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent-500 rounded-full blur-3xl"></div>
+    <section className="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 py-3 sm:py-4 text-white">
+      <div className="pointer-events-none absolute inset-0 opacity-10" aria-hidden>
+        <div className="absolute -left-10 top-0 h-32 w-32 rounded-full bg-accent-400 blur-3xl" />
+        <div className="absolute -right-10 bottom-0 h-32 w-32 rounded-full bg-accent-500 blur-3xl" />
       </div>
-      
-      <Container className="relative z-10 px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-            <div className="inline-flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-3 lg:space-x-4 mb-6 sm:mb-8">
-              <div className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                <Image
-                  src="/images/AlhumdullahImage.png"
-                  alt="Alhumdullah"
-                  width={80}
-                  height={80}
-                  className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex-shrink-0 drop-shadow-lg"
-                  priority
-                  unoptimized
-                />
-              </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold font-josefin animate-pulse-subtle break-words rtl:text-right" dir="rtl">
+
+      <Container className="relative z-10">
+        <div className="flex flex-col items-center justify-center gap-1.5 text-center sm:flex-row sm:gap-3 sm:text-left">
+          <Image
+            src="/images/AlhumdullahImage.png"
+            alt="Alhumdullah"
+            width={48}
+            height={48}
+            className="h-9 w-9 shrink-0 drop-shadow-md sm:h-11 sm:w-11"
+            priority
+            unoptimized
+          />
+          <div className="min-w-0">
+            <h2
+              className="font-josefin text-base font-bold leading-snug sm:text-lg md:text-xl"
+              dir="rtl"
+            >
               <strong className="bg-gradient-to-r from-accent-300 to-accent-100 bg-clip-text text-transparent">
                 مسلسل چھ سال میں چھ مرتبہ حویلیاں سرکل ٹاپ
               </strong>
             </h2>
+            <p className="mt-0.5 text-xs font-medium leading-snug text-white/90 sm:text-sm md:text-base">
+              Six consecutive years of being the top school in Havelian Circle
+            </p>
           </div>
-          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 max-w-3xl mx-auto leading-relaxed break-words px-4 sm:px-0 font-medium">
-            Six consecutive years of being the top school in Havelian Circle
-          </p>
         </div>
       </Container>
     </section>
