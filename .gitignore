@@ -110,5 +110,7 @@ backend/
 src/
 
 # Exclude problematic files
-public/files/
+public/files/*
+!public/files/PromoVedio.mp4
+!public/files/bannerImage.mp4
 node_modules
