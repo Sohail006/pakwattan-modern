@@ -137,6 +137,10 @@ export default function Home() {
         <WelcomeMessage />
       </ErrorBoundary>
 
+      <ErrorBoundary>
+        <SSCBISE2024_25Detailed />
+      </ErrorBoundary>
+
       {/* Trust & social proof early */}
       <ErrorBoundary>
         <Achievements />
@@ -152,10 +156,6 @@ export default function Home() {
       
       <ErrorBoundary>
         <DiscoverWonders />
-      </ErrorBoundary>
-      
-      <ErrorBoundary>
-        <SSCBISE2024_25Detailed />
       </ErrorBoundary>
       
       <ErrorBoundary>
