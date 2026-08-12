@@ -42,6 +42,7 @@ const HeroSection = () => {
             }`}
             aria-label="Campus life at Pak Wattan School & College of Sciences"
           >
+            <source src="/files/PromoVedio.mp4" type="video/mp4" />
             <source src="/files/bannerImage.mp4" type="video/mp4" />
           </video>
         )}
