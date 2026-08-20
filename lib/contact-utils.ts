@@ -102,6 +102,6 @@ export const CONTACT_FAQS = [
   {
     question: 'Which WhatsApp number should I use?',
     answer:
-      'Use the campus WhatsApp shown on the Contact Card, or message 0334-8113302 for a quick response.',
+      'Use the campus WhatsApp shown on the Contact Card, or message 0318-0821377 for a quick response.',
   },
 ]

@@ -2,11 +2,10 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Calendar, MapPin, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import {
   TALENT_HUNT_SEASON3_FLYER,
   TALENT_HUNT_SEASON3_INTRO,
-  TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
   TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
@@ -28,19 +27,9 @@ export default function TalentHuntSeason3Hero() {
             <p className="text-sm sm:text-base text-white/85 leading-relaxed max-w-xl">
               {TALENT_HUNT_SEASON3_INTRO}
             </p>
-            <div className="flex flex-wrap gap-3 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2">
-                <Calendar className="h-4 w-4 shrink-0" aria-hidden />
-                Opening: {TALENT_HUNT_SEASON3_OPENING.date}
-              </span>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2">
-                <MapPin className="h-4 w-4 shrink-0" aria-hidden />
-                {TALENT_HUNT_SEASON3_OPENING.venue}
-              </span>
-            </div>
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Link href="#register" className="btn-accent text-center min-h-[44px]">
-                Register Now
+                Register Now for Stream 1
               </Link>
               <Link href="/talent-hunt" className="btn-secondary text-center min-h-[44px]">
                 All Seasons

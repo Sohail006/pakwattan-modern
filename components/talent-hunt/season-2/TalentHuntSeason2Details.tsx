@@ -11,7 +11,7 @@ const TalentHuntSeason2Details = () => {
       color: 'from-blue-500 to-indigo-500'
     },
     {
-      title: '10 Contest Streams',
+      title: '5 Contest Streams',
       description: 'Diverse talent areas covering arts, academics, and skills',
       icon: <Target className="w-6 h-6" />,
       color: 'from-green-500 to-emerald-500'
@@ -33,11 +33,7 @@ const TalentHuntSeason2Details = () => {
   const contestStreams = [
     { name: 'Qirat & Naat Contest', date: '12th July 2025', participants: 'All Grades' },
     { name: 'Declamation / Speech Contest', date: '23rd August 2025', participants: 'Grades 6-12' },
-    { name: 'Singing Contest', date: '15th November 2025', participants: 'All Grades' },
-    { name: 'Instrumental Music Playing Contest', date: '15th November 2025', participants: 'All Grades' },
-    { name: 'Quiz Competition', date: '18th October 2025', participants: 'Grades 6-7 & 8-10' },
     { name: 'Spelling Bee Contest', date: '18th October 2025', participants: 'All Grades' },
-    { name: 'Creative Writing Competition', date: '13th September 2025', participants: 'All Grades' },
     { name: 'Painting, Sketching & Calligraphy Contest', date: '13th September 2025', participants: 'All Grades' },
     { name: 'Photography / Videography Contest', date: 'TBD', participants: 'All Grades' }
   ]
@@ -76,7 +72,7 @@ const TalentHuntSeason2Details = () => {
           <div className="bg-gradient-to-r from-accent-500 to-primary-500 p-4 sm:p-6">
             <h3 className="text-xl sm:text-2xl font-bold text-white flex items-center break-words">
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 flex-shrink-0" />
-              10 Exciting Contest Streams
+              5 Exciting Contest Streams
             </h3>
             <p className="text-sm sm:text-base text-white/90 mt-1 sm:mt-2 break-words">Carefully designed to foster expression, creativity, critical thinking, and skill-building</p>
           </div>

@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { Clock, Mail, MapPin, MessageCircle, Navigation, Phone, User } from 'lucide-react'
 import { Campus } from '@/lib/api/campuses'
+import { SCHOOL_INFO } from '@/lib/constants'
 import {
   mapsDirectionsUrl,
   MAP_PLACE_QUERY,
@@ -20,7 +21,7 @@ const ContactCard = ({ campus, photoSrc, featured = false }: ContactCardProps) =
   const phone = campus.mobileNumber || campus.phone
   const tel = toTelHref(phone)
   const wa = toWhatsAppHref(
-    campus.whatsAppNumber || phone,
+    SCHOOL_INFO.contact.whatsapp || campus.whatsAppNumber || phone,
     'Assalam-o-Alaikum! I would like to inquire about Pak Wattan School & College.'
   )
   const directions = mapsDirectionsUrl(campus.address || MAP_PLACE_QUERY)

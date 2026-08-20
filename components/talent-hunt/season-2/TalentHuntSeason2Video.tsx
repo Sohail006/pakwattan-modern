@@ -36,7 +36,7 @@ const TalentHuntSeason2Video = () => {
                   <div className="text-center text-white px-4">
                     <Trophy className="w-12 h-12 sm:w-16 sm:h-20 mx-auto mb-3 sm:mb-4 lg:mb-6 text-yellow-300" />
                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3 lg:mb-4 break-words">Talent Hunt Season-II</h3>
-                    <p className="text-base sm:text-lg lg:text-xl opacity-90 mb-1 sm:mb-2 break-words">10 Contest Streams</p>
+                    <p className="text-base sm:text-lg lg:text-xl opacity-90 mb-1 sm:mb-2 break-words">5 Contest Streams</p>
                     <p className="text-sm sm:text-base lg:text-lg opacity-80 break-words">Diverse talent areas covered</p>
                   </div>
                 </div>

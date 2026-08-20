@@ -13,7 +13,7 @@ export const SCHOOL_INFO: SchoolInfo = {
     phone: '0992-811555',
     email: 'pakwattan2020@gmail.com',
     address: 'Azam Khan road, beside Mubarak Plaza, Havelian, Abbottabad, KPK, Pakistan',
-    whatsapp: '03348113302',
+    whatsapp: '03180821377',
     socialMedia: {
       facebook: 'https://web.facebook.com/PAKWATTAN2020/',
       youtube: 'https://youtu.be/edf2-HxPxxs?si=Az95EFwCE2cY1UJP',
@@ -565,7 +565,7 @@ export const SITE_FAQS = [
   {
     question: 'How do I contact the school on WhatsApp?',
     answer:
-      'Message 0334-8113302 or use the floating WhatsApp button on the website for a quick response about admissions and campus queries.',
+      'Message 0318-0821377 or use the floating WhatsApp button on the website for a quick response about admissions and campus queries.',
   },
   {
     question: 'Are there careers or faculty openings?',

@@ -75,14 +75,14 @@ const HeroSection = () => {
               href="/admission"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-accent-500 px-6 sm:px-8 font-bold text-secondary-900 transition-colors hover:bg-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
             >
-              Apply Now
+              Apply Now for Admission
             </Link>
             <Link
               href="/talent-hunt/season-3"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/40 bg-white/10 px-6 sm:px-8 font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
               aria-label={`${TALENT_HUNT_SEASON3_TITLE} details and registration`}
             >
-              Talent Hunt Season 3
+              Register for Talent Hunt 3
             </Link>
           </div>
         </div>

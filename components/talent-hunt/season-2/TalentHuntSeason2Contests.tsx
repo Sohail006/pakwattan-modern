@@ -4,18 +4,13 @@ import { useState } from 'react'
 import { 
   BookOpen, 
   Mic, 
-  Music, 
-  Music2, 
-  Brain, 
   CheckSquare, 
-  Edit, 
   Palette, 
   Camera,
   ChevronDown,
   Calendar,
   Users,
   Trophy,
-  // Award
 } from 'lucide-react'
 
 const TalentHuntSeason2Contests = () => {
@@ -48,42 +43,6 @@ const TalentHuntSeason2Contests = () => {
     },
     {
       id: 3,
-      title: 'Singing Contest',
-      icon: <Music className="w-8 h-8" />,
-      description: 'National, Folk, and Patriotic songs competition',
-      date: '15th November 2025 (Saturday)',
-      participants: 'All Grades',
-      prizes: 'Best Singer Awards',
-      requirements: 'National, Folk, or Patriotic songs, good voice quality',
-      color: 'from-purple-500 to-violet-500',
-      details: 'Students will perform National, Folk, and Patriotic songs, showcasing their vocal talents and cultural appreciation.'
-    },
-    {
-      id: 4,
-      title: 'Instrumental Music Playing Contest',
-      icon: <Music2 className="w-8 h-8" />,
-      description: 'Individual or team instrumental music performance',
-      date: '15th November 2025 (Saturday)',
-      participants: 'All Grades',
-      prizes: 'Best Musician Awards',
-      requirements: 'Any instrument, solo or team performance',
-      color: 'from-orange-500 to-red-500',
-      details: 'Students can participate individually or in teams, playing any musical instrument to showcase their musical talents.'
-    },
-    {
-      id: 5,
-      title: 'Quiz Competition',
-      icon: <Brain className="w-8 h-8" />,
-      description: 'General knowledge and academic quiz competition',
-      date: '18th October 2025 (Saturday)',
-      participants: 'Grades 6-7 & 8-10',
-      prizes: 'Quiz Master Awards',
-      requirements: 'General knowledge, current affairs, academic subjects',
-      color: 'from-teal-500 to-cyan-500',
-      details: 'Separate syllabi for Grades 6-7 and Grades 8-10. Students can participate individually or in teams.'
-    },
-    {
-      id: 6,
       title: 'Spelling Bee Contest',
       icon: <CheckSquare className="w-8 h-8" />,
       description: 'Vocabulary and spelling skills competition',
@@ -95,19 +54,7 @@ const TalentHuntSeason2Contests = () => {
       details: 'Students will compete in spelling challenges with a vocabulary list provided in advance for preparation.'
     },
     {
-      id: 8,
-      title: 'Creative Writing Competition',
-      icon: <Edit className="w-8 h-8" />,
-      description: 'Story, Essay, and Poem writing competition',
-      date: '13th September 2025 (Saturday)',
-      participants: 'All Grades',
-      prizes: 'Best Writer Awards',
-      requirements: 'Original content, creativity, proper grammar',
-      color: 'from-indigo-500 to-blue-500',
-      details: 'Students will express their creativity through stories, essays, and poems, showcasing their writing skills.'
-    },
-    {
-      id: 9,
+      id: 4,
       title: 'Painting, Sketching & Calligraphy Contest',
       icon: <Palette className="w-8 h-8" />,
       description: 'Artistic expression through painting, sketching, and calligraphy',
@@ -119,7 +66,7 @@ const TalentHuntSeason2Contests = () => {
       details: 'Students will showcase their artistic talents through painting, sketching, and calligraphy.'
     },
     {
-      id: 10,
+      id: 5,
       title: 'Photography / Videography Contest',
       icon: <Camera className="w-8 h-8" />,
       description: 'Visual storytelling through photography and videography',
@@ -138,7 +85,7 @@ const TalentHuntSeason2Contests = () => {
         <div className="text-center mb-8 sm:mb-10 lg:mb-12">
           <div className="inline-flex items-center space-x-2 bg-accent-100 rounded-full px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium text-accent-700 mb-4 sm:mb-6">
             <span><Trophy className="w-3 h-3 sm:w-4 sm:h-4" /></span>
-            <span>10 Exciting Contest Streams</span>
+            <span>5 Exciting Contest Streams</span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-josefin mb-4 sm:mb-6 break-words">
             <span className="bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">

@@ -458,7 +458,7 @@ const BreakingNewsSidebar = () => {
                 Contact
               </Link>
               <a
-                href="https://wa.me/923348113302"
+                href="https://wa.me/923180821377"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-md border border-emerald-200 bg-emerald-50 py-1 text-center text-[10px] font-semibold text-emerald-800 hover:bg-emerald-100"

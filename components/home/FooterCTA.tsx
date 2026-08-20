@@ -5,7 +5,7 @@ import { ArrowRight, MessageCircle } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 
 const FooterCTA = () => {
-  const phone = SCHOOL_INFO.contact.whatsapp || '03348113302'
+  const phone = SCHOOL_INFO.contact.whatsapp || '03180821377'
   const digits = phone.replace(/\D/g, '')
   const international = digits.startsWith('0') ? `92${digits.slice(1)}` : digits
   const waHref = `https://wa.me/${international}`

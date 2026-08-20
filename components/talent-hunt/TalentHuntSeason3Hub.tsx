@@ -6,7 +6,6 @@ import { ArrowRight, Calendar, Sparkles } from 'lucide-react'
 import {
   TALENT_HUNT_PAST_SEASONS,
   TALENT_HUNT_SEASON3_FLYER,
-  TALENT_HUNT_SEASON3_OPENING,
   TALENT_HUNT_SEASON3_TAGLINE,
   TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
@@ -23,13 +22,9 @@ export default function TalentHuntSeason3Hub() {
             <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-gray-900 mb-3">
               {TALENT_HUNT_SEASON3_TITLE} — <span className="text-gradient">{TALENT_HUNT_SEASON3_TAGLINE}</span>
             </h2>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              District-wide inter-school talent development. Opening ceremony {TALENT_HUNT_SEASON3_OPENING.date} at{' '}
-              {TALENT_HUNT_SEASON3_OPENING.venue}.
-            </p>
             <div className="flex flex-wrap gap-3 mb-6">
               <Link href="/talent-hunt/season-3#register" className="btn-primary inline-flex items-center gap-2 min-h-[44px]">
-                Register Now <ArrowRight className="h-4 w-4" />
+                Register Now for Stream 1 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link href="/talent-hunt/season-3" className="btn-secondary min-h-[44px]">
                 Full Details

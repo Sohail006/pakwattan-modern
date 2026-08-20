@@ -29,11 +29,7 @@ const TalentHuntSeason2Registration = () => {
   const contestCategories = [
     'Qirat & Naat Contest',
     'Declamation / Speech Contest',
-    'Singing Contest',
-    'Instrumental Music Playing Contest',
-    'Quiz Competition',
     'Spelling Bee Contest',
-    'Creative Writing Competition',
     'Painting, Sketching & Calligraphy Contest',
     'Photography / Videography Contest'
   ]
