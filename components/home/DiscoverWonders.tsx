@@ -1,43 +1,64 @@
 'use client'
 
 import Link from 'next/link'
-import { GraduationCap, BookOpen, Trophy, Users, Heart } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import {
+  Blocks,
+  Building2,
+  Flower2,
+  GraduationCap,
+  NotebookPen,
+} from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
 import { useIntersectionObserver } from '@/hooks/useIntersectionObserver'
+
+type CampusWing = {
+  icon: LucideIcon
+  iconClass: string
+  title: string
+  href: string
+  description: string
+}
 
 const DiscoverWonders = () => {
   const [ref, entry] = useIntersectionObserver({
     threshold: 0.1,
     freezeOnceVisible: true
   })
-  const wings = [
+
+  const wings: CampusWing[] = [
     {
-      icon: <GraduationCap className="w-12 h-12" />,
+      icon: Blocks,
+      iconClass: 'text-amber-700',
       title: 'Montessori Wing',
       href: '/academic/montessori',
       description: 'Early childhood education with a focus on holistic development'
     },
     {
-      icon: <BookOpen className="w-12 h-12" />,
+      icon: NotebookPen,
+      iconClass: 'text-sky-700',
       title: 'Primary Wing',
       href: '/academic/primary-wing',
       description: 'Foundation years for classes 1st to 7th with core academics and character'
     },
     {
-      icon: <Users className="w-12 h-12" />,
+      icon: Building2,
+      iconClass: 'text-indigo-700',
       title: 'Boys Middle Wing',
       href: '/academic/boys-middle-wing',
       description: 'Boys section for classes 5th to 7th preparing students for senior studies'
     },
     {
-      icon: <Trophy className="w-12 h-12" />,
+      icon: GraduationCap,
+      iconClass: 'text-primary-700',
       title: 'Boys Senior Wing',
       href: '/academic/boys-senior-wing',
       description: 'Boys education from 8th class to Intermediate 2nd year'
     },
     {
-      icon: <Heart className="w-12 h-12" />,
+      icon: Flower2,
+      iconClass: 'text-rose-700',
       title: 'Girls Wing',
       href: '/academic/girls-wing',
       description: 'Girls section from 8th class to Intermediate 2nd year'
@@ -50,7 +71,7 @@ const DiscoverWonders = () => {
         <div className="text-center mb-10 sm:mb-12 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-secondary-800 font-josefin mb-4 sm:mb-6 break-words tracking-tight">
             <span className="bg-gradient-to-r from-primary-600 via-primary-700 to-accent-500 bg-clip-text text-transparent">
-              Discover the Wonders of Pak Wattan
+              Our Campuses.
             </span>
           </h2>
           <p className="text-base sm:text-lg md:text-xl text-secondary-600 max-w-4xl mx-auto leading-relaxed break-words">
@@ -65,6 +86,8 @@ const DiscoverWonders = () => {
         <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-6">
           {wings.map((wing, index) => {
             const isVisible = entry?.isIntersecting
+            const Icon = wing.icon
+
             return (
               <Link
                 key={wing.href}
@@ -80,9 +103,7 @@ const DiscoverWonders = () => {
                   isVisible ? 'animate-fade-in-up opacity-100' : 'opacity-0'
                 }`}>
                 <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-6 sm:mb-8 bg-gradient-to-br from-primary-100 to-accent-100 rounded-full flex items-center justify-center shadow-xl group-hover:shadow-2xl group-hover:from-primary-200 group-hover:to-accent-200 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 active:scale-100">
-                  <div className="text-primary-600 group-hover:text-primary-700 transition-colors duration-300">
-                    {wing.icon}
-                  </div>
+                  <Icon className={`h-10 w-10 sm:h-11 sm:w-11 lg:h-12 lg:w-12 ${wing.iconClass}`} aria-hidden />
                 </div>
                 <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-secondary-800 mb-4 sm:mb-6 group-hover:text-primary-700 transition-colors duration-300 break-words">
                   {wing.title}
