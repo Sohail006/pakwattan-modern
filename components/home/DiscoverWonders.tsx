@@ -7,7 +7,7 @@ import {
   Building2,
   Flower2,
   GraduationCap,
-  NotebookPen,
+  PenLine,
 } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import Card from '@/components/ui/Card'
@@ -36,7 +36,7 @@ const DiscoverWonders = () => {
       description: 'Early childhood education with a focus on holistic development'
     },
     {
-      icon: NotebookPen,
+      icon: PenLine,
       iconClass: 'text-sky-700',
       title: 'Primary Wing',
       href: '/academic/primary-wing',
