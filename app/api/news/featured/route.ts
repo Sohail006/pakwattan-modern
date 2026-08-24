@@ -1,35 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getApiBaseUrl } from '@/lib/config'
+import { backendFetch } from '@/lib/server/backendFetch'
 
 export const dynamic = 'force-dynamic'
 
 /**
  * GET /api/news/featured
  * Proxy to backend: GET /api/news/featured?limit=X
- * Get featured news items
  */
 export async function GET(request: NextRequest) {
   try {
-    const backendUrl = getApiBaseUrl()
     const authHeader = request.headers.get('authorization')
     const { searchParams } = new URL(request.url)
     const limit = searchParams.get('limit') || '10'
-    
-    const response = await fetch(
-      `${backendUrl}/api/news/featured?limit=${limit}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(authHeader && { Authorization: authHeader }),
-        },
-        cache: 'no-store',
-        next: { revalidate: 0 },
-      }
-    )
-    
+
+    const response = await backendFetch(`/api/news/featured?limit=${limit}`, {
+      method: 'GET',
+      headers: {
+        ...(authHeader && { Authorization: authHeader }),
+      },
+    })
+
     if (!response.ok) {
-      // If backend returns 404 or error, return empty array as fallback
       if (response.status === 404) {
         return NextResponse.json([])
       }
@@ -39,12 +30,19 @@ export async function GET(request: NextRequest) {
         { status: response.status }
       )
     }
-    
+
     const data = await response.json()
-    return NextResponse.json(data)
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        Pragma: 'no-cache',
+      },
+    })
   } catch (error) {
     console.error('Error in news featured API route:', error)
-    // Return empty array as fallback to prevent page crash
-    return NextResponse.json([])
+    return NextResponse.json(
+      { error: 'Unable to reach the news API. Please try again shortly.' },
+      { status: 502 }
+    )
   }
 }

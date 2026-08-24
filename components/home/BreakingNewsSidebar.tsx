@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import { formatTime, formatDate } from '@/lib/utils'
-import { getFeaturedNews, News } from '@/lib/api/news'
+import { getFeaturedNews, getNews, News } from '@/lib/api/news'
 import { ChevronRight, Filter, Loader2 } from 'lucide-react'
 
 // Facebook SDK types
@@ -153,7 +153,12 @@ const BreakingNewsSidebar = () => {
       try {
         setLoadingNews(true)
         const data = await getFeaturedNews(20) // Get more items for filtering
-        setNewsItems(data)
+        if (data.length > 0) {
+          setNewsItems(data)
+        } else {
+          const published = await getNews({ isPublished: true, page: 1, pageSize: 20, sortBy: 'date', sortOrder: 'desc' })
+          setNewsItems(published.data || [])
+        }
       } catch (error) {
         console.error('Error fetching featured news:', error)
         setNewsItems([])

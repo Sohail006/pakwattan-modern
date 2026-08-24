@@ -189,9 +189,10 @@ export async function getFeaturedNews(limit: number = 5): Promise<News[]> {
     const cached = getFromCache<News[]>(cacheKey);
     if (cached) return cached;
 
-    const result = await api.get<News[]>(path);
-    setCache(cacheKey, result);
-    return result;
+    const result = await api.get<unknown>(path);
+    const items = normalizeNewsArray(result);
+    setCache(cacheKey, items);
+    return items;
   } catch (error) {
     const apiError = error as ApiError;
     throw new Error(apiError.message || 'Unable to load featured news. Please try again.');
