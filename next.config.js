@@ -92,11 +92,10 @@ const nextConfig = {
   },
   
   // API rewrites: proxy same-origin /api/* to ASP.NET.
-  // Important: App Router handlers under app/api/* take precedence over these
-  // afterFiles rewrites. Do NOT add proxy route.ts files for backend endpoints
-  // (news, auth, campuses, …) — they break on hosts with untrusted TLS while
-  // Vercel rewrites still work (login/campuses prove this).
-  // Keep app/api only for Next-only handlers (e.g. facebook-latest-post).
+  // beforeFiles is required for /api/news and /api/events so they are never
+  // captured by leftover App Router proxies (those fail TLS on Vercel while
+  // Vercel’s rewrite to ASP.NET works — same path login/campuses use).
+  // Keep Next-only handlers such as /api/facebook-latest-post as App Router routes.
   async rewrites() {
     // Get API base URL from environment or use defaults (no trailing slash — avoids //api in destination)
     const raw =
@@ -106,18 +105,36 @@ const nextConfig = {
         : 'http://localhost:5267')
     const apiBaseUrl = String(raw).replace(/\/+$/, '')
 
-    const rewrites = [
-      {
-        source: '/api/:path*',
-        destination: `${apiBaseUrl}/api/:path*`
-      },
-      {
-        source: '/uploads/:path*',
-        destination: `${apiBaseUrl}/uploads/:path*`
-      }
-    ]
-    
-    return rewrites
+    return {
+      beforeFiles: [
+        {
+          source: '/api/news',
+          destination: `${apiBaseUrl}/api/news`,
+        },
+        {
+          source: '/api/news/:path*',
+          destination: `${apiBaseUrl}/api/news/:path*`,
+        },
+        {
+          source: '/api/events',
+          destination: `${apiBaseUrl}/api/events`,
+        },
+        {
+          source: '/api/events/:path*',
+          destination: `${apiBaseUrl}/api/events/:path*`,
+        },
+      ],
+      afterFiles: [
+        {
+          source: '/api/:path*',
+          destination: `${apiBaseUrl}/api/:path*`,
+        },
+        {
+          source: '/uploads/:path*',
+          destination: `${apiBaseUrl}/uploads/:path*`,
+        },
+      ],
+    }
   },
   
   // Environment-specific configurations
