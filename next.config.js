@@ -91,8 +91,12 @@ const nextConfig = {
     unoptimized: false // ENABLED - Images will be optimized
   },
   
-  // API rewrites: dev proxies /api to local ASP.NET over HTTP to avoid local
-  // self-signed certificate trust issues during development.
+  // API rewrites: proxy same-origin /api/* to ASP.NET.
+  // Important: App Router handlers under app/api/* take precedence over these
+  // afterFiles rewrites. Do NOT add proxy route.ts files for backend endpoints
+  // (news, auth, campuses, …) — they break on hosts with untrusted TLS while
+  // Vercel rewrites still work (login/campuses prove this).
+  // Keep app/api only for Next-only handlers (e.g. facebook-latest-post).
   async rewrites() {
     // Get API base URL from environment or use defaults (no trailing slash — avoids //api in destination)
     const raw =
@@ -102,9 +106,6 @@ const nextConfig = {
         : 'http://localhost:5267')
     const apiBaseUrl = String(raw).replace(/\/+$/, '')
 
-    // Proxies same-origin /api/* to the ASP.NET API. Client code that uses lib/api/client (getApiBaseUrl())
-    // talks to the API directly and does not use this rewrite. App Router handlers under app/api/ are not
-    // reachable for paths matched here (the rewrite runs first for those requests).
     const rewrites = [
       {
         source: '/api/:path*',

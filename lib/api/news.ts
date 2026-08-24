@@ -228,7 +228,8 @@ export async function getMarqueeNews(limit: number = 15): Promise<News[]> {
   try {
     // Do not use limit=10 — production CDN has a stale cached response for that exact URL.
     const safeLimit = limit === 10 ? 15 : Math.min(Math.max(limit, 1), 50)
-    const path = `/api/news/marquee?limit=${safeLimit}&_cb=2`
+    // Bust any stale CDN entry; ASP.NET ignores unknown query params.
+    const path = `/api/news/marquee?limit=${safeLimit}&_cb=3`
     const result = await api.get<unknown>(path)
     const items = normalizeNewsArray(result)
 
