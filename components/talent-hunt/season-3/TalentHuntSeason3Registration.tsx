@@ -256,24 +256,35 @@ export default function TalentHuntSeason3Registration() {
   }
 
   return (
-    <section className="py-12 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+    <section className="relative overflow-hidden py-12 sm:py-16 bg-gradient-to-b from-white via-primary-50/70 to-accent-50/40">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-48 bg-[radial-gradient(ellipse_at_center,_rgba(212,160,23,0.12),_transparent_65%)]"
+        aria-hidden
+      />
       <div id="register" className="scroll-mt-24" aria-hidden="true" />
       <div id="register-participant" className="scroll-mt-24" aria-hidden="true" />
       <div id="register-institution" className="scroll-mt-24" aria-hidden="true" />
-      <div className="container-custom max-w-4xl">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-gray-900 mb-3">
+      <div className="container-custom relative max-w-4xl">
+        <div className="text-center mb-8 sm:mb-10">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary-200 bg-white px-3 py-1 text-xs font-semibold tracking-wide text-primary-800 shadow-sm">
+            Open registration
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-bold font-josefin text-secondary-900 mb-3">
             Register for <span className="text-gradient">{TALENT_HUNT_SEASON3_TITLE}</span>
           </h2>
-          <p className="text-gray-600">Choose participant or institution registration below.</p>
+          <p className="text-secondary-600 max-w-2xl mx-auto">
+            Choose participant or institution registration — secure your place in Season 3.
+          </p>
         </div>
 
-        <div className="flex rounded-xl bg-white p-1 shadow-sm border border-gray-200 mb-6">
+        <div className="flex rounded-2xl bg-white/90 p-1.5 shadow-md border border-primary-100 mb-6 backdrop-blur-sm">
           <button
             type="button"
             onClick={() => setTab('participant')}
-            className={`flex-1 rounded-lg py-3 text-sm font-semibold transition-colors min-h-[44px] ${
-              tab === 'participant' ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-50'
+            className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all min-h-[44px] ${
+              tab === 'participant'
+                ? 'bg-primary-600 text-white shadow-sm'
+                : 'text-secondary-600 hover:bg-primary-50'
             }`}
           >
             Participant (PKR {TALENT_HUNT_PARTICIPANT_FEE}/-)
@@ -281,18 +292,20 @@ export default function TalentHuntSeason3Registration() {
           <button
             type="button"
             onClick={() => setTab('institution')}
-            className={`flex-1 rounded-lg py-3 text-sm font-semibold transition-colors min-h-[44px] ${
-              tab === 'institution' ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-50'
+            className={`flex-1 rounded-xl py-3 text-sm font-semibold transition-all min-h-[44px] ${
+              tab === 'institution'
+                ? 'bg-primary-600 text-white shadow-sm'
+                : 'text-secondary-600 hover:bg-primary-50'
             }`}
           >
             Institution (PKR {TALENT_HUNT_INSTITUTION_FEE}/-)
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-3xl shadow-xl border border-primary-100/80 overflow-hidden ring-1 ring-black/5">
           {tab === 'participant' ? (
             <>
-              <div className="bg-gradient-to-r from-primary-500 to-accent-500 p-5 sm:p-6 text-white">
+              <div className="bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500 p-5 sm:p-6 text-white">
                 <h3 className="text-xl font-bold flex items-center gap-2">
                   <Award className="h-5 w-5" /> Participant Registration
                 </h3>

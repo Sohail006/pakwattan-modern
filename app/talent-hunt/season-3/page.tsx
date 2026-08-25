@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
 import TalentHuntSeason3Hero from '@/components/talent-hunt/season-3/TalentHuntSeason3Hero'
+import TalentHuntSeason3About from '@/components/talent-hunt/season-3/TalentHuntSeason3About'
 import StructuredData from '@/components/seo/StructuredData'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
@@ -52,6 +53,7 @@ export default function TalentHuntSeason3Page() {
       <StructuredData data={breadcrumbs} />
       <div className="min-h-screen">
         <TalentHuntSeason3Hero />
+        <TalentHuntSeason3About />
         <TalentHuntSeason3Registration />
         <TalentHuntSeason3Details />
       </div>

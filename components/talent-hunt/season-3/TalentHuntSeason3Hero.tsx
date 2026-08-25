@@ -7,6 +7,8 @@ import Container from '@/components/ui/Container'
 import { SCHOOL_INFO } from '@/lib/constants'
 import {
   TALENT_HUNT_SEASON3_INTRO,
+  TALENT_HUNT_SEASON3_OPENING,
+  TALENT_HUNT_SEASON3_PERIOD,
   TALENT_HUNT_SEASON3_TAGLINE,
   TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
@@ -18,7 +20,7 @@ export default function TalentHuntSeason3Hero() {
   const [videoLoaded, setVideoLoaded] = useState(false)
 
   return (
-    <section className="relative isolate flex min-h-[78svh] sm:min-h-[85svh] items-end sm:items-center overflow-hidden text-white">
+    <section className="relative isolate flex min-h-[78svh] sm:min-h-[88svh] items-end sm:items-center overflow-hidden text-white">
       <div className="absolute inset-0 z-0">
         <Image
           src={FALLBACK_IMAGE}
@@ -52,31 +54,37 @@ export default function TalentHuntSeason3Hero() {
         )}
 
         <div
-          className="absolute inset-0 bg-gradient-to-r from-secondary-900/90 via-primary-900/75 to-primary-800/45"
+          className="absolute inset-0 bg-gradient-to-r from-secondary-900/92 via-primary-900/78 to-primary-800/40"
           aria-hidden
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-secondary-900/80 via-transparent to-secondary-900/30"
+          className="absolute inset-0 bg-gradient-to-t from-secondary-900/90 via-transparent to-secondary-900/35"
           aria-hidden
         />
       </div>
 
-      <Container className="relative z-10 w-full pb-12 pt-28 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-36">
+      <Container className="relative z-10 w-full pb-14 pt-28 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-36">
         <div className="max-w-2xl animate-fade-in-up">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs sm:text-sm font-semibold tracking-wide text-white/95 backdrop-blur-sm">
+            Season 3 · {TALENT_HUNT_SEASON3_PERIOD}
+          </p>
           <p className="font-josefin text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white drop-shadow-sm">
             {SCHOOL_INFO.name}
           </p>
           <h1 className="mt-3 sm:mt-4 text-xl sm:text-2xl lg:text-3xl font-semibold text-accent-200 font-josefin leading-snug">
             {TALENT_HUNT_SEASON3_TITLE}
           </h1>
-          <p className="mt-2 text-base sm:text-lg font-semibold tracking-widest text-white/90">
+          <p className="mt-2 text-sm sm:text-base font-semibold tracking-[0.18em] text-white/85 uppercase">
             {TALENT_HUNT_SEASON3_TAGLINE}
           </p>
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl">
+          <p className="mt-4 max-w-xl text-base sm:text-lg text-white/90 leading-relaxed">
             {TALENT_HUNT_SEASON3_INTRO}
           </p>
+          <p className="mt-3 text-sm text-white/75">
+            Opening {TALENT_HUNT_SEASON3_OPENING.date} · {TALENT_HUNT_SEASON3_OPENING.venue}
+          </p>
 
-          <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
             <Link
               href="#register"
               className="inline-flex items-center justify-center min-h-[48px] px-6 sm:px-8 rounded-xl bg-accent-500 hover:bg-accent-400 text-secondary-900 font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
@@ -84,10 +92,10 @@ export default function TalentHuntSeason3Hero() {
               Register Now for Stream 1
             </Link>
             <Link
-              href="/talent-hunt"
+              href="#stream-1"
               className="inline-flex items-center justify-center min-h-[48px] px-6 sm:px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/40 text-white font-semibold backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
             >
-              All Seasons
+              Explore Streams
             </Link>
           </div>
         </div>
