@@ -5,7 +5,7 @@ import StructuredData from '@/components/seo/StructuredData'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
 import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 import { generateBreadcrumbSchema } from '@/lib/seo/structuredData'
-import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
+import { TALENT_HUNT_SEASON3_PERIOD, TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const TalentHuntSeason3Registration = dynamic(
   () => import('@/components/talent-hunt/season-3/TalentHuntSeason3Registration'),
@@ -34,9 +34,9 @@ const TalentHuntSeason3Details = dynamic(
 export const metadata: Metadata = generatePageMetadata({
   title: TALENT_HUNT_SEASON3_TITLE,
   description:
-    `${TALENT_HUNT_SEASON3_TITLE} — DREAM • DARE • DEVELOP. District-wide literary, science, entrepreneurship and sports competitions. Grand opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad.`,
+    `${TALENT_HUNT_SEASON3_TITLE} — DREAM • DARE • DEVELOP (${TALENT_HUNT_SEASON3_PERIOD}). Six streams: Poetry, Drama & Skit, Storytelling, Science Models, Young Entrepreneurs Pitch, and Sports Gala. Opening 25 July 2026 at Jalal Baba Auditorium, Abbottabad.`,
   keywords:
-    'talent hunt with pak wattan season 3, pak wattan, havelian, district talent, poetry mushaira, science model, entrepreneur pitch, 2026-27',
+    'talent hunt with pak wattan season 3, poetry mushaira 22 august 2026, drama skit, storytelling, science model, young entrepreneurs pitch, sports gala january 2027, pak wattan havelian',
   path: '/talent-hunt/season-3',
 })
 

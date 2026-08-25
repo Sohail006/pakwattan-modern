@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/components/ui/Container'
 import { SCHOOL_INFO } from '@/lib/constants'
-import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
+import { TALENT_HUNT_SEASON3_INTRO, TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const FALLBACK_IMAGE = '/images/talent-hunt/Talenthunt3fliyer.webp'
 
@@ -66,8 +66,7 @@ const TalentHuntHero = () => {
             Talent Hunt with Pak Wattan
           </h1>
           <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl">
-            {TALENT_HUNT_SEASON3_TITLE} — a district-wide stage for literary, scientific,
-            entrepreneurial, and sports talent.
+            {TALENT_HUNT_SEASON3_TITLE} — {TALENT_HUNT_SEASON3_INTRO}
           </p>
 
           <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">

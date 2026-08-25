@@ -6,6 +6,7 @@ import { ArrowRight, Calendar, Sparkles } from 'lucide-react'
 import {
   TALENT_HUNT_PAST_SEASONS,
   TALENT_HUNT_SEASON3_FLYER,
+  TALENT_HUNT_SEASON3_PERIOD,
   TALENT_HUNT_SEASON3_TAGLINE,
   TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
@@ -32,7 +33,7 @@ export default function TalentHuntSeason3Hub() {
             </div>
             <p className="text-sm text-gray-500 flex items-center gap-2">
               <Calendar className="h-4 w-4 text-primary-600" />
-              Academic year 2026–27
+              {TALENT_HUNT_SEASON3_PERIOD}
             </p>
           </div>
           <Link href="/talent-hunt/season-3" className="block overflow-hidden rounded-2xl shadow-lg ring-1 ring-gray-200 hover:shadow-xl transition-shadow">
