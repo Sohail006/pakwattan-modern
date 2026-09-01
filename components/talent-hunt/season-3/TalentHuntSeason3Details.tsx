@@ -13,6 +13,7 @@ import {
   Phone,
   Sparkles,
   Trophy,
+  Users,
 } from 'lucide-react'
 import {
   TALENT_HUNT_SEASON3_CONTACT,

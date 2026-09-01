@@ -27,6 +27,10 @@ const ParentTeacherMeetings = dynamic(() => import('@/components/school-life/Par
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
 
+const HouseSystem = dynamic(() => import('@/components/school-life/HouseSystem'), {
+  loading: () => <SkeletonLoader variant="section" className="my-8" />
+})
+
 const SchoolActivities = dynamic(() => import('@/components/school-life/SchoolActivities'), {
   loading: () => <SkeletonLoader variant="section" className="my-8" />
 })
@@ -37,8 +41,8 @@ const StudentLife = dynamic(() => import('@/components/school-life/StudentLife')
 
 export const metadata: Metadata = generatePageMetadata({
   title: 'School Life',
-  description: 'Discover the vibrant school life at Pak Wattan School & College of Sciences. Learn about our academic schedule, student activities, code of conduct, attendance policy, and parent-teacher meetings.',
-  keywords: 'school life, student activities, academic schedule, code of conduct, attendance policy, parent teacher meetings, pak wattan school life',
+  description: 'Discover the vibrant school life at Pak Wattan School & College of Sciences. Explore our four-house system, academic schedule, student activities, code of conduct, attendance policy, and parent-teacher meetings.',
+  keywords: 'school life, house system, Edhi house, Aziz Bhatti house, Marium Mukhtiar house, Abdul Qadeer Khan house, student activities, academic schedule, pak wattan school life',
   path: '/school-life',
 })
 
@@ -58,6 +62,7 @@ export default function SchoolLifePage() {
         <CollegeKit />
         <AttendancePolicy />
         <ParentTeacherMeetings />
+        <HouseSystem />
         <SchoolActivities />
         <StudentLife />
       </div>

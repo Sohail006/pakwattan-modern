@@ -30,7 +30,7 @@ export default function TalentHuntSeason3About() {
             {TALENT_HUNT_SEASON3_EXECUTIVE_SUMMARY}
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-8">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6">
             {TALENT_HUNT_SEASON3_CONTESTS.map((contest) => (
               <Link
                 key={contest.id}
@@ -44,6 +44,18 @@ export default function TalentHuntSeason3About() {
               </Link>
             ))}
           </div>
+
+          <p className="text-sm text-secondary-500">
+            Pak Wattan students can select their house during{' '}
+            <Link href="#register-participant" className="font-semibold text-primary-700 hover:underline">
+              participant registration
+            </Link>
+            .{' '}
+            <Link href="/school-life#house-system" className="font-semibold text-primary-700 hover:underline">
+              Explore our four houses
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </section>

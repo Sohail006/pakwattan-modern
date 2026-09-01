@@ -14,6 +14,8 @@ export interface TalentHuntSeason3ParticipantRequest {
   contestCategory: string
   address: string
   emergencyContact: string
+  /** Optional — for Pak Wattan students tracking inter-house participation */
+  house?: string
   paymentMethod: number
   transactionReceiptUrl?: string | null
   registrationFee: number
@@ -45,6 +47,7 @@ export interface TalentHuntSeason3RegistrationResponse {
   contestCategory?: string
   address?: string
   emergencyContact?: string
+  house?: string
   institutionName?: string
   focalPersonName?: string
   focalPersonMobile?: string

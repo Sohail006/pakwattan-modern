@@ -1,6 +1,7 @@
 'use client'
 
-import { Eye, Target, Heart } from 'lucide-react'
+import Link from 'next/link'
+import { Eye, Target, Heart, Shield, ArrowRight } from 'lucide-react'
 import Accordion from '@/components/ui/Accordion'
 import { ABOUT_MISSION, ABOUT_VALUES, ABOUT_VISION } from '@/lib/about-data'
 
@@ -70,6 +71,30 @@ const VisionTab = () => {
               <p className="text-xs sm:text-sm text-secondary-600 leading-relaxed">{value.description}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-primary-200 bg-gradient-to-br from-primary-50 to-accent-50/40 p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
+              <Shield className="h-5 w-5" aria-hidden />
+            </span>
+            <div>
+              <h4 className="text-lg font-bold text-secondary-900 mb-1">House System</h4>
+              <p className="text-sm sm:text-base text-secondary-600 leading-relaxed">
+                Our four houses turn vision and values into daily leadership, teamwork, and healthy
+                competition — each inspired by a national hero.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/school-life#house-system"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
+          >
+            Explore Houses
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
         </div>
       </div>
 

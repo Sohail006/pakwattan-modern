@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState, useSyncExternalStore } from 'react'
-import { Award, Building2, CheckCircle, Phone, User } from 'lucide-react'
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { Award, Building2, CheckCircle, Phone, Shield, User } from 'lucide-react'
 import {
   submitTalentHuntSeason3Registration,
   type TalentHuntSeason3SubmitRequest,
@@ -13,6 +13,7 @@ import {
   TALENT_HUNT_SEASON3_REGISTRATION_CONTESTS,
   TALENT_HUNT_SEASON3_TITLE,
 } from '@/lib/talent-hunt-season3-data'
+import { HOUSE_OPTIONS, isPakWattanSchoolName } from '@/lib/houses-data'
 import TalentHuntPaymentFields from '@/components/talent-hunt/shared/TalentHuntPaymentFields'
 import {
   cleanPhoneNumber,
@@ -70,6 +71,7 @@ export default function TalentHuntSeason3Registration() {
     grade: '',
     school: '',
     contestCategory: '',
+    house: '',
     address: '',
     emergencyContact: '',
     paymentMethod: 0,
@@ -90,6 +92,11 @@ export default function TalentHuntSeason3Registration() {
     focalPersonMobile: '',
     transactionReceiptUrl: null as string | null,
   })
+
+  const showHouseField = useMemo(
+    () => isPakWattanSchoolName(participant.school),
+    [participant.school]
+  )
 
   useEffect(() => {
     setTab(hashTab)
@@ -130,6 +137,12 @@ export default function TalentHuntSeason3Registration() {
     }
     setParticipant((p) => ({ ...p, [name]: value }))
   }
+
+  useEffect(() => {
+    if (!showHouseField && participant.house) {
+      setParticipant((p) => ({ ...p, house: '' }))
+    }
+  }, [showHouseField, participant.house])
 
   const handleInstitutionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -192,6 +205,7 @@ export default function TalentHuntSeason3Registration() {
         emergencyContact: cleanPhoneNumber(participant.emergencyContact),
         registrationFee: TALENT_HUNT_PARTICIPANT_FEE,
         transactionReceiptUrl: participant.transactionReceiptUrl,
+        ...(participant.house ? { house: participant.house } : {}),
       }
       await submitTalentHuntSeason3Registration(payload)
       setIsSubmitted(true)
@@ -404,6 +418,32 @@ export default function TalentHuntSeason3Registration() {
                       className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px]"
                     />
                   </div>
+                  {showHouseField && (
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        <span className="inline-flex items-center gap-1.5">
+                          <Shield className="h-4 w-4 text-primary-600" aria-hidden />
+                          House (Pak Wattan students)
+                        </span>
+                      </label>
+                      <select
+                        name="house"
+                        value={participant.house}
+                        onChange={handleParticipantChange}
+                        className="w-full px-3 py-2.5 border border-gray-300 rounded-lg min-h-[44px] bg-white"
+                      >
+                        <option value="">Select your house (optional)</option>
+                        {HOUSE_OPTIONS.map((option) => (
+                          <option key={option.id} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="mt-1 text-xs text-gray-500">
+                        Helps us track house participation for Pak Wattan students in Season 3.
+                      </p>
+                    </div>
+                  )}
                   <div className="md:col-span-2">
                     <label className="block text-sm font-semibold text-gray-700 mb-1">Contest Category *</label>
                     <select

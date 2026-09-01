@@ -52,7 +52,16 @@ export const MAIN_NAVIGATION: NavigationItem[] = [
       { name: 'Girls Wing', href: '/academic/girls-wing' },
     ]
   },
-  { name: 'School Life', href: '/school-life' },
+  {
+    name: 'School Life',
+    href: '/school-life',
+    submenu: [
+      { name: 'Overview', href: '/school-life' },
+      { name: 'House System', href: '/school-life#house-system' },
+      { name: 'Standings', href: '/school-life#house-standings' },
+      { name: 'Activities', href: '/school-life#school-activities' },
+    ],
+  },
   { name: 'Awards', href: '/awards' },
   { name: 'FAQs', href: '/faqs' },
   { name: 'Contact Us', href: '/contact' },
