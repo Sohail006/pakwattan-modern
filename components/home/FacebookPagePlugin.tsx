@@ -2,6 +2,15 @@
 
 import { useEffect } from 'react'
 
+declare global {
+  interface Window {
+    FB?: {
+      init: (config: Record<string, unknown>) => void
+      api: (path: string, callback: (response: Record<string, unknown>) => void) => void
+    }
+  }
+}
+
 const FacebookPagePlugin = () => {
   useEffect(() => {
     // Load Facebook SDK
