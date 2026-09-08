@@ -1,8 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Heart, Sparkles, Target } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Shield } from 'lucide-react'
 import type { House } from '@/lib/houses-data'
 import { HOUSES } from '@/lib/houses-data'
+import { SCHOOL_INFO } from '@/lib/constants'
 
 type HouseDetailProps = {
   house: House
@@ -12,124 +13,209 @@ export default function HouseDetail({ house }: HouseDetailProps) {
   const otherHouses = HOUSES.filter((item) => item.id !== house.id)
 
   return (
-    <div className="min-h-screen">
-      <section className={`relative overflow-hidden bg-gradient-to-br ${house.accentClass} text-white`}>
+    <div className="min-h-screen bg-[#0a1f14]">
+      {/* Hero — brand, crest, motto, one supporting line */}
+      <section
+        className={`relative isolate flex min-h-[78svh] sm:min-h-[85svh] items-end overflow-hidden bg-gradient-to-br ${house.accentClass} text-white`}
+      >
         <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(212,175,55,0.15),_transparent_60%)]"
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_20%,_rgba(212,175,55,0.22),_transparent_55%)]"
           aria-hidden
         />
-        <div className="container-custom relative py-16 sm:py-20 lg:py-24">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_10%_90%,_rgba(255,255,255,0.06),_transparent_45%)]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#0a1f14] to-transparent"
+          aria-hidden
+        />
+
+        {/* Soft pattern atmosphere */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.07]"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(135deg, transparent, transparent 18px, rgba(212,175,55,0.35) 18px, rgba(212,175,55,0.35) 19px)',
+          }}
+          aria-hidden
+        />
+
+        <div className="container-custom relative z-10 w-full pb-14 pt-28 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-36">
           <Link
             href="/school-life#house-system"
-            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-white/80 transition-colors hover:text-accent-200"
+            className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-white/75 transition-colors hover:text-accent-200 animate-fade-in"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
-            Back to House System
+            House System
           </Link>
 
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            <div className="relative h-52 w-44 sm:h-64 sm:w-52 shrink-0 overflow-hidden rounded-2xl bg-emerald-950/50 ring-2 ring-accent-400/40 shadow-2xl">
-              <Image
-                src={house.crest.src}
-                alt={house.crest.alt}
-                width={house.crest.width}
-                height={house.crest.height}
-                priority
-                className="h-full w-full object-contain p-2"
-                sizes="(max-width: 1024px) 176px, 208px"
-              />
-            </div>
-            <div className="text-center lg:text-left max-w-2xl">
-              <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-accent-300">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] items-end gap-10 lg:gap-14">
+            <div className="animate-fade-in-up order-2 lg:order-1 text-center lg:text-left">
+              <p className="font-josefin text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white drop-shadow-sm">
+                {SCHOOL_INFO.name}
+              </p>
+              <p className="mt-3 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-accent-300">
+                <Shield className="h-3.5 w-3.5" aria-hidden />
                 PWSCS House
               </p>
-              <h1 className="font-josefin text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
+              <h1 className="mt-3 font-josefin text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug text-accent-100">
                 {house.name}
               </h1>
-              <p className="text-lg sm:text-xl font-semibold italic text-accent-200 mb-4">
+              <p className="mt-4 text-lg sm:text-xl lg:text-2xl font-semibold italic text-accent-300">
                 &ldquo;{house.motto}&rdquo;
               </p>
-              <p className="text-base sm:text-lg text-white/85 leading-relaxed">{house.description}</p>
-              <div className="mt-5 flex flex-wrap justify-center lg:justify-start gap-2">
-                {house.values.map((value) => (
-                  <span
-                    key={value}
-                    className="rounded-full border border-accent-400/30 bg-black/20 px-3 py-1 text-sm font-medium text-accent-100"
-                  >
-                    {value}
-                  </span>
-                ))}
+              <p className="mt-5 max-w-xl mx-auto lg:mx-0 text-base sm:text-lg text-white/85 leading-relaxed">
+                {house.description}
+              </p>
+              <p className="mt-6 text-sm sm:text-base font-medium tracking-wide text-accent-200/90">
+                {house.values.join(' · ')}
+              </p>
+              <div className="mt-8 flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3">
+                <Link
+                  href="/school-life#house-standings"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-accent-500 px-6 font-bold text-secondary-900 transition-colors hover:bg-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-200 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
+                >
+                  View Standings
+                </Link>
+                <Link
+                  href="/school-life#school-activities"
+                  className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/35 bg-white/10 px-6 font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
+                >
+                  School Activities
+                </Link>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2 flex justify-center lg:justify-end animate-fade-in-right">
+              <div className="relative">
+                <div
+                  className="absolute -inset-6 rounded-[2rem] bg-accent-400/15 blur-2xl"
+                  aria-hidden
+                />
+                <div className="relative h-64 w-52 sm:h-80 sm:w-64 lg:h-[22rem] lg:w-[18rem]">
+                  <Image
+                    src={house.crest.src}
+                    alt={house.crest.alt}
+                    width={house.crest.width}
+                    height={house.crest.height}
+                    priority
+                    className="h-full w-full object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.35)] animate-hero-kenburns"
+                    sizes="(max-width: 640px) 208px, (max-width: 1024px) 256px, 288px"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="section-padding bg-white">
-        <div className="container-custom max-w-4xl">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            <div className="rounded-2xl border border-primary-100 bg-primary-50/40 p-6 sm:p-7">
-              <div className="mb-4 flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
-                  <Heart className="h-5 w-5" aria-hidden />
-                </span>
-                <h2 className="font-josefin text-xl font-bold text-secondary-900">Our Namesake</h2>
-              </div>
-              <p className="mb-2 text-sm font-semibold text-primary-700">{house.namesakeTitle}</p>
-              <p className="text-secondary-600 leading-relaxed">{house.namesakeBio}</p>
-            </div>
-
-            <div className="rounded-2xl border border-accent-100 bg-accent-50/30 p-6 sm:p-7">
-              <div className="mb-4 flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-100 text-accent-700">
-                  <Target className="h-5 w-5" aria-hidden />
-                </span>
-                <h2 className="font-josefin text-xl font-bold text-secondary-900">House Focus</h2>
-              </div>
-              <ul className="space-y-2.5">
-                {house.focusAreas.map((area) => (
-                  <li key={area} className="flex gap-2 text-secondary-700">
-                    <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-accent-600" aria-hidden />
-                    {area}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-padding bg-gradient-to-br from-secondary-50 to-primary-50/40 border-t border-secondary-100">
-        <div className="container-custom max-w-4xl">
-          <h2 className="font-josefin text-2xl sm:text-3xl font-bold text-secondary-900 text-center mb-8">
-            Explore Other Houses
+      {/* Namesake — one job */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#0a1f14] via-[#0f2e1c] to-[#123524] text-white py-16 sm:py-20">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-400/50 to-transparent"
+          aria-hidden
+        />
+        <div className="container-custom max-w-3xl text-center sm:text-left">
+          <p className="mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-accent-400">
+            Our Namesake
+          </p>
+          <h2 className="font-josefin text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
+            {house.namesakeTitle}
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="mb-6 h-0.5 w-16 mx-auto sm:mx-0 bg-accent-400/80" aria-hidden />
+          <p className="text-base sm:text-lg text-white/80 leading-relaxed">{house.namesakeBio}</p>
+        </div>
+      </section>
+
+      {/* House focus — one job */}
+      <section className="relative bg-[#f7faf7] py-16 sm:py-20">
+        <div className="container-custom max-w-4xl">
+          <div className="text-center mb-10 sm:mb-12">
+            <p className="mb-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-primary-700">
+              House Focus
+            </p>
+            <h2 className="font-josefin text-2xl sm:text-3xl font-bold text-secondary-900">
+              Where {house.shortName} members lead
+            </h2>
+            <p className="mt-3 text-secondary-600 max-w-xl mx-auto">
+              Students channel the house spirit through these pathways of growth and competition.
+            </p>
+          </div>
+
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-6 max-w-3xl mx-auto">
+            {house.focusAreas.map((area, index) => (
+              <li key={area} className="flex items-start gap-4 animate-fade-in-up" style={{ animationDelay: `${index * 0.08}s`, animationFillMode: 'both' }}>
+                <span
+                  className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-700 text-sm font-bold text-accent-200"
+                  aria-hidden
+                >
+                  {index + 1}
+                </span>
+                <div>
+                  <p className="font-josefin text-lg font-bold text-secondary-900">{area}</p>
+                  <div className="mt-2 h-px w-12 bg-accent-500/70" aria-hidden />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Other houses */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#0f2e1c] via-primary-900 to-secondary-900 text-white py-16 sm:py-20">
+        <div
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(212,175,55,0.12),_transparent_55%)]"
+          aria-hidden
+        />
+        <div className="container-custom relative max-w-5xl">
+          <div className="text-center mb-10">
+            <p className="mb-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-accent-300">
+              House System
+            </p>
+            <h2 className="font-josefin text-2xl sm:text-3xl font-bold">Explore Other Houses</h2>
+            <p className="mt-3 text-white/70 max-w-lg mx-auto">
+              Four houses. One Pak Wattan spirit — discover the values behind each crest.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
             {otherHouses.map((item) => (
               <Link
                 key={item.id}
                 href={`/school-life/houses/${item.id}`}
-                className="group flex items-center gap-3 rounded-xl border border-secondary-100 bg-white p-4 shadow-sm transition-all hover:border-primary-200 hover:shadow-md"
+                className="group relative flex flex-col items-center text-center rounded-2xl border border-accent-400/20 bg-white/5 px-5 py-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent-400/45 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
               >
-                <div className="relative h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-emerald-950/60 ring-1 ring-accent-400/25">
+                <div className="relative mb-4 h-28 w-24 transition-transform group-hover:scale-105">
                   <Image
                     src={item.crest.src}
-                    alt=""
-                    width={44}
-                    height={56}
-                    className="h-full w-full object-contain p-0.5"
-                    aria-hidden
+                    alt={item.crest.alt}
+                    width={96}
+                    height={112}
+                    className="h-full w-full object-contain drop-shadow-md"
+                    sizes="96px"
                   />
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-secondary-900 group-hover:text-primary-700">
-                    {item.shortName}
-                  </p>
-                  <p className="truncate text-xs text-secondary-500">{item.motto}</p>
-                </div>
-                <ArrowRight className="h-4 w-4 shrink-0 text-secondary-400 group-hover:text-primary-600" aria-hidden />
+                <p className="font-josefin text-base sm:text-lg font-bold text-white group-hover:text-accent-100">
+                  {item.shortName}
+                </p>
+                <p className="mt-1 text-xs sm:text-sm italic text-accent-300/90">&ldquo;{item.motto}&rdquo;</p>
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-200">
+                  View house
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                </span>
               </Link>
             ))}
+          </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/school-life#house-system"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-200 transition-colors hover:text-accent-100"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden />
+              Back to House System overview
+            </Link>
           </div>
         </div>
       </section>

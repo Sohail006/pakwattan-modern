@@ -72,7 +72,7 @@ export const HOUSES: readonly House[] = [
     focusAreas: ['Public speaking & debate', 'Sports & athletics', 'Leadership roles', 'Academic resilience'],
     values: ['Courage', 'Resilience', 'Confidence'],
     crest: {
-      src: '/images/houses/marium-mukhtiar-house.jpg',
+      src: '/images/houses/marium-mukhtiar-house.png',
       alt: 'Marium Mukhtiar House crest — Soar with Courage',
       width: 400,
       height: 480,
@@ -98,7 +98,7 @@ export const HOUSES: readonly House[] = [
     focusAreas: ['Sports & drill', 'Discipline & conduct', 'Patriotic events', 'Team competitions'],
     values: ['Bravery', 'Discipline', 'Patriotism'],
     crest: {
-      src: '/images/houses/major-aziz-bhatti-house.jpg',
+      src: '/images/houses/major-aziz-bhatti-house.png',
       alt: 'Major Aziz Bhatti House crest — Bravery in Action',
       width: 400,
       height: 480,
@@ -124,7 +124,7 @@ export const HOUSES: readonly House[] = [
     focusAreas: ['Community service', 'Kindness initiatives', 'Social responsibility', 'Peer support'],
     values: ['Compassion', 'Kindness', 'Service'],
     crest: {
-      src: '/images/houses/abdul-sattar-edhi-house.jpg',
+      src: '/images/houses/abdul-sattar-edhi-house.png',
       alt: 'Abdul Sattar Edhi House crest — Serving Humanity, Saving Souls',
       width: 400,
       height: 480,
@@ -150,7 +150,7 @@ export const HOUSES: readonly House[] = [
     focusAreas: ['Science fairs & models', 'Quiz competitions', 'Innovation projects', 'Academic excellence'],
     values: ['Knowledge', 'Innovation', 'Excellence'],
     crest: {
-      src: '/images/houses/dr-abdul-qadeer-khan-house.jpg',
+      src: '/images/houses/dr-abdul-qadeer-khan-house.png',
       alt: 'Dr. Abdul Qadeer Khan House crest — Knowledge for Innovation, Excellence for the Nation',
       width: 400,
       height: 480,

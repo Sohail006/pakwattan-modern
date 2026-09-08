@@ -9,8 +9,7 @@ import {
   hasPublishedStandings,
 } from '@/lib/houses-data'
 
-const crestFrameClass =
-  'overflow-hidden rounded-lg bg-emerald-950/40 ring-1 ring-accent-400/35 shadow-sm'
+const crestFrameClass = 'relative overflow-visible'
 
 export default function HouseStandings() {
   const standings = getSortedHouseStandings()
@@ -48,7 +47,7 @@ export default function HouseStandings() {
                 aria-label={`View ${house.name} details`}
               >
                 <div
-                  className={`relative h-16 w-14 ${crestFrameClass} transition-all group-hover:ring-accent-300/60 group-hover:shadow-md`}
+                  className={`relative h-16 w-14 ${crestFrameClass} transition-transform group-hover:scale-105`}
                 >
                   <Image
                     src={house.crest.src}
