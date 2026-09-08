@@ -81,7 +81,11 @@ const HouseSystem = () => {
 
               <div className="flex flex-col sm:flex-row gap-5 p-5 sm:p-6">
                 <div className="mx-auto sm:mx-0 shrink-0">
-                  <div className="relative h-36 w-28 sm:h-40 sm:w-32 overflow-hidden rounded-xl bg-black/30 ring-2 ring-accent-500/30 shadow-lg">
+                  <Link
+                    href={`/school-life/houses/${house.id}`}
+                    className="relative block h-36 w-28 sm:h-40 sm:w-32 overflow-hidden rounded-xl bg-emerald-950/50 ring-2 ring-accent-400/40 shadow-lg transition-all hover:ring-accent-300/70 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
+                    aria-label={`View ${house.name} details`}
+                  >
                     <Image
                       src={house.crest.src}
                       alt={house.crest.alt}
@@ -90,7 +94,7 @@ const HouseSystem = () => {
                       className="h-full w-full object-contain p-1"
                       sizes="(max-width: 640px) 112px, 128px"
                     />
-                  </div>
+                  </Link>
                 </div>
 
                 <div className="flex-1 min-w-0 text-center sm:text-left">

@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { Trophy } from 'lucide-react'
 import {
   HOUSE_STANDINGS_ANCHOR,
@@ -7,6 +8,9 @@ import {
   getSortedHouseStandings,
   hasPublishedStandings,
 } from '@/lib/houses-data'
+
+const crestFrameClass =
+  'overflow-hidden rounded-lg bg-emerald-950/40 ring-1 ring-accent-400/35 shadow-sm'
 
 export default function HouseStandings() {
   const standings = getSortedHouseStandings()
@@ -37,8 +41,15 @@ export default function HouseStandings() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6">
             {standings.map(({ house }) => (
-              <div key={house.id} className="flex flex-col items-center gap-2">
-                <div className="relative h-16 w-14 overflow-hidden rounded-lg bg-black/30 ring-1 ring-accent-500/20">
+              <Link
+                key={house.id}
+                href={`/school-life/houses/${house.id}`}
+                className="group flex flex-col items-center gap-2 rounded-xl p-1.5 transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
+                aria-label={`View ${house.name} details`}
+              >
+                <div
+                  className={`relative h-16 w-14 ${crestFrameClass} transition-all group-hover:ring-accent-300/60 group-hover:shadow-md`}
+                >
                   <Image
                     src={house.crest.src}
                     alt=""
@@ -48,8 +59,13 @@ export default function HouseStandings() {
                     aria-hidden
                   />
                 </div>
-                <span className="max-w-[7rem] text-xs text-white/60 leading-tight">{house.shortName}</span>
-              </div>
+                <span className="max-w-[7rem] text-xs text-white/70 leading-tight transition-colors group-hover:text-accent-200">
+                  {house.shortName}
+                </span>
+                <span className="text-[10px] font-medium text-accent-400/80 opacity-0 transition-opacity group-hover:opacity-100">
+                  View house →
+                </span>
+              </Link>
             ))}
           </div>
         </div>
@@ -63,13 +79,15 @@ export default function HouseStandings() {
             </p>
           )}
           {standings.map(({ house, points, rank }) => (
-            <div
+            <Link
               key={house.id}
-              className={`flex items-center gap-4 rounded-xl border px-4 py-3 sm:px-5 sm:py-4 ${
+              href={`/school-life/houses/${house.id}`}
+              className={`group flex items-center gap-4 rounded-xl border px-4 py-3 sm:px-5 sm:py-4 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900 ${
                 rank === 1
-                  ? 'border-accent-400/40 bg-accent-500/10'
-                  : 'border-white/10 bg-white/5'
+                  ? 'border-accent-400/40 bg-accent-500/10 hover:bg-accent-500/15'
+                  : 'border-white/10 bg-white/5 hover:border-accent-400/30 hover:bg-white/10'
               }`}
+              aria-label={`View ${house.name} details`}
             >
               <span
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
@@ -78,7 +96,7 @@ export default function HouseStandings() {
               >
                 {rank}
               </span>
-              <div className="relative h-12 w-10 shrink-0 overflow-hidden rounded-md bg-black/30">
+              <div className={`relative h-12 w-10 shrink-0 ${crestFrameClass}`}>
                 <Image
                   src={house.crest.src}
                   alt=""
@@ -89,14 +107,16 @@ export default function HouseStandings() {
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-white">{house.shortName}</p>
+                <p className="truncate font-semibold text-white group-hover:text-accent-100">
+                  {house.shortName}
+                </p>
                 <p className="truncate text-xs text-white/60 italic">&ldquo;{house.motto}&rdquo;</p>
               </div>
               <div className="text-right">
                 <p className="text-lg font-bold text-accent-300">{points}</p>
                 <p className="text-xs text-white/50">pts</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       )}

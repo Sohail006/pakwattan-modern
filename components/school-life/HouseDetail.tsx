@@ -28,7 +28,7 @@ export default function HouseDetail({ house }: HouseDetailProps) {
           </Link>
 
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            <div className="relative h-52 w-44 sm:h-64 sm:w-52 shrink-0 overflow-hidden rounded-2xl bg-black/30 ring-2 ring-accent-400/40 shadow-2xl">
+            <div className="relative h-52 w-44 sm:h-64 sm:w-52 shrink-0 overflow-hidden rounded-2xl bg-emerald-950/50 ring-2 ring-accent-400/40 shadow-2xl">
               <Image
                 src={house.crest.src}
                 alt={house.crest.alt}
@@ -111,7 +111,7 @@ export default function HouseDetail({ house }: HouseDetailProps) {
                 href={`/school-life/houses/${item.id}`}
                 className="group flex items-center gap-3 rounded-xl border border-secondary-100 bg-white p-4 shadow-sm transition-all hover:border-primary-200 hover:shadow-md"
               >
-                <div className="relative h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-secondary-900">
+                <div className="relative h-14 w-11 shrink-0 overflow-hidden rounded-lg bg-emerald-950/60 ring-1 ring-accent-400/25">
                   <Image
                     src={item.crest.src}
                     alt=""
