@@ -1,8 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft, ArrowRight, Shield } from 'lucide-react'
+import { ArrowLeft, Shield } from 'lucide-react'
 import type { House } from '@/lib/houses-data'
-import { HOUSES } from '@/lib/houses-data'
 import { SCHOOL_INFO } from '@/lib/constants'
 
 type HouseDetailProps = {
@@ -10,8 +9,6 @@ type HouseDetailProps = {
 }
 
 export default function HouseDetail({ house }: HouseDetailProps) {
-  const otherHouses = HOUSES.filter((item) => item.id !== house.id)
-
   return (
     <div className="min-h-screen bg-[#0a1f14]">
       {/* Hero — brand, crest, motto, one supporting line */}
@@ -159,64 +156,6 @@ export default function HouseDetail({ house }: HouseDetailProps) {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      {/* Other houses */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#0f2e1c] via-primary-900 to-secondary-900 text-white py-16 sm:py-20">
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_rgba(212,175,55,0.12),_transparent_55%)]"
-          aria-hidden
-        />
-        <div className="container-custom relative max-w-5xl">
-          <div className="text-center mb-10">
-            <p className="mb-2 text-xs sm:text-sm font-semibold uppercase tracking-[0.2em] text-accent-300">
-              House System
-            </p>
-            <h2 className="font-josefin text-2xl sm:text-3xl font-bold">Explore Other Houses</h2>
-            <p className="mt-3 text-white/70 max-w-lg mx-auto">
-              Four houses. One Pak Wattan spirit — discover the values behind each crest.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-6">
-            {otherHouses.map((item) => (
-              <Link
-                key={item.id}
-                href={`/school-life/houses/${item.id}`}
-                className="group relative flex flex-col items-center text-center rounded-2xl border border-accent-400/20 bg-white/5 px-5 py-7 transition-all duration-300 hover:-translate-y-1 hover:border-accent-400/45 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-300"
-              >
-                <div className="relative mb-4 h-28 w-24 transition-transform group-hover:scale-105">
-                  <Image
-                    src={item.crest.src}
-                    alt={item.crest.alt}
-                    width={96}
-                    height={112}
-                    className="h-full w-full object-contain drop-shadow-md"
-                    sizes="96px"
-                  />
-                </div>
-                <p className="font-josefin text-base sm:text-lg font-bold text-white group-hover:text-accent-100">
-                  {item.shortName}
-                </p>
-                <p className="mt-1 text-xs sm:text-sm italic text-accent-300/90">&ldquo;{item.motto}&rdquo;</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-200">
-                  View house
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Link
-              href="/school-life#house-system"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-accent-200 transition-colors hover:text-accent-100"
-            >
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              Back to House System overview
-            </Link>
-          </div>
         </div>
       </section>
     </div>
