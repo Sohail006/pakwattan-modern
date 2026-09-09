@@ -113,15 +113,65 @@ export default function HouseDetail({ house }: HouseDetailProps) {
           className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent-400/50 to-transparent"
           aria-hidden
         />
-        <div className="container-custom max-w-3xl text-center sm:text-left">
-          <p className="mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-accent-400">
-            Our Namesake
-          </p>
-          <h2 className="font-josefin text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
-            {house.namesakeTitle}
-          </h2>
-          <div className="mb-6 h-0.5 w-16 mx-auto sm:mx-0 bg-accent-400/80" aria-hidden />
-          <p className="text-base sm:text-lg text-white/80 leading-relaxed">{house.namesakeBio}</p>
+        <div
+          className={`container-custom ${
+            house.portrait ? 'max-w-5xl' : 'max-w-3xl'
+          }`}
+        >
+          {house.portrait ? (
+            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)] items-center gap-10 lg:gap-14">
+              <div
+                className={`relative mx-auto w-full ${
+                  house.portrait.width >= house.portrait.height
+                    ? 'max-w-md sm:max-w-lg'
+                    : 'max-w-[320px] sm:max-w-[360px]'
+                }`}
+              >
+                <div
+                  className="absolute -inset-4 rounded-3xl bg-accent-400/15 blur-2xl"
+                  aria-hidden
+                />
+                <div
+                  className="relative overflow-hidden rounded-2xl ring-1 ring-accent-400/35 shadow-[0_25px_50px_-20px_rgba(0,0,0,0.55)]"
+                  style={{
+                    aspectRatio: `${house.portrait.width} / ${house.portrait.height}`,
+                  }}
+                >
+                  <Image
+                    src={house.portrait.src}
+                    alt={house.portrait.alt}
+                    width={house.portrait.width}
+                    height={house.portrait.height}
+                    className="h-full w-full object-cover"
+                    sizes="(max-width: 768px) 100vw, 512px"
+                  />
+                </div>
+              </div>
+              <div className="text-center md:text-left">
+                <p className="mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-accent-400">
+                  Our Namesake
+                </p>
+                <h2 className="font-josefin text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
+                  {house.namesakeTitle}
+                </h2>
+                <div className="mb-6 h-0.5 w-16 mx-auto md:mx-0 bg-accent-400/80" aria-hidden />
+                <p className="text-base sm:text-lg text-white/80 leading-relaxed">
+                  {house.namesakeBio}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center sm:text-left">
+              <p className="mb-3 text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-accent-400">
+                Our Namesake
+              </p>
+              <h2 className="font-josefin text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-3">
+                {house.namesakeTitle}
+              </h2>
+              <div className="mb-6 h-0.5 w-16 mx-auto sm:mx-0 bg-accent-400/80" aria-hidden />
+              <p className="text-base sm:text-lg text-white/80 leading-relaxed">{house.namesakeBio}</p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -50,6 +50,13 @@ export type House = {
     width: number
     height: number
   }
+  /** Optional namesake portrait shown on the house detail page */
+  portrait?: {
+    src: string
+    alt: string
+    width: number
+    height: number
+  }
   accentClass: string
   seo: {
     title: string
@@ -77,6 +84,12 @@ export const HOUSES: readonly House[] = [
       width: 400,
       height: 480,
     },
+    portrait: {
+      src: '/images/houses/marium-mukhtiar-portrait.jpg',
+      alt: 'Portrait of Flying Officer Marium Mukhtiar Shaheed in flight suit',
+      width: 597,
+      height: 335,
+    },
     accentClass: 'from-emerald-700 to-emerald-900',
     seo: {
       title: 'Marium Mukhtiar House',
@@ -102,6 +115,12 @@ export const HOUSES: readonly House[] = [
       alt: 'Major Aziz Bhatti House crest — Bravery in Action',
       width: 400,
       height: 480,
+    },
+    portrait: {
+      src: '/images/houses/major-aziz-bhatti-portrait.jpg',
+      alt: 'Portrait of Major Raja Aziz Bhatti Shaheed in military uniform',
+      width: 180,
+      height: 240,
     },
     accentClass: 'from-green-800 to-green-950',
     seo: {
@@ -129,6 +148,12 @@ export const HOUSES: readonly House[] = [
       width: 400,
       height: 480,
     },
+    portrait: {
+      src: '/images/houses/abdul-sattar-edhi-portrait.webp',
+      alt: 'Portrait of Abdul Sattar Edhi with the Pakistan flag in the background',
+      width: 414,
+      height: 415,
+    },
     accentClass: 'from-teal-800 to-emerald-950',
     seo: {
       title: 'Abdul Sattar Edhi House',
@@ -154,6 +179,12 @@ export const HOUSES: readonly House[] = [
       alt: 'Dr. Abdul Qadeer Khan House crest — Knowledge for Innovation, Excellence for the Nation',
       width: 400,
       height: 480,
+    },
+    portrait: {
+      src: '/images/houses/dr-abdul-qadeer-khan-portrait.webp',
+      alt: 'Portrait of Dr. Abdul Qadeer Khan',
+      width: 486,
+      height: 631,
     },
     accentClass: 'from-lime-900 to-green-950',
     seo: {
