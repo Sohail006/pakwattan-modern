@@ -55,10 +55,6 @@ const BISEHSSCTopers = dynamic(() => import('@/components/home/BISEHSSCTopers'),
   loading: () => <SkeletonLoader variant="section" className="my-6" />
 })
 
-const BiseResults = dynamic(() => import('@/components/home/BiseResults'), {
-  loading: () => <SkeletonLoader variant="section" className="my-6" />
-})
-
 const HSSCToppers = dynamic(() => import('@/components/home/HSSCToppers'), {
   loading: () => <SkeletonLoader variant="section" className="my-6" />
 })
@@ -164,10 +160,6 @@ export default function Home() {
       
       <ErrorBoundary>
         <BISEHSSCTopers />
-      </ErrorBoundary>
-      
-      <ErrorBoundary>
-        <BiseResults />
       </ErrorBoundary>
       
       <ErrorBoundary>
