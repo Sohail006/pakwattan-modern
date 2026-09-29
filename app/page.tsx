@@ -20,9 +20,9 @@ import { getHomeReviewSchema, getFeaturedVideoSchemas } from '@/lib/seo/siteSche
 export const metadata: Metadata = generatePageMetadata({
   title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
   description:
-    'Pak Wattan School & College of Sciences, Havelian — 6th consecutive year as SSC Havelian Circle top school. Quality education, scholarships, Montessori to FSc since 2020.',
+    'Pak Wattan School & College of Sciences, Havelian — SSC and HSSC Havelian Circle toppers, quality education, scholarships, Montessori to FSc since 2020.',
   keywords:
-    'best school in Havelian, Pak Wattan Havelian, SSC circle topper, FSc college Havelian, scholarships Havelian, Montessori Havelian, Abbottabad board school',
+    'best school in Havelian, Pak Wattan Havelian, SSC circle topper, HSSC FSc results 2026, FSc college Havelian, scholarships Havelian, Montessori Havelian, Abbottabad board school',
   path: '/',
 })
 
@@ -47,15 +47,11 @@ const SSCBISE2024_25Detailed = dynamic(() => import('@/components/home/SSCBISE20
   loading: () => <SkeletonLoader variant="section" className="my-6" />
 })
 
+const HSSCBISE2026Detailed = dynamic(() => import('@/components/home/HSSCBISE2026Detailed'), {
+  loading: () => <SkeletonLoader variant="section" className="my-6" />
+})
+
 const AnnualDistributionCeremony2024_25 = dynamic(() => import('@/components/home/AnnualDistributionCeremony2024_25'), {
-  loading: () => <SkeletonLoader variant="section" className="my-6" />
-})
-
-const BISEHSSCTopers = dynamic(() => import('@/components/home/BISEHSSCTopers'), {
-  loading: () => <SkeletonLoader variant="section" className="my-6" />
-})
-
-const HSSCToppers = dynamic(() => import('@/components/home/HSSCToppers'), {
   loading: () => <SkeletonLoader variant="section" className="my-6" />
 })
 
@@ -137,6 +133,10 @@ export default function Home() {
         <SSCBISE2024_25Detailed />
       </ErrorBoundary>
 
+      <ErrorBoundary>
+        <HSSCBISE2026Detailed />
+      </ErrorBoundary>
+
       {/* Trust & social proof early */}
       <ErrorBoundary>
         <Achievements />
@@ -156,14 +156,6 @@ export default function Home() {
       
       <ErrorBoundary>
         <AnnualDistributionCeremony2024_25 />
-      </ErrorBoundary>
-      
-      <ErrorBoundary>
-        <BISEHSSCTopers />
-      </ErrorBoundary>
-      
-      <ErrorBoundary>
-        <HSSCToppers />
       </ErrorBoundary>
       
       <ErrorBoundary>
