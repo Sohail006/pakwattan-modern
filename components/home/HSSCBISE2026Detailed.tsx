@@ -7,6 +7,61 @@ import { ChevronLeft, ChevronRight, Trophy, ZoomIn } from 'lucide-react'
 import Container from '@/components/ui/Container'
 import AnimatedFireworksBackground from './AnimatedFireworksBackground'
 
+type ResultSlide = {
+  id: number
+  left: string
+  right: string
+  leftAlt: string
+  rightAlt: string
+  leftLabel: string
+  rightLabel: string
+  aspect: string
+  single?: boolean
+}
+
+const FSC_I_MARKS = [
+  '536',
+  '526',
+  '524',
+  '520',
+  '519',
+  '516',
+  '514',
+  '514-b',
+  '509',
+  '505',
+  '501',
+  '500',
+  '500-b',
+] as const
+const FSC_II_MARKS = [
+  '1083',
+  '1082',
+  '1079',
+  '1076',
+  '1059',
+  '1053',
+  '1050',
+  '1046',
+  '1039',
+  '1039-b',
+  '1036',
+  '1031',
+  '1027',
+  '1024',
+  '1021',
+  '1018',
+  '1012',
+  '1010',
+  '981',
+  '962',
+] as const
+
+const cardPath = (year: 'i' | 'ii', marksKey: string) =>
+  `/images/hssc-results-2026/individuals/fsc-${year}-${marksKey}.jpg`
+
+const marksLabel = (marksKey: string) => marksKey.replace(/-b$/, '')
+
 const HSSCBISE2026Detailed = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
@@ -18,8 +73,8 @@ const HSSCBISE2026Detailed = () => {
     setMounted(true)
   }, [])
 
-  const resultImages = useMemo(
-    () => [
+  const resultImages = useMemo(() => {
+    const slides: ResultSlide[] = [
       {
         id: 1,
         left: '/images/hssc-results-2026/fsc-i-result-2026.jpg',
@@ -30,12 +85,67 @@ const HSSCBISE2026Detailed = () => {
           'F.Sc-II Result 2026 — Outstanding girls section results, Pak Wattan Havelian',
         leftLabel: 'F.Sc-I Result 2026',
         rightLabel: 'F.Sc-II Result 2026',
+        aspect: 'aspect-[3/4]',
       },
-    ],
-    []
-  )
+    ]
+
+    const paired = Math.min(FSC_I_MARKS.length, FSC_II_MARKS.length)
+    for (let i = 0; i < paired; i++) {
+      const leftKey = FSC_I_MARKS[i]
+      const rightKey = FSC_II_MARKS[i]
+      const leftMarks = marksLabel(leftKey)
+      const rightMarks = marksLabel(rightKey)
+      slides.push({
+        id: slides.length + 1,
+        left: cardPath('i', leftKey),
+        right: cardPath('ii', rightKey),
+        leftAlt: `F.Sc-I outstanding student — ${leftMarks} marks out of 600`,
+        rightAlt: `F.Sc-II outstanding student — ${rightMarks} marks out of 1200`,
+        leftLabel: `F.Sc-I · ${leftMarks}/600`,
+        rightLabel: `F.Sc-II · ${rightMarks}/1200`,
+        aspect: 'aspect-[3/2]',
+      })
+    }
+
+    // Extra F.Sc-II cards (more students than F.Sc-I) — two per slide
+    for (let i = paired; i < FSC_II_MARKS.length; i += 2) {
+      const aKey = FSC_II_MARKS[i]
+      const bKey = FSC_II_MARKS[i + 1]
+      const a = marksLabel(aKey)
+
+      if (bKey == null) {
+        slides.push({
+          id: slides.length + 1,
+          left: cardPath('ii', aKey),
+          right: cardPath('ii', aKey),
+          leftAlt: `F.Sc-II outstanding student — ${a} marks out of 1200`,
+          rightAlt: `F.Sc-II outstanding student — ${a} marks out of 1200`,
+          leftLabel: `F.Sc-II · ${a}/1200`,
+          rightLabel: `F.Sc-II · ${a}/1200`,
+          aspect: 'aspect-[3/2]',
+          single: true,
+        })
+        break
+      }
+
+      const b = marksLabel(bKey)
+      slides.push({
+        id: slides.length + 1,
+        left: cardPath('ii', aKey),
+        right: cardPath('ii', bKey),
+        leftAlt: `F.Sc-II outstanding student — ${a} marks out of 1200`,
+        rightAlt: `F.Sc-II outstanding student — ${b} marks out of 1200`,
+        leftLabel: `F.Sc-II · ${a}/1200`,
+        rightLabel: `F.Sc-II · ${b}/1200`,
+        aspect: 'aspect-[3/2]',
+      })
+    }
+
+    return slides
+  }, [])
 
   const hasMultipleSlides = resultImages.length > 1
+  const showDotNav = resultImages.length <= 8
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % resultImages.length)
@@ -81,6 +191,53 @@ const HSSCBISE2026Detailed = () => {
     }
   }, [zoomedImage])
 
+  const renderImageCard = (
+    src: string,
+    alt: string,
+    label: string,
+    aspect: string,
+    tone: 'yellow' | 'primary'
+  ) => (
+    <div
+      className={`group relative rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02] ${
+        tone === 'yellow'
+          ? 'bg-gradient-to-br from-white to-yellow-50/50'
+          : 'bg-gradient-to-br from-white to-primary-50/50'
+      }`}
+    >
+      <p className="mb-2 text-center text-xs sm:text-sm font-bold uppercase tracking-wide text-primary-800">
+        {label}
+      </p>
+      <div
+        className={`relative ${aspect} rounded-lg overflow-hidden cursor-pointer bg-gray-100`}
+        onClick={() => setZoomedImage(src)}
+      >
+        {!imageErrors.has(src) ? (
+          <Image
+            src={src}
+            alt={alt}
+            fill
+            className="object-contain transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            unoptimized
+            onError={() => setImageErrors((prev) => new Set(prev).add(src))}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <span className="text-gray-400 text-sm">Image not available</span>
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+          <div className="flex items-center space-x-2 text-white">
+            <ZoomIn className="w-5 h-5" />
+            <span className="text-sm font-medium">Click to enlarge</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
   return (
     <>
       <section className="py-10 sm:py-12 lg:py-14 bg-gradient-to-br from-yellow-50 via-primary-50 to-accent-50 relative overflow-hidden">
@@ -110,93 +267,41 @@ const HSSCBISE2026Detailed = () => {
           <div className="relative max-w-7xl mx-auto">
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border-4 border-yellow-400/30">
               <AnimatedFireworksBackground className="bg-gradient-to-br from-yellow-50/50 to-primary-50/50 backdrop-blur-sm">
-                <div className="relative min-h-[500px] sm:min-h-[600px] lg:min-h-[700px] overflow-hidden">
+                <div className="relative min-h-[420px] sm:min-h-[520px] lg:min-h-[620px] overflow-hidden">
                   {resultImages.map((slide, index) => (
                     <div
                       key={slide.id}
-                      className={`${
-                        hasMultipleSlides ? 'absolute inset-0' : 'relative'
-                      } transition-all duration-700 ease-in-out ${
-                        hasMultipleSlides
-                          ? index === currentSlide
-                            ? 'opacity-100 translate-x-0 scale-100'
-                            : index < currentSlide
-                              ? 'opacity-0 -translate-x-full scale-95'
-                              : 'opacity-0 translate-x-full scale-95'
-                          : 'opacity-100'
+                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                        index === currentSlide
+                          ? 'opacity-100 translate-x-0 scale-100 pointer-events-auto'
+                          : index < currentSlide
+                            ? 'opacity-0 -translate-x-full scale-95 pointer-events-none'
+                            : 'opacity-0 translate-x-full scale-95 pointer-events-none'
                       }`}
                     >
                       <div className="h-full flex items-center justify-center p-6 sm:p-8 lg:p-12">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl">
-                          <div className="group relative bg-gradient-to-br from-white to-yellow-50/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
-                            <p className="mb-2 text-center text-xs sm:text-sm font-bold uppercase tracking-wide text-primary-800">
-                              {slide.leftLabel}
-                            </p>
-                            <div
-                              className="relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer bg-gray-100"
-                              onClick={() => setZoomedImage(slide.left)}
-                            >
-                              {!imageErrors.has(slide.left) ? (
-                                <Image
-                                  src={slide.left}
-                                  alt={slide.leftAlt}
-                                  fill
-                                  className="object-contain transition-transform duration-500 group-hover:scale-105"
-                                  loading="lazy"
-                                  sizes="(max-width: 1024px) 100vw, 50vw"
-                                  unoptimized
-                                  onError={() =>
-                                    setImageErrors((prev) => new Set(prev).add(slide.left))
-                                  }
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                  <span className="text-gray-400 text-sm">Image not available</span>
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                                <div className="flex items-center space-x-2 text-white">
-                                  <ZoomIn className="w-5 h-5" />
-                                  <span className="text-sm font-medium">Click to enlarge</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="group relative bg-gradient-to-br from-white to-primary-50/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-[1.02]">
-                            <p className="mb-2 text-center text-xs sm:text-sm font-bold uppercase tracking-wide text-primary-800">
-                              {slide.rightLabel}
-                            </p>
-                            <div
-                              className="relative aspect-[3/4] rounded-lg overflow-hidden cursor-pointer bg-gray-100"
-                              onClick={() => setZoomedImage(slide.right)}
-                            >
-                              {!imageErrors.has(slide.right) ? (
-                                <Image
-                                  src={slide.right}
-                                  alt={slide.rightAlt}
-                                  fill
-                                  className="object-contain transition-transform duration-500 group-hover:scale-105"
-                                  loading="lazy"
-                                  sizes="(max-width: 1024px) 100vw, 50vw"
-                                  unoptimized
-                                  onError={() =>
-                                    setImageErrors((prev) => new Set(prev).add(slide.right))
-                                  }
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                                  <span className="text-gray-400 text-sm">Image not available</span>
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
-                                <div className="flex items-center space-x-2 text-white">
-                                  <ZoomIn className="w-5 h-5" />
-                                  <span className="text-sm font-medium">Click to enlarge</span>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
+                        <div
+                          className={`grid gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl ${
+                            slide.single
+                              ? 'grid-cols-1 max-w-3xl mx-auto'
+                              : 'grid-cols-1 lg:grid-cols-2'
+                          }`}
+                        >
+                          {renderImageCard(
+                            slide.left,
+                            slide.leftAlt,
+                            slide.leftLabel,
+                            slide.aspect,
+                            'yellow'
+                          )}
+                          {!slide.single &&
+                            renderImageCard(
+                              slide.right,
+                              slide.rightAlt,
+                              slide.rightLabel,
+                              slide.aspect,
+                              'primary'
+                            )}
                         </div>
                       </div>
                     </div>
@@ -220,21 +325,23 @@ const HSSCBISE2026Detailed = () => {
                         <ChevronRight className="w-6 h-6 sm:w-7 sm:h-7" />
                       </button>
 
-                      <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
-                        {resultImages.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => goToSlide(index)}
-                            className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center ${
-                              index === currentSlide
-                                ? 'bg-yellow-500 scale-125 shadow-lg'
-                                : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500'
-                            }`}
-                            aria-label={`Go to slide ${index + 1}`}
-                            aria-current={index === currentSlide ? 'true' : 'false'}
-                          />
-                        ))}
-                      </div>
+                      {showDotNav && (
+                        <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2 sm:space-x-3 z-20 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+                          {resultImages.map((_, index) => (
+                            <button
+                              key={index}
+                              onClick={() => goToSlide(index)}
+                              className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full transition-all duration-300 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center ${
+                                index === currentSlide
+                                  ? 'bg-yellow-500 scale-125 shadow-lg'
+                                  : 'bg-gray-300 hover:bg-gray-400 active:bg-gray-500'
+                              }`}
+                              aria-label={`Go to slide ${index + 1}`}
+                              aria-current={index === currentSlide ? 'true' : 'false'}
+                            />
+                          ))}
+                        </div>
+                      )}
 
                       <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg z-20">
                         <span className="text-sm font-semibold text-secondary-700">
