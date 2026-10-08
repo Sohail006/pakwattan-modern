@@ -283,14 +283,7 @@ html {
   animation-play-state: paused;
 }
 
-/* Enhanced marquee with better performance */
-.animate-marquee {
-  animation: marquee 20s linear infinite;
-}
-
-.animate-marquee:hover {
-  animation-play-state: paused;
-}
+/* Marquee — duration is set in the component for readable speed */
 
 /* Improved scrollbar styling */
 ::-webkit-scrollbar {
@@ -383,14 +376,23 @@ html {
   animation: blink 2s infinite;
 }
 
-/* Marquee animation */
+/* Marquee: translate half width (content is duplicated for a seamless loop) */
 @keyframes marquee {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  display: inline-flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee:hover,
+.animate-marquee:active,
+.animate-marquee.is-paused {
+  animation-play-state: paused;
 }
 
 /* Custom button styles */
@@ -684,12 +686,11 @@ button:focus-visible {
 
 /* Performance optimizations for mobile */
 @media (max-width: 768px) {
-  /* Reduce animations on mobile for better performance */
-  * {
-    animation-duration: 0.2s !important;
-    transition-duration: 0.2s !important;
-  }
-  
+  /*
+    Do NOT globally force animation-duration — that made the news marquee
+    complete in 0.2s and become unreadable on phones.
+  */
+
   /* Optimize images for mobile */
   img {
     image-rendering: -webkit-optimize-contrast;
