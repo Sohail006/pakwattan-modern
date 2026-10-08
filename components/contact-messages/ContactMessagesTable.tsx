@@ -257,8 +257,8 @@ export default function ContactMessagesTable() {
         </div>
       )}
 
-      {/* Messages Table */}
-      <div className="overflow-x-auto">
+      {/* Messages — desktop table */}
+      <div className="hidden lg:block overflow-x-auto">
         {filteredContacts.length === 0 ? (
           <div className="p-12 text-center">
             <Mail className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -329,6 +329,7 @@ export default function ContactMessagesTable() {
                       <p className="line-clamp-2">{contact.message}</p>
                       {contact.message.length > 100 && (
                         <button
+                          type="button"
                           onClick={() => setViewingMessage(contact)}
                           className="text-primary-600 hover:text-primary-700 text-xs mt-1"
                         >
@@ -361,17 +362,19 @@ export default function ContactMessagesTable() {
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end gap-2">
                       <button
+                        type="button"
                         onClick={() => setViewingMessage(contact)}
-                        className="text-primary-600 hover:text-primary-900 p-2 rounded hover:bg-primary-50 transition-colors"
+                        className="no-touch-target text-primary-600 hover:text-primary-900 p-2 rounded hover:bg-primary-50 transition-colors"
                         title="View message details"
                         aria-label={`View message from ${contact.name}`}
                       >
                         <FileText className="w-4 h-4" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleToggleRead(contact)}
                         disabled={processingId === contact.id}
-                        className="text-blue-600 hover:text-blue-900 p-2 rounded hover:bg-blue-50 disabled:opacity-50 transition-colors"
+                        className="no-touch-target text-blue-600 hover:text-blue-900 p-2 rounded hover:bg-blue-50 disabled:opacity-50 transition-colors"
                         title={contact.isRead ? 'Mark as unread' : 'Mark as read'}
                       >
                         {processingId === contact.id ? (
@@ -383,9 +386,10 @@ export default function ContactMessagesTable() {
                         )}
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDelete(contact)}
                         disabled={processingId === contact.id}
-                        className="text-red-600 hover:text-red-900 p-2 rounded hover:bg-red-50 disabled:opacity-50 transition-colors"
+                        className="no-touch-target text-red-600 hover:text-red-900 p-2 rounded hover:bg-red-50 disabled:opacity-50 transition-colors"
                         title="Delete message"
                       >
                         {processingId === contact.id ? (
@@ -400,6 +404,117 @@ export default function ContactMessagesTable() {
               ))}
             </tbody>
           </table>
+        )}
+      </div>
+
+      {/* Messages — mobile cards */}
+      <div className="lg:hidden p-3 space-y-3">
+        {filteredContacts.length === 0 ? (
+          <div className="py-10 text-center">
+            <Mail className="w-14 h-14 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-600 font-medium">No contact messages found</p>
+            <p className="text-gray-500 text-sm mt-1">
+              {searchTerm || statusFilter !== 'all'
+                ? 'Try adjusting your search or filter.'
+                : 'Messages from visitors will appear here.'}
+            </p>
+          </div>
+        ) : (
+          filteredContacts.map((contact) => (
+            <div
+              key={contact.id}
+              className={`rounded-xl border p-4 shadow-sm ${
+                !contact.isRead
+                  ? 'border-blue-200 bg-blue-50/60'
+                  : 'border-gray-200 bg-white'
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="h-11 w-11 shrink-0 bg-primary-100 rounded-full flex items-center justify-center">
+                  <User className="w-5 h-5 text-primary-600" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="font-semibold text-gray-900 truncate">{contact.name}</p>
+                      <a
+                        href={`mailto:${contact.email}`}
+                        className="text-sm text-blue-700 truncate block"
+                      >
+                        {contact.email}
+                      </a>
+                    </div>
+                    {contact.isRead ? (
+                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        Read
+                      </span>
+                    ) : (
+                      <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                        Unread
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm font-medium text-gray-900 line-clamp-1">
+                    {contact.subject}
+                  </p>
+                  <p className="mt-1 text-sm text-gray-600 line-clamp-2">{contact.message}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {formatDate(contact.createdAt)}
+                    </span>
+                    {contact.phone && (
+                      <a
+                        href={`tel:${contact.phone}`}
+                        className="inline-flex items-center gap-1 text-blue-700"
+                      >
+                        <Phone className="w-3 h-3" />
+                        {contact.phone}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setViewingMessage(contact)}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                >
+                  <FileText className="w-4 h-4" />
+                  View
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleToggleRead(contact)}
+                  disabled={processingId === contact.id}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px] disabled:opacity-50"
+                >
+                  {processingId === contact.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : contact.isRead ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                  {contact.isRead ? 'Unread' : 'Read'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDelete(contact)}
+                  disabled={processingId === contact.id}
+                  className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px] disabled:opacity-50"
+                >
+                  {processingId === contact.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4" />
+                  )}
+                  Delete
+                </button>
+              </div>
+            </div>
+          ))
         )}
       </div>
 

@@ -1317,11 +1317,11 @@ export default function StudentsTable({ onEdit, onRefresh }: StudentsTableProps)
         </div>
       )}
 
-      {/* Table */}
+      {/* Table (desktop) + cards (mobile) */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden relative">
         <div 
           ref={tableScrollRef}
-          className="overflow-x-auto relative"
+          className="hidden lg:block overflow-x-auto relative"
           style={{ scrollbarWidth: 'thin' }}
         >
           {/* Left scroll indicator */}
@@ -1494,7 +1494,7 @@ export default function StudentsTable({ onEdit, onRefresh }: StudentsTableProps)
                   </div>
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-semibold" role="columnheader" scope="col">Guardian</th>
-                <th className="px-4 py-3 text-center text-sm font-semibold sticky right-0 bg-primary-600 z-10 border-l border-primary-500" role="columnheader" scope="col">Actions</th>
+                <th className="px-4 py-3 text-center text-sm font-semibold sticky right-0 bg-primary-600 z-10 border-l border-primary-500 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.2)]" role="columnheader" scope="col">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -1703,27 +1703,30 @@ export default function StudentsTable({ onEdit, onRefresh }: StudentsTableProps)
                           <span className="text-gray-400">-</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 sticky right-0 bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+                      <td className="px-4 py-3 sticky right-0 bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)] transition-colors">
                         <div className="flex items-center justify-center space-x-1">
                           <button
+                            type="button"
                             onClick={() => handleView(student)}
-                            className="text-primary-600 hover:text-primary-700 p-1.5 rounded-lg hover:bg-primary-50 transition-colors"
+                            className="no-touch-target text-primary-600 hover:text-primary-700 p-1.5 rounded-lg hover:bg-primary-50 transition-colors"
                             aria-label={`View ${student.name}`}
                             title="View"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
+                            type="button"
                             onClick={() => onEdit(student)}
-                            className="text-blue-600 hover:text-blue-700 p-1.5 rounded-lg hover:bg-blue-50 transition-colors"
+                            className="no-touch-target text-blue-600 hover:text-blue-700 p-1.5 rounded-lg hover:bg-blue-50 transition-colors"
                             aria-label={`Edit ${student.name}`}
                             title="Edit"
                           >
                             <Edit className="w-4 h-4" />
                           </button>
                           <button
+                            type="button"
                             onClick={() => handleDelete(student.id)}
-                            className="text-red-600 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
+                            className="no-touch-target text-red-600 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50 transition-colors"
                             aria-label={`Delete ${student.name}`}
                             title="Delete"
                           >
@@ -1737,6 +1740,125 @@ export default function StudentsTable({ onEdit, onRefresh }: StudentsTableProps)
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile cards */}
+        <div className="lg:hidden p-3 space-y-3">
+          {loading ? (
+            <div className="py-12 text-center">
+              <Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-2" />
+              <p className="text-gray-600 text-sm">Loading students...</p>
+            </div>
+          ) : students.length === 0 ? (
+            <div className="py-12 text-center">
+              <Users className="w-16 h-16 text-gray-300 mx-auto mb-3" />
+              <h3 className="text-base font-semibold text-gray-900 mb-1">
+                {hasActiveFilters ? 'No students found' : 'No students yet'}
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                {hasActiveFilters
+                  ? 'Try adjusting your search or clear filters.'
+                  : 'Get started by adding your first student.'}
+              </p>
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-2 text-sm text-primary-600 font-medium min-h-[44px]"
+                >
+                  <X className="w-4 h-4" />
+                  Clear filters
+                </button>
+              )}
+            </div>
+          ) : (
+            students.map((student) => {
+              const imageUrls = getImageUrlWithFallback(student.profileImageUrl)
+              const imageUrl = imageUrls[0] || null
+              const gradeLabel =
+                student.gradeName || student.grade?.name || `Grade ${student.gradeId}`
+              const sectionLabel =
+                student.sectionName || student.section?.name || `Section ${student.sectionId}`
+              const guardianLabel =
+                student.guardianName || student.guardian?.fullName || null
+
+              return (
+                <div
+                  key={student.id}
+                  className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+                    {imageUrl ? (
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
+                        <Image
+                          src={imageUrl}
+                          alt={student.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center shrink-0">
+                        <span className="text-primary-600 font-semibold">
+                          {student.name.charAt(0).toUpperCase()}
+                        </span>
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-gray-900 truncate">{student.name}</p>
+                      <p className="text-sm text-gray-500 truncate">S/O {student.fatherName}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5 items-center">
+                        <span className="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                          {gradeLabel} · {sectionLabel}
+                        </span>
+                        <StatusBadge status={student.status} size="sm" />
+                      </div>
+                      {student.phone && (
+                        <a
+                          href={`tel:${student.phone}`}
+                          className="mt-2 inline-block text-sm text-blue-700 font-medium"
+                        >
+                          {student.phone}
+                        </a>
+                      )}
+                      {guardianLabel && (
+                        <p className="mt-1 text-xs text-gray-500 truncate">
+                          Guardian: {guardianLabel}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleView(student)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                    >
+                      <Eye className="w-4 h-4" />
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onEdit(student)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px]"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(student.id)}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px]"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )
+            })
+          )}
         </div>
 
         {/* Pagination */}

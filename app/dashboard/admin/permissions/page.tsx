@@ -117,15 +117,19 @@ export default function PermissionsManagementPage() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="flex space-x-8">
+      <div className="border-b border-gray-200 -mx-1 px-1">
+        <nav
+          className="flex gap-4 sm:gap-8 overflow-x-auto"
+          aria-label="Permission views"
+        >
           <button
+            type="button"
             onClick={() => {
               setViewMode('overview')
               setSelectedRole('')
               setSelectedUser(null)
             }}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+            className={`shrink-0 py-3 sm:py-4 px-1 border-b-2 font-medium text-sm min-h-[44px] ${
               viewMode === 'overview'
                 ? 'border-primary-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -134,11 +138,12 @@ export default function PermissionsManagementPage() {
             Overview
           </button>
           <button
+            type="button"
             onClick={() => {
               setViewMode('roles')
               setSelectedUser(null)
             }}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+            className={`shrink-0 py-3 sm:py-4 px-1 border-b-2 font-medium text-sm min-h-[44px] whitespace-nowrap ${
               viewMode === 'roles'
                 ? 'border-primary-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -147,11 +152,12 @@ export default function PermissionsManagementPage() {
             Role Permissions
           </button>
           <button
+            type="button"
             onClick={() => {
               setViewMode('users')
               setSelectedRole('')
             }}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
+            className={`shrink-0 py-3 sm:py-4 px-1 border-b-2 font-medium text-sm min-h-[44px] whitespace-nowrap ${
               viewMode === 'users'
                 ? 'border-primary-500 text-primary-600'
                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
