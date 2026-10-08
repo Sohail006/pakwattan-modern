@@ -26,12 +26,22 @@ export default function JobsTable() {
 		onConfirm: () => void
 	} | null>(null)
 
+	const sortByApplyDateDesc = (list: JobOpportunity[]) =>
+		[...list].sort((a, b) => {
+			const aTime = new Date(a.creationDate).getTime()
+			const bTime = new Date(b.creationDate).getTime()
+			const aValid = Number.isFinite(aTime) ? aTime : 0
+			const bValid = Number.isFinite(bTime) ? bTime : 0
+			if (bValid !== aValid) return bValid - aValid
+			return b.id - a.id
+		})
+
 	const loadJobs = useCallback(async () => {
 		try {
 			setLoading(true)
 			setError(null)
 			const data = await getAllJobApplications()
-			setJobs(data)
+			setJobs(sortByApplyDateDesc(Array.isArray(data) ? data : []))
 		} catch (err) {
 			const message = err instanceof Error ? err.message : 'Unable to load job applications.'
 			setError(message)
@@ -61,7 +71,7 @@ export default function JobsTable() {
 			)
 		}
 
-		setFilteredJobs(filtered)
+		setFilteredJobs(sortByApplyDateDesc(filtered))
 	}, [jobs, searchTerm])
 
 	const handleDelete = async (id: number) => {
