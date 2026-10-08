@@ -227,7 +227,7 @@ export default function EventsTable({ onEdit, onRefresh }: EventsTableProps) {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="hidden lg:block overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
@@ -357,9 +357,104 @@ export default function EventsTable({ onEdit, onRefresh }: EventsTableProps) {
             </table>
           </div>
 
+          {/* Mobile cards */}
+          <div className="lg:hidden space-y-3 p-3">
+            {events.map((item) => {
+              const imageUrl = getImageUrl(item.imageUrl)
+              const isPast = new Date(item.date) < new Date()
+              return (
+                <div
+                  key={item.id}
+                  className={`rounded-xl border border-gray-200 bg-white p-4 shadow-sm ${
+                    isPast ? 'opacity-70' : ''
+                  }`}
+                >
+                  <div className="flex items-start gap-3">
+                    {imageUrl ? (
+                      <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                        <Image
+                          src={imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center shrink-0">
+                        <ImageIcon className="w-6 h-6 text-gray-400" />
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-gray-900 line-clamp-2">{item.title}</p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-accent-100 text-accent-800">
+                          {item.category}
+                        </span>
+                        {item.isPublished ? (
+                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                            Published
+                          </span>
+                        ) : (
+                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">
+                            Draft
+                          </span>
+                        )}
+                        {item.isFeatured && (
+                          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-2 text-xs text-gray-500 inline-flex items-center gap-1">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {formatDate(item.date)}
+                        {item.time ? ` · ${formatTime(item.time)}` : ''}
+                      </p>
+                      {item.location && (
+                        <p className="mt-1 text-xs text-gray-500 line-clamp-1 inline-flex items-center gap-1">
+                          <MapPin className="w-3.5 h-3.5" />
+                          {item.location}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-2 gap-2">
+                    {onEdit && (
+                      <button
+                        type="button"
+                        onClick={() => onEdit(item)}
+                        className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setDeleteConfirm({
+                          isOpen: true,
+                          eventId: item.id,
+                          eventTitle: item.title,
+                        })
+                      }
+                      className={`inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px] ${
+                        onEdit ? '' : 'col-span-2'
+                      }`}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+            <div className="bg-gray-50 px-4 sm:px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="text-sm text-gray-700">
                 Showing {(page - 1) * pageSize + 1} to {Math.min(page * pageSize, totalCount)} of {totalCount} results
               </div>

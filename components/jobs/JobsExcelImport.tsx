@@ -232,24 +232,26 @@ export default function JobsExcelImport({ isOpen, onClose, onSuccess }: JobsExce
 
 	return (
 		<div className="fixed inset-0 z-50 overflow-y-auto">
-			<div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+			<div className="flex min-h-screen items-center justify-center p-4">
 				{/* Background overlay */}
 				<div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={handleClose}></div>
 
 				{/* Modal panel */}
-				<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-3xl sm:w-full">
+				<div className="relative z-10 w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-lg text-left shadow-xl">
 					<div className="bg-white px-4 pt-5 pb-4 sm:p-6">
-						<div className="flex items-center justify-between mb-4">
-							<div className="flex items-center gap-3">
-								<div className="p-2 rounded-lg bg-blue-100">
+						<div className="flex items-center justify-between mb-4 gap-3">
+							<div className="flex items-center gap-3 min-w-0">
+								<div className="p-2 rounded-lg bg-blue-100 shrink-0">
 									<FileSpreadsheet className="w-6 h-6 text-blue-600" />
 								</div>
-								<h3 className="text-2xl font-bold text-gray-900">Import Jobs from Excel</h3>
+								<h3 className="text-lg sm:text-2xl font-bold text-gray-900 truncate">Import Jobs from Excel</h3>
 							</div>
 							<button
+								type="button"
 								onClick={handleClose}
-								className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1"
+								className="shrink-0 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
 								disabled={isUploading}
+								aria-label="Close"
 							>
 								<X className="w-6 h-6" />
 							</button>

@@ -877,11 +877,11 @@ export default function RegistrationsTable() {
         </button>
       </div>
 
-      {/* Table */}
+      {/* Table (desktop) + cards (mobile) */}
       <div className="bg-white rounded-2xl shadow-xl border border-gray-200/60 overflow-hidden relative w-full">
         <div 
           ref={tableScrollRef}
-          className="overflow-x-auto relative w-full mobile-scroll"
+          className="hidden lg:block overflow-x-auto relative w-full mobile-scroll"
           style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', width: '100%' }}
         >
           {/* Left scroll indicator */}
@@ -1123,9 +1123,111 @@ export default function RegistrationsTable() {
           </div>
         </div>
 
+        {/* Mobile cards */}
+        <div className="lg:hidden p-3 space-y-3">
+          {paginatedRegistrations.length === 0 ? (
+            <div className="py-10 text-center">
+              <Search className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+              <p className="font-semibold text-gray-900 mb-1">No registrations found</p>
+              <p className="text-sm text-gray-500 mb-3">
+                {searchTerm || filterGrade || filterScholarship || filterPayment || filterInterviewRemarks
+                  ? 'Try adjusting your filters'
+                  : 'No registrations have been submitted yet'}
+              </p>
+              {(searchTerm || filterGrade || filterScholarship || filterPayment || filterInterviewRemarks) && (
+                <button
+                  type="button"
+                  onClick={clearFilters}
+                  className="text-sm text-primary-600 font-semibold min-h-[44px] px-3"
+                >
+                  Clear all filters
+                </button>
+              )}
+            </div>
+          ) : (
+            paginatedRegistrations.map((reg) => (
+              <div
+                key={reg.id}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-gray-900 truncate">{reg.name || '-'}</p>
+                    <p className="text-sm text-gray-500 truncate">S/O {reg.fatherName || '-'}</p>
+                  </div>
+                  <span className="shrink-0 inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-primary-600 text-white">
+                    {reg.rollNumber || 'Pending'}
+                  </span>
+                </div>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                  <span className="rounded-full bg-gray-100 text-gray-800 px-2.5 py-1 font-semibold">
+                    {reg.gradeName || `Grade ${reg.gradeId}`}
+                  </span>
+                  {reg.applyForScholarship && (
+                    <span className="rounded-full bg-green-100 text-green-800 px-2.5 py-1 font-semibold">
+                      {reg.scholarshipType
+                        ? scholarshipTypeMap.get(Number(reg.scholarshipType)) || reg.scholarshipType
+                        : 'Scholarship'}
+                    </span>
+                  )}
+                  {getPaymentStatusBadge(reg.paymentStatus, reg.paymentMethod)}
+                </div>
+                {reg.mobile && (
+                  <a
+                    href={`tel:${reg.mobile}`}
+                    className="mt-2 inline-block text-sm font-medium text-primary-700"
+                  >
+                    {reg.mobile}
+                  </a>
+                )}
+                <p className="mt-1 text-xs text-gray-500">{formatDate(reg.registrationDate)}</p>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setViewingDetails(reg)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px]"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePrintSlip(reg)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                  >
+                    <FileText className="w-4 h-4" />
+                    Slip
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => openInterviewModal(reg)}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2 py-2.5 text-xs font-semibold text-amber-800 min-h-[44px]"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    Interview
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(reg.id)}
+                    disabled={deletingId === reg.id}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px] disabled:opacity-50"
+                  >
+                    {deletingId === reg.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 px-6 py-4 flex items-center justify-between border-t-2 border-gray-200/60">
+          <div className="bg-gradient-to-r from-gray-50 to-gray-100/50 px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t-2 border-gray-200/60">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-gray-700">
                 Showing <span className="font-bold text-primary-700">{startIndex + 1}</span> to <span className="font-bold text-primary-700">{Math.min(endIndex, filteredRegistrations.length)}</span> of <span className="font-bold text-primary-700">{filteredRegistrations.length}</span> results

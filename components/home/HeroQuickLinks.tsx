@@ -95,10 +95,10 @@ const HeroQuickLinks = () => {
                   <li key={link.href + link.title} className="shrink-0">
                     <Link
                       href={link.href}
-                      className="group inline-flex h-8 items-center gap-1.5 rounded-md border border-secondary-100 bg-secondary-50/70 px-2.5 text-xs font-semibold text-secondary-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-800 sm:px-3 sm:text-sm"
+                      className="group inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-md border border-secondary-100 bg-secondary-50/70 px-3 text-xs font-semibold text-secondary-800 transition-colors hover:border-primary-200 hover:bg-primary-50 hover:text-primary-800 sm:px-3.5 sm:text-sm touch-target"
                     >
                       <Icon
-                        className={`h-3.5 w-3.5 shrink-0 transition-transform group-hover:scale-110 ${link.iconClass}`}
+                        className={`h-4 w-4 shrink-0 transition-transform group-hover:scale-110 ${link.iconClass}`}
                         strokeWidth={2.25}
                         aria-hidden
                       />

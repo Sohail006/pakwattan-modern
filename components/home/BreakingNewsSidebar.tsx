@@ -119,8 +119,9 @@ const BreakingNewsSidebar = () => {
             </h3>
             {categories.length > 0 && (
               <button
+                type="button"
                 onClick={() => setSelectedCategory(selectedCategory ? null : categories[0])}
-                className={`shrink-0 rounded-full p-1 transition-colors ${
+                className={`shrink-0 rounded-full p-2 min-h-[36px] min-w-[36px] flex items-center justify-center transition-colors ${
                   selectedCategory
                     ? 'bg-primary-50 text-primary-600'
                     : 'text-gray-400 hover:bg-primary-50 hover:text-primary-600'
@@ -128,16 +129,17 @@ const BreakingNewsSidebar = () => {
                 title="Toggle category filter"
                 aria-label="Toggle category filter"
               >
-                <Filter className="h-3.5 w-3.5" />
+                <Filter className="h-4 w-4" />
               </button>
             )}
           </div>
 
           {categories.length > 0 && (
-            <div className="mb-1.5 flex flex-nowrap gap-1 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="mb-1.5 flex flex-nowrap gap-1.5 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <button
+                type="button"
                 onClick={() => setSelectedCategory(null)}
-                className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] transition-colors ${
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs min-h-[32px] transition-colors ${
                   !selectedCategory
                     ? 'bg-primary-600 text-white'
                     : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -147,9 +149,10 @@ const BreakingNewsSidebar = () => {
               </button>
               {categories.map((cat) => (
                 <button
+                  type="button"
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] capitalize transition-colors ${
+                  className={`shrink-0 rounded-full px-3 py-1.5 text-xs capitalize min-h-[32px] transition-colors ${
                     selectedCategory === cat
                       ? 'bg-primary-600 text-white'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -171,19 +174,19 @@ const BreakingNewsSidebar = () => {
                 <Link
                   key={item.id}
                   href={`/news/${item.slug}`}
-                  className="group block rounded-r-md border-l-2 border-primary-500 py-1 pl-2 hover:bg-primary-50/70"
+                  className="group block rounded-r-md border-l-2 border-primary-500 py-2 pl-2.5 min-h-[44px] hover:bg-primary-50/70"
                 >
                   <div className="flex items-center gap-1.5">
-                    <h4 className="min-w-0 flex-1 truncate text-xs font-semibold text-gray-900 group-hover:text-primary-700">
+                    <h4 className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-900 group-hover:text-primary-700">
                       {item.title}
                     </h4>
                     {item.category && (
-                      <span className="shrink-0 rounded bg-accent-100 px-1 text-[9px] font-semibold uppercase text-accent-700">
+                      <span className="shrink-0 rounded bg-accent-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-accent-700">
                         {item.category}
                       </span>
                     )}
                   </div>
-                  <span className="text-[10px] font-medium text-primary-700">
+                  <span className="text-xs font-medium text-primary-700">
                     📅 {formatDate(item.date)}
                   </span>
                 </Link>
@@ -205,7 +208,7 @@ const BreakingNewsSidebar = () => {
                     setDisplayCount(filteredNewsItems.length)
                   }
                 }}
-                className="text-[11px] font-semibold text-primary-600 hover:underline"
+                className="text-xs font-semibold text-primary-600 hover:underline min-h-[36px] inline-flex items-center"
               >
                 {showAll ? 'Show Less' : `View All (${filteredNewsItems.length})`}
               </button>
@@ -214,7 +217,7 @@ const BreakingNewsSidebar = () => {
             )}
             <Link
               href="/news"
-              className="inline-flex items-center gap-0.5 text-[11px] font-medium text-primary-600 hover:underline"
+              className="inline-flex items-center gap-0.5 text-xs font-medium text-primary-600 hover:underline min-h-[36px]"
             >
               All News
               <ChevronRight className="h-3 w-3" />
@@ -236,22 +239,22 @@ const BreakingNewsSidebar = () => {
               <div key={index}>
                 <Link
                   href={item.href}
-                  className="flex items-center gap-1.5 rounded-md p-1 hover:bg-primary-50"
+                  className="flex items-center gap-2 rounded-md p-2 min-h-[40px] hover:bg-primary-50"
                 >
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary-100 to-accent-100 text-xs">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-primary-100 to-accent-100 text-sm">
                     {item.icon}
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-xs font-semibold text-gray-900">
+                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-gray-900">
                     {item.name}
                   </span>
                 </Link>
                 {item.submenu && (
-                  <div className="ml-7 flex flex-wrap gap-x-2 gap-y-0 pb-0.5">
+                  <div className="ml-9 flex flex-wrap gap-x-3 gap-y-1 pb-1">
                     {item.submenu.slice(0, 2).map((subItem, subIndex) => (
                       <Link
                         key={subIndex}
                         href={subItem.href}
-                        className="text-[10px] text-gray-600 hover:text-primary-600 hover:underline"
+                        className="text-xs text-gray-600 hover:text-primary-600 hover:underline min-h-[28px] inline-flex items-center"
                       >
                         {subItem.name}
                       </Link>

@@ -12,18 +12,20 @@ interface JobApplicationModalProps {
 export default function JobApplicationModal({ job, onClose }: JobApplicationModalProps) {
 	return (
 		<div className="fixed inset-0 z-50 overflow-y-auto">
-			<div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+			<div className="flex min-h-screen items-center justify-center p-4">
 				{/* Background overlay */}
 				<div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose}></div>
 
 				{/* Modal panel */}
-				<div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+				<div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-lg text-left shadow-xl">
 					<div className="bg-white px-4 pt-5 pb-4 sm:p-6">
-						<div className="flex items-center justify-between mb-4">
-							<h3 className="text-2xl font-bold text-gray-900">Job Application Details</h3>
+						<div className="flex items-center justify-between mb-4 gap-3">
+							<h3 className="text-xl sm:text-2xl font-bold text-gray-900">Job Application Details</h3>
 							<button
+								type="button"
 								onClick={onClose}
-								className="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-1"
+								className="shrink-0 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+								aria-label="Close"
 							>
 								<X className="w-6 h-6" />
 							</button>
@@ -157,11 +159,11 @@ export default function JobApplicationModal({ job, onClose }: JobApplicationModa
 						</div>
 					</div>
 
-					<div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+					<div className="bg-gray-50 px-4 py-3 sm:px-6">
 						<button
 							type="button"
 							onClick={onClose}
-							className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm"
+							className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2.5 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px] sm:w-auto sm:text-sm sm:ml-auto"
 						>
 							Close
 						</button>
