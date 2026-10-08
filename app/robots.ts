@@ -16,6 +16,9 @@ export default function robots(): MetadataRoute.Robots {
           '/login',
           '/register',
           '/forgot-password',
+          '/debug',
+          '/test',
+          '/developer',
         ],
       },
       {
@@ -25,10 +28,16 @@ export default function robots(): MetadataRoute.Robots {
           '/dashboard/',
           '/api/',
           '/admin/',
+          '/login',
+          '/register',
+          '/forgot-password',
+          '/debug',
+          '/test',
+          '/developer',
         ],
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   }
 }
-

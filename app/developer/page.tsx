@@ -1,12 +1,16 @@
+import { Metadata } from 'next'
 import Container from '@/components/ui/Container'
 import { Code, Github, Linkedin, Mail, Globe, Heart } from 'lucide-react'
 import Link from 'next/link'
+import { generateMetadata as generatePageMetadata } from '@/lib/seo/metadata'
 
-export const metadata = {
-  title: 'Developer Information - Pak Wattan School & College of Sciences',
+export const metadata: Metadata = generatePageMetadata({
+  title: 'Developer Information',
   description: 'Learn about the developer behind Pak Wattan School & College of Sciences website.',
   keywords: 'developer, website developer, pak wattan developer, web development',
-}
+  path: '/developer',
+  indexable: false,
+})
 
 export default function DeveloperPage() {
   return (

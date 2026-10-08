@@ -19,9 +19,10 @@ export interface PageMetadata {
 
 export const SITE_NAME = 'Pak Wattan School & College of Sciences'
 export const SITE_URL = 'https://pakwattan.edu.pk'
-export const DEFAULT_IMAGE = '/images/logo/logo_150x150.png'
+/** Generated 1200×630 social card from app/opengraph-image.tsx */
+export const DEFAULT_IMAGE = '/opengraph-image'
 export const DEFAULT_KEYWORDS =
-  'Pak Wattan, PWSCS, Havelian school, Abbottabad education, KPK schools, best school in Havelian, quality education Pakistan'
+  'Pak Wattan, PWSCS, Havelian school, Abbottabad education, KPK schools, best school in Havelian, quality education Pakistan, SSC Havelian Circle topper, HSSC FSc results, BISE Abbottabad'
 
 /**
  * Builds absolute URL for a site path or external URL.
@@ -48,13 +49,21 @@ export function generateMetadata({
   modifiedTime,
   author,
   indexable = true,
-  imageWidth = 150,
-  imageHeight = 150,
+  imageWidth,
+  imageHeight,
 }: PageMetadata): Metadata {
   const isHome = !path || path === '/'
   const fullTitle = isHome ? title : `${title} | ${SITE_NAME}`
   const url = absoluteUrl(isHome ? '/' : path)
   const imageUrl = absoluteUrl(image)
+  const isDefaultShareImage =
+    image === DEFAULT_IMAGE ||
+    image === '/opengraph-image' ||
+    image === '/images/logo/logo_150x150.png'
+  const ogWidth = imageWidth ?? (isDefaultShareImage ? 1200 : undefined)
+  const ogHeight = imageHeight ?? (isDefaultShareImage ? 630 : undefined)
+  const useLargeCard =
+    ((ogWidth ?? 0) >= 600 && (ogHeight ?? 0) >= 314) || isDefaultShareImage
   const keywordString = keywords
     ? `${keywords}, ${DEFAULT_KEYWORDS}`
     : DEFAULT_KEYWORDS
@@ -82,8 +91,8 @@ export function generateMetadata({
       images: [
         {
           url: imageUrl,
-          width: imageWidth,
-          height: imageHeight,
+          ...(ogWidth && { width: ogWidth }),
+          ...(ogHeight && { height: ogHeight }),
           alt: `${title} — ${SITE_NAME}`,
         },
       ],
@@ -93,8 +102,7 @@ export function generateMetadata({
       ...(modifiedTime && { modifiedTime }),
     },
     twitter: {
-      // Logo is square; summary fits better than summary_large_image
-      card: imageWidth >= 600 && imageHeight >= 314 ? 'summary_large_image' : 'summary',
+      card: useLargeCard ? 'summary_large_image' : 'summary',
       title: fullTitle,
       description,
       images: [imageUrl],

@@ -38,26 +38,26 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
     description:
-      'Quality education in Havelian, KPK since 2020. Circle toppers, scholarships, and campuses for boys and girls.',
+      'Quality education in Havelian, KPK since 2020. SSC & HSSC Circle toppers, scholarships, and campuses for boys and girls.',
     url: 'https://pakwattan.edu.pk',
     siteName: 'Pak Wattan School & College of Sciences',
     images: [
       {
-        url: '/images/logo/logo_150x150.png',
-        width: 150,
-        height: 150,
-        alt: 'Pak Wattan School & College of Sciences',
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Pak Wattan School & College of Sciences — Best School in Havelian',
       },
     ],
     locale: 'en_PK',
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
     description:
-      'Quality education in Havelian, KPK since 2020. Circle toppers, scholarships, and campuses for boys and girls.',
-    images: ['/images/logo/logo_150x150.png'],
+      'Quality education in Havelian, KPK since 2020. SSC & HSSC Circle toppers, scholarships, and campuses for boys and girls.',
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,
@@ -96,7 +96,7 @@ export default function RootLayout({
   const globalSchemas = getGlobalStructuredData()
 
   return (
-    <html lang="en" className="font-sans">
+    <html lang="en-PK" className="font-sans">
       <head>
         <StructuredData data={globalSchemas} />
         {/* Resource hints for external domains - improve connection speed */}

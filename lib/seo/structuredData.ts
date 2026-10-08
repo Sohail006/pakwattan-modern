@@ -1,7 +1,7 @@
 /**
  * Structured Data (JSON-LD) generators for SEO.
  * Covers: Organization, School, LocalBusiness, Breadcrumb, VideoObject,
- * FAQ, Person, Review, WebSite, SearchAction.
+ * FAQ, Person, Review, WebSite, SearchAction, JobPosting.
  */
 
 export interface OrganizationInput {
@@ -92,6 +92,24 @@ export interface VideoObjectInput {
   uploadDate?: string
   duration?: string
   publisherName?: string
+}
+
+export interface JobPostingInput {
+  title: string
+  description: string
+  datePosted: string
+  validThrough?: string
+  employmentType?: string | string[]
+  hiringOrganizationName?: string
+  hiringOrganizationUrl?: string
+  hiringOrganizationLogo?: string
+  jobLocationName?: string
+  streetAddress?: string
+  addressLocality?: string
+  addressRegion?: string
+  addressCountry?: string
+  applicantLocationRequirements?: string
+  directApply?: boolean
 }
 
 /** Organization (also used as base for School / EducationalOrganization) */
@@ -450,6 +468,40 @@ export function generateWebPageSchema(opts: {
     about: {
       '@id': 'https://pakwattan.edu.pk#school',
     },
+  }
+}
+
+/** JobPosting — helps Google for Jobs discover open roles */
+export function generateJobPostingSchema(job: JobPostingInput): object {
+  const orgName = job.hiringOrganizationName || 'Pak Wattan School & College of Sciences'
+  const orgUrl = job.hiringOrganizationUrl || 'https://pakwattan.edu.pk'
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'JobPosting',
+    title: job.title,
+    description: job.description,
+    datePosted: job.datePosted,
+    ...(job.validThrough && { validThrough: job.validThrough }),
+    employmentType: job.employmentType || 'FULL_TIME',
+    hiringOrganization: {
+      '@type': 'Organization',
+      name: orgName,
+      sameAs: orgUrl,
+      ...(job.hiringOrganizationLogo && { logo: job.hiringOrganizationLogo }),
+    },
+    jobLocation: {
+      '@type': 'Place',
+      name: job.jobLocationName || 'Pak Wattan School & College of Sciences, Havelian',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: job.streetAddress || 'Azam Khan Road, beside Mubarak Plaza',
+        addressLocality: job.addressLocality || 'Havelian',
+        addressRegion: job.addressRegion || 'Khyber Pakhtunkhwa',
+        addressCountry: job.addressCountry || 'PK',
+      },
+    },
+    ...(job.directApply !== false && { directApply: true }),
   }
 }
 

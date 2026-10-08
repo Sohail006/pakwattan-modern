@@ -21,9 +21,9 @@ import { getHomeReviewSchema, getFeaturedVideoSchemas } from '@/lib/seo/siteSche
 export const metadata: Metadata = generatePageMetadata({
   title: 'Pak Wattan School & College of Sciences | Best School in Havelian',
   description:
-    'Pak Wattan School & College of Sciences, Havelian — SSC and HSSC Havelian Circle toppers, quality education, scholarships, Montessori to FSc since 2020.',
+    'Best school in Havelian for Montessori to FSc. Pak Wattan — SSC & HSSC Havelian Circle toppers, F.Sc results 2026, scholarships, and affordable excellence (BISE Abbottabad).',
   keywords:
-    'best school in Havelian, Pak Wattan Havelian, SSC circle topper, HSSC FSc results 2026, FSc college Havelian, scholarships Havelian, Montessori Havelian, Abbottabad board school',
+    'best school in Havelian, Pak Wattan Havelian, SSC circle topper, HSSC Havelian Circle topper, F.Sc-I results 2026, F.Sc-II results 2026, FSc college Havelian, scholarships Havelian, Montessori Havelian, BISE Abbottabad school',
   path: '/',
 })
 

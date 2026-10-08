@@ -351,6 +351,7 @@ export default function UsersManagementPage() {
           <p className="text-gray-600">No users found</p>
         </div>
       ) : (
+        <>
         {/* Desktop table */}
         <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
           <div 
@@ -626,6 +627,7 @@ export default function UsersManagementPage() {
             </div>
           ))}
         </div>
+        </>
       )}
 
       {/* Edit User Modal */}
