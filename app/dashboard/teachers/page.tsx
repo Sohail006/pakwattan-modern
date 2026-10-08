@@ -194,20 +194,18 @@ export default function TeachersPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Teachers Management</h1>
-          <p className="text-gray-600 mt-1">Manage teacher accounts and information</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Teachers Management</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage teacher accounts and information</p>
         </div>
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/dashboard/users/create"
-            className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-700 transition-all duration-200 shadow-sm"
-          >
-            <UserPlus className="w-5 h-5" />
-            <span>Add Teacher</span>
-          </Link>
-        </div>
+        <Link
+          href="/dashboard/users/create"
+          className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-700 transition-all duration-200 shadow-sm min-h-[44px] w-full sm:w-auto text-sm"
+        >
+          <UserPlus className="w-5 h-5" />
+          <span>Add Teacher</span>
+        </Link>
       </div>
 
       {/* Success Message */}
@@ -272,9 +270,10 @@ export default function TeachersPage() {
         </div>
       ) : (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
+          {/* Desktop table */}
           <div 
             ref={tableScrollRef}
-            className="overflow-x-auto relative"
+            className="hidden lg:block overflow-x-auto relative"
             style={{ scrollbarWidth: 'thin' }}
           >
             {/* Left scroll indicator */}
@@ -299,7 +298,7 @@ export default function TeachersPage() {
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">
+                  <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]">
                     Actions
                   </th>
                 </tr>
@@ -353,7 +352,7 @@ export default function TeachersPage() {
                         </span>
                       )}
                     </td>
-                    <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+                    <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)] transition-colors">
                       <div className="flex items-center justify-end space-x-2">
                         {actionLoading === teacher.id ? (
                           <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
@@ -361,16 +360,18 @@ export default function TeachersPage() {
                           <>
                             {!teacher.isActive ? (
                               <button
+                                type="button"
                                 onClick={() => handleActivate(teacher.id)}
-                                className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                                className="no-touch-target text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
                                 title="Activate teacher"
                               >
                                 <CheckCircle className="w-5 h-5" />
                               </button>
                             ) : (
                               <button
+                                type="button"
                                 onClick={() => handleDeactivate(teacher.id)}
-                                className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                className="no-touch-target text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
                                 title="Deactivate teacher"
                               >
                                 <XCircle className="w-5 h-5" />
@@ -380,8 +381,9 @@ export default function TeachersPage() {
                               <>
                                 {canUpdate && (
                                   <button
+                                    type="button"
                                     onClick={() => handleEdit(teacher)}
-                                    className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                    className="no-touch-target text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
                                     title="Edit teacher"
                                   >
                                     <Edit className="w-5 h-5" />
@@ -389,8 +391,9 @@ export default function TeachersPage() {
                                 )}
                                 {canDelete && (
                                   <button
+                                    type="button"
                                     onClick={() => handleDelete(teacher.id)}
-                                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                    className="no-touch-target text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
                                     title="Delete teacher"
                                   >
                                     <Trash2 className="w-5 h-5" />
@@ -406,6 +409,108 @@ export default function TeachersPage() {
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="lg:hidden space-y-3 p-3">
+            {filteredTeachers.map((teacher) => (
+              <div
+                key={teacher.id}
+                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start gap-3">
+                  {teacher.profileImageUrl ? (
+                    <Image
+                      src={teacher.profileImageUrl}
+                      alt={`${teacher.firstName} ${teacher.lastName}`}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover shrink-0"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold shrink-0">
+                      {teacher.firstName[0]}
+                      {teacher.lastName[0]}
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-gray-900 truncate">
+                      {teacher.firstName} {teacher.lastName}
+                    </p>
+                    <a
+                      href={`mailto:${teacher.email}`}
+                      className="mt-0.5 inline-flex items-center gap-1.5 text-sm text-blue-700 truncate max-w-full"
+                    >
+                      <Mail className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{teacher.email}</span>
+                    </a>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      <span className="px-2 py-0.5 rounded bg-blue-100 text-blue-700 text-xs font-medium">
+                        Teacher
+                      </span>
+                      {teacher.isActive ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-green-100 text-green-700">
+                          Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-amber-100 text-amber-700">
+                          Inactive
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {actionLoading === teacher.id ? (
+                    <div className="w-full flex justify-center py-2">
+                      <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                  ) : (
+                    <>
+                      {!teacher.isActive ? (
+                        <button
+                          type="button"
+                          onClick={() => handleActivate(teacher.id)}
+                          className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 py-2.5 text-xs font-semibold text-green-800 min-h-[44px]"
+                        >
+                          <CheckCircle className="w-4 h-4" />
+                          Activate
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleDeactivate(teacher.id)}
+                          className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-800 min-h-[44px]"
+                        >
+                          <XCircle className="w-4 h-4" />
+                          Deactivate
+                        </button>
+                      )}
+                      {canUpdate && (
+                        <button
+                          type="button"
+                          onClick={() => handleEdit(teacher)}
+                          className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px]"
+                        >
+                          <Edit className="w-4 h-4" />
+                          Edit
+                        </button>
+                      )}
+                      {canDelete && (
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(teacher.id)}
+                          className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-800 min-h-[44px]"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          Delete
+                        </button>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

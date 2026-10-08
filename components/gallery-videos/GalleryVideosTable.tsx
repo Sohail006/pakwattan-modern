@@ -129,44 +129,125 @@ export default function GalleryVideosTable({ onEdit, onAdd, refreshKey }: Galler
           <p className="mt-1 text-sm text-gray-500">Add a YouTube link to display it on the public video gallery page.</p>
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Video</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Category</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Order</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Added</th>
-                <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {videos.map((video) => (
-                <tr key={video.id} className="hover:bg-gray-50/80">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3 min-w-[240px]">
-                      <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100">
-                        {video.thumbnailUrl ? (
-                          <Image
-                            src={video.thumbnailUrl}
-                            alt={video.title}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                          />
-                        ) : null}
+        <>
+          {/* Desktop table */}
+          <div className="hidden lg:block overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Video</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Order</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">Added</th>
+                  <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-gray-500">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {videos.map((video) => (
+                  <tr key={video.id} className="hover:bg-gray-50/80">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3 min-w-[240px]">
+                        <div className="relative h-14 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                          {video.thumbnailUrl ? (
+                            <Image
+                              src={video.thumbnailUrl}
+                              alt={video.title}
+                              fill
+                              className="object-cover"
+                              unoptimized
+                            />
+                          ) : null}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-medium text-gray-900">{video.title}</p>
+                          <p className="truncate text-xs text-gray-500">{video.youtubeVideoId}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="truncate font-medium text-gray-900">{video.title}</p>
-                        <p className="truncate text-xs text-gray-500">{video.youtubeVideoId}</p>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{categoryLabel(video.category)}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{video.displayOrder}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-1">
+                        <span
+                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                            video.isPublished ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
+                          }`}
+                        >
+                          {video.isPublished ? 'Published' : 'Draft'}
+                        </span>
+                        {video.isFeatured && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                            Featured
+                          </span>
+                        )}
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{categoryLabel(video.category)}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{video.displayOrder}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-500">{formatDate(video.createdAt)}</td>
+                    <td className="px-4 py-3">
+                      <div className="flex justify-end gap-2">
+                        <a
+                          href={video.videoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="no-touch-target rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-primary-700"
+                          aria-label={`Open ${video.title} on YouTube`}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </a>
+                        <button
+                          type="button"
+                          onClick={() => onEdit(video)}
+                          className="no-touch-target rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-primary-700"
+                          aria-label={`Edit ${video.title}`}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDeleteTarget(video)}
+                          className="no-touch-target rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
+                          aria-label={`Delete ${video.title}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="lg:hidden space-y-3">
+            {videos.map((video) => (
+              <div
+                key={video.id}
+                className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="relative h-16 w-28 shrink-0 overflow-hidden rounded-lg bg-gray-100">
+                    {video.thumbnailUrl ? (
+                      <Image
+                        src={video.thumbnailUrl}
+                        alt={video.title}
+                        fill
+                        className="object-cover"
+                        unoptimized
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Video className="h-6 w-6 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-semibold text-gray-900 line-clamp-2">{video.title}</p>
+                    <p className="mt-1 text-xs text-gray-500">
+                      {categoryLabel(video.category)} · Order {video.displayOrder}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-1">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs font-medium ${
                           video.isPublished ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-700'
@@ -180,42 +261,40 @@ export default function GalleryVideosTable({ onEdit, onAdd, refreshKey }: Galler
                         </span>
                       )}
                     </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-500">{formatDate(video.createdAt)}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-2">
-                      <a
-                        href={video.videoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-primary-700"
-                        aria-label={`Open ${video.title} on YouTube`}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => onEdit(video)}
-                        className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-primary-700"
-                        aria-label={`Edit ${video.title}`}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeleteTarget(video)}
-                        className="rounded-lg p-2 text-gray-500 hover:bg-red-50 hover:text-red-600"
-                        aria-label={`Delete ${video.title}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    <p className="mt-2 text-xs text-gray-500">{formatDate(video.createdAt)}</p>
+                  </div>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  <a
+                    href={video.videoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-1 rounded-lg border border-gray-200 bg-gray-50 px-2 py-2.5 text-xs font-semibold text-gray-800 min-h-[44px]"
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                    Open
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(video)}
+                    className="inline-flex items-center justify-center gap-1 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                  >
+                    <Edit className="h-4 w-4" />
+                    Edit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDeleteTarget(video)}
+                    className="inline-flex items-center justify-center gap-1 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px]"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    Delete
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       <ConfirmationDialog
