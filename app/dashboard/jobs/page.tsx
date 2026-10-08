@@ -84,14 +84,16 @@ export default function JobsPage() {
 	return (
 		<div className="space-y-6 pb-6">
 			{/* Header */}
-			<div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-6 text-white">
-				<div className="flex items-center gap-4">
-					<div className="bg-white/20 p-3 rounded-lg">
-						<Briefcase className="w-8 h-8" />
+			<div className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg p-4 sm:p-6 text-white">
+				<div className="flex items-center gap-3 sm:gap-4">
+					<div className="bg-white/20 p-2.5 sm:p-3 rounded-lg shrink-0">
+						<Briefcase className="w-6 h-6 sm:w-8 sm:h-8" />
 					</div>
-					<div>
-						<h1 className="text-3xl font-bold">Job Applications</h1>
-						<p className="text-blue-100 mt-1">Manage and review job applications submitted by candidates</p>
+					<div className="min-w-0">
+						<h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Job Applications</h1>
+						<p className="text-blue-100 mt-1 text-sm sm:text-base">
+							Manage and review job applications submitted by candidates
+						</p>
 					</div>
 				</div>
 			</div>

@@ -9,6 +9,7 @@ import WelcomeMessage from '@/components/home/WelcomeMessage'
 import StructuredData from '@/components/seo/StructuredData'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import SkeletonLoader from '@/components/ui/SkeletonLoader'
+import Container from '@/components/ui/Container'
 import { HOME_FAQS } from '@/lib/constants'
 import {
   generateBreadcrumbSchema,
@@ -122,7 +123,9 @@ export default function Home() {
       </ErrorBoundary>
       
       <ErrorBoundary>
-        <BreakingNewsSidebar />
+        <Container className="py-3 sm:py-4">
+          <BreakingNewsSidebar />
+        </Container>
       </ErrorBoundary>
       
       <ErrorBoundary>

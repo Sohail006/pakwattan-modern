@@ -67,22 +67,22 @@ const FeeStructure = () => {
             <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll">
               <div className="inline-block min-w-full align-middle px-4 sm:px-0">
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                  <table className="w-full divide-y divide-gray-300 text-[10px] sm:text-xs">
+                  <table className="w-full divide-y divide-gray-300 text-xs sm:text-sm">
                     <thead className="bg-gradient-to-r from-green-600 to-yellow-500">
                       <tr>
-                        <th scope="col" className="py-1.5 px-2 sm:px-3 text-left font-semibold text-white uppercase tracking-wider">Grade</th>
-                        <th scope="col" className="px-2 sm:px-3 py-1.5 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Monthly Fee</th>
-                        <th scope="col" className="px-2 sm:px-3 py-1.5 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Admission Fee</th>
-                        <th scope="col" className="px-2 sm:px-3 py-1.5 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Annual Charges</th>
+                        <th scope="col" className="py-2 px-2.5 sm:px-3 text-left font-semibold text-white uppercase tracking-wider">Grade</th>
+                        <th scope="col" className="px-2.5 sm:px-3 py-2 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Monthly Fee</th>
+                        <th scope="col" className="px-2.5 sm:px-3 py-2 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Admission Fee</th>
+                        <th scope="col" className="px-2.5 sm:px-3 py-2 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Annual Charges</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
                       {feeData.map((fee, index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-gray-900">{fee.class}</td>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-primary-600">{fee.monthly}</td>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-primary-600">{fee.admission}</td>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-primary-600">{fee.annual}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-gray-900">{fee.class}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-primary-600">{fee.monthly}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-primary-600">{fee.admission}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-primary-600">{fee.annual}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -105,20 +105,20 @@ const FeeStructure = () => {
             <div className="overflow-x-auto -mx-4 sm:mx-0 mobile-scroll">
               <div className="inline-block min-w-full align-middle px-4 sm:px-0">
                 <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
-                  <table className="w-full divide-y divide-gray-300 text-[10px] sm:text-xs">
+                  <table className="w-full divide-y divide-gray-300 text-xs sm:text-sm">
                     <thead className="bg-gradient-to-r from-green-600 to-yellow-500">
                       <tr>
-                        <th scope="col" className="py-1.5 px-2 sm:px-3 text-center font-semibold text-white uppercase tracking-wider">S.No</th>
-                        <th scope="col" className="px-2 sm:px-3 py-1.5 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Class</th>
-                        <th scope="col" className="px-2 sm:px-3 py-1.5 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Age Limits</th>
+                        <th scope="col" className="py-2 px-2.5 sm:px-3 text-center font-semibold text-white uppercase tracking-wider">S.No</th>
+                        <th scope="col" className="px-2.5 sm:px-3 py-2 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Class</th>
+                        <th scope="col" className="px-2.5 sm:px-3 py-2 text-left font-semibold text-white uppercase tracking-wider whitespace-nowrap">Age Limits</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 bg-white">
                       {ageLimits.map((age, index) => (
                         <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-gray-900 text-center">{index + 1}</td>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-gray-900">{age.class}</td>
-                          <td className="whitespace-nowrap py-1.5 px-2 sm:px-3 font-semibold text-primary-600">{age.age}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-gray-900 text-center">{index + 1}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-gray-900">{age.class}</td>
+                          <td className="whitespace-nowrap py-2 px-2.5 sm:px-3 font-semibold text-primary-600">{age.age}</td>
                         </tr>
                       ))}
                     </tbody>

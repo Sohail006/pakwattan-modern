@@ -149,41 +149,43 @@ export default function JobsTable() {
 	return (
 		<div className="space-y-4">
 			{/* Header with Search and Actions */}
-			<div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-				<div className="flex-1 w-full sm:w-auto">
-					<div className="relative">
-						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-						<input
-							type="text"
-							placeholder="Search by name, mobile, address, subject..."
-							value={searchTerm}
-							onChange={e => setSearchTerm(e.target.value)}
-							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-						/>
-						{searchTerm && (
-							<button
-								onClick={() => setSearchTerm('')}
-								className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-							>
-								<X className="w-4 h-4" />
-							</button>
-						)}
-					</div>
+			<div className="flex flex-col gap-3 sm:gap-4">
+				<div className="relative w-full">
+					<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+					<input
+						type="text"
+						placeholder="Search by name, mobile, address, subject..."
+						value={searchTerm}
+						onChange={e => setSearchTerm(e.target.value)}
+						className="w-full pl-10 pr-11 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base min-h-[44px]"
+					/>
+					{searchTerm && (
+						<button
+							type="button"
+							onClick={() => setSearchTerm('')}
+							className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 p-2 min-h-[44px] min-w-[44px] flex items-center justify-center"
+							aria-label="Clear search"
+						>
+							<X className="w-4 h-4" />
+						</button>
+					)}
 				</div>
-				<div className="flex gap-2">
+				<div className="flex flex-wrap gap-2">
 					<button
+						type="button"
 						onClick={() => setIsImportModalOpen(true)}
-						className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2"
+						className="flex-1 sm:flex-none px-4 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center gap-2 min-h-[44px]"
 					>
 						<Upload className="w-4 h-4" />
-						Import Excel
+						<span className="sm:inline">Import Excel</span>
 					</button>
 					<button
+						type="button"
 						onClick={handleExport}
-						className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-2"
+						className="flex-1 sm:flex-none px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center gap-2 min-h-[44px]"
 					>
 						<Download className="w-4 h-4" />
-						Export CSV
+						<span className="sm:inline">Export CSV</span>
 					</button>
 				</div>
 			</div>
@@ -210,8 +212,8 @@ export default function JobsTable() {
 				</div>
 			</div>
 
-			{/* Table */}
-			<div className="bg-white rounded-lg shadow overflow-hidden">
+			{/* Desktop table */}
+			<div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
 				<div className="overflow-x-auto">
 					<table className="min-w-full divide-y divide-gray-200">
 						<thead className="bg-gray-50">
@@ -223,13 +225,13 @@ export default function JobsTable() {
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Experience</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied Date</th>
-								<th className="sticky right-0 px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">Actions</th>
+								<th className="sticky right-0 px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]">Actions</th>
 							</tr>
 						</thead>
 						<tbody className="bg-white divide-y divide-gray-200">
 							{filteredJobs.length === 0 ? (
 								<tr>
-									<td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+									<td colSpan={8} className="px-6 py-12 text-center text-gray-500">
 										No job applications found.
 									</td>
 								</tr>
@@ -271,20 +273,22 @@ export default function JobsTable() {
 										</td>
 										<td className="px-6 py-4 text-sm text-gray-500">{job.subjectTought || '-'}</td>
 										<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatDate(job.creationDate)}</td>
-										<td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+										<td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)] transition-colors">
 											<div className="flex items-center justify-end gap-2">
 												<button
+													type="button"
 													onClick={() => setViewingJob(job)}
-													className="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors"
+													className="no-touch-target text-blue-600 hover:text-blue-900 p-2 rounded hover:bg-blue-50 transition-colors"
 													title="View Details"
 													aria-label={`View ${job.name} details`}
 												>
 													<Eye className="w-4 h-4" />
 												</button>
 												<button
+													type="button"
 													onClick={() => handleDelete(job.id)}
 													disabled={deletingId === job.id}
-													className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50 transition-colors"
+													className="no-touch-target text-red-600 hover:text-red-900 p-2 rounded hover:bg-red-50 disabled:opacity-50 transition-colors"
 													title="Delete"
 													aria-label={`Delete ${job.name}`}
 												>
@@ -298,6 +302,78 @@ export default function JobsTable() {
 						</tbody>
 					</table>
 				</div>
+			</div>
+
+			{/* Mobile cards */}
+			<div className="lg:hidden space-y-3">
+				{filteredJobs.length === 0 ? (
+					<div className="rounded-xl border border-gray-200 bg-white p-6 text-center text-gray-500">
+						No job applications found.
+					</div>
+				) : (
+					filteredJobs.map(job => (
+						<div key={job.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+							<div className="flex items-start justify-between gap-3">
+								<div className="min-w-0">
+									<p className="font-semibold text-gray-900 truncate">{job.name}</p>
+									<p className="text-sm text-gray-500 truncate">S/O {job.fatherName}</p>
+								</div>
+								<span className="shrink-0 text-xs font-medium text-gray-500 bg-gray-50 border border-gray-200 rounded-full px-2.5 py-1">
+									{formatDate(job.creationDate)}
+								</span>
+							</div>
+							<div className="mt-3 grid grid-cols-1 gap-1.5 text-sm text-gray-600">
+								<p className="flex items-center gap-2">
+									<Phone className="w-4 h-4 text-gray-400 shrink-0" />
+									<a href={`tel:${job.mobileNumber}`} className="text-blue-700 font-medium">
+										{job.mobileNumber}
+									</a>
+								</p>
+								{job.subjectTought && (
+									<p className="flex items-center gap-2">
+										<Briefcase className="w-4 h-4 text-gray-400 shrink-0" />
+										<span>{job.subjectTought}</span>
+										{job.fieldExperiencedInYears !== undefined && (
+											<span className="text-gray-400">
+												· {job.fieldExperiencedInYears}{' '}
+												{job.fieldExperiencedInYears === 1 ? 'yr' : 'yrs'}
+											</span>
+										)}
+									</p>
+								)}
+								{job.address && (
+									<p className="flex items-start gap-2">
+										<MapPin className="w-4 h-4 text-gray-400 shrink-0 mt-0.5" />
+										<span className="line-clamp-2">{job.address}</span>
+									</p>
+								)}
+							</div>
+							<div className="mt-4 flex gap-2">
+								<button
+									type="button"
+									onClick={() => setViewingJob(job)}
+									className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-sm font-semibold text-blue-800 min-h-[44px]"
+								>
+									<Eye className="w-4 h-4" />
+									View
+								</button>
+								<button
+									type="button"
+									onClick={() => handleDelete(job.id)}
+									disabled={deletingId === job.id}
+									className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm font-semibold text-red-800 min-h-[44px] disabled:opacity-50"
+								>
+									{deletingId === job.id ? (
+										<Loader2 className="w-4 h-4 animate-spin" />
+									) : (
+										<Trash2 className="w-4 h-4" />
+									)}
+									Delete
+								</button>
+							</div>
+						</div>
+					))
+				)}
 			</div>
 
 			{/* Confirmation Dialog */}

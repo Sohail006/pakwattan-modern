@@ -32,7 +32,14 @@ export default function ConditionalLayout({
         Skip to main content
       </a>
       {!isDashboardRoute && <Header />}
-      <main id="main-content" className={isDashboardRoute ? 'min-h-screen' : 'min-h-screen pt-16'}>
+      <main
+        id="main-content"
+        className={
+          isDashboardRoute
+            ? 'min-h-screen'
+            : 'min-h-screen pt-[4.5rem] sm:pt-16'
+        }
+      >
         {children}
       </main>
       {!isDashboardRoute && <Footer />}

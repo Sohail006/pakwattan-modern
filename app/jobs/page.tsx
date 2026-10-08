@@ -22,7 +22,7 @@ export default function JobsPage() {
 	return (
 		<>
 			<StructuredData data={breadcrumbs} />
-			<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50">
+			<div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-primary-50 pb-20 md:pb-0">
 				{/* Hero Section */}
 				<JobsHero />
 

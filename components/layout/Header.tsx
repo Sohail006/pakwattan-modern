@@ -40,6 +40,23 @@ const Header = () => {
     fetchMainCampus()
   }, [])
 
+  // Lock body scroll + Escape when mobile menu is open
+  useEffect(() => {
+    if (!isMenuOpen) return
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [isMenuOpen])
+
   // Use main campus data if available, otherwise fallback to SCHOOL_INFO
   const phone = mainCampus?.mobileNumber || mainCampus?.phone || SCHOOL_INFO.contact.phone
   const email = mainCampus?.email || SCHOOL_INFO.contact.email
@@ -50,49 +67,50 @@ const Header = () => {
       {/* Fixed Header Container */}
       <div className="fixed top-0 left-0 right-0 z-50">
         {/* Top Bar - Mobile Optimized */}
-        <div className="bg-primary-600 text-white py-1">
+        <div className="bg-primary-600 text-white py-1.5">
           <Container>
-            <div className="flex flex-col sm:flex-row justify-between items-center text-xs space-y-1 sm:space-y-0">
-              {/* Contact Info - Inline with icons */}
-              <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex flex-row justify-between items-center gap-2 text-xs">
+              {/* Contact Info - keep single row on mobile */}
+              <div className="flex items-center gap-3 sm:gap-6 min-w-0">
                 {phone && (
                   <a 
                     href={telHref}
-                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors"
+                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-1"
                     aria-label={`Call landline ${phone}`}
                   >
                     <PhoneCall className="w-3.5 h-3.5 flex-shrink-0" aria-hidden />
-                    <span className="hidden xs:inline">{phone}</span>
-                    <span className="xs:hidden">Call Us</span>
+                    <span className="hidden xs:inline truncate max-w-[9rem] sm:max-w-none">{phone}</span>
+                    <span className="xs:hidden">Call</span>
                   </a>
                 )}
                 {email && (
                   <a 
                     href={`mailto:${email}`}
-                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors"
+                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-1"
+                    aria-label={`Email ${email}`}
                   >
                     <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="hidden sm:inline">{email}</span>
+                    <span className="hidden sm:inline truncate">{email}</span>
                     <span className="sm:hidden">Email</span>
                   </a>
                 )}
               </div>
               
               {/* Action Links - Responsive layout */}
-              <div className="flex items-center space-x-2 sm:space-x-3">
-                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target flex items-center">
+              <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-2 flex items-center">
                   Sign In
                 </Link>
-                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target flex items-center">
+                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-2 items-center hidden xs:flex">
                   Register
                 </Link>
                 <Button 
                   href="/video-gallery" 
                   variant="accent" 
                   size="sm"
-                  className="text-xs py-0.5 px-2 flex items-center gap-1.5 h-6"
+                  className="text-xs py-1.5 px-2.5 flex items-center gap-1.5 min-h-[36px]"
                 >
-                  <Play className="w-3 h-3" />
+                  <Play className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Video Gallery</span>
                   <span className="sm:hidden">Videos</span>
                 </Button>
@@ -237,9 +255,12 @@ const Header = () => {
 
             {/* Enhanced Mobile Menu Button - Touch Friendly */}
             <button
+              type="button"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden relative p-3 rounded-lg text-secondary-700 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 group touch-target"
-              aria-label="Toggle navigation menu"
+              className="lg:hidden relative p-3 rounded-lg text-secondary-700 hover:text-primary-600 hover:bg-gradient-to-r hover:from-primary-50 hover:to-accent-50 transition-all duration-300 group touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMenuOpen}
+              aria-controls="public-mobile-nav"
             >
               <div className="relative z-10">
                 {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -250,9 +271,12 @@ const Header = () => {
 
         {/* Enhanced Mobile Menu - Improved UX */}
         {isMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-200 shadow-xl animate-fade-in-down max-h-[80vh] overflow-y-auto">
+          <div
+            id="public-mobile-nav"
+            className="lg:hidden bg-white border-t border-gray-200 shadow-xl animate-fade-in-down max-h-[80vh] overflow-y-auto"
+          >
             <Container>
-              <nav className="space-y-1">
+              <nav className="space-y-1" aria-label="Mobile navigation">
                 {MAIN_NAVIGATION.map((item) => (
                   <div key={item.name}>
                     <Link

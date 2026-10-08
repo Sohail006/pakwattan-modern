@@ -28,7 +28,7 @@ export default function AdmissionPage() {
   return (
     <>
       <StructuredData data={breadcrumbs} />
-      <div className="min-h-screen">
+      <div className="min-h-screen pb-20 md:pb-0">
         <AdmissionHero />
         <div className="border-t border-gray-200"></div>
         <AdmissionProcess />

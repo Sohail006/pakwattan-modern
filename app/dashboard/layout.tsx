@@ -13,6 +13,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [user, setUser] = useState<Record<string, unknown> | null>(null)
   const [roles, setRoles] = useState<string[]>([])
@@ -83,6 +84,8 @@ export default function DashboardLayout({
       <Sidebar
         isOpen={sidebarOpen}
         onToggle={() => setSidebarOpen(!sidebarOpen)}
+        mobileOpen={mobileNavOpen}
+        onMobileClose={() => setMobileNavOpen(false)}
         userRoles={roles}
         currentPath={pathname || ''}
       />
@@ -96,7 +99,8 @@ export default function DashboardLayout({
         {/* Top Header */}
         <DashboardHeader 
           user={user}
-          onMenuClick={() => setSidebarOpen(!sidebarOpen)}
+          onMenuClick={() => setMobileNavOpen((open) => !open)}
+          mobileNavOpen={mobileNavOpen}
         />
         
         {/* Page Content */}

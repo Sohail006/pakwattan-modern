@@ -261,16 +261,16 @@ export default function UsersManagementPage() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">User Management</h1>
-          <p className="text-gray-600 mt-1">Manage user accounts and permissions</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">User Management</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Manage user accounts and permissions</p>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {canViewActivityLogs && (
             <Link
               href="/dashboard/users/activity-logs"
-              className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-colors min-h-[44px] text-sm"
             >
               <Activity className="w-5 h-5" />
               <span>Activity Logs</span>
@@ -278,7 +278,7 @@ export default function UsersManagementPage() {
           )}
           <Link
             href="/dashboard/users/create"
-            className="flex items-center space-x-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-700 transition-all duration-200 shadow-sm"
+            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-700 transition-all duration-200 shadow-sm min-h-[44px] text-sm"
           >
             <UserPlus className="w-5 h-5" />
             <span>Create User</span>
@@ -351,7 +351,8 @@ export default function UsersManagementPage() {
           <p className="text-gray-600">No users found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
+        {/* Desktop table */}
+        <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative">
           <div 
             ref={tableScrollRef}
             className="overflow-x-auto relative"
@@ -382,7 +383,7 @@ export default function UsersManagementPage() {
                   <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">
+                  <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]">
                     Actions
                   </th>
                 </tr>
@@ -442,7 +443,7 @@ export default function UsersManagementPage() {
                         </span>
                       )}
                     </td>
-                    <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+                    <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)] transition-colors">
                       <div className="flex items-center justify-end space-x-2">
                         {actionLoading === user.id ? (
                           <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
@@ -451,7 +452,7 @@ export default function UsersManagementPage() {
                             {!user.isActive && canActivateUsers && (
                               <button
                                 onClick={() => handleActivate(user.id)}
-                                className="text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
+                                className="no-touch-target text-green-600 hover:text-green-700 p-2 rounded-lg hover:bg-green-50 transition-colors"
                                 title="Activate user"
                               >
                                 <CheckCircle className="w-5 h-5" />
@@ -460,7 +461,7 @@ export default function UsersManagementPage() {
                             {user.isActive && canDeactivateUsers && (
                               <button
                                 onClick={() => handleDeactivate(user.id)}
-                                className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                className="no-touch-target text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
                                 title="Deactivate user"
                               >
                                 <XCircle className="w-5 h-5" />
@@ -471,7 +472,7 @@ export default function UsersManagementPage() {
                                 {canUpdateUsers && (
                                   <button
                                     onClick={() => handleEdit(user)}
-                                    className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                    className="no-touch-target text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
                                     title="Edit user"
                                   >
                                     <Edit className="w-5 h-5" />
@@ -480,7 +481,7 @@ export default function UsersManagementPage() {
                                 {canDeleteUsers && (
                                   <button
                                     onClick={() => handleDelete(user.id)}
-                                    className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                    className="no-touch-target text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
                                     title="Delete user"
                                   >
                                     <Trash2 className="w-5 h-5" />
@@ -489,7 +490,7 @@ export default function UsersManagementPage() {
                                 {canAssignRoles && (
                                   <button
                                     onClick={() => setShowRoleAssignment(showRoleAssignment === user.id ? null : user.id)}
-                                    className="text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
+                                    className="no-touch-target text-purple-600 hover:text-purple-700 p-2 rounded-lg hover:bg-purple-50 transition-colors"
                                     title="Manage roles"
                                   >
                                     <Shield className="w-5 h-5" />
@@ -506,6 +507,124 @@ export default function UsersManagementPage() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile cards */}
+        <div className="lg:hidden space-y-3">
+          {filteredUsers.map((user) => (
+            <div
+              key={user.id}
+              className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-start gap-3">
+                {user.profileImageUrl ? (
+                  <Image
+                    src={user.profileImageUrl}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center text-white font-semibold shrink-0">
+                    {user.firstName[0]}
+                    {user.lastName[0]}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold text-gray-900 truncate">
+                    {user.firstName} {user.lastName}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate">{user.email}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {user.roles.map((role) => (
+                      <span
+                        key={role}
+                        className={`px-2 py-0.5 rounded-md text-xs font-medium ${
+                          roleColors[role] || 'bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {role}
+                      </span>
+                    ))}
+                    {user.isActive ? (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-green-100 text-green-700">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-amber-100 text-amber-700">
+                        Inactive
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {actionLoading === user.id ? (
+                  <div className="w-full flex justify-center py-2">
+                    <div className="w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full animate-spin" />
+                  </div>
+                ) : (
+                  <>
+                    {!user.isActive && canActivateUsers && (
+                      <button
+                        type="button"
+                        onClick={() => handleActivate(user.id)}
+                        className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 py-2.5 text-xs font-semibold text-green-800 min-h-[44px]"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        Activate
+                      </button>
+                    )}
+                    {user.isActive && canDeactivateUsers && (
+                      <button
+                        type="button"
+                        onClick={() => handleDeactivate(user.id)}
+                        className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs font-semibold text-amber-800 min-h-[44px]"
+                      >
+                        <XCircle className="w-4 h-4" />
+                        Deactivate
+                      </button>
+                    )}
+                    {canUpdateUsers && (
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(user)}
+                        className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px]"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit
+                      </button>
+                    )}
+                    {canAssignRoles && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowRoleAssignment(
+                            showRoleAssignment === user.id ? null : user.id
+                          )
+                        }
+                        className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-purple-200 bg-purple-50 px-3 py-2.5 text-xs font-semibold text-purple-800 min-h-[44px]"
+                      >
+                        <Shield className="w-4 h-4" />
+                        Roles
+                      </button>
+                    )}
+                    {canDeleteUsers && (
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(user.id)}
+                        className="flex-1 min-w-[40%] inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-xs font-semibold text-red-800 min-h-[44px]"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -521,7 +521,8 @@ export default function AdmissionsPage() {
         </div>
       ) : (
         <>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 relative">
+          {/* Desktop table */}
+          <div className="hidden lg:block bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6 relative">
             <div 
               ref={tableScrollRef}
               className="overflow-x-auto relative"
@@ -555,7 +556,7 @@ export default function AdmissionsPage() {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                       Admission Date
                     </th>
-                    <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200">
+                    <th className="sticky right-0 px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)]">
                       Actions
                     </th>
                   </tr>
@@ -616,7 +617,7 @@ export default function AdmissionsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(student.createdAt)}
                       </td>
-                      <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 transition-colors">
+                      <td className="sticky right-0 px-6 py-4 whitespace-nowrap text-right text-sm font-medium bg-white group-hover:bg-gray-50 z-10 border-l border-gray-200 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.1)] transition-colors">
                         <div className="flex items-center justify-end space-x-2">
                           {actionLoading === student.id ? (
                             <Loader2 className="w-5 h-5 animate-spin text-primary-600" />
@@ -628,7 +629,7 @@ export default function AdmissionsPage() {
                                   e.stopPropagation()
                                   handleView(student)
                                 }}
-                                className="text-primary-600 hover:text-primary-700 p-2 rounded-lg hover:bg-primary-50 transition-colors"
+                                className="no-touch-target text-primary-600 hover:text-primary-700 p-2 rounded-lg hover:bg-primary-50 transition-colors"
                                 title="View Details"
                                 aria-label={`View ${student.name} details`}
                               >
@@ -640,7 +641,7 @@ export default function AdmissionsPage() {
                                   e.stopPropagation()
                                   handleEdit(student)
                                 }}
-                                className="text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
+                                className="no-touch-target text-blue-600 hover:text-blue-700 p-2 rounded-lg hover:bg-blue-50 transition-colors"
                                 title="Edit Student"
                                 aria-label={`Edit ${student.name}`}
                               >
@@ -652,7 +653,7 @@ export default function AdmissionsPage() {
                                   e.stopPropagation()
                                   handleDelete(student.id)
                                 }}
-                                className="text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                                className="no-touch-target text-red-600 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors"
                                 title="Delete Student"
                                 aria-label={`Delete ${student.name}`}
                               >
@@ -668,6 +669,101 @@ export default function AdmissionsPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Mobile cards */}
+          <div className="lg:hidden space-y-3 mb-6">
+            {students.map((student) => {
+              const imageUrls = getImageUrlWithFallback(student.profileImageUrl)
+              const imageUrl = imageUrls[0] || null
+              return (
+                <div
+                  key={student.id}
+                  className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+                >
+                  <div className="flex items-start gap-3">
+                    {imageUrl ? (
+                      <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0">
+                        <Image
+                          src={imageUrl}
+                          alt={student.name}
+                          fill
+                          className="object-cover"
+                          unoptimized
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center text-white font-semibold shrink-0">
+                        {student.name[0]}
+                      </div>
+                    )}
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-gray-900 truncate">{student.name}</p>
+                      {student.email && (
+                        <p className="text-xs text-gray-500 truncate">{student.email}</p>
+                      )}
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <span className="text-xs font-medium bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                          {student.gradeName || 'N/A'}
+                          {student.sectionName ? ` · ${student.sectionName}` : ''}
+                        </span>
+                        <span
+                          className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                            student.status === 'Active'
+                              ? 'bg-green-100 text-green-800'
+                              : student.status === 'Inactive'
+                              ? 'bg-gray-100 text-gray-800'
+                              : student.status === 'Suspended'
+                              ? 'bg-red-100 text-red-800'
+                              : student.status === 'Graduated'
+                              ? 'bg-blue-100 text-blue-800'
+                              : 'bg-yellow-100 text-yellow-800'
+                          }`}
+                        >
+                          {student.status}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-xs text-gray-500">
+                        Admitted {formatDate(student.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleView(student)}
+                      disabled={actionLoading === student.id}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-primary-200 bg-primary-50 px-2 py-2.5 text-xs font-semibold text-primary-800 min-h-[44px]"
+                    >
+                      <Eye className="w-4 h-4" />
+                      View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(student)}
+                      disabled={actionLoading === student.id}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-2 py-2.5 text-xs font-semibold text-blue-800 min-h-[44px]"
+                    >
+                      <Edit className="w-4 h-4" />
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(student.id)}
+                      disabled={actionLoading === student.id}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2 py-2.5 text-xs font-semibold text-red-800 min-h-[44px]"
+                    >
+                      {actionLoading === student.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
           </div>
 
           {/* Pagination */}

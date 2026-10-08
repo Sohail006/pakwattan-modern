@@ -228,10 +228,10 @@ const HSSCBISE2026Detailed = () => {
             <span className="text-gray-400 text-sm">Image not available</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-3 sm:pb-4 pointer-events-none">
           <div className="flex items-center space-x-2 text-white">
             <ZoomIn className="w-5 h-5" />
-            <span className="text-sm font-medium">Click to enlarge</span>
+            <span className="text-sm font-medium">Tap to enlarge</span>
           </div>
         </div>
       </div>
@@ -267,21 +267,21 @@ const HSSCBISE2026Detailed = () => {
           <div className="relative max-w-7xl mx-auto">
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden border-4 border-yellow-400/30">
               <AnimatedFireworksBackground className="bg-gradient-to-br from-yellow-50/50 to-primary-50/50 backdrop-blur-sm">
-                <div className="relative min-h-[420px] sm:min-h-[520px] lg:min-h-[620px] overflow-hidden">
+                <div className="relative overflow-hidden pb-16 sm:pb-20">
                   {resultImages.map((slide, index) => (
                     <div
                       key={slide.id}
-                      className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                      className={`transition-all duration-700 ease-in-out ${
                         index === currentSlide
-                          ? 'opacity-100 translate-x-0 scale-100 pointer-events-auto'
-                          : index < currentSlide
-                            ? 'opacity-0 -translate-x-full scale-95 pointer-events-none'
-                            : 'opacity-0 translate-x-full scale-95 pointer-events-none'
+                          ? 'relative opacity-100 translate-x-0 scale-100 pointer-events-auto'
+                          : 'absolute inset-0 opacity-0 pointer-events-none scale-95 ' +
+                            (index < currentSlide ? '-translate-x-full' : 'translate-x-full')
                       }`}
+                      aria-hidden={index !== currentSlide}
                     >
-                      <div className="h-full flex items-center justify-center p-6 sm:p-8 lg:p-12">
+                      <div className="flex items-center justify-center p-4 sm:p-8 lg:p-12">
                         <div
-                          className={`grid gap-6 sm:gap-8 lg:gap-10 w-full max-w-6xl ${
+                          className={`grid gap-4 sm:gap-8 lg:gap-10 w-full max-w-6xl ${
                             slide.single
                               ? 'grid-cols-1 max-w-3xl mx-auto'
                               : 'grid-cols-1 lg:grid-cols-2'

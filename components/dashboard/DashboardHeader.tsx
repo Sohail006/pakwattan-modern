@@ -18,11 +18,13 @@ import { logout } from '@/lib/api/auth'
 interface DashboardHeaderProps {
   user: Record<string, unknown> | null
   onMenuClick: () => void
+  mobileNavOpen?: boolean
 }
 
 export default function DashboardHeader({
   user,
   onMenuClick,
+  mobileNavOpen = false,
 }: DashboardHeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
   const [notifications] = useState(0)
@@ -74,9 +76,12 @@ export default function DashboardHeader({
         {/* Left Side - Menu & Title */}
         <div className="flex items-center space-x-2 sm:space-x-4 min-w-0">
           <button
+            type="button"
             onClick={onMenuClick}
             className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 lg:hidden touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
-            aria-label="Toggle menu"
+            aria-label={mobileNavOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileNavOpen}
+            aria-controls="dashboard-mobile-nav"
           >
             <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700" />
           </button>

@@ -28,7 +28,7 @@ export default function TalentHuntPage() {
   return (
     <>
       <StructuredData data={breadcrumbs} />
-      <div className="min-h-screen">
+      <div className="min-h-screen pb-20 md:pb-0">
         <TalentHuntHero />
         <TalentHuntSeason3Hub />
       </div>
