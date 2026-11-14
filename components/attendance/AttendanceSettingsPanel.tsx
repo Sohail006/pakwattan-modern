@@ -130,26 +130,31 @@ export default function AttendanceSettingsPanel() {
     setOk(null)
     try {
       const list = await getCampuses(true)
-      const existingNames = new Set(campuses.map((c) => c.name.toLowerCase()))
-      let imported = 0
+      let updated = 0
       for (const c of list) {
-        if (!c.name || existingNames.has(c.name.toLowerCase())) continue
-        // Placeholder coords near Havelian HQ — admin must set real GPS per campus
+        if (!c.name) continue
+        // Sync existing school campus into attendance geofence fields (same SQL Campus row)
+        const hasGeo =
+          typeof c.latitude === 'number' &&
+          typeof c.longitude === 'number' &&
+          Number.isFinite(c.latitude) &&
+          Number.isFinite(c.longitude)
         await saveAttendanceCampus({
+          id: String(c.id),
           name: c.name,
           address: c.address,
           externalCampusId: c.id,
-          latitude: 34.05258,
-          longitude: 73.15232,
-          radiusMeters: 120,
-          isActive: true,
+          latitude: hasGeo ? (c.latitude as number) : 34.05258,
+          longitude: hasGeo ? (c.longitude as number) : 73.15232,
+          radiusMeters: c.radiusMeters || 120,
+          isActive: c.isActive !== false,
         })
-        imported += 1
+        updated += 1
       }
       setOk(
-        imported
-          ? `Imported ${imported} campus name(s). Set each campus GPS with “Use my current location” on site.`
-          : 'No new campuses to import.'
+        updated
+          ? `Synced ${updated} campus(es) from school database. Stand at each campus and use “Use my current location”, then Save.`
+          : 'No campuses found in school database.'
       )
       await refresh()
     } catch (e) {

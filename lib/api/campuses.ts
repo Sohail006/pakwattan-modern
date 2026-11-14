@@ -12,6 +12,9 @@ export interface Campus {
   officeHours?: string;
   principalName?: string;
   priority?: number;
+  latitude?: number | null;
+  longitude?: number | null;
+  radiusMeters?: number | null;
   isActive: boolean;
   createdAt: string;
 }
@@ -26,6 +29,9 @@ export interface CreateCampusRequest {
   officeHours?: string;
   principalName?: string;
   priority?: number;
+  latitude?: number;
+  longitude?: number;
+  radiusMeters?: number;
   isActive?: boolean;
 }
 
