@@ -26,6 +26,8 @@ import {
   Shield,
   Video,
   X,
+  MapPin,
+  ClipboardCheck,
 } from 'lucide-react'
 import { SCHOOL_INFO } from '@/lib/constants'
 import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
@@ -110,6 +112,18 @@ export default function Sidebar({
       href: '/dashboard/jobs',
       icon: <Briefcase className="w-5 h-5" />,
       roles: ['Admin', 'Staff'],
+    },
+    {
+      name: 'Staff Attendance',
+      href: '/dashboard/attendance',
+      icon: <ClipboardCheck className="w-5 h-5" />,
+      roles: ['Admin', 'Staff', 'ManagerialStaff'],
+    },
+    {
+      name: 'My Attendance',
+      href: '/dashboard/my-attendance',
+      icon: <MapPin className="w-5 h-5" />,
+      roles: ['Teacher', 'Staff', 'ManagerialStaff', 'Admin'],
     },
     {
       name: 'Admission Settings',

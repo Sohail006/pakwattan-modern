@@ -8,6 +8,7 @@ import { getCourses } from '@/lib/api/courses'
 import { getStudents } from '@/lib/api/students'
 import type { Course } from '@/lib/api/courses'
 import type { Student } from '@/lib/api/students'
+import CheckInPanel from '@/components/attendance/CheckInPanel'
 
 type Kpi = {
   label: string
@@ -163,6 +164,8 @@ export default function TeacherDashboardPage() {
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
         <p className="text-gray-600 mt-1">Welcome back! Manage your classes and students.</p>
       </div>
+
+      <CheckInPanel />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

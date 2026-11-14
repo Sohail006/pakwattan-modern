@@ -140,6 +140,13 @@ export const PERMISSIONS = {
   REPORTS_VIEW: 'reports.view',
   REPORTS_GENERATE: 'reports.generate',
   REPORTS_EXPORT: 'reports.export',
+
+  // Staff Attendance
+  ATTENDANCE_VIEW: 'attendance.view',
+  ATTENDANCE_MARK: 'attendance.mark',
+  ATTENDANCE_MANAGE: 'attendance.manage',
+  ATTENDANCE_VERIFY: 'attendance.verify',
+  ATTENDANCE_REPORTS: 'attendance.reports',
   
   // Dashboard Access
   STAFF_DASHBOARD_ACCESS: 'dashboard.staff',
@@ -167,5 +174,6 @@ export const PERMISSION_CATEGORIES = {
   PERMISSIONS: 'Permissions',
   ACTIVITY_LOGS: 'Activity Logs',
   REPORTS: 'Reports',
+  ATTENDANCE: 'Staff Attendance',
 } as const;
 

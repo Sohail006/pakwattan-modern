@@ -95,7 +95,8 @@ const nextConfig = {
   // beforeFiles is required for /api/news and /api/events so they are never
   // captured by leftover App Router proxies (those fail TLS on Vercel while
   // Vercel’s rewrite to ASP.NET works — same path login/campuses use).
-  // Keep Next-only handlers such as /api/facebook-latest-post as App Router routes.
+  // Keep Next-only handlers such as /api/facebook-latest-post and /api/attendance/*
+  // as App Router routes (matched before afterFiles rewrites).
   async rewrites() {
     // Get API base URL from environment or use defaults (no trailing slash — avoids //api in destination)
     const raw =

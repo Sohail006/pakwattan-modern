@@ -12,7 +12,8 @@ import {
   AlertCircle,
   Newspaper,
   Mail,
-  CheckCircle
+  CheckCircle,
+  ClipboardCheck,
 } from 'lucide-react'
 import { getStudentsPaginated } from '@/lib/api/students'
 import { getAllJobApplications } from '@/lib/api/jobs'
@@ -375,6 +376,14 @@ export default function AdminDashboardPage() {
             >
               <FileText className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
               <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Jobs</span>
+            </Link>
+            <Link
+              href="/dashboard/attendance"
+              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              aria-label="Staff attendance"
+            >
+              <ClipboardCheck className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
+              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Attendance</span>
             </Link>
           </div>
         </div>

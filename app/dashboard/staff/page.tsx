@@ -24,6 +24,7 @@ import { getNews } from '@/lib/api/news'
 import { getContacts, Contact } from '@/lib/api/contact'
 import { isAuthenticated, getUserRoles, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
+import CheckInPanel from '@/components/attendance/CheckInPanel'
 
 type Kpi = { 
   label: string
@@ -318,6 +319,8 @@ export default function StaffDashboardPage() {
           <span className="text-sm font-medium">Refresh</span>
         </button>
       </div>
+
+      <CheckInPanel />
 
       {/* Error Message */}
       {error && (

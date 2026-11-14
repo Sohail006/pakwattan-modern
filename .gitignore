@@ -103,6 +103,9 @@ out/
 tmp/
 temp/
 
+# Staff attendance local JSON store
+data/attendance/
+
 # Exclude nested repositories and old files
 frontend/
 backend/
