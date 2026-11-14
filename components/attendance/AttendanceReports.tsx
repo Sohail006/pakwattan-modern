@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Loader2 } from 'lucide-react'
+import { ArrowLeft, Loader2, Trash2 } from 'lucide-react'
 import {
+  deleteAttendanceRecord,
   getAttendanceCampuses,
   getAttendanceGroups,
   getAttendanceReports,
@@ -32,6 +33,7 @@ export default function AttendanceReports() {
   const [report, setReport] = useState<Awaited<ReturnType<typeof getAttendanceReports>> | null>(
     null
   )
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     Promise.all([
@@ -70,6 +72,26 @@ export default function AttendanceReports() {
   useEffect(() => {
     load()
   }, [load])
+
+  const removeRecord = async (id: string, userName: string, date: string) => {
+    if (
+      !window.confirm(
+        `Delete attendance record for ${userName} on ${date}? This cannot be undone.`
+      )
+    ) {
+      return
+    }
+    setDeletingId(id)
+    setError(null)
+    try {
+      await deleteAttendanceRecord(id)
+      await load()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Delete failed.')
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <div className="space-y-5">
@@ -234,11 +256,27 @@ export default function AttendanceReports() {
                       {r.adminNote ? `Note: ${r.adminNote}` : '—'}
                     </p>
                   </div>
-                  <span
-                    className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(r.status)}`}
-                  >
-                    {statusLabel(r.status)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(r.status)}`}
+                    >
+                      {statusLabel(r.status)}
+                    </span>
+                    <button
+                      type="button"
+                      disabled={deletingId === r.id}
+                      onClick={() => removeRecord(r.id, r.userName, r.date)}
+                      className="inline-flex min-h-[40px] items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 disabled:opacity-50"
+                      title="Delete record"
+                    >
+                      {deletingId === r.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-3.5 w-3.5" />
+                      )}
+                      Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

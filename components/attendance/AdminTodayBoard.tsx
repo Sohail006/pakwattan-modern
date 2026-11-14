@@ -9,12 +9,14 @@ import {
   MapPin,
   RefreshCw,
   Settings2,
+  Trash2,
   UserX,
   Umbrella,
   XCircle,
   BarChart3,
 } from 'lucide-react'
 import {
+  deleteAttendanceRecord,
   getAttendanceBoard,
   postAttendanceAdminAction,
 } from '@/lib/api/attendance'
@@ -65,6 +67,28 @@ export default function AdminTodayBoard() {
       await refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Action failed.')
+    } finally {
+      setActingId(null)
+    }
+  }
+
+  const removeRecord = async (row: NonNullable<typeof board>['rows'][number]) => {
+    if (!row.record?.id) return
+    if (
+      !window.confirm(
+        `Delete attendance record for ${row.assignment.userName} on ${date}? This cannot be undone.`
+      )
+    ) {
+      return
+    }
+    const key = row.record.id
+    setActingId(key)
+    setError(null)
+    try {
+      await deleteAttendanceRecord(row.record.id)
+      await refresh()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Delete failed.')
     } finally {
       setActingId(null)
     }
@@ -262,6 +286,17 @@ export default function AdminTodayBoard() {
                               Reject
                             </button>
                           )}
+                          {row.record?.id && (
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => removeRecord(row)}
+                              className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 disabled:opacity-50"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              Delete
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -335,6 +370,16 @@ export default function AdminTodayBoard() {
                     >
                       Reject
                     </button>
+                    {row.record?.id && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => removeRecord(row)}
+                        className="col-span-2 min-h-[44px] rounded-xl border border-rose-200 bg-rose-50 text-sm font-semibold text-rose-700 disabled:opacity-50"
+                      >
+                        Delete record
+                      </button>
+                    )}
                   </div>
                 </div>
               )

@@ -286,6 +286,15 @@ export async function postAttendanceAdminAction(data: {
   )
 }
 
+export async function deleteAttendanceRecord(id: string) {
+  return unwrap(
+    api.delete<Envelope<{ id: string; deleted: boolean }>>(
+      `/api/attendance/records/${id}`,
+      h()
+    )
+  )
+}
+
 export async function getAttendanceReports(params: {
   from: string
   to: string
