@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Edit, Trash2, Loader2, Search, X, Filter, Calendar, Clock, MapPin, Image as ImageIcon } from 'lucide-react'
 import { Event, getEvents, deleteEvent, PaginatedEventsParams } from '@/lib/api/events'
-import { formatDate } from '@/lib/utils'
+import { formatDate, formatTime } from '@/lib/utils'
 import ConfirmationDialog from '@/components/ui/ConfirmationDialog'
 import Image from 'next/image'
 import { getApiBaseUrl } from '@/lib/config'
@@ -102,19 +102,6 @@ export default function EventsTable({ onEdit, onRefresh }: EventsTableProps) {
     const apiBase = getApiBaseUrl()
     const path = imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`
     return `${apiBase}${path}`
-  }
-
-  const formatTime = (time?: string): string => {
-    if (!time) return ''
-    try {
-      const [hours, minutes] = time.split(':')
-      const hour = parseInt(hours)
-      const ampm = hour >= 12 ? 'PM' : 'AM'
-      const displayHour = hour % 12 || 12
-      return `${displayHour}:${minutes} ${ampm}`
-    } catch {
-      return time
-    }
   }
 
   return (

@@ -190,6 +190,7 @@ export async function getMyAttendanceToday() {
         today: AttendanceRecord | null
         canCheckIn: boolean
         canCheckOut: boolean
+        requireCheckout?: boolean
         date: string
       }>
     >('/api/attendance/me', h())
@@ -222,15 +223,35 @@ export async function attendanceCheckIn(coords: {
   )
 }
 
-export async function attendanceCheckOut(coords: {
-  latitude: number
-  longitude: number
+export async function attendanceCheckOut(coords?: {
+  latitude?: number
+  longitude?: number
+  accuracy?: number
 }) {
+  const hasGps =
+    typeof coords?.latitude === 'number' &&
+    typeof coords?.longitude === 'number' &&
+    Number.isFinite(coords.latitude) &&
+    Number.isFinite(coords.longitude)
+
   return unwrap(
-    api.post<Envelope<{ record: AttendanceRecord; campus?: AttendanceCampus }>>(
+    api.post<
+      Envelope<{
+        record: AttendanceRecord
+        campus?: AttendanceCampus
+        distanceM?: number | null
+        gpsRecorded?: boolean
+      }>
+    >(
       '/api/attendance/me/check-out',
       {
-        ...coords,
+        ...(hasGps
+          ? {
+              latitude: coords!.latitude,
+              longitude: coords!.longitude,
+              accuracy: coords!.accuracy,
+            }
+          : {}),
         deviceInfo:
           typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 180) : undefined,
       },

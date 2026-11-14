@@ -1,4 +1,5 @@
 import type { AttendanceStatus } from '@/lib/attendance/types'
+import { formatTime as formatTime12h } from '@/lib/utils'
 
 export function statusLabel(status: string) {
   switch (status) {
@@ -38,17 +39,11 @@ export function statusClass(status: string) {
   }
 }
 
-export function formatTime(iso?: string) {
-  if (!iso) return '—'
-  try {
-    return new Date(iso).toLocaleTimeString('en-PK', {
-      timeZone: 'Asia/Karachi',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  } catch {
-    return '—'
-  }
+/** Always 12-hour (e.g. 8:30 AM). Accepts ISO datetimes or HH:mm clock strings. */
+export function formatTime(value?: string) {
+  if (!value) return '—'
+  const formatted = formatTime12h(value)
+  return formatted || '—'
 }
 
 export function formatDate(dateKey: string) {

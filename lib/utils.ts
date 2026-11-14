@@ -279,29 +279,36 @@ export function formatDateTime(date: Date | string, options?: Intl.DateTimeForma
     return 'Invalid Date'
   }
   
-  // toLocaleString automatically converts UTC to local timezone
-  // The Date object stores time in UTC internally, and toLocaleString converts it
-  return dateObj.toLocaleString('en-GB', {
+  // Always display in 12-hour Asia/Karachi time unless caller overrides options
+  return dateObj.toLocaleString('en-US', {
     year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
     minute: '2-digit',
+    timeZone: 'Asia/Karachi',
     ...options,
-    hour12: true
+    hour12: true,
   })
 }
 
+const TIME_DISPLAY_OPTS: Intl.DateTimeFormatOptions = {
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+  timeZone: 'Asia/Karachi',
+}
+
 /**
- * Formats a time string or Date to 12-hour format (HH:MM AM/PM)
+ * Formats a time string or Date to 12-hour format (e.g. 8:30 AM) in Asia/Karachi.
+ * Accepts Date, ISO datetime, or clock strings like "14:30" / "14:30:00".
  */
 export function formatTime(time: Date | string | null | undefined): string {
   if (!time) return ''
 
-  // Handle Date input directly
   if (time instanceof Date) {
     if (isNaN(time.getTime())) return ''
-    return convertTo12Hour(time.getHours(), time.getMinutes())
+    return time.toLocaleTimeString('en-US', TIME_DISPLAY_OPTS)
   }
 
   const trimmed = time.trim()
@@ -309,10 +316,20 @@ export function formatTime(time: Date | string | null | undefined): string {
 
   const lower = trimmed.toLowerCase()
   if (lower.includes('am') || lower.includes('pm')) {
-    // Normalize AM/PM casing
-    return trimmed.replace(/am|pm/gi, match => match.toUpperCase())
+    return trimmed.replace(/am|pm/gi, (match) => match.toUpperCase())
   }
 
+  // ISO / datetime strings — treat bare values (no Z/offset) as UTC (SQL datetime2)
+  if (trimmed.includes('T') || /[zZ]|[+-]\d{2}:?\d{2}$/.test(trimmed)) {
+    const hasTz = /[zZ]$|[+-]\d{2}:?\d{2}$/.test(trimmed)
+    const normalized = hasTz ? trimmed : `${trimmed}Z`
+    const parsed = new Date(normalized)
+    if (!isNaN(parsed.getTime())) {
+      return parsed.toLocaleTimeString('en-US', TIME_DISPLAY_OPTS)
+    }
+  }
+
+  // Clock strings: HH:mm or HH:mm:ss
   const parts = trimmed.split(':')
   const hours = parseInt(parts[0] ?? '', 10)
   const minutes = parseInt(parts[1] ?? '0', 10)
@@ -328,9 +345,8 @@ export function formatTime(time: Date | string | null | undefined): string {
 function convertTo12Hour(hours: number, minutes: number): string {
   const period = hours >= 12 ? 'PM' : 'AM'
   const normalizedHour = hours % 12 === 0 ? 12 : hours % 12
-  const hourString = String(normalizedHour).padStart(2, '0')
   const minuteString = String(minutes).padStart(2, '0')
-  return `${hourString}:${minuteString} ${period}`
+  return `${normalizedHour}:${minuteString} ${period}`
 }
 
 /**

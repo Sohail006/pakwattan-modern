@@ -27,6 +27,7 @@ import {
 import { getUsers, type User } from '@/lib/api/users'
 import { getCampuses } from '@/lib/api/campuses'
 import type { AttendanceCampus, StaffAssignment, StaffGroup, StaffGroupKind } from '@/lib/attendance/types'
+import { formatTime } from '@/lib/utils'
 
 type Tab = 'campuses' | 'groups' | 'staff'
 
@@ -523,7 +524,8 @@ export default function AttendanceSettingsPanel() {
                       <div>
                         <p className="font-semibold text-gray-900">{g.name}</p>
                         <p className="text-xs text-gray-500">
-                          {g.kind} · grace {g.graceMinutes}m · {g.shiftStart}–{g.shiftEnd}
+                          {g.kind} · grace {g.graceMinutes}m ·{' '}
+                          {formatTime(g.shiftStart)}–{formatTime(g.shiftEnd)}
                         </p>
                       </div>
                       <button

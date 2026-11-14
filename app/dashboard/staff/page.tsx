@@ -462,7 +462,13 @@ export default function StaffDashboardPage() {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900">Dashboard Updated</p>
                 <p className="text-xs text-gray-600 mt-1">
-                  Last refreshed: {new Date().toLocaleTimeString()}
+                  Last refreshed:{' '}
+                  {new Date().toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true,
+                    timeZone: 'Asia/Karachi',
+                  })}
                 </p>
               </div>
             </div>

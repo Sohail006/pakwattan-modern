@@ -614,7 +614,15 @@ export async function generateRollNumberSlipPDF(registration: RegistrationRespon
     
     // Generation timestamp (right side)
     doc.text(
-      `Generated: ${new Date().toLocaleString()}`,
+      `Generated: ${new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Karachi',
+      })}`,
       margin + contentWidth,
       footerY,
       { align: 'right' }
