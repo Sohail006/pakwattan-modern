@@ -40,6 +40,18 @@ export async function getContacts(isRead?: boolean): Promise<Contact[]> {
   }
 }
 
+/** Dashboard KPI — COUNT(*) only, not every message body. */
+export async function getContactsCount(isRead?: boolean): Promise<number> {
+  try {
+    const query = isRead !== undefined ? `?isRead=${isRead}` : '';
+    const response = await api.get<{ count: number }>(`/api/contacts/count${query}`);
+    return Number(response?.count ?? 0);
+  } catch (error) {
+    const apiError = error as ApiError;
+    throw new Error(apiError.message || 'Unable to load contact count.');
+  }
+}
+
 /**
  * Get contact by ID (admin only)
  */

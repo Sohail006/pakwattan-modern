@@ -16,10 +16,10 @@ import {
   ClipboardCheck,
 } from 'lucide-react'
 import { getStudentsPaginated } from '@/lib/api/students'
-import { getAllJobApplications } from '@/lib/api/jobs'
-import { getAllRegistrations } from '@/lib/api/registrations'
+import { getJobApplicationsCount } from '@/lib/api/jobs'
+import { getRegistrationsCount } from '@/lib/api/registrations'
 import { getNews } from '@/lib/api/news'
-import { getContacts, Contact } from '@/lib/api/contact'
+import { getContactsCount } from '@/lib/api/contact'
 
 type Kpi = { 
   label: string
@@ -86,98 +86,24 @@ export default function AdminDashboardPage() {
       // Update all KPIs to loading state
       setKpis(prev => prev.map(kpi => ({ ...kpi, loading: true, error: false })))
 
-      // Fetch all data in parallel using API client functions (with authentication)
-      // Use paginated endpoints to get total counts efficiently
+      // Count-only endpoints — never download full registration/job/contact lists for KPIs
       const results = await Promise.allSettled([
-        getStudentsPaginated({ page: 1, pageSize: 1 }).catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Admin Dashboard] Error fetching students:', err)
-          }
-          return { data: [], totalCount: 0 }
-        }),
-        getAllRegistrations().catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Admin Dashboard] Error fetching registrations:', err)
-          }
-          return []
-        }),
-        getNews({ pageSize: 1 }).catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Admin Dashboard] Error fetching news:', err)
-          }
-          return { data: [], totalCount: 0 }
-        }),
-        getContacts().then((contacts) => {
-          // Log successful response for debugging
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Admin Dashboard] Contacts API response:', {
-              contacts,
-              count: Array.isArray(contacts) ? contacts.length : 'not an array',
-              type: typeof contacts,
-              isArray: Array.isArray(contacts)
-            })
-          }
-          return contacts
-        }).catch((err) => {
-          // Log error details
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Admin Dashboard] Error fetching contacts:', err)
-            console.error('[Admin Dashboard] Contacts error details:', {
-              message: err instanceof Error ? err.message : String(err),
-              name: err instanceof Error ? err.name : undefined,
-              stack: err instanceof Error ? err.stack : undefined
-            })
-          }
-          return []
-        }),
-        getAllJobApplications().catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Admin Dashboard] Error fetching job applications:', err)
-          }
-          return []
-        }),
+        getStudentsPaginated({ page: 1, pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
+        getRegistrationsCount().catch(() => 0),
+        getNews({ pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
+        getContactsCount().catch(() => 0),
+        getJobApplicationsCount().catch(() => 0),
       ])
 
       const [studentsResult, regsResult, newsResult, contactsResult, jobsResult] = results
 
-      // Extract totalCount from paginated responses
       const studentsData = studentsResult.status === 'fulfilled' ? studentsResult.value : { data: [], totalCount: 0 }
       const studentsCount = studentsData?.totalCount || 0
-      
-      const regs = regsResult.status === 'fulfilled' ? regsResult.value : []
-      const regsCount = Array.isArray(regs) ? regs.length : 0
-      
+      const regsCount = regsResult.status === 'fulfilled' ? Number(regsResult.value) || 0 : 0
       const newsData = newsResult.status === 'fulfilled' ? newsResult.value : { data: [], totalCount: 0 }
       const newsCount = newsData?.totalCount || 0
-      
-      // Handle contacts - check if response is wrapped or direct array
-      let contacts: Contact[] = []
-      if (contactsResult.status === 'fulfilled') {
-        const result = contactsResult.value
-        // Handle both direct array and wrapped response
-        if (Array.isArray(result)) {
-          contacts = result
-        } else if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as { data: Contact[] }).data)) {
-          contacts = (result as { data: Contact[] }).data
-        } else if (result && typeof result === 'object' && 'contacts' in result && Array.isArray((result as { contacts: Contact[] }).contacts)) {
-          contacts = (result as { contacts: Contact[] }).contacts
-        }
-      }
-      const contactsCount = contacts.length
-      
-      // Debug logging for contacts
-      if (process.env.NODE_ENV === 'development') {
-        console.log('[Admin Dashboard] Contacts result:', {
-          status: contactsResult.status,
-          rawValue: contactsResult.status === 'fulfilled' ? contactsResult.value : undefined,
-          processedContacts: contacts,
-          count: contactsCount,
-          isArray: Array.isArray(contactsResult.status === 'fulfilled' ? contactsResult.value : [])
-        })
-      }
-      
-      const jobs = jobsResult.status === 'fulfilled' ? jobsResult.value : []
-      const jobsCount = Array.isArray(jobs) ? jobs.length : 0
+      const contactsCount = contactsResult.status === 'fulfilled' ? Number(contactsResult.value) || 0 : 0
+      const jobsCount = jobsResult.status === 'fulfilled' ? Number(jobsResult.value) || 0 : 0
 
       const studentsError = studentsResult.status === 'rejected'
       const regsError = regsResult.status === 'rejected'

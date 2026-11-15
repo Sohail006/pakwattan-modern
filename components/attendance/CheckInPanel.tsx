@@ -39,15 +39,15 @@ export default function CheckInPanel() {
     setLoading(true)
     setError(null)
     try {
-      const [today, hist] = await Promise.all([
-        getMyAttendanceToday(),
-        getMyAttendanceHistory(14),
-      ])
+      // Today first so check-in/out buttons appear quickly; history loads after
+      const today = await getMyAttendanceToday()
       setState(today)
-      setHistory(hist)
+      setLoading(false)
+      getMyAttendanceHistory(7)
+        .then(setHistory)
+        .catch(() => setHistory([]))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unable to load attendance.')
-    } finally {
       setLoading(false)
     }
   }, [])
@@ -290,7 +290,7 @@ export default function CheckInPanel() {
 
       <section className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
         <h3 className="text-base font-semibold text-gray-900">Recent history</h3>
-        <p className="mt-1 text-sm text-gray-500">Last 14 days · 12-hour Pakistan time</p>
+        <p className="mt-1 text-sm text-gray-500">Last 7 days · 12-hour Pakistan time</p>
         <div className="mt-4 space-y-2">
           {history.length === 0 && (
             <p className="rounded-xl bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">

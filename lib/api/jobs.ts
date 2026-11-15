@@ -63,6 +63,17 @@ export async function getAllJobApplications(): Promise<JobOpportunity[]> {
 	}
 }
 
+/** Dashboard KPI — COUNT(*) only, not the full list. */
+export async function getJobApplicationsCount(): Promise<number> {
+	try {
+		const response = await api.get<{ count: number }>('/api/jobs/count');
+		return Number(response?.count ?? 0);
+	} catch (error) {
+		const apiError = error as ApiError;
+		throw new Error(apiError.message || 'Unable to fetch job application count.');
+	}
+}
+
 export async function getJobApplicationById(id: number): Promise<JobOpportunity> {
 	try {
 		const response = await api.get<JobOpportunity>(`/api/jobs/${id}`);

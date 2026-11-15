@@ -18,10 +18,10 @@ import {
   LogIn
 } from 'lucide-react'
 import { getStudentsPaginated } from '@/lib/api/students'
-import { getAllJobApplications } from '@/lib/api/jobs'
-import { getAllRegistrations } from '@/lib/api/registrations'
+import { getJobApplicationsCount } from '@/lib/api/jobs'
+import { getRegistrationsCount } from '@/lib/api/registrations'
 import { getNews } from '@/lib/api/news'
-import { getContacts, Contact } from '@/lib/api/contact'
+import { getContactsCount } from '@/lib/api/contact'
 import { isAuthenticated, getUserRoles, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
 import CheckInPanel from '@/components/attendance/CheckInPanel'
@@ -136,74 +136,22 @@ export default function StaffDashboardPage() {
       // Fetch all data in parallel using API client functions (with authentication)
       // Use paginated endpoints to get total counts efficiently
       const results = await Promise.allSettled([
-        getStudentsPaginated({ page: 1, pageSize: 1 }).catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Staff Dashboard] Error fetching students:', err)
-          }
-          return { data: [], totalCount: 0 }
-        }),
-        getAllRegistrations().catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Staff Dashboard] Error fetching registrations:', err)
-          }
-          return []
-        }),
-        getNews({ pageSize: 1 }).catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Staff Dashboard] Error fetching news:', err)
-          }
-          return { data: [], totalCount: 0 }
-        }),
-        getContacts().then((contacts) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.log('[Staff Dashboard] Contacts API response:', {
-              contacts,
-              count: Array.isArray(contacts) ? contacts.length : 'not an array',
-            })
-          }
-          return contacts
-        }).catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Staff Dashboard] Error fetching contacts:', err)
-          }
-          return []
-        }),
-        getAllJobApplications().catch((err) => {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('[Staff Dashboard] Error fetching job applications:', err)
-          }
-          return []
-        }),
+        getStudentsPaginated({ page: 1, pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
+        getRegistrationsCount().catch(() => 0),
+        getNews({ pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
+        getContactsCount().catch(() => 0),
+        getJobApplicationsCount().catch(() => 0),
       ])
 
       const [studentsResult, regsResult, newsResult, contactsResult, jobsResult] = results
 
-      // Extract totalCount from paginated responses
       const studentsData = studentsResult.status === 'fulfilled' ? studentsResult.value : { data: [], totalCount: 0 }
       const studentsCount = studentsData?.totalCount || 0
-      
-      const regs = regsResult.status === 'fulfilled' ? regsResult.value : []
-      const regsCount = Array.isArray(regs) ? regs.length : 0
-      
+      const regsCount = regsResult.status === 'fulfilled' ? Number(regsResult.value) || 0 : 0
       const newsData = newsResult.status === 'fulfilled' ? newsResult.value : { data: [], totalCount: 0 }
       const newsCount = newsData?.totalCount || 0
-      
-      // Handle contacts - check if response is wrapped or direct array
-      let contacts: Contact[] = []
-      if (contactsResult.status === 'fulfilled') {
-        const result = contactsResult.value
-        if (Array.isArray(result)) {
-          contacts = result
-        } else if (result && typeof result === 'object' && 'data' in result && Array.isArray((result as { data: Contact[] }).data)) {
-          contacts = (result as { data: Contact[] }).data
-        } else if (result && typeof result === 'object' && 'contacts' in result && Array.isArray((result as { contacts: Contact[] }).contacts)) {
-          contacts = (result as { contacts: Contact[] }).contacts
-        }
-      }
-      const contactsCount = contacts.length
-      
-      const jobs = jobsResult.status === 'fulfilled' ? jobsResult.value : []
-      const jobsCount = Array.isArray(jobs) ? jobs.length : 0
+      const contactsCount = contactsResult.status === 'fulfilled' ? Number(contactsResult.value) || 0 : 0
+      const jobsCount = jobsResult.status === 'fulfilled' ? Number(jobsResult.value) || 0 : 0
 
       const studentsError = studentsResult.status === 'rejected'
       const regsError = regsResult.status === 'rejected'

@@ -81,22 +81,15 @@ export default function AttendanceSettingsPanel() {
     setLoading(true)
     setError(null)
     try {
-      const [c, g, s, u] = await Promise.all([
+      // Core attendance data first (fast). User directory loads only for staff tab.
+      const [c, g, s] = await Promise.all([
         getAttendanceCampuses(true),
         getAttendanceGroups(true),
         getAttendanceStaff({ status: 'Active' }),
-        getUsers().catch(() => [] as User[]),
       ])
       setCampuses(c)
       setGroups(g)
       setStaff(s)
-      setUsers(
-        u.filter((user) =>
-          user.roles?.some((r) =>
-            ['Teacher', 'Staff', 'ManagerialStaff', 'Admin'].includes(r)
-          )
-        )
-      )
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Unable to load settings.')
     } finally {
@@ -107,6 +100,28 @@ export default function AttendanceSettingsPanel() {
   useEffect(() => {
     refresh()
   }, [refresh])
+
+  useEffect(() => {
+    if (tab !== 'staff' || users.length > 0) return
+    let cancelled = false
+    getUsers()
+      .then((u) => {
+        if (cancelled) return
+        setUsers(
+          u.filter((user) =>
+            user.roles?.some((r) =>
+              ['Teacher', 'Staff', 'ManagerialStaff', 'Admin'].includes(r)
+            )
+          )
+        )
+      })
+      .catch(() => {
+        if (!cancelled) setUsers([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [tab, users.length])
 
   const assignedIds = useMemo(() => new Set(staff.map((s) => s.userId)), [staff])
   const assignableUsers = users.filter((u) => !assignedIds.has(u.id))

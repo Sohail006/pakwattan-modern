@@ -147,6 +147,17 @@ export async function getAllRegistrations(): Promise<RegistrationResponse[]> {
 	}
 }
 
+/** Dashboard KPI — COUNT(*) only, not the full list. */
+export async function getRegistrationsCount(): Promise<number> {
+	try {
+		const response = await api.get<{ count: number }>('/api/registrations/count');
+		return Number(response?.count ?? 0);
+	} catch (error) {
+		const apiError = error as ApiError;
+		throw new Error(apiError.message || 'Unable to fetch registration count.');
+	}
+}
+
 export async function getRegistrationById(id: number): Promise<RegistrationResponse> {
 	try {
 		const response = await api.get<RegistrationResponse>(`/api/registrations/${id}`);
