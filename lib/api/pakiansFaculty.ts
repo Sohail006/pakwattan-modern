@@ -17,6 +17,8 @@ export interface PakiansFacultySubmitRequest {
   roleName?: string | null
   highestQualification: string
   experienceYears: number
+  username: string
+  password: string
 }
 
 export interface PakiansFacultyPublicMember {
@@ -44,6 +46,9 @@ export interface PakiansFacultyRegistrationResponse {
   roleName?: string | null
   highestQualification: string
   experienceYears: number
+  username: string
+  userId?: string | null
+  assignedRole?: string | null
   verificationStatus: PakiansFacultyVerificationStatus
   verifiedBy?: string | null
   verifiedAt?: string | null
@@ -82,6 +87,9 @@ function normalizeRow(data: unknown): PakiansFacultyRegistrationResponse {
     roleName: (r.roleName ?? r.RoleName) as string | null | undefined,
     highestQualification: String(r.highestQualification ?? r.HighestQualification ?? ''),
     experienceYears: Number(r.experienceYears ?? r.ExperienceYears ?? 0),
+    username: String(r.username ?? r.Username ?? ''),
+    userId: (r.userId ?? r.UserId) as string | null | undefined,
+    assignedRole: (r.assignedRole ?? r.AssignedRole) as string | null | undefined,
     verificationStatus: String(
       r.verificationStatus ?? r.VerificationStatus ?? 'Pending'
     ) as PakiansFacultyVerificationStatus,
@@ -107,6 +115,28 @@ export async function submitPakiansFacultyRegistration(
   try {
     const response = await api.post<unknown>('/api/pakians-faculty', payload)
     return normalizeRow(response)
+  } catch (error) {
+    throw new Error(extractErrorMessage(error))
+  }
+}
+
+export async function checkPakiansFacultyUsername(
+  username: string
+): Promise<{ available: boolean; username: string; message?: string }> {
+  try {
+    const response = await api.get<{
+      available?: boolean
+      Available?: boolean
+      username?: string
+      Username?: string
+      message?: string
+      Message?: string
+    }>(`/api/pakians-faculty/check-username?username=${encodeURIComponent(username)}`)
+    return {
+      available: Boolean(response.available ?? response.Available),
+      username: String(response.username ?? response.Username ?? username),
+      message: (response.message ?? response.Message) as string | undefined,
+    }
   } catch (error) {
     throw new Error(extractErrorMessage(error))
   }

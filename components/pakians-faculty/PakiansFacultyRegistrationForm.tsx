@@ -6,13 +6,17 @@ import {
   Briefcase,
   CheckCircle2,
   GraduationCap,
+  KeyRound,
   Loader2,
   Phone,
   User,
   Users,
 } from 'lucide-react'
 import ProfileImageUpload from '@/components/ui/ProfileImageUpload'
-import { submitPakiansFacultyRegistration } from '@/lib/api/pakiansFaculty'
+import {
+  checkPakiansFacultyUsername,
+  submitPakiansFacultyRegistration,
+} from '@/lib/api/pakiansFaculty'
 import {
   PAKIANS_FACULTY_PAGE_TITLE,
   PAKIANS_FACULTY_ROLE_TYPE_OPTIONS,
@@ -29,8 +33,27 @@ import {
 import { toastService } from '@/lib/utils/toast'
 
 type FieldErrors = Partial<
-  Record<'mobileNumber' | 'whatsAppNumber' | 'profileImageUrl' | 'experienceYears', string>
+  Record<
+    | 'mobileNumber'
+    | 'whatsAppNumber'
+    | 'profileImageUrl'
+    | 'experienceYears'
+    | 'username'
+    | 'password'
+    | 'confirmPassword',
+    string
+  >
 >
+
+const USERNAME_PATTERN = /^[a-zA-Z0-9._@+-]{3,64}$/
+
+function validatePasswordRules(password: string): string | null {
+  if (password.length < 6) return 'Password must be at least 6 characters.'
+  if (!/[A-Z]/.test(password)) return 'Password must include at least one uppercase letter.'
+  if (!/[a-z]/.test(password)) return 'Password must include at least one lowercase letter.'
+  if (!/[0-9]/.test(password)) return 'Password must include at least one digit.'
+  return null
+}
 
 const inputClass =
   'w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm sm:text-base text-gray-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:bg-gray-50'
@@ -55,13 +78,55 @@ export default function PakiansFacultyRegistrationForm() {
     roleName: '',
     highestQualification: '',
     experienceYears: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
   })
+  const [checkingUsername, setCheckingUsername] = useState(false)
 
   const isTeaching = form.staffCategory === 'Teaching'
 
   const updateField = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }))
     setSubmitError('')
+  }
+
+  const clearFieldError = (key: keyof FieldErrors) => {
+    setFieldErrors((prev) => {
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
+
+  const handleUsernameBlur = async () => {
+    const username = form.username.trim()
+    if (!username) return
+
+    if (!USERNAME_PATTERN.test(username)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        username: 'Use 3–64 characters: letters, numbers, and . _ @ + - only.',
+      }))
+      return
+    }
+
+    setCheckingUsername(true)
+    try {
+      const result = await checkPakiansFacultyUsername(username)
+      if (!result.available) {
+        setFieldErrors((prev) => ({
+          ...prev,
+          username: result.message || 'This username is already taken.',
+        }))
+      } else {
+        clearFieldError('username')
+      }
+    } catch {
+      // Soft-fail: server will re-check on submit
+    } finally {
+      setCheckingUsername(false)
+    }
   }
 
   const validatePhones = (): boolean => {
@@ -126,6 +191,32 @@ export default function PakiansFacultyRegistrationForm() {
       return
     }
 
+    const username = form.username.trim()
+    if (!USERNAME_PATTERN.test(username)) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        username: 'Use 3–64 characters: letters, numbers, and . _ @ + - only.',
+      }))
+      setSubmitError('Please choose a valid unique username.')
+      return
+    }
+
+    const passwordError = validatePasswordRules(form.password)
+    if (passwordError) {
+      setFieldErrors((prev) => ({ ...prev, password: passwordError }))
+      setSubmitError(passwordError)
+      return
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setFieldErrors((prev) => ({
+        ...prev,
+        confirmPassword: 'Passwords do not match.',
+      }))
+      setSubmitError('Passwords do not match.')
+      return
+    }
+
     setIsSubmitting(true)
     try {
       await submitPakiansFacultyRegistration({
@@ -141,6 +232,8 @@ export default function PakiansFacultyRegistrationForm() {
         roleName: isTeaching ? null : form.roleName.trim(),
         highestQualification: form.highestQualification.trim(),
         experienceYears: experience,
+        username,
+        password: form.password,
       })
       setIsSubmitted(true)
       toastService.success('Registration submitted successfully!')
@@ -163,8 +256,8 @@ export default function PakiansFacultyRegistrationForm() {
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Registration Received</h2>
             <p className="text-gray-600 leading-relaxed">
-              Thank you for registering as Pak Wattan faculty. Our administration team will review your
-              application and verify your details. You will be contacted if further information is needed.
+              Thank you for registering as Pak Wattan faculty. After an administrator verifies your
+              application, you can sign in with the username and password you created.
             </p>
           </div>
         </div>
@@ -185,11 +278,106 @@ export default function PakiansFacultyRegistrationForm() {
           </h1>
           <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
             Register as teaching or non-teaching staff at Pak Wattan School &amp; College of Sciences.
-            All fields are mandatory. Duplicate registrations by name, mobile, or WhatsApp are not allowed.
+            Choose a unique username and a strong password. After admin verification you can log in with
+            those credentials. Duplicate registrations by name, mobile, or WhatsApp are not allowed.
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+          {/* Login credentials */}
+          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                <KeyRound className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-gray-900">Login Credentials</h2>
+                <p className="text-sm text-gray-500">
+                  Unique username + password (min 6 chars, upper, lower, digit)
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+              <div className="sm:col-span-2">
+                <label htmlFor="username" className={labelClass}>
+                  Username <span className="text-red-500">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    autoComplete="username"
+                    value={form.username}
+                    onChange={(e) => {
+                      updateField('username', e.target.value.replace(/\s/g, ''))
+                      clearFieldError('username')
+                    }}
+                    onBlur={handleUsernameBlur}
+                    className={inputClass}
+                    placeholder="e.g. ahmed.khan"
+                    maxLength={64}
+                  />
+                  {checkingUsername && (
+                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                  )}
+                </div>
+                {fieldErrors.username ? (
+                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.username}</p>
+                ) : (
+                  <p className="mt-1.5 text-xs text-gray-500">
+                    Letters, numbers, and . _ @ + - only. Must be unique across the school system.
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="password" className={labelClass}>
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={form.password}
+                  onChange={(e) => {
+                    updateField('password', e.target.value)
+                    clearFieldError('password')
+                  }}
+                  className={inputClass}
+                  placeholder="Create a password"
+                  minLength={6}
+                />
+                {fieldErrors.password && (
+                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.password}</p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="confirmPassword" className={labelClass}>
+                  Confirm Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={form.confirmPassword}
+                  onChange={(e) => {
+                    updateField('confirmPassword', e.target.value)
+                    clearFieldError('confirmPassword')
+                  }}
+                  className={inputClass}
+                  placeholder="Re-enter password"
+                  minLength={6}
+                />
+                {fieldErrors.confirmPassword && (
+                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.confirmPassword}</p>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Personal details */}
           <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
             <div className="mb-5 flex items-center gap-3">

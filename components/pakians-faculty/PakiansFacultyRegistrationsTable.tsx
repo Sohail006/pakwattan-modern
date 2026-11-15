@@ -166,6 +166,8 @@ export default function PakiansFacultyRegistrationsTable() {
         const haystack = [
           r.name,
           r.fatherName,
+          r.username,
+          r.assignedRole,
           r.mobileNumber,
           r.whatsAppNumber,
           r.wing,
@@ -450,6 +452,9 @@ export default function PakiansFacultyRegistrationsTable() {
                           <div>
                             <p className="font-semibold text-gray-900">{row.name}</p>
                             <p className="text-xs text-gray-500">{row.fatherName}</p>
+                            {row.username ? (
+                              <p className="text-xs text-primary-700 font-medium">@{row.username}</p>
+                            ) : null}
                           </div>
                         </div>
                       </td>
@@ -563,6 +568,9 @@ export default function PakiansFacultyRegistrationsTable() {
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-gray-900 truncate">{row.name}</p>
                     <p className="text-sm text-gray-500">{row.fatherName}</p>
+                    {row.username ? (
+                      <p className="text-xs text-primary-700 font-medium">@{row.username}</p>
+                    ) : null}
                     <div className="mt-2 flex flex-wrap gap-2">
                       <StatusBadge
                         label={staffCategoryLabel(row.staffCategory)}
@@ -680,9 +688,14 @@ export default function PakiansFacultyRegistrationsTable() {
                 <div>
                   <p className="text-lg font-bold">{viewingDetails.name}</p>
                   <p className="text-gray-500">S/o {viewingDetails.fatherName}</p>
+                  {viewingDetails.username ? (
+                    <p className="text-sm text-primary-700 font-medium">@{viewingDetails.username}</p>
+                  ) : null}
                 </div>
               </div>
               {[
+                ['Username', viewingDetails.username || '—'],
+                ['Login role', viewingDetails.assignedRole || '—'],
                 ['Category', staffCategoryLabel(viewingDetails.staffCategory)],
                 ['Role Type', roleTypeLabel(viewingDetails.roleType)],
                 ['Wing', viewingDetails.wing || '—'],
@@ -714,7 +727,16 @@ export default function PakiansFacultyRegistrationsTable() {
               </button>
             </div>
             <p className="text-sm text-gray-600 mb-4">
-              Review <strong>{verifyTarget.name}</strong> and confirm whether they are a Pak Wattan school faculty member.
+              Review <strong>{verifyTarget.name}</strong>
+              {verifyTarget.username ? (
+                <>
+                  {' '}
+                  (<span className="font-medium">@{verifyTarget.username}</span>)
+                </>
+              ) : null}{' '}
+              and confirm whether they are a Pak Wattan school faculty member. Verifying enables login with
+              their username/password and the role selected at registration
+              {verifyTarget.assignedRole ? ` (${verifyTarget.assignedRole})` : ''}.
             </p>
             <label className="block text-sm font-semibold text-gray-700 mb-1">Notes (optional)</label>
             <textarea
