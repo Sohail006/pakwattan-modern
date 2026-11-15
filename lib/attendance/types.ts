@@ -84,6 +84,13 @@ export interface AttendanceRecord {
   deviceInfo?: string
   createdAt: string
   updatedAt: string
+  /** Minutes after shift start + grace */
+  lateMinutes?: number | null
+  /** Minutes before shift end */
+  earlyLeaveMinutes?: number | null
+  /** e.g. "45 min" or "1 hr 20 min" */
+  lateLabel?: string | null
+  earlyLeaveLabel?: string | null
 }
 
 export interface AttendanceSettings {

@@ -58,3 +58,13 @@ export function formatDate(dateKey: string) {
     return dateKey
   }
 }
+
+/** Format minutes as "45 min" then hours: "1 hr 20 min" / "2 hrs". */
+export function formatDurationMinutes(totalMinutes?: number | null) {
+  if (totalMinutes == null || totalMinutes <= 0) return ''
+  if (totalMinutes < 60) return `${totalMinutes} min`
+  const hours = Math.floor(totalMinutes / 60)
+  const mins = totalMinutes % 60
+  const hrLabel = hours === 1 ? '1 hr' : `${hours} hrs`
+  return mins === 0 ? hrLabel : `${hrLabel} ${mins} min`
+}

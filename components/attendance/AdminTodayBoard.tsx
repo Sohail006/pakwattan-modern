@@ -238,6 +238,16 @@ export default function AdminTodayBoard() {
                       <td className="px-4 py-3 text-gray-700">
                         <p>In {formatTime(row.record?.checkInAt)}</p>
                         <p>Out {formatTime(row.record?.checkOutAt)}</p>
+                        {row.record?.lateLabel && (
+                          <p className="mt-1 text-xs font-semibold text-amber-700">
+                            Late {row.record.lateLabel}
+                          </p>
+                        )}
+                        {row.record?.earlyLeaveLabel && (
+                          <p className="text-xs font-semibold text-rose-700">
+                            Early out {row.record.earlyLeaveLabel}
+                          </p>
+                        )}
                       </td>
                       <td className="px-4 py-3">
                         <span
@@ -332,6 +342,15 @@ export default function AdminTodayBoard() {
                     <Clock className="h-3.5 w-3.5" />
                     In {formatTime(row.record?.checkInAt)} · Out {formatTime(row.record?.checkOutAt)}
                   </p>
+                  {(row.record?.lateLabel || row.record?.earlyLeaveLabel) && (
+                    <p className="mt-1 text-xs font-medium text-amber-800">
+                      {row.record.lateLabel ? `Late ${row.record.lateLabel}` : ''}
+                      {row.record.lateLabel && row.record.earlyLeaveLabel ? ' · ' : ''}
+                      {row.record.earlyLeaveLabel
+                        ? `Early out ${row.record.earlyLeaveLabel}`
+                        : ''}
+                    </p>
+                  )}
                   {typeof row.record?.checkInDistanceM === 'number' && (
                     <p className="mt-1 text-xs text-orange-700">
                       GPS {row.record.checkInDistanceM}m from campus fence

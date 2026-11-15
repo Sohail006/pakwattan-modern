@@ -223,17 +223,11 @@ export async function attendanceCheckIn(coords: {
   )
 }
 
-export async function attendanceCheckOut(coords?: {
-  latitude?: number
-  longitude?: number
+export async function attendanceCheckOut(coords: {
+  latitude: number
+  longitude: number
   accuracy?: number
 }) {
-  const hasGps =
-    typeof coords?.latitude === 'number' &&
-    typeof coords?.longitude === 'number' &&
-    Number.isFinite(coords.latitude) &&
-    Number.isFinite(coords.longitude)
-
   return unwrap(
     api.post<
       Envelope<{
@@ -241,17 +235,14 @@ export async function attendanceCheckOut(coords?: {
         campus?: AttendanceCampus
         distanceM?: number | null
         gpsRecorded?: boolean
+        inside?: boolean
       }>
     >(
       '/api/attendance/me/check-out',
       {
-        ...(hasGps
-          ? {
-              latitude: coords!.latitude,
-              longitude: coords!.longitude,
-              accuracy: coords!.accuracy,
-            }
-          : {}),
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        accuracy: coords.accuracy,
         deviceInfo:
           typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 180) : undefined,
       },
@@ -336,6 +327,10 @@ export async function getAttendanceReports(params: {
         to: string
         totalRecords: number
         records: AttendanceRecord[]
+        lateMinutesTotal?: number
+        earlyLeaveMinutesTotal?: number
+        lateTotalLabel?: string
+        earlyLeaveTotalLabel?: string
         byUser: Array<{
           userId: string
           userName: string
@@ -345,6 +340,10 @@ export async function getAttendanceReports(params: {
           onLeave: number
           pending: number
           days: number
+          lateMinutesTotal?: number
+          earlyLeaveMinutesTotal?: number
+          lateTotalLabel?: string
+          earlyLeaveTotalLabel?: string
         }>
       }>
     >(`/api/attendance/reports?${q.toString()}`, h())

@@ -31,8 +31,8 @@ export default function MyAttendancePage() {
       <div>
         <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">My Attendance</h1>
         <p className="mt-1 text-sm text-gray-600">
-          Check in when you arrive and check out when you leave. Times use 12-hour Pakistan
-          format. Keep location on for check-in; check-out still works if GPS is unavailable.
+          Check in and check out only inside the campus GPS radius. Times use 12-hour Pakistan
+          format; late check-in and early check-out are shown in minutes, then hours.
         </p>
       </div>
       <CheckInPanel />

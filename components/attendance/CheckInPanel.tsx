@@ -85,15 +85,12 @@ export default function CheckInPanel() {
         longitude: pos.coords.longitude,
         accuracy: pos.coords.accuracy,
       })
-      if (result.inside) {
-        setSuccess(
-          `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)} · ${result.distanceM}m from campus`
-        )
-      } else {
-        setSuccess(
-          `Checked in at ${formatTime(result.record.checkInAt)} · ${result.distanceM}m from campus (saved for admin review). You can still check out later.`
-        )
-      }
+      const late = result.record.lateLabel
+        ? ` · ${result.record.lateLabel} late`
+        : ''
+      setSuccess(
+        `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)}${late} · ${result.distanceM}m from campus`
+      )
       await refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Could not check in.')
@@ -107,28 +104,22 @@ export default function CheckInPanel() {
     setError(null)
     setSuccess(null)
     try {
-      let coords: { latitude?: number; longitude?: number; accuracy?: number } = {}
-      try {
-        const pos = await requestDeviceLocation({
-          enableHighAccuracy: true,
-          timeout: 12000,
-          maximumAge: 60000,
-        })
-        coords = {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-          accuracy: pos.coords.accuracy,
-        }
-      } catch {
-        // GPS optional on checkout — still record leave time
-      }
-
-      const result = await attendanceCheckOut(coords)
+      const pos = await requestDeviceLocation({
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 15000,
+      })
+      const result = await attendanceCheckOut({
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+        accuracy: pos.coords.accuracy,
+      })
       const outLabel = formatTime(result.record.checkOutAt)
+      const early = result.record.earlyLeaveLabel
+        ? ` · left ${result.record.earlyLeaveLabel} early`
+        : ''
       setSuccess(
-        coords.latitude != null
-          ? `Checked out at ${outLabel}. Have a good day!`
-          : `Checked out at ${outLabel} (without GPS). Have a good day!`
+        `Checked out at ${outLabel}${early} · ${result.distanceM ?? 0}m from campus. Have a good day!`
       )
       await refresh()
     } catch (e) {
@@ -218,12 +209,22 @@ export default function CheckInPanel() {
           </div>
 
           {today && (
-            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-sm">
+            <div className="mt-3 flex flex-wrap items-center gap-2">
               <span
-                className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${statusClass(today.status)}`}
+                className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(today.status)}`}
               >
                 {statusLabel(today.status)}
               </span>
+              {today.lateLabel && (
+                <span className="rounded-full border border-amber-200/40 bg-amber-400/20 px-2.5 py-1 text-xs font-semibold text-amber-50">
+                  Late {today.lateLabel}
+                </span>
+              )}
+              {today.earlyLeaveLabel && (
+                <span className="rounded-full border border-rose-200/40 bg-rose-400/20 px-2.5 py-1 text-xs font-semibold text-rose-50">
+                  Early out {today.earlyLeaveLabel}
+                </span>
+              )}
             </div>
           )}
 
@@ -270,8 +271,8 @@ export default function CheckInPanel() {
 
           <p className="mt-4 flex items-start gap-2 text-xs text-emerald-100/90">
             <Navigation className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            Check-in needs GPS within {state.campus?.radiusMeters ?? 120}m of campus. Check-out
-            still works if location is unavailable. Times are shown in 12-hour Pakistan time.
+            Check-in and check-out both require GPS inside the campus radius (
+            {state.campus?.radiusMeters ?? 120}m). Late / early times use minutes first, then hours.
           </p>
         </div>
       </section>
@@ -308,10 +309,14 @@ export default function CheckInPanel() {
                   {' · '}
                   Out{' '}
                   <span className="font-semibold tabular-nums">{formatTime(row.checkOutAt)}</span>
-                  {typeof row.checkInDistanceM === 'number'
-                    ? ` · ${row.checkInDistanceM}m`
-                    : ''}
                 </p>
+                {(row.lateLabel || row.earlyLeaveLabel) && (
+                  <p className="mt-0.5 text-xs font-medium text-amber-800">
+                    {row.lateLabel ? `Late ${row.lateLabel}` : ''}
+                    {row.lateLabel && row.earlyLeaveLabel ? ' · ' : ''}
+                    {row.earlyLeaveLabel ? `Early out ${row.earlyLeaveLabel}` : ''}
+                  </p>
+                )}
               </div>
               <span
                 className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(row.status)}`}

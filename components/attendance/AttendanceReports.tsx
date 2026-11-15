@@ -10,7 +10,7 @@ import {
   getAttendanceReports,
   getAttendanceStaff,
 } from '@/lib/api/attendance'
-import { formatDate, statusClass, statusLabel } from './statusStyles'
+import { formatDate, formatTime, statusClass, statusLabel } from './statusStyles'
 
 function shiftDays(base: string, delta: number) {
   const d = new Date(`${base}T12:00:00`)
@@ -220,14 +220,29 @@ export default function AttendanceReports() {
         <>
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
             <h2 className="font-semibold text-gray-900">Summary by staff</h2>
-            <p className="text-sm text-gray-500">{report?.totalRecords || 0} records in range</p>
+            <p className="text-sm text-gray-500">
+              {report?.totalRecords || 0} records
+              {report?.lateTotalLabel ? ` · Late total ${report.lateTotalLabel}` : ''}
+              {report?.earlyLeaveTotalLabel
+                ? ` · Early out total ${report.earlyLeaveTotalLabel}`
+                : ''}
+            </p>
             <div className="mt-4 space-y-2">
               {(report?.byUser || []).map((u) => (
                 <div
                   key={u.userId}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-gray-50 px-3 py-3"
                 >
-                  <p className="font-semibold text-gray-900">{u.userName}</p>
+                  <div>
+                    <p className="font-semibold text-gray-900">{u.userName}</p>
+                    <p className="mt-0.5 text-xs text-amber-800">
+                      {u.lateTotalLabel ? `Late ${u.lateTotalLabel}` : 'On time check-ins'}
+                      {' · '}
+                      {u.earlyLeaveTotalLabel
+                        ? `Early out ${u.earlyLeaveTotalLabel}`
+                        : 'No early leave'}
+                    </p>
+                  </div>
                   <p className="text-xs text-gray-600">
                     P {u.present} · L {u.late} · A {u.absent} · Leave {u.onLeave} · Pending{' '}
                     {u.pending}
@@ -252,9 +267,17 @@ export default function AttendanceReports() {
                     <p className="text-sm font-semibold text-gray-900">
                       {r.userName} · {formatDate(r.date)}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {r.adminNote ? `Note: ${r.adminNote}` : '—'}
+                    <p className="text-xs text-gray-600">
+                      In {formatTime(r.checkInAt)} · Out {formatTime(r.checkOutAt)}
                     </p>
+                    <p className="mt-0.5 text-xs font-medium text-amber-800">
+                      {r.lateLabel ? `Late ${r.lateLabel}` : 'On time'}
+                      {' · '}
+                      {r.earlyLeaveLabel ? `Early out ${r.earlyLeaveLabel}` : 'Full shift'}
+                    </p>
+                    {r.adminNote && (
+                      <p className="mt-0.5 text-xs text-gray-500">Note: {r.adminNote}</p>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <span
