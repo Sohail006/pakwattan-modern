@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/components/ui/Container'
 import { SCHOOL_INFO } from '@/lib/constants'
+import { PAKIANS_FACULTY_PAGE_TITLE } from '@/lib/pakians-faculty-data'
 import { TALENT_HUNT_SEASON3_TITLE } from '@/lib/talent-hunt-season3-data'
 
 const FALLBACK_IMAGE = '/images/about-us/Picture1.jpg'
@@ -70,7 +71,7 @@ const HeroSection = () => {
             excellence, and a thriving community of Pakians.
           </p>
 
-          <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4">
             <Link
               href="/admission"
               className="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-accent-500 px-6 sm:px-8 font-bold text-secondary-900 transition-colors hover:bg-accent-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
@@ -83,6 +84,13 @@ const HeroSection = () => {
               aria-label={`${TALENT_HUNT_SEASON3_TITLE} details and registration`}
             >
               Register for Talent Hunt 3
+            </Link>
+            <Link
+              href="/pakians-faculty-registration"
+              className="inline-flex min-h-[48px] items-center justify-center rounded-xl border border-white/40 bg-white/10 px-6 sm:px-8 font-semibold text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
+              aria-label={`${PAKIANS_FACULTY_PAGE_TITLE} form`}
+            >
+              {PAKIANS_FACULTY_PAGE_TITLE}
             </Link>
           </div>
         </div>
