@@ -55,6 +55,10 @@ export interface StaffAssignment {
   leftAt?: string
   notes?: string
   updatedAt: string
+  deviceBound?: boolean
+  boundDeviceId?: string | null
+  boundDeviceInfo?: string | null
+  boundDeviceAt?: string | null
 }
 
 export interface AttendanceRecord {

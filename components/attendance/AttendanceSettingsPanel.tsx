@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import {
   assignAttendanceStaff,
+  clearAttendanceBoundDevice,
   deleteAttendanceCampus,
   getAttendanceCampuses,
   getAttendanceEligibleFaculty,
@@ -696,23 +697,59 @@ export default function AttendanceSettingsPanel() {
                         <p className="text-xs text-gray-500">
                           {campus?.name} · {group?.name} · {s.roles?.join(', ')}
                         </p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Device:{' '}
+                          {s.deviceBound ? (
+                            <span className="font-medium text-emerald-700">
+                              Bound{s.boundDeviceId ? ` (${s.boundDeviceId})` : ''}
+                            </span>
+                          ) : (
+                            <span className="font-medium text-amber-700">Not bound (auto on first check-in)</span>
+                          )}
+                        </p>
                       </div>
-                      <button
-                        type="button"
-                        className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl border border-rose-200 px-3 text-sm font-semibold text-rose-700"
-                        onClick={async () => {
-                          if (!confirm(`Remove ${s.userName} from attendance roster?`)) return
-                          try {
-                            await removeAttendanceStaff(s.id)
-                            await refresh()
-                          } catch (e) {
-                            setError(e instanceof Error ? e.message : 'Remove failed')
-                          }
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                        Remove
-                      </button>
+                      <div className="flex flex-wrap gap-2">
+                        {s.deviceBound && (
+                          <button
+                            type="button"
+                            className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl border border-amber-200 px-3 text-sm font-semibold text-amber-800"
+                            onClick={async () => {
+                              if (
+                                !confirm(
+                                  `Clear bound device for ${s.userName}? Their next check-in will auto-bind a new device.`
+                                )
+                              ) {
+                                return
+                              }
+                              try {
+                                await clearAttendanceBoundDevice(s.id)
+                                setOk(`Device binding cleared for ${s.userName}.`)
+                                await refresh()
+                              } catch (e) {
+                                setError(e instanceof Error ? e.message : 'Clear device failed')
+                              }
+                            }}
+                          >
+                            Clear device
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="inline-flex min-h-[44px] items-center justify-center gap-1 rounded-xl border border-rose-200 px-3 text-sm font-semibold text-rose-700"
+                          onClick={async () => {
+                            if (!confirm(`Remove ${s.userName} from attendance roster?`)) return
+                            try {
+                              await removeAttendanceStaff(s.id)
+                              await refresh()
+                            } catch (e) {
+                              setError(e instanceof Error ? e.message : 'Remove failed')
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Remove
+                        </button>
+                      </div>
                     </div>
                   )
                 })}

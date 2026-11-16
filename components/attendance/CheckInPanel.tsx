@@ -88,8 +88,9 @@ export default function CheckInPanel() {
       const late = result.record.lateLabel
         ? ` · ${result.record.lateLabel} late`
         : ''
+      const bound = result.deviceAutoBound ? ' · This device is now bound for attendance' : ''
       setSuccess(
-        `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)}${late} · ${result.distanceM}m from campus`
+        `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)}${late} · ${result.distanceM}m from campus${bound}`
       )
       await refresh()
     } catch (e) {
@@ -187,6 +188,25 @@ export default function CheckInPanel() {
                 ? ` · grace ${state.group.graceMinutes}m`
                 : ''}
             </span>
+            {state.deviceBound ? (
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 ${
+                  state.thisDeviceMatches === false
+                    ? 'bg-rose-500/30 text-rose-50'
+                    : 'bg-white/15'
+                }`}
+              >
+                <ShieldAlert className="h-3.5 w-3.5" />
+                {state.thisDeviceMatches === false
+                  ? 'Wrong device — ask admin to clear binding'
+                  : 'Device bound'}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1">
+                <ShieldAlert className="h-3.5 w-3.5" />
+                Device will auto-bind on first check-in
+              </span>
+            )}
           </div>
 
           <div className="mt-4 grid grid-cols-2 gap-2 sm:max-w-md">

@@ -1,4 +1,8 @@
 import { api, ApiError } from './client'
+import {
+  getAttendanceDeviceInfo,
+  getOrCreateAttendanceDeviceId,
+} from '@/lib/attendance/deviceId'
 import type {
   AttendanceCampus,
   AttendanceRecord,
@@ -198,6 +202,8 @@ export async function removeAttendanceStaff(assignmentId: string, notes?: string
 }
 
 export async function getMyAttendanceToday() {
+  const deviceId = getOrCreateAttendanceDeviceId()
+  const q = deviceId ? `?deviceId=${encodeURIComponent(deviceId)}` : ''
   return unwrap(
     api.get<
       Envelope<{
@@ -210,8 +216,10 @@ export async function getMyAttendanceToday() {
         canCheckOut: boolean
         requireCheckout?: boolean
         date: string
+        deviceBound?: boolean
+        thisDeviceMatches?: boolean | null
       }>
-    >('/api/attendance/me', h())
+    >(`/api/attendance/me${q}`, h())
   )
 }
 
@@ -228,13 +236,15 @@ export async function attendanceCheckIn(coords: {
         group: StaffGroup
         inside: boolean
         distanceM: number
+        deviceAutoBound?: boolean
+        deviceBound?: boolean
       }>
     >(
       '/api/attendance/me/check-in',
       {
         ...coords,
-        deviceInfo:
-          typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 180) : undefined,
+        deviceId: getOrCreateAttendanceDeviceId(),
+        deviceInfo: getAttendanceDeviceInfo(),
       },
       h()
     )
@@ -254,6 +264,8 @@ export async function attendanceCheckOut(coords: {
         distanceM?: number | null
         gpsRecorded?: boolean
         inside?: boolean
+        deviceAutoBound?: boolean
+        deviceBound?: boolean
       }>
     >(
       '/api/attendance/me/check-out',
@@ -261,9 +273,19 @@ export async function attendanceCheckOut(coords: {
         latitude: coords.latitude,
         longitude: coords.longitude,
         accuracy: coords.accuracy,
-        deviceInfo:
-          typeof navigator !== 'undefined' ? navigator.userAgent.slice(0, 180) : undefined,
+        deviceId: getOrCreateAttendanceDeviceId(),
+        deviceInfo: getAttendanceDeviceInfo(),
       },
+      h()
+    )
+  )
+}
+
+export async function clearAttendanceBoundDevice(assignmentId: string) {
+  return unwrap(
+    api.post<Envelope<StaffAssignment>>(
+      `/api/attendance/staff/${assignmentId}/clear-device`,
+      {},
       h()
     )
   )
