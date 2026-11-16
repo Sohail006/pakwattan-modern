@@ -39,8 +39,8 @@ export default function TeachersPage() {
   const tableScrollRef = useRef<HTMLDivElement>(null)
 
   // Permission-based checks (with role fallback for backward compatibility)
-  const canUpdate = canPerform(PERMISSIONS.TEACHERS_UPDATE, ['Admin', 'Staff'])
-  const canDelete = canPerform(PERMISSIONS.TEACHERS_DELETE, ['Admin'])
+  const canUpdate = canPerform(PERMISSIONS.TEACHERS_UPDATE, ['Admin', 'Staff', 'ManagerialStaff'])
+  const canDelete = canPerform(PERMISSIONS.TEACHERS_DELETE, ['Admin', 'Staff', 'ManagerialStaff'])
 
   const loadTeachers = useCallback(async () => {
     try {

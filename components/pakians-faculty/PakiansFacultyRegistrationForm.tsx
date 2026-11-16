@@ -279,7 +279,7 @@ export default function PakiansFacultyRegistrationForm() {
           <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
             Register as teaching or non-teaching staff at Pak Wattan School &amp; College of Sciences.
             Choose a unique username and a strong password. After admin verification you can log in with
-            those credentials. Duplicate registrations by name, mobile, or WhatsApp are not allowed.
+            those credentials. The same name with father name, or the same mobile number, cannot be registered twice.
           </p>
         </div>
 
