@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft,
+  CalendarDays,
   Loader2,
   MapPin,
   Plus,
@@ -15,23 +16,45 @@ import {
 import {
   assignAttendanceStaff,
   clearAttendanceBoundDevice,
+  deleteAttendanceCalendarEntry,
   deleteAttendanceCampus,
+  getAttendanceCalendar,
   getAttendanceCampuses,
+  getAttendanceSettings,
   getAttendanceEligibleFaculty,
   getAttendanceGroups,
   getAttendanceStaff,
   removeAttendanceStaff,
   requestDeviceLocation,
+  saveAttendanceCalendarEntry,
   saveAttendanceCampus,
   saveAttendanceGroup,
   transferAttendanceStaff,
+  updateAttendanceSettings,
   type AttendanceEligibleFaculty,
 } from '@/lib/api/attendance'
 import { getCampuses } from '@/lib/api/campuses'
-import type { AttendanceCampus, StaffAssignment, StaffGroup, StaffGroupKind } from '@/lib/attendance/types'
+import type {
+  AttendanceCalendarEntry,
+  AttendanceCalendarKind,
+  AttendanceCampus,
+  StaffAssignment,
+  StaffGroup,
+  StaffGroupKind,
+} from '@/lib/attendance/types'
 import { formatTime } from '@/lib/utils'
 
-type Tab = 'campuses' | 'groups' | 'staff'
+type Tab = 'campuses' | 'groups' | 'staff' | 'calendar'
+
+const WEEKDAY_OPTIONS: { value: number; label: string }[] = [
+  { value: 0, label: 'Sunday' },
+  { value: 1, label: 'Monday' },
+  { value: 2, label: 'Tuesday' },
+  { value: 3, label: 'Wednesday' },
+  { value: 4, label: 'Thursday' },
+  { value: 5, label: 'Friday' },
+  { value: 6, label: 'Saturday' },
+]
 
 const GROUP_KINDS: StaffGroupKind[] = [
   'Teaching',
@@ -78,6 +101,16 @@ export default function AttendanceSettingsPanel() {
     campusId: '',
     groupId: '',
   })
+  const [weeklyOffDays, setWeeklyOffDays] = useState<number[]>([0, 6])
+  const [calendarYear, setCalendarYear] = useState(() => new Date().getFullYear())
+  const [calendarEntries, setCalendarEntries] = useState<AttendanceCalendarEntry[]>([])
+  const [calendarForm, setCalendarForm] = useState({
+    id: '',
+    kind: 'Holiday' as AttendanceCalendarKind,
+    title: '',
+    startDate: '',
+    endDate: '',
+  })
 
   const refresh = useCallback(async () => {
     setLoading(true)
@@ -99,9 +132,24 @@ export default function AttendanceSettingsPanel() {
     }
   }, [])
 
+  const refreshCalendar = useCallback(async () => {
+    try {
+      const data = await getAttendanceCalendar(calendarYear)
+      setWeeklyOffDays(data.weeklyOffDays?.length ? data.weeklyOffDays : [0, 6])
+      setCalendarEntries(data.entries || [])
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Unable to load academic calendar.')
+    }
+  }, [calendarYear])
+
   useEffect(() => {
     refresh()
   }, [refresh])
+
+  useEffect(() => {
+    if (tab !== 'calendar') return
+    refreshCalendar()
+  }, [tab, refreshCalendar])
 
   useEffect(() => {
     if (tab !== 'staff') return
@@ -262,10 +310,64 @@ export default function AttendanceSettingsPanel() {
     }
   }
 
+  const saveWeeklyOffs = async () => {
+    setSaving(true)
+    setError(null)
+    setOk(null)
+    try {
+      const current = await getAttendanceSettings()
+      await updateAttendanceSettings({
+        ...current.settings,
+        weeklyOffDays,
+      })
+      setOk('Weekly off days saved. Staff will not see check-in on those days.')
+      await refreshCalendar()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not save weekly off days.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const saveCalendarItem = async () => {
+    if (!calendarForm.title.trim() || !calendarForm.startDate) {
+      setError('Title and start date are required.')
+      return
+    }
+    setSaving(true)
+    setError(null)
+    setOk(null)
+    try {
+      await saveAttendanceCalendarEntry({
+        id: calendarForm.id || undefined,
+        kind: calendarForm.kind,
+        title: calendarForm.title.trim(),
+        startDate: calendarForm.startDate,
+        endDate:
+          calendarForm.kind === 'Vacation'
+            ? calendarForm.endDate || calendarForm.startDate
+            : calendarForm.startDate,
+        isActive: true,
+      })
+      setCalendarForm({ id: '', kind: 'Holiday', title: '', startDate: '', endDate: '' })
+      setOk(
+        calendarForm.kind === 'Holiday'
+          ? 'Public holiday saved.'
+          : 'Vacation period saved.'
+      )
+      await refreshCalendar()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Could not save calendar entry.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'campuses', label: 'Campuses', icon: <Building2 className="h-4 w-4" /> },
     { id: 'groups', label: 'Groups & grace', icon: <Users className="h-4 w-4" /> },
     { id: 'staff', label: 'Staff roster', icon: <MapPin className="h-4 w-4" /> },
+    { id: 'calendar', label: 'Academic calendar', icon: <CalendarDays className="h-4 w-4" /> },
   ]
 
   return (
@@ -281,7 +383,7 @@ export default function AttendanceSettingsPanel() {
           </Link>
           <h1 className="text-2xl font-bold text-gray-900">Attendance settings</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Campuses, geofence radius, staff groups, grace time, and transfers.
+            Campuses, staff groups, roster, and academic calendar (off days, holidays, vacations).
           </p>
         </div>
       </div>
@@ -758,6 +860,200 @@ export default function AttendanceSettingsPanel() {
                     No staff assigned yet.
                   </p>
                 )}
+              </div>
+            </div>
+          )}
+
+          {tab === 'calendar' && (
+            <div className="space-y-5">
+              <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+                <h2 className="text-lg font-bold text-gray-900">Weekly off days</h2>
+                <p className="mt-1 text-sm text-gray-600">
+                  Staff will not see check-in / check-out on these weekdays.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {WEEKDAY_OPTIONS.map((d) => {
+                    const on = weeklyOffDays.includes(d.value)
+                    return (
+                      <button
+                        key={d.value}
+                        type="button"
+                        onClick={() =>
+                          setWeeklyOffDays((prev) =>
+                            on
+                              ? prev.filter((x) => x !== d.value)
+                              : [...prev, d.value].sort((a, b) => a - b)
+                          )
+                        }
+                        className={`min-h-[44px] rounded-xl border px-3 text-sm font-semibold ${
+                          on
+                            ? 'border-emerald-600 bg-emerald-50 text-emerald-900'
+                            : 'border-gray-200 bg-white text-gray-700'
+                        }`}
+                      >
+                        {d.label}
+                      </button>
+                    )
+                  })}
+                </div>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={saveWeeklyOffs}
+                  className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-emerald-700 px-4 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  Save weekly offs
+                </button>
+              </div>
+
+              <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">Holidays &amp; vacations</h2>
+                    <p className="mt-1 text-sm text-gray-600">
+                      Public holidays (one day) and vacation periods (date range).
+                    </p>
+                  </div>
+                  <label className="text-sm font-semibold text-gray-700">
+                    Year
+                    <select
+                      className="ml-2 rounded-lg border border-gray-200 px-3 py-2"
+                      value={calendarYear}
+                      onChange={(e) => setCalendarYear(Number(e.target.value))}
+                    >
+                      {[calendarYear - 1, calendarYear, calendarYear + 1].map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                  <label className="text-sm font-semibold text-gray-700">
+                    Type
+                    <select
+                      className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-base"
+                      value={calendarForm.kind}
+                      onChange={(e) =>
+                        setCalendarForm((f) => ({
+                          ...f,
+                          kind: e.target.value as AttendanceCalendarKind,
+                        }))
+                      }
+                    >
+                      <option value="Holiday">Public holiday</option>
+                      <option value="Vacation">Vacation period</option>
+                    </select>
+                  </label>
+                  <label className="text-sm font-semibold text-gray-700 sm:col-span-2 lg:col-span-1">
+                    Title
+                    <input
+                      className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-base"
+                      value={calendarForm.title}
+                      onChange={(e) =>
+                        setCalendarForm((f) => ({ ...f, title: e.target.value }))
+                      }
+                      placeholder="e.g. Eid holiday"
+                    />
+                  </label>
+                  <label className="text-sm font-semibold text-gray-700">
+                    Start date
+                    <input
+                      type="date"
+                      className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-base"
+                      value={calendarForm.startDate}
+                      onChange={(e) =>
+                        setCalendarForm((f) => ({ ...f, startDate: e.target.value }))
+                      }
+                    />
+                  </label>
+                  {calendarForm.kind === 'Vacation' && (
+                    <label className="text-sm font-semibold text-gray-700">
+                      End date
+                      <input
+                        type="date"
+                        className="mt-1 w-full rounded-xl border border-gray-200 px-3 py-2.5 text-base"
+                        value={calendarForm.endDate}
+                        onChange={(e) =>
+                          setCalendarForm((f) => ({ ...f, endDate: e.target.value }))
+                        }
+                      />
+                    </label>
+                  )}
+                </div>
+                <button
+                  type="button"
+                  disabled={saving}
+                  onClick={saveCalendarItem}
+                  className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  <Plus className="h-4 w-4" />
+                  {calendarForm.id ? 'Update entry' : 'Add entry'}
+                </button>
+
+                <div className="mt-5 space-y-2">
+                  {calendarEntries.map((e) => (
+                    <div
+                      key={e.id}
+                      className="flex flex-col gap-2 rounded-xl border border-gray-100 bg-gray-50/80 px-3 py-3 sm:flex-row sm:items-center sm:justify-between"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-semibold text-gray-900">
+                          {e.title}{' '}
+                          <span className="text-xs font-medium text-gray-500">({e.kind})</span>
+                        </p>
+                        <p className="text-xs text-gray-600">
+                          {e.startDate}
+                          {e.endDate !== e.startDate ? ` → ${e.endDate}` : ''}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          className="min-h-[40px] rounded-lg border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700"
+                          onClick={() =>
+                            setCalendarForm({
+                              id: e.id,
+                              kind: e.kind,
+                              title: e.title,
+                              startDate: e.startDate,
+                              endDate: e.endDate,
+                            })
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex min-h-[40px] items-center gap-1 rounded-lg border border-rose-200 bg-rose-50 px-3 text-xs font-semibold text-rose-700"
+                          onClick={async () => {
+                            if (!confirm(`Delete “${e.title}”?`)) return
+                            try {
+                              await deleteAttendanceCalendarEntry(e.id)
+                              setOk('Calendar entry deleted.')
+                              await refreshCalendar()
+                            } catch (err) {
+                              setError(
+                                err instanceof Error ? err.message : 'Delete failed.'
+                              )
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {calendarEntries.length === 0 && (
+                    <p className="rounded-xl border border-dashed p-6 text-center text-sm text-gray-500">
+                      No holidays or vacations for {calendarYear} yet.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           )}

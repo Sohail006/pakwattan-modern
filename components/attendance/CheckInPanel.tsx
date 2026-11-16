@@ -56,9 +56,22 @@ export default function CheckInPanel() {
     refresh()
   }, [refresh])
 
-  /** Client-side eligibility so checkout still appears if API flags are missing/stale */
+  /** Prefer API flags; fall back to derived only when API omitted them (not on calendar off days). */
   const { canCheckIn, canCheckOut } = useMemo(() => {
     if (!state?.assigned) return { canCheckIn: false, canCheckOut: false }
+    if (state.isWorkingDay === false) {
+      // Off day / holiday / vacation — hide check-in; allow check-out only if already in
+      const checkedIn = Boolean(state.today?.checkInAt)
+      const checkedOut = Boolean(state.today?.checkOutAt)
+      return {
+        canCheckIn: false,
+        canCheckOut:
+          typeof state.canCheckOut === 'boolean'
+            ? state.canCheckOut
+            : checkedIn && !checkedOut,
+      }
+    }
+
     const today = state.today
     const blocked = isBlockedStatus(today?.status)
     const checkedIn = Boolean(today?.checkInAt)
@@ -68,9 +81,8 @@ export default function CheckInPanel() {
     const derivedOut = !blocked && checkedIn && !checkedOut
 
     return {
-      canCheckIn: typeof state.canCheckIn === 'boolean' ? state.canCheckIn || derivedIn : derivedIn,
-      canCheckOut:
-        typeof state.canCheckOut === 'boolean' ? state.canCheckOut || derivedOut : derivedOut,
+      canCheckIn: typeof state.canCheckIn === 'boolean' ? state.canCheckIn : derivedIn,
+      canCheckOut: typeof state.canCheckOut === 'boolean' ? state.canCheckOut : derivedOut,
     }
   }, [state])
 
@@ -286,20 +298,36 @@ export default function CheckInPanel() {
               </button>
             )}
             {!canCheckIn && !canCheckOut && (
-              <div className="inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 rounded-xl bg-white/15 px-5 text-sm font-semibold">
-                <CheckCircle2 className="h-5 w-5" />
-                {today?.checkOutAt
-                  ? `Day complete · out at ${formatTime(today.checkOutAt)}`
-                  : 'Attendance complete for today'}
+              <div className="inline-flex min-h-[52px] flex-1 items-center justify-center gap-2 rounded-xl bg-white/15 px-5 text-sm font-semibold text-center">
+                {state.isWorkingDay === false ? (
+                  <>
+                    <ShieldAlert className="h-5 w-5 shrink-0" />
+                    <span>{state.offReason || 'Today is an off day — no check-in required'}</span>
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="h-5 w-5" />
+                    {today?.checkOutAt
+                      ? `Day complete · out at ${formatTime(today.checkOutAt)}`
+                      : 'Attendance complete for today'}
+                  </>
+                )}
               </div>
             )}
           </div>
 
-          <p className="mt-4 flex items-start gap-2 text-xs text-emerald-100/90">
-            <Navigation className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            Check-in and check-out both require GPS inside the campus radius (
-            {state.campus?.radiusMeters ?? 120}m). Late / early times use minutes first, then hours.
-          </p>
+          {state.isWorkingDay === false ? (
+            <p className="mt-4 flex items-start gap-2 text-xs text-emerald-100/90">
+              <ShieldAlert className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Check-in / check-out is hidden on weekly offs, public holidays, and vacation days.
+            </p>
+          ) : (
+            <p className="mt-4 flex items-start gap-2 text-xs text-emerald-100/90">
+              <Navigation className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+              Check-in and check-out both require GPS inside the campus radius (
+              {state.campus?.radiusMeters ?? 120}m). Late / early times use minutes first, then hours.
+            </p>
+          )}
         </div>
       </section>
 

@@ -4,6 +4,8 @@ import {
   getOrCreateAttendanceDeviceId,
 } from '@/lib/attendance/deviceId'
 import type {
+  AttendanceCalendarEntry,
+  AttendanceCalendarKind,
   AttendanceCampus,
   AttendanceRecord,
   AttendanceSettings,
@@ -71,6 +73,41 @@ export async function getAttendanceSettings() {
 export async function updateAttendanceSettings(patch: Partial<AttendanceSettings>) {
   return unwrap(
     api.put<Envelope<AttendanceSettings>>('/api/attendance/settings', patch, h())
+  )
+}
+
+export async function getAttendanceCalendar(year?: number) {
+  const y = year ?? new Date().getFullYear()
+  return unwrap(
+    api.get<
+      Envelope<{
+        year: number
+        weeklyOffDays: number[]
+        entries: AttendanceCalendarEntry[]
+      }>
+    >(`/api/attendance/calendar?year=${y}`, h())
+  )
+}
+
+export async function saveAttendanceCalendarEntry(input: {
+  id?: string
+  kind: AttendanceCalendarKind
+  title: string
+  startDate: string
+  endDate?: string
+  isActive?: boolean
+}) {
+  return unwrap(
+    api.post<Envelope<AttendanceCalendarEntry>>('/api/attendance/calendar', input, h())
+  )
+}
+
+export async function deleteAttendanceCalendarEntry(id: string) {
+  return unwrap(
+    api.delete<Envelope<{ deleted: boolean; id: string }>>(
+      `/api/attendance/calendar/${id}`,
+      h()
+    )
   )
 }
 
@@ -218,6 +255,8 @@ export async function getMyAttendanceToday() {
         date: string
         deviceBound?: boolean
         thisDeviceMatches?: boolean | null
+        isWorkingDay?: boolean
+        offReason?: string | null
       }>
     >(`/api/attendance/me${q}`, h())
   )

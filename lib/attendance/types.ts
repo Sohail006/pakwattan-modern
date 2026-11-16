@@ -110,6 +110,21 @@ export interface AttendanceSettings {
   allowCheckInWithoutGps: boolean
   pendingNeedsAdmin: boolean
   reminderCheckoutMinutes: number
+  /** DayOfWeek ints that are weekly off (0=Sun … 6=Sat) */
+  weeklyOffDays?: number[]
+  updatedAt: string
+}
+
+export type AttendanceCalendarKind = 'Holiday' | 'Vacation'
+
+export interface AttendanceCalendarEntry {
+  id: string
+  kind: AttendanceCalendarKind
+  title: string
+  startDate: string
+  endDate: string
+  isActive: boolean
+  createdAt: string
   updatedAt: string
 }
 
