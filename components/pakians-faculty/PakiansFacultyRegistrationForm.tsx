@@ -293,100 +293,6 @@ export default function PakiansFacultyRegistrationForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-8 w-full min-w-0">
-          {/* Login credentials */}
-          <div className={cardClass}>
-            <div className={sectionHeaderClass}>
-              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
-                <KeyRound className="h-5 w-5" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <h2 className="text-base sm:text-lg font-bold text-gray-900">Login Credentials</h2>
-                <p className="text-xs sm:text-sm text-gray-500 leading-snug">
-                  Unique username + password (min 6 chars, upper, lower, digit)
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
-              <div className="sm:col-span-2 min-w-0">
-                <label htmlFor="username" className={labelClass}>
-                  Username <span className="text-red-500">*</span>
-                </label>
-                <div className="relative min-w-0">
-                  <input
-                    id="username"
-                    type="text"
-                    required
-                    autoComplete="username"
-                    value={form.username}
-                    onChange={(e) => {
-                      updateField('username', e.target.value.replace(/\s/g, ''))
-                      clearFieldError('username')
-                    }}
-                    onBlur={handleUsernameBlur}
-                    className={`${inputClass} pr-10`}
-                    placeholder="e.g. ahmed.khan"
-                    maxLength={64}
-                  />
-                  {checkingUsername && (
-                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
-                  )}
-                </div>
-                {fieldErrors.username ? (
-                  <p className="mt-1.5 text-sm text-red-600 break-words">{fieldErrors.username}</p>
-                ) : (
-                  <p className="mt-1.5 text-xs text-gray-500 leading-snug">
-                    Letters, numbers, and . _ @ + - only. Must be unique.
-                  </p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="password" className={labelClass}>
-                  Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="password"
-                  type="password"
-                  required
-                  autoComplete="new-password"
-                  value={form.password}
-                  onChange={(e) => {
-                    updateField('password', e.target.value)
-                    clearFieldError('password')
-                  }}
-                  className={inputClass}
-                  placeholder="Create a password"
-                  minLength={6}
-                />
-                {fieldErrors.password && (
-                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.password}</p>
-                )}
-              </div>
-              <div>
-                <label htmlFor="confirmPassword" className={labelClass}>
-                  Confirm Password <span className="text-red-500">*</span>
-                </label>
-                <input
-                  id="confirmPassword"
-                  type="password"
-                  required
-                  autoComplete="new-password"
-                  value={form.confirmPassword}
-                  onChange={(e) => {
-                    updateField('confirmPassword', e.target.value)
-                    clearFieldError('confirmPassword')
-                  }}
-                  className={inputClass}
-                  placeholder="Re-enter password"
-                  minLength={6}
-                />
-                {fieldErrors.confirmPassword && (
-                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.confirmPassword}</p>
-                )}
-              </div>
-            </div>
-          </div>
-
           {/* Personal details */}
           <div className={cardClass}>
             <div className={sectionHeaderClass}>
@@ -747,6 +653,100 @@ export default function PakiansFacultyRegistrationForm() {
                   <p className="mt-1.5 text-sm text-red-600 break-words">
                     {fieldErrors.experienceYears}
                   </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Login credentials — last before submit */}
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+                <KeyRound className="h-5 w-5" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">Login Credentials</h2>
+                <p className="text-xs sm:text-sm text-gray-500 leading-snug">
+                  Unique username + password (min 6 chars, upper, lower, digit)
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
+              <div className="sm:col-span-2 min-w-0">
+                <label htmlFor="username" className={labelClass}>
+                  Username <span className="text-red-500">*</span>
+                </label>
+                <div className="relative min-w-0">
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    autoComplete="username"
+                    value={form.username}
+                    onChange={(e) => {
+                      updateField('username', e.target.value.replace(/\s/g, ''))
+                      clearFieldError('username')
+                    }}
+                    onBlur={handleUsernameBlur}
+                    className={`${inputClass} pr-10`}
+                    placeholder="e.g. ahmed.khan"
+                    maxLength={64}
+                  />
+                  {checkingUsername && (
+                    <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-gray-400" />
+                  )}
+                </div>
+                {fieldErrors.username ? (
+                  <p className="mt-1.5 text-sm text-red-600 break-words">{fieldErrors.username}</p>
+                ) : (
+                  <p className="mt-1.5 text-xs text-gray-500 leading-snug">
+                    Letters, numbers, and . _ @ + - only. Must be unique.
+                  </p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="password" className={labelClass}>
+                  Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={form.password}
+                  onChange={(e) => {
+                    updateField('password', e.target.value)
+                    clearFieldError('password')
+                  }}
+                  className={inputClass}
+                  placeholder="Create a password"
+                  minLength={6}
+                />
+                {fieldErrors.password && (
+                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.password}</p>
+                )}
+              </div>
+              <div>
+                <label htmlFor="confirmPassword" className={labelClass}>
+                  Confirm Password <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="confirmPassword"
+                  type="password"
+                  required
+                  autoComplete="new-password"
+                  value={form.confirmPassword}
+                  onChange={(e) => {
+                    updateField('confirmPassword', e.target.value)
+                    clearFieldError('confirmPassword')
+                  }}
+                  className={inputClass}
+                  placeholder="Re-enter password"
+                  minLength={6}
+                />
+                {fieldErrors.confirmPassword && (
+                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.confirmPassword}</p>
                 )}
               </div>
             </div>
