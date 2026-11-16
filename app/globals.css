@@ -451,18 +451,7 @@ html {
     @apply px-4;
   }
   
-  /* Mobile typography improvements */
-  h1 {
-    @apply text-3xl leading-tight;
-  }
-  
-  h2 {
-    @apply text-2xl leading-tight;
-  }
-  
-  h3 {
-    @apply text-xl leading-tight;
-  }
+  /* Do not globally override h1/h2/h3 sizes — components own their typography */
   
   /* Mobile button improvements */
   .btn-primary, .btn-secondary, .btn-accent {
@@ -484,19 +473,6 @@ html {
     @apply py-6 px-3;
   }
   
-  /* Extra small mobile typography */
-  h1 {
-    @apply text-2xl;
-  }
-  
-  h2 {
-    @apply text-xl;
-  }
-  
-  h3 {
-    @apply text-lg;
-  }
-  
   /* Mobile button sizing */
   .btn-primary, .btn-secondary, .btn-accent {
     @apply py-2.5 px-5 text-sm w-full;
@@ -505,24 +481,11 @@ html {
 
 @media (max-width: 480px) {
   .container-custom {
-    @apply px-2;
+    @apply px-3;
   }
   
   .section-padding {
-    @apply py-4 px-2;
-  }
-  
-  /* Ultra small mobile adjustments */
-  h1 {
-    @apply text-xl;
-  }
-  
-  h2 {
-    @apply text-lg;
-  }
-  
-  h3 {
-    @apply text-base;
+    @apply py-4 px-3;
   }
 }
 

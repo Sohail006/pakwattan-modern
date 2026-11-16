@@ -13,6 +13,10 @@ export default function ConditionalLayout({
 }) {
   const pathname = usePathname()
   const isDashboardRoute = pathname?.startsWith('/dashboard')
+  const isAuthPage =
+    pathname?.startsWith('/login') ||
+    pathname?.startsWith('/register') ||
+    pathname?.startsWith('/forgot-password')
 
   useEffect(() => {
     // If user is logged in and visits a public page, automatically logout
@@ -37,7 +41,13 @@ export default function ConditionalLayout({
         className={
           isDashboardRoute
             ? 'min-h-screen'
-            : 'min-h-screen pt-[4.5rem] sm:pt-16'
+            : [
+                'min-h-screen overflow-x-hidden',
+                // Match fixed public header (top bar + logo row ≈ 7.25–7.5rem on phones)
+                'pt-[7.25rem] sm:pt-[7.5rem] lg:pt-28',
+                // Room for sticky Apply Now on marketing pages (hidden on auth)
+                isAuthPage ? 'pb-6 sm:pb-8' : 'pb-24 md:pb-8',
+              ].join(' ')
         }
       >
         {children}
@@ -46,4 +56,3 @@ export default function ConditionalLayout({
     </>
   )
 }
-

@@ -28,13 +28,13 @@ export default function FormField({
       {typeof label === 'string' ? (
         <label
           htmlFor={htmlFor}
-          className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 mb-1.5"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       ) : (
-        <div className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">
+        <div className="block text-sm font-semibold text-gray-700 mb-1.5">
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </div>

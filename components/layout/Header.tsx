@@ -67,50 +67,50 @@ const Header = () => {
       {/* Fixed Header Container */}
       <div className="fixed top-0 left-0 right-0 z-50">
         {/* Top Bar - Mobile Optimized */}
-        <div className="bg-primary-600 text-white py-1.5">
+        <div className="bg-primary-600 text-white py-1 sm:py-1.5 overflow-x-hidden">
           <Container>
-            <div className="flex flex-row justify-between items-center gap-2 text-xs">
+            <div className="flex flex-row justify-between items-center gap-1.5 sm:gap-2 text-xs min-w-0">
               {/* Contact Info - keep single row on mobile */}
-              <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-6 min-w-0">
                 {phone && (
                   <a 
                     href={telHref}
-                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-1"
+                    className="flex items-center gap-1 sm:gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-0.5 sm:px-1"
                     aria-label={`Call landline ${phone}`}
                   >
                     <PhoneCall className="w-3.5 h-3.5 flex-shrink-0" aria-hidden />
-                    <span className="hidden xs:inline truncate max-w-[9rem] sm:max-w-none">{phone}</span>
-                    <span className="xs:hidden">Call</span>
+                    <span className="hidden sm:inline truncate max-w-[10rem] lg:max-w-none">{phone}</span>
+                    <span className="sm:hidden">Call</span>
                   </a>
                 )}
                 {email && (
                   <a 
                     href={`mailto:${email}`}
-                    className="flex items-center gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-1"
+                    className="flex items-center gap-1 sm:gap-1.5 hover:text-accent-300 transition-colors min-h-[36px] px-0.5 sm:px-1"
                     aria-label={`Email ${email}`}
                   >
                     <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="hidden sm:inline truncate">{email}</span>
-                    <span className="sm:hidden">Email</span>
+                    <span className="hidden md:inline truncate">{email}</span>
+                    <span className="md:hidden">Email</span>
                   </a>
                 )}
               </div>
               
               {/* Action Links - Responsive layout */}
-              <div className="flex items-center gap-1 sm:gap-3 shrink-0">
-                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-2 flex items-center">
+              <div className="flex items-center gap-0.5 sm:gap-3 shrink-0">
+                <Link href="/login" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-1.5 sm:px-2 flex items-center">
                   Sign In
                 </Link>
-                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-2 items-center hidden xs:flex">
+                <Link href="/register" className="hover:text-accent-300 transition-colors text-xs touch-target min-h-[36px] px-2 items-center hidden sm:flex">
                   Register
                 </Link>
                 <Button 
                   href="/video-gallery" 
                   variant="accent" 
                   size="sm"
-                  className="text-xs py-1.5 px-2.5 flex items-center gap-1.5 min-h-[36px]"
+                  className="text-xs py-1.5 px-2 sm:px-2.5 flex items-center gap-1 sm:gap-1.5 min-h-[36px]"
                 >
-                  <Play className="w-3.5 h-3.5" />
+                  <Play className="w-3.5 h-3.5 flex-shrink-0" />
                   <span className="hidden sm:inline">Video Gallery</span>
                   <span className="sm:hidden">Videos</span>
                 </Button>
@@ -126,8 +126,8 @@ const Header = () => {
         <Container>
           <div className="flex items-center justify-between py-1.5 sm:py-2">
             {/* Enhanced Logo - Mobile Responsive */}
-            <Link href="/" className="group flex items-center space-x-2 sm:space-x-3 hover:scale-105 transition-all duration-300 touch-target">
-              <div className="relative">
+            <Link href="/" className="group flex items-center gap-2 sm:space-x-3 min-w-0 flex-1 mr-2 hover:opacity-95 transition-all duration-300 touch-target">
+              <div className="relative flex-shrink-0">
                 <Image
                   src={SCHOOL_INFO.logo}
                   alt={SCHOOL_INFO.name}
@@ -137,17 +137,14 @@ const Header = () => {
                   priority
                 />
               </div>
-                     <div className="min-w-0 flex-text-fix">
-                       <h1 className="text-sm sm:text-lg font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent font-josefin group-hover:from-primary-600 group-hover:to-accent-600 transition-all duration-300 leading-tight text-no-overlap">
-                         {SCHOOL_INFO.name}
-                       </h1>
-                       <p className="text-xs sm:text-xs text-secondary-600 font-medium group-hover:text-primary-600 transition-colors duration-300 leading-tight hidden xs:block text-no-overlap">
-                         {SCHOOL_INFO.fullName}
-                       </p>
-                       <p className="text-xs text-secondary-600 font-medium group-hover:text-primary-600 transition-colors duration-300 leading-tight xs:hidden text-no-overlap">
-                         SCHOOL & COLLEGE
-                       </p>
-                     </div>
+              <div className="min-w-0 flex-1">
+                <h1 className="!text-sm sm:!text-lg font-bold bg-gradient-to-r from-primary-500 to-accent-500 bg-clip-text text-transparent font-josefin group-hover:from-primary-600 group-hover:to-accent-600 transition-all duration-300 leading-tight truncate">
+                  {SCHOOL_INFO.name}
+                </h1>
+                <p className="text-[11px] sm:text-xs text-secondary-600 font-medium group-hover:text-primary-600 transition-colors duration-300 leading-tight truncate">
+                  SCHOOL &amp; COLLEGE
+                </p>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}

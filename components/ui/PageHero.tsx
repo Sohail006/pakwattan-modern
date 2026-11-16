@@ -31,8 +31,8 @@ type PageHeroProps = {
 function HeroButton({ cta, variant }: { cta: PageHeroCta; variant: 'primary' | 'secondary' }) {
   const classes =
     variant === 'primary'
-      ? 'inline-flex items-center justify-center min-h-[48px] px-6 sm:px-8 rounded-xl bg-accent-500 hover:bg-accent-400 text-secondary-900 font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900'
-      : 'inline-flex items-center justify-center min-h-[48px] px-6 sm:px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/40 text-white font-semibold backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900'
+      ? 'inline-flex w-full sm:w-auto items-center justify-center min-h-[48px] px-5 sm:px-8 rounded-xl bg-accent-500 hover:bg-accent-400 text-secondary-900 font-bold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900 text-center'
+      : 'inline-flex w-full sm:w-auto items-center justify-center min-h-[48px] px-5 sm:px-8 rounded-xl bg-white/10 hover:bg-white/20 border border-white/40 text-white font-semibold backdrop-blur-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900 text-center'
 
   if (cta.href) {
     if (cta.external) {
@@ -105,20 +105,20 @@ const PageHero = ({
         aria-hidden
       />
 
-      <Container className="relative z-10 w-full pb-12 pt-28 sm:pb-16 sm:pt-32 lg:pb-20 lg:pt-36">
-        <div className="max-w-2xl animate-fade-in-up">
-          <p className="font-josefin text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white drop-shadow-sm">
+      <Container className="relative z-10 w-full pb-10 pt-8 sm:pb-16 sm:pt-20 lg:pb-20 lg:pt-28">
+        <div className="max-w-2xl animate-fade-in-up min-w-0">
+          <p className="font-josefin text-3xl xs:text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight text-white drop-shadow-sm break-words">
             {brand}
           </p>
-          <h1 className="mt-3 sm:mt-4 text-xl sm:text-2xl lg:text-3xl font-semibold text-accent-200 font-josefin leading-snug">
+          <h1 className="mt-2.5 sm:mt-4 !text-lg xs:!text-xl sm:!text-2xl lg:!text-3xl font-semibold text-accent-200 font-josefin leading-snug break-words">
             {title}
           </h1>
-          <p className="mt-3 sm:mt-4 text-base sm:text-lg text-white/90 leading-relaxed max-w-xl">
+          <p className="mt-2.5 sm:mt-4 text-sm sm:text-lg text-white/90 leading-relaxed max-w-xl">
             {description}
           </p>
 
           {(primaryCta || secondaryCta) && (
-            <div className="mt-7 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
               {primaryCta && (
                 <HeroButton cta={primaryCta} variant={primaryCta.variant || 'primary'} />
               )}

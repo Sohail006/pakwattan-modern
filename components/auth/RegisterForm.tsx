@@ -157,12 +157,12 @@ const RegisterForm = () => {
 
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CheckCircle className="w-10 h-10 text-green-600" />
+      <div className="flex items-start sm:items-center justify-center px-3 py-6 sm:p-6">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-6 sm:p-8 text-center">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+            <CheckCircle className="w-8 h-8 sm:w-10 sm:h-10 text-green-600" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Registration Successful!</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">Registration Successful!</h2>
           <p className="text-gray-600 mb-4">
             Your account has been created and is <strong>pending admin approval</strong>.
             You&apos;ll receive an email notification when your account is activated.
@@ -182,16 +182,16 @@ const RegisterForm = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+    <div className="overflow-x-hidden px-3 py-4 sm:px-4 sm:py-8">
+      <div className="mx-auto max-w-6xl w-full grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 items-start lg:items-center">
         {/* Left Side - Registration Form */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8 lg:p-12">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <User className="w-8 h-8 text-white" />
+        <div className="bg-white rounded-2xl shadow-xl sm:shadow-2xl p-4 sm:p-8 lg:p-12 w-full min-w-0">
+          <div className="text-center mb-5 sm:mb-8">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
+              <User className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Join the Pak Wattan School community</p>
+            <h1 className="text-xl sm:text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
+            <p className="text-sm sm:text-base text-gray-600">Join the Pak Wattan School community</p>
           </div>
 
           {errors.general && (
@@ -207,11 +207,11 @@ const RegisterForm = () => {
               <label className="block text-sm font-semibold text-gray-700 mb-3">
                 I am a:
               </label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
                 {userTypes.map((type) => (
                   <label
                     key={type.value}
-                    className={`relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 ${
+                    className={`relative flex items-start p-3.5 sm:p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 min-w-0 ${
                       formData.userType === type.value
                         ? 'border-primary-500 bg-primary-50'
                         : 'border-gray-300 hover:border-primary-300 hover:bg-gray-50'
@@ -258,7 +258,7 @@ const RegisterForm = () => {
                     required
                     aria-invalid={!!errors.firstName}
                     aria-describedby={errors.firstName ? 'firstName-error' : undefined}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full min-w-0 pl-10 pr-4 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.firstName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Enter your first name"
@@ -280,7 +280,7 @@ const RegisterForm = () => {
                     required
                     aria-invalid={!!errors.lastName}
                     aria-describedby={errors.lastName ? 'lastName-error' : undefined}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full min-w-0 pl-10 pr-4 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.lastName ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Enter your last name"
@@ -304,7 +304,7 @@ const RegisterForm = () => {
                   required
                   aria-invalid={!!errors.email}
                   aria-describedby={errors.email ? 'email-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                  className={`w-full min-w-0 pl-10 pr-4 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.email ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your email address"
@@ -327,7 +327,7 @@ const RegisterForm = () => {
                   required
                   aria-invalid={!!errors.phone}
                   aria-describedby={errors.phone ? 'phone-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                  className={`w-full min-w-0 pl-10 pr-4 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.phone ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                   placeholder="Enter your phone number"
@@ -350,7 +350,7 @@ const RegisterForm = () => {
                   required
                   aria-invalid={!!errors.dateOfBirth}
                   aria-describedby={errors.dateOfBirth ? 'dateOfBirth-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                  className={`w-full min-w-0 pl-10 pr-4 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                     errors.dateOfBirth ? 'border-red-300 bg-red-50' : 'border-gray-300'
                   }`}
                 />
@@ -373,7 +373,7 @@ const RegisterForm = () => {
                     required
                     aria-invalid={!!errors.password}
                     aria-describedby={errors.password ? 'password-error' : undefined}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full min-w-0 pl-10 pr-12 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.password ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Create a password"
@@ -403,7 +403,7 @@ const RegisterForm = () => {
                     required
                     aria-invalid={!!errors.confirmPassword}
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                    className={`w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
+                    className={`w-full min-w-0 pl-10 pr-12 py-3 text-base min-h-[48px] border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200 ${
                       errors.confirmPassword ? 'border-red-300 bg-red-50' : 'border-gray-300'
                     }`}
                     placeholder="Confirm your password"

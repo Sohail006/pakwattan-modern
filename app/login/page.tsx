@@ -12,7 +12,7 @@ export const metadata: Metadata = generatePageMetadata({
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50">
+    <div className="min-h-[calc(100svh-7.25rem)] sm:min-h-[calc(100svh-7.5rem)] bg-gradient-to-br from-primary-50 via-white to-accent-50 overflow-x-hidden">
       <LoginForm />
     </div>
   )

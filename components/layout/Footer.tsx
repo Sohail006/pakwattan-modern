@@ -38,9 +38,9 @@ const Footer = () => {
   const telHref = phone ? `tel:${phone.replace(/[\s-]/g, '')}` : ''
 
   return (
-    <footer className="bg-secondary-800 text-white">
+    <footer className="bg-secondary-800 text-white overflow-x-hidden">
       <Container className="py-8 sm:py-12 lg:py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 min-w-0">
           {/* School Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
