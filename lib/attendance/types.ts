@@ -86,6 +86,14 @@ export interface AttendanceRecord {
   adminByName?: string
   adminAt?: string
   deviceInfo?: string
+  /** Check-in used a device other than the bound one */
+  checkInOtherDevice?: boolean
+  /** Check-out used a device other than the bound one */
+  checkOutOtherDevice?: boolean
+  checkInDeviceInfo?: string | null
+  checkOutDeviceInfo?: string | null
+  /** True if check-in and/or check-out used a non-bound device */
+  otherDeviceUsed?: boolean
   createdAt: string
   updatedAt: string
   /** Minutes after shift start + grace */

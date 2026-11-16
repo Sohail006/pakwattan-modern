@@ -238,6 +238,7 @@ export async function attendanceCheckIn(coords: {
         distanceM: number
         deviceAutoBound?: boolean
         deviceBound?: boolean
+        otherDevice?: boolean
       }>
     >(
       '/api/attendance/me/check-in',
@@ -266,6 +267,7 @@ export async function attendanceCheckOut(coords: {
         inside?: boolean
         deviceAutoBound?: boolean
         deviceBound?: boolean
+        otherDevice?: boolean
       }>
     >(
       '/api/attendance/me/check-out',

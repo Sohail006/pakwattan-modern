@@ -89,8 +89,11 @@ export default function CheckInPanel() {
         ? ` · ${result.record.lateLabel} late`
         : ''
       const bound = result.deviceAutoBound ? ' · This device is now bound for attendance' : ''
+      const other = result.otherDevice
+        ? ' · Marked as other device (admin can see this)'
+        : ''
       setSuccess(
-        `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)}${late} · ${result.distanceM}m from campus${bound}`
+        `Checked in at ${formatTime(result.record.checkInAt)} · ${statusLabel(result.record.status)}${late} · ${result.distanceM}m from campus${bound}${other}`
       )
       await refresh()
     } catch (e) {
@@ -119,8 +122,11 @@ export default function CheckInPanel() {
       const early = result.record.earlyLeaveLabel
         ? ` · left ${result.record.earlyLeaveLabel} early`
         : ''
+      const other = result.otherDevice
+        ? ' · Marked as other device (admin can see this)'
+        : ''
       setSuccess(
-        `Checked out at ${outLabel}${early} · ${result.distanceM ?? 0}m from campus. Have a good day!`
+        `Checked out at ${outLabel}${early} · ${result.distanceM ?? 0}m from campus${other}. Have a good day!`
       )
       await refresh()
     } catch (e) {
@@ -192,13 +198,13 @@ export default function CheckInPanel() {
               <span
                 className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 ${
                   state.thisDeviceMatches === false
-                    ? 'bg-rose-500/30 text-rose-50'
+                    ? 'bg-amber-400/35 text-amber-50'
                     : 'bg-white/15'
                 }`}
               >
                 <ShieldAlert className="h-3.5 w-3.5" />
                 {state.thisDeviceMatches === false
-                  ? 'Wrong device — ask admin to clear binding'
+                  ? 'Other device — admin will see this'
                   : 'Device bound'}
               </span>
             ) : (
@@ -335,6 +341,13 @@ export default function CheckInPanel() {
                     {row.lateLabel ? `Late ${row.lateLabel}` : ''}
                     {row.lateLabel && row.earlyLeaveLabel ? ' · ' : ''}
                     {row.earlyLeaveLabel ? `Early out ${row.earlyLeaveLabel}` : ''}
+                  </p>
+                )}
+                {row.otherDeviceUsed && (
+                  <p className="mt-0.5 text-xs font-medium text-violet-800">
+                    Other device
+                    {row.checkInOtherDevice ? ' (in)' : ''}
+                    {row.checkOutOtherDevice ? ' (out)' : ''}
                   </p>
                 )}
               </div>

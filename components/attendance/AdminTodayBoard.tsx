@@ -9,6 +9,7 @@ import {
   MapPin,
   RefreshCw,
   Settings2,
+  Smartphone,
   Trash2,
   UserX,
   Umbrella,
@@ -102,7 +103,7 @@ export default function AdminTodayBoard() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Staff Attendance</h1>
           <p className="mt-1 text-sm text-gray-600">
-            Live campus board — verify GPS mismatches, mark leave, or mark absent.
+            Live campus board — verify GPS / other-device check-ins, mark leave, or mark absent.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -236,8 +237,22 @@ export default function AdminTodayBoard() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-gray-700">
-                        <p>In {formatTime(row.record?.checkInAt)}</p>
-                        <p>Out {formatTime(row.record?.checkOutAt)}</p>
+                        <p>
+                          In {formatTime(row.record?.checkInAt)}
+                          {row.record?.checkInOtherDevice ? (
+                            <span className="ml-1 text-xs font-semibold text-violet-700">
+                              · other device
+                            </span>
+                          ) : null}
+                        </p>
+                        <p>
+                          Out {formatTime(row.record?.checkOutAt)}
+                          {row.record?.checkOutOtherDevice ? (
+                            <span className="ml-1 text-xs font-semibold text-violet-700">
+                              · other device
+                            </span>
+                          ) : null}
+                        </p>
                         {row.record?.lateLabel && (
                           <p className="mt-1 text-xs font-semibold text-amber-700">
                             Late {row.record.lateLabel}
@@ -248,13 +263,43 @@ export default function AdminTodayBoard() {
                             Early out {row.record.earlyLeaveLabel}
                           </p>
                         )}
+                        {row.record?.otherDeviceUsed && (
+                          <p className="mt-1 inline-flex max-w-[16rem] items-start gap-1 text-xs text-violet-800">
+                            <Smartphone className="mt-0.5 h-3 w-3 shrink-0" />
+                            <span className="break-words">
+                              {[
+                                row.record.checkInOtherDevice && row.record.checkInDeviceInfo
+                                  ? `In: ${row.record.checkInDeviceInfo}`
+                                  : null,
+                                row.record.checkOutOtherDevice && row.record.checkOutDeviceInfo
+                                  ? `Out: ${row.record.checkOutDeviceInfo}`
+                                  : null,
+                                !row.record.checkInDeviceInfo &&
+                                !row.record.checkOutDeviceInfo &&
+                                row.record.deviceInfo
+                                  ? row.record.deviceInfo
+                                  : null,
+                              ]
+                                .filter(Boolean)
+                                .join(' · ') || 'Used a device other than bound phone/browser'}
+                            </span>
+                          </p>
+                        )}
                       </td>
                       <td className="px-4 py-3">
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(row.status)}`}
-                        >
-                          {statusLabel(row.status)}
-                        </span>
+                        <div className="flex flex-col items-start gap-1.5">
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(row.status)}`}
+                          >
+                            {statusLabel(row.status)}
+                          </span>
+                          {row.record?.otherDeviceUsed && (
+                            <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
+                              <Smartphone className="h-3 w-3" />
+                              Other device
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1.5">
@@ -340,7 +385,11 @@ export default function AdminTodayBoard() {
                   </div>
                   <p className="mt-2 flex items-center gap-1 text-sm text-gray-600">
                     <Clock className="h-3.5 w-3.5" />
-                    In {formatTime(row.record?.checkInAt)} · Out {formatTime(row.record?.checkOutAt)}
+                    In {formatTime(row.record?.checkInAt)}
+                    {row.record?.checkInOtherDevice ? ' (other device)' : ''}
+                    {' · '}
+                    Out {formatTime(row.record?.checkOutAt)}
+                    {row.record?.checkOutOtherDevice ? ' (other device)' : ''}
                   </p>
                   {(row.record?.lateLabel || row.record?.earlyLeaveLabel) && (
                     <p className="mt-1 text-xs font-medium text-amber-800">
@@ -349,6 +398,22 @@ export default function AdminTodayBoard() {
                       {row.record.earlyLeaveLabel
                         ? `Early out ${row.record.earlyLeaveLabel}`
                         : ''}
+                    </p>
+                  )}
+                  {row.record?.otherDeviceUsed && (
+                    <p className="mt-1 inline-flex items-start gap-1 text-xs font-medium text-violet-800">
+                      <Smartphone className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                      <span className="break-words">
+                        Other device
+                        {row.record.checkInDeviceInfo || row.record.checkOutDeviceInfo
+                          ? `: ${[
+                              row.record.checkInOtherDevice && row.record.checkInDeviceInfo,
+                              row.record.checkOutOtherDevice && row.record.checkOutDeviceInfo,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}`
+                          : ''}
+                      </span>
                     </p>
                   )}
                   {typeof row.record?.checkInDistanceM === 'number' && (
