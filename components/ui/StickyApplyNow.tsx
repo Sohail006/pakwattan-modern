@@ -14,7 +14,10 @@ const StickyApplyNow = () => {
   const hidden =
     pathname?.startsWith('/admission') ||
     pathname?.startsWith('/dashboard') ||
-    pathname?.startsWith('/admin')
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/pakians-faculty-registration') ||
+    pathname?.startsWith('/login') ||
+    pathname?.startsWith('/register')
 
   useEffect(() => {
     if (hidden) return

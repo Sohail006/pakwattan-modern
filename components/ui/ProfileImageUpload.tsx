@@ -16,6 +16,7 @@ interface ProfileImageUploadProps {
   size?: 'sm' | 'md' | 'lg'
   shape?: 'circle' | 'square' | 'rounded'
   forceVertical?: boolean // Force vertical layout regardless of screen size
+  showLabel?: boolean
 }
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
@@ -33,6 +34,7 @@ export default function ProfileImageUpload({
   size = 'md',
   shape = 'circle',
   forceVertical = false,
+  showLabel = true,
 }: ProfileImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(value || null)
   const [uploading, setUploading] = useState(false)
@@ -64,9 +66,9 @@ export default function ProfileImageUpload({
   }, [value])
 
   const sizeClasses = {
-    sm: 'w-20 h-20',
-    md: 'w-32 h-32',
-    lg: 'w-40 h-40',
+    sm: 'w-16 h-16 sm:w-20 sm:h-20',
+    md: 'w-24 h-24 sm:w-32 sm:h-32',
+    lg: 'w-28 h-28 sm:w-40 sm:h-40',
   }
 
   const shapeClasses = {
@@ -482,15 +484,17 @@ export default function ProfileImageUpload({
   }, [preview, actualSrcUrl, finalImageUrl, imageError])
 
   return (
-    <div className="space-y-3">
-      <label className="block text-sm font-semibold text-gray-700 mb-2">
-        Profile Picture
-      </label>
+    <div className="space-y-3 w-full min-w-0 max-w-full">
+      {showLabel && (
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Profile Picture
+        </label>
+      )}
 
       <div className={cn(
         'flex items-start gap-4',
         forceVertical ? 'flex-col' : 'flex-col sm:flex-row',
-        'w-full'
+        'w-full min-w-0 max-w-full'
       )}>
         {/* Preview */}
         <div

@@ -10,9 +10,9 @@ const PakiansFacultyRegistrationForm = dynamic(
   () => import('@/components/pakians-faculty/PakiansFacultyRegistrationForm'),
   {
     loading: () => (
-      <section className="py-12 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
-        <div className="container-custom max-w-3xl">
-          <SkeletonLoader variant="section" className="min-h-[520px]" />
+      <section className="overflow-x-hidden py-8 sm:py-16 bg-gradient-to-br from-primary-50 to-accent-50">
+        <div className="mx-auto w-full max-w-3xl px-3 sm:px-6">
+          <SkeletonLoader variant="section" className="min-h-[420px] sm:min-h-[520px]" />
         </div>
       </section>
     ),

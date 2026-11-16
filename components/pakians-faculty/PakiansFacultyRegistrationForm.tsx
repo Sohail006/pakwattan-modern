@@ -56,8 +56,11 @@ function validatePasswordRules(password: string): string | null {
 }
 
 const inputClass =
-  'w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm sm:text-base text-gray-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:bg-gray-50'
+  'w-full min-w-0 max-w-full rounded-xl border border-gray-200 bg-white px-3.5 sm:px-4 py-3 text-base text-gray-900 shadow-sm transition focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 disabled:bg-gray-50 min-h-[48px]'
 const labelClass = 'mb-1.5 block text-sm font-semibold text-gray-800'
+const cardClass =
+  'rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-4 sm:p-7 shadow-lg shadow-primary-900/5 w-full min-w-0 max-w-full overflow-hidden'
+const sectionHeaderClass = 'mb-4 sm:mb-5 flex items-start gap-3 min-w-0'
 
 export default function PakiansFacultyRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -248,14 +251,16 @@ export default function PakiansFacultyRegistrationForm() {
 
   if (isSubmitted) {
     return (
-      <section className="py-10 sm:py-14">
-        <div className="container-custom max-w-2xl">
-          <div className="rounded-3xl border border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-8 sm:p-10 text-center shadow-xl">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <CheckCircle2 className="h-9 w-9 text-green-600" />
+      <section className="overflow-x-hidden py-8 sm:py-14">
+        <div className="mx-auto w-full max-w-2xl px-3 sm:px-6">
+          <div className="rounded-2xl sm:rounded-3xl border border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 p-6 sm:p-10 text-center shadow-xl">
+            <div className="mx-auto mb-5 flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-green-100">
+              <CheckCircle2 className="h-8 w-8 sm:h-9 sm:w-9 text-green-600" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">Registration Received</h2>
-            <p className="text-gray-600 leading-relaxed">
+            <h2 className="text-xl sm:text-3xl font-bold text-gray-900 mb-3 break-words">
+              Registration Received
+            </h2>
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
               Thank you for registering as Pak Wattan faculty. After an administrator verifies your
               application, you can sign in with the username and password you created.
             </p>
@@ -266,44 +271,48 @@ export default function PakiansFacultyRegistrationForm() {
   }
 
   return (
-    <section id="register" className="py-10 sm:py-14 bg-gradient-to-b from-slate-50 via-white to-primary-50/40">
-      <div className="container-custom max-w-3xl px-4 sm:px-6">
-        <div className="mb-8 sm:mb-10 text-center">
-          <span className="inline-flex items-center gap-2 rounded-full bg-primary-100 px-4 py-1.5 text-xs sm:text-sm font-semibold text-primary-800">
-            <GraduationCap className="h-4 w-4" />
-            Faculty Onboarding
+    <section
+      id="register"
+      className="overflow-x-hidden py-6 sm:py-14 bg-gradient-to-b from-slate-50 via-white to-primary-50/40"
+    >
+      <div className="mx-auto w-full max-w-3xl px-3 sm:px-6">
+        <div className="mb-6 sm:mb-10 text-center px-1">
+          <span className="inline-flex max-w-full items-center gap-2 rounded-full bg-primary-100 px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold text-primary-800">
+            <GraduationCap className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate">Faculty Onboarding</span>
           </span>
-          <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 font-josefin">
+          <h1 className="mt-3 sm:mt-4 !text-xl xs:!text-2xl sm:!text-3xl md:!text-4xl font-bold text-gray-900 font-josefin leading-tight break-words">
             {PAKIANS_FACULTY_PAGE_TITLE}
           </h1>
-          <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+          <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Register as teaching or non-teaching staff at Pak Wattan School &amp; College of Sciences.
             Choose a unique username and a strong password. After admin verification you can log in with
-            those credentials. The same name with father name, or the same mobile number, cannot be registered twice.
+            those credentials. The same name with father name, or the same mobile number, cannot be
+            registered twice.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-8 w-full min-w-0">
           {/* Login credentials */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
                 <KeyRound className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Login Credentials</h2>
-                <p className="text-sm text-gray-500">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">Login Credentials</h2>
+                <p className="text-xs sm:text-sm text-gray-500 leading-snug">
                   Unique username + password (min 6 chars, upper, lower, digit)
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-              <div className="sm:col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
+              <div className="sm:col-span-2 min-w-0">
                 <label htmlFor="username" className={labelClass}>
                   Username <span className="text-red-500">*</span>
                 </label>
-                <div className="relative">
+                <div className="relative min-w-0">
                   <input
                     id="username"
                     type="text"
@@ -315,7 +324,7 @@ export default function PakiansFacultyRegistrationForm() {
                       clearFieldError('username')
                     }}
                     onBlur={handleUsernameBlur}
-                    className={inputClass}
+                    className={`${inputClass} pr-10`}
                     placeholder="e.g. ahmed.khan"
                     maxLength={64}
                   />
@@ -324,10 +333,10 @@ export default function PakiansFacultyRegistrationForm() {
                   )}
                 </div>
                 {fieldErrors.username ? (
-                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.username}</p>
+                  <p className="mt-1.5 text-sm text-red-600 break-words">{fieldErrors.username}</p>
                 ) : (
-                  <p className="mt-1.5 text-xs text-gray-500">
-                    Letters, numbers, and . _ @ + - only. Must be unique across the school system.
+                  <p className="mt-1.5 text-xs text-gray-500 leading-snug">
+                    Letters, numbers, and . _ @ + - only. Must be unique.
                   </p>
                 )}
               </div>
@@ -379,19 +388,19 @@ export default function PakiansFacultyRegistrationForm() {
           </div>
 
           {/* Personal details */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-primary-100 text-primary-700">
                 <User className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Personal Information</h2>
-                <p className="text-sm text-gray-500">Your basic identity details</p>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">Personal Information</h2>
+                <p className="text-xs sm:text-sm text-gray-500">Your basic identity details</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-              <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
+              <div className="min-w-0">
                 <label htmlFor="name" className={labelClass}>
                   Full Name <span className="text-red-500">*</span>
                 </label>
@@ -406,7 +415,7 @@ export default function PakiansFacultyRegistrationForm() {
                   autoComplete="name"
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label htmlFor="fatherName" className={labelClass}>
                   Father Name <span className="text-red-500">*</span>
                 </label>
@@ -422,11 +431,11 @@ export default function PakiansFacultyRegistrationForm() {
               </div>
             </div>
 
-            <div className="mt-5">
+            <div className="mt-4 sm:mt-5 min-w-0">
               <label className={labelClass}>
                 Profile Picture <span className="text-red-500">*</span>
               </label>
-              <div className="rounded-2xl border border-dashed border-primary-200 bg-primary-50/40 p-4 sm:p-5">
+              <div className="rounded-xl sm:rounded-2xl border border-dashed border-primary-200 bg-primary-50/40 p-3 sm:p-5 overflow-hidden">
                 <ProfileImageUpload
                   value={form.profileImageUrl}
                   onChange={(url) => {
@@ -441,30 +450,31 @@ export default function PakiansFacultyRegistrationForm() {
                   }}
                   onError={(msg) => setFieldErrors((prev) => ({ ...prev, profileImageUrl: msg }))}
                   mode="create"
-                  size="lg"
+                  size="md"
                   shape="rounded"
                   forceVertical
+                  showLabel={false}
                 />
               </div>
               {fieldErrors.profileImageUrl && (
-                <p className="mt-2 text-sm text-red-600">{fieldErrors.profileImageUrl}</p>
+                <p className="mt-2 text-sm text-red-600 break-words">{fieldErrors.profileImageUrl}</p>
               )}
             </div>
           </div>
 
           {/* Contact */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-100 text-accent-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-accent-100 text-accent-700">
                 <Phone className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Contact Details</h2>
-                <p className="text-sm text-gray-500">Pakistan mobile format: 03XX-XXXXXXX</p>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">Contact Details</h2>
+                <p className="text-xs sm:text-sm text-gray-500">Pakistan mobile format: 03XX-XXXXXXX</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
               <div>
                 <label htmlFor="mobileNumber" className={labelClass}>
                   Mobile Number <span className="text-red-500">*</span>
@@ -543,18 +553,18 @@ export default function PakiansFacultyRegistrationForm() {
           </div>
 
           {/* Staff category */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
                 <Users className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Staff Category</h2>
-                <p className="text-sm text-gray-500">Select teaching or non-teaching</p>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">Staff Category</h2>
+                <p className="text-xs sm:text-sm text-gray-500">Select teaching or non-teaching</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4">
               {PAKIANS_FACULTY_STAFF_CATEGORY_OPTIONS.map((option) => {
                 const selected = form.staffCategory === option.value
                 return (
@@ -562,14 +572,16 @@ export default function PakiansFacultyRegistrationForm() {
                     key={option.value}
                     type="button"
                     onClick={() => updateField('staffCategory', option.value)}
-                    className={`rounded-2xl border-2 p-4 text-left transition-all touch-target min-h-[72px] ${
+                    className={`rounded-xl sm:rounded-2xl border-2 p-3.5 sm:p-4 text-left transition-all touch-target min-h-[64px] sm:min-h-[72px] w-full min-w-0 ${
                       selected
                         ? 'border-primary-500 bg-primary-50 shadow-md ring-2 ring-primary-200'
                         : 'border-gray-200 bg-white hover:border-primary-300 hover:bg-gray-50'
                     }`}
                   >
-                    <p className="font-bold text-gray-900">{option.label}</p>
-                    <p className="mt-1 text-xs sm:text-sm text-gray-500">{option.description}</p>
+                    <p className="font-bold text-gray-900 text-sm sm:text-base">{option.label}</p>
+                    <p className="mt-1 text-xs sm:text-sm text-gray-500 leading-snug break-words">
+                      {option.description}
+                    </p>
                   </button>
                 )
               })}
@@ -577,16 +589,16 @@ export default function PakiansFacultyRegistrationForm() {
           </div>
 
           {/* Role details */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
                 {isTeaching ? <BookOpen className="h-5 w-5" /> : <Briefcase className="h-5 w-5" />}
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">
                   {isTeaching ? 'Teaching Details' : 'Non-Teaching Role'}
                 </h2>
-                <p className="text-sm text-gray-500">
+                <p className="text-xs sm:text-sm text-gray-500 leading-snug">
                   {isTeaching
                     ? 'Wing, subject, and designation information'
                     : 'Your administrative or support role'}
@@ -595,12 +607,12 @@ export default function PakiansFacultyRegistrationForm() {
             </div>
 
             {isTeaching ? (
-              <div className="space-y-4 sm:space-y-5">
-                <div>
+              <div className="space-y-3 sm:space-y-5">
+                <div className="min-w-0">
                   <p className={labelClass}>
                     Teacher / Wing Incharge <span className="text-red-500">*</span>
                   </p>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 gap-2.5 sm:gap-3">
                     {PAKIANS_FACULTY_ROLE_TYPE_OPTIONS.map((option) => {
                       const selected = form.roleType === option.value
                       return (
@@ -608,7 +620,7 @@ export default function PakiansFacultyRegistrationForm() {
                           key={option.value}
                           type="button"
                           onClick={() => updateField('roleType', option.value)}
-                          className={`rounded-xl border-2 px-4 py-3 text-sm font-semibold transition touch-target min-h-[48px] ${
+                          className={`rounded-xl border-2 px-3 sm:px-4 py-3 text-sm font-semibold transition touch-target min-h-[48px] w-full break-words ${
                             selected
                               ? 'border-primary-500 bg-primary-50 text-primary-800'
                               : 'border-gray-200 text-gray-700 hover:border-primary-300'
@@ -621,7 +633,7 @@ export default function PakiansFacultyRegistrationForm() {
                   </div>
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label htmlFor="wing" className={labelClass}>
                     Wing <span className="text-red-500">*</span>
                   </label>
@@ -630,7 +642,7 @@ export default function PakiansFacultyRegistrationForm() {
                     required
                     value={form.wing}
                     onChange={(e) => updateField('wing', e.target.value)}
-                    className={inputClass}
+                    className={`${inputClass} appearance-none bg-[length:1rem] pr-10`}
                   >
                     <option value="">Select wing</option>
                     {PAKIANS_FACULTY_WINGS.map((wing) => (
@@ -641,7 +653,7 @@ export default function PakiansFacultyRegistrationForm() {
                   </select>
                 </div>
 
-                <div>
+                <div className="min-w-0">
                   <label htmlFor="subjectTaught" className={labelClass}>
                     Subject Taught <span className="text-red-500">*</span>
                   </label>
@@ -652,7 +664,7 @@ export default function PakiansFacultyRegistrationForm() {
                     value={form.subjectTaught}
                     onChange={(e) => updateField('subjectTaught', e.target.value)}
                     className={inputClass}
-                    placeholder="e.g. Mathematics — Boys Senior, Section A"
+                    placeholder="e.g. Mathematics — Boys Senior"
                   />
                   <p className="mt-1.5 text-xs sm:text-sm text-gray-500">
                     Mention class, wing, and section if applicable.
@@ -660,7 +672,7 @@ export default function PakiansFacultyRegistrationForm() {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="min-w-0">
                 <label htmlFor="roleName" className={labelClass}>
                   Role Name <span className="text-red-500">*</span>
                 </label>
@@ -671,26 +683,30 @@ export default function PakiansFacultyRegistrationForm() {
                   value={form.roleName}
                   onChange={(e) => updateField('roleName', e.target.value)}
                   className={inputClass}
-                  placeholder="e.g. Office Assistant, Lab Attendant, Accountant"
+                  placeholder="e.g. Office Assistant, Lab Attendant"
                 />
               </div>
             )}
           </div>
 
           {/* Qualifications */}
-          <div className="rounded-2xl sm:rounded-3xl border border-gray-200 bg-white p-5 sm:p-7 shadow-lg shadow-primary-900/5">
-            <div className="mb-5 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+          <div className={cardClass}>
+            <div className={sectionHeaderClass}>
+              <div className="flex h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
                 <GraduationCap className="h-5 w-5" />
               </div>
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">Qualification &amp; Experience</h2>
-                <p className="text-sm text-gray-500">Academic background and years of experience</p>
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base sm:text-lg font-bold text-gray-900">
+                  Qualification &amp; Experience
+                </h2>
+                <p className="text-xs sm:text-sm text-gray-500 leading-snug">
+                  Academic background and years of experience
+                </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-              <div className="sm:col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-5">
+              <div className="sm:col-span-2 min-w-0">
                 <label htmlFor="highestQualification" className={labelClass}>
                   Highest Qualification <span className="text-red-500">*</span>
                 </label>
@@ -704,7 +720,7 @@ export default function PakiansFacultyRegistrationForm() {
                   placeholder="e.g. M.Sc Mathematics, B.Ed"
                 />
               </div>
-              <div>
+              <div className="min-w-0">
                 <label htmlFor="experienceYears" className={labelClass}>
                   Total Experience (Years) <span className="text-red-500">*</span>
                 </label>
@@ -728,32 +744,36 @@ export default function PakiansFacultyRegistrationForm() {
                   placeholder="0"
                 />
                 {fieldErrors.experienceYears && (
-                  <p className="mt-1.5 text-sm text-red-600">{fieldErrors.experienceYears}</p>
+                  <p className="mt-1.5 text-sm text-red-600 break-words">
+                    {fieldErrors.experienceYears}
+                  </p>
                 )}
               </div>
             </div>
           </div>
 
           {submitError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            <div className="rounded-xl border border-red-200 bg-red-50 px-3 sm:px-4 py-3 text-sm text-red-700 break-words">
               {submitError}
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full rounded-2xl bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4 text-base sm:text-lg font-bold text-white shadow-xl transition hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 disabled:cursor-not-allowed disabled:opacity-60 touch-target min-h-[52px]"
-          >
-            {isSubmitting ? (
-              <span className="inline-flex items-center justify-center gap-2">
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Submitting...
-              </span>
-            ) : (
-              'Submit Faculty Registration'
-            )}
-          </button>
+          <div className="pt-1 pb-2 sm:pb-0">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-r from-primary-600 to-primary-700 px-4 sm:px-6 py-3.5 sm:py-4 text-base sm:text-lg font-bold text-white shadow-xl transition hover:from-primary-700 hover:to-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 disabled:cursor-not-allowed disabled:opacity-60 touch-target min-h-[52px]"
+            >
+              {isSubmitting ? (
+                <span className="inline-flex items-center justify-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Submitting...
+                </span>
+              ) : (
+                <span className="break-words">Submit Faculty Registration</span>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </section>
