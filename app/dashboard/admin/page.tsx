@@ -20,6 +20,7 @@ import { getJobApplicationsCount } from '@/lib/api/jobs'
 import { getRegistrationsCount } from '@/lib/api/registrations'
 import { getNews } from '@/lib/api/news'
 import { getContactsCount } from '@/lib/api/contact'
+import AttendanceManageDashboard from '@/components/attendance/AttendanceManageDashboard'
 
 type Kpi = { 
   label: string
@@ -201,6 +202,8 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       )}
+
+      <AttendanceManageDashboard />
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

@@ -25,6 +25,7 @@ import { getContactsCount } from '@/lib/api/contact'
 import { isAuthenticated, getUserRoles, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
 import CheckInPanel from '@/components/attendance/CheckInPanel'
+import AttendanceManageDashboard from '@/components/attendance/AttendanceManageDashboard'
 
 type Kpi = { 
   label: string
@@ -267,6 +268,8 @@ export default function StaffDashboardPage() {
           <span className="text-sm font-medium">Refresh</span>
         </button>
       </div>
+
+      <AttendanceManageDashboard />
 
       <CheckInPanel />
 
