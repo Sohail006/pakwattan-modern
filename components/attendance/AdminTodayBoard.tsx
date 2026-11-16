@@ -9,7 +9,6 @@ import {
   MapPin,
   RefreshCw,
   Settings2,
-  Smartphone,
   Trash2,
   UserX,
   Umbrella,
@@ -263,43 +262,13 @@ export default function AdminTodayBoard() {
                             Early out {row.record.earlyLeaveLabel}
                           </p>
                         )}
-                        {row.record?.otherDeviceUsed && (
-                          <p className="mt-1 inline-flex max-w-[16rem] items-start gap-1 text-xs text-violet-800">
-                            <Smartphone className="mt-0.5 h-3 w-3 shrink-0" />
-                            <span className="break-words">
-                              {[
-                                row.record.checkInOtherDevice && row.record.checkInDeviceInfo
-                                  ? `In: ${row.record.checkInDeviceInfo}`
-                                  : null,
-                                row.record.checkOutOtherDevice && row.record.checkOutDeviceInfo
-                                  ? `Out: ${row.record.checkOutDeviceInfo}`
-                                  : null,
-                                !row.record.checkInDeviceInfo &&
-                                !row.record.checkOutDeviceInfo &&
-                                row.record.deviceInfo
-                                  ? row.record.deviceInfo
-                                  : null,
-                              ]
-                                .filter(Boolean)
-                                .join(' · ') || 'Used a device other than bound phone/browser'}
-                            </span>
-                          </p>
-                        )}
                       </td>
                       <td className="px-4 py-3">
-                        <div className="flex flex-col items-start gap-1.5">
-                          <span
-                            className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(row.status)}`}
-                          >
-                            {statusLabel(row.status)}
-                          </span>
-                          {row.record?.otherDeviceUsed && (
-                            <span className="inline-flex items-center gap-1 rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-800">
-                              <Smartphone className="h-3 w-3" />
-                              Other device
-                            </span>
-                          )}
-                        </div>
+                        <span
+                          className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${statusClass(row.status)}`}
+                        >
+                          {statusLabel(row.status)}
+                        </span>
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex flex-wrap gap-1.5">
@@ -398,22 +367,6 @@ export default function AdminTodayBoard() {
                       {row.record.earlyLeaveLabel
                         ? `Early out ${row.record.earlyLeaveLabel}`
                         : ''}
-                    </p>
-                  )}
-                  {row.record?.otherDeviceUsed && (
-                    <p className="mt-1 inline-flex items-start gap-1 text-xs font-medium text-violet-800">
-                      <Smartphone className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                      <span className="break-words">
-                        Other device
-                        {row.record.checkInDeviceInfo || row.record.checkOutDeviceInfo
-                          ? `: ${[
-                              row.record.checkInOtherDevice && row.record.checkInDeviceInfo,
-                              row.record.checkOutOtherDevice && row.record.checkOutDeviceInfo,
-                            ]
-                              .filter(Boolean)
-                              .join(' · ')}`
-                          : ''}
-                      </span>
                     </p>
                   )}
                   {typeof row.record?.checkInDistanceM === 'number' && (
