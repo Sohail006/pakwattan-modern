@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
   ArrowLeft,
@@ -16,6 +16,7 @@ import {
   assignAttendanceStaff,
   deleteAttendanceCampus,
   getAttendanceCampuses,
+  getAttendanceEligibleFaculty,
   getAttendanceGroups,
   getAttendanceStaff,
   removeAttendanceStaff,
@@ -23,8 +24,8 @@ import {
   saveAttendanceCampus,
   saveAttendanceGroup,
   transferAttendanceStaff,
+  type AttendanceEligibleFaculty,
 } from '@/lib/api/attendance'
-import { getUsers, type User } from '@/lib/api/users'
 import { getCampuses } from '@/lib/api/campuses'
 import type { AttendanceCampus, StaffAssignment, StaffGroup, StaffGroupKind } from '@/lib/attendance/types'
 import { formatTime } from '@/lib/utils'
@@ -48,7 +49,7 @@ export default function AttendanceSettingsPanel() {
   const [campuses, setCampuses] = useState<AttendanceCampus[]>([])
   const [groups, setGroups] = useState<StaffGroup[]>([])
   const [staff, setStaff] = useState<StaffAssignment[]>([])
-  const [users, setUsers] = useState<User[]>([])
+  const [eligibleFaculty, setEligibleFaculty] = useState<AttendanceEligibleFaculty[]>([])
 
   const [campusForm, setCampusForm] = useState({
     id: '',
@@ -102,29 +103,21 @@ export default function AttendanceSettingsPanel() {
   }, [refresh])
 
   useEffect(() => {
-    if (tab !== 'staff' || users.length > 0) return
+    if (tab !== 'staff') return
     let cancelled = false
-    getUsers()
-      .then((u) => {
-        if (cancelled) return
-        setUsers(
-          u.filter((user) =>
-            user.roles?.some((r) =>
-              ['Teacher', 'Staff', 'ManagerialStaff', 'Admin'].includes(r)
-            )
-          )
-        )
+    getAttendanceEligibleFaculty()
+      .then((list) => {
+        if (!cancelled) setEligibleFaculty(list)
       })
       .catch(() => {
-        if (!cancelled) setUsers([])
+        if (!cancelled) setEligibleFaculty([])
       })
     return () => {
       cancelled = true
     }
-  }, [tab, users.length])
+  }, [tab, staff])
 
-  const assignedIds = useMemo(() => new Set(staff.map((s) => s.userId)), [staff])
-  const assignableUsers = users.filter((u) => !assignedIds.has(u.id))
+  const assignableFaculty = eligibleFaculty
 
   const fillMyLocation = async () => {
     try {
@@ -248,18 +241,18 @@ export default function AttendanceSettingsPanel() {
     setError(null)
     setOk(null)
     try {
-      const user = users.find((u) => u.id === staffForm.userId)
-      if (!user) throw new Error('Select a staff member.')
+      const member = eligibleFaculty.find((f) => f.userId === staffForm.userId)
+      if (!member) throw new Error('Select a verified Pakians Faculty member.')
       await assignAttendanceStaff({
-        userId: user.id,
-        userName: `${user.firstName} ${user.lastName}`.trim(),
-        userEmail: user.email,
-        roles: user.roles,
+        userId: member.userId,
+        userName: member.name,
+        userEmail: member.email,
+        roles: member.assignedRole ? [member.assignedRole] : undefined,
         campusId: staffForm.campusId,
         groupId: staffForm.groupId,
       })
       setStaffForm({ userId: '', campusId: '', groupId: '' })
-      setOk('Staff assigned to campus.')
+      setOk('Faculty assigned to campus attendance.')
       await refresh()
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Assign failed.')
@@ -569,17 +562,22 @@ export default function AttendanceSettingsPanel() {
           {tab === 'staff' && (
             <div className="space-y-5">
               <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
-                <h2 className="text-lg font-semibold text-gray-900">Assign staff</h2>
+                <h2 className="text-lg font-semibold text-gray-900">Assign faculty</h2>
+                <p className="mt-1 text-sm text-gray-500">
+                  Only verified Pakians Faculty Registration members can be added to attendance.
+                </p>
                 <div className="mt-4 grid gap-3 md:grid-cols-3">
                   <select
                     className="rounded-xl border border-gray-300 px-3 py-2.5"
                     value={staffForm.userId}
                     onChange={(e) => setStaffForm({ ...staffForm, userId: e.target.value })}
                   >
-                    <option value="">Select staff / teacher</option>
-                    {assignableUsers.map((u) => (
-                      <option key={u.id} value={u.id}>
-                        {u.firstName} {u.lastName} ({u.roles?.join(', ')})
+                    <option value="">Select verified faculty</option>
+                    {assignableFaculty.map((f) => (
+                      <option key={f.userId} value={f.userId}>
+                        {f.name}
+                        {f.assignedRole ? ` (${f.assignedRole})` : ''}
+                        {f.username ? ` · @${f.username}` : ''}
                       </option>
                     ))}
                   </select>

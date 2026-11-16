@@ -142,6 +142,24 @@ export async function getAttendanceStaff(params?: {
   )
 }
 
+export interface AttendanceEligibleFaculty {
+  userId: string
+  name: string
+  username: string
+  email?: string
+  assignedRole?: string | null
+  staffCategory?: string | null
+  roleType?: string | null
+  roleName?: string | null
+  wing?: string | null
+  facultyRegistrationId: number
+}
+
+/** Verified Pakians Faculty members available for attendance assignment. */
+export async function getAttendanceEligibleFaculty() {
+  return unwrap(api.get<Envelope<AttendanceEligibleFaculty[]>>('/api/attendance/eligible-faculty', h()))
+}
+
 export async function assignAttendanceStaff(data: {
   userId: string
   userName: string
