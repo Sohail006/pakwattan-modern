@@ -21,7 +21,7 @@ export default function PermissionsManagementPage() {
   const [users, setUsers] = useState<User[]>([])
   const [loadingUsers, setLoadingUsers] = useState(false)
 
-  const roles = ['Admin', 'Staff', 'Teacher', 'Parent', 'Student']
+  const roles = ['Admin', 'Staff', 'ManagerialStaff', 'Teacher', 'Parent', 'Student']
 
   const checkAuth = useCallback(() => {
     setCheckingAuth(true)

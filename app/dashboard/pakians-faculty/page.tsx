@@ -21,7 +21,10 @@ export default function PakiansFacultyDashboardPage() {
       setTimeout(() => router.push('/login'), 2000)
       return
     }
-    if (!canPerform(PERMISSIONS.REGISTRATIONS_VIEW, ['Admin', 'Staff'])) {
+    if (
+      !canPerform(PERMISSIONS.FACULTY_VIEW, ['Admin', 'Staff']) &&
+      !canPerform(PERMISSIONS.REGISTRATIONS_VIEW, ['Admin', 'Staff'])
+    ) {
       setAuthError('You do not have permission to manage faculty registrations.')
       setCheckingAuth(false)
       setTimeout(() => router.push('/dashboard'), 3000)

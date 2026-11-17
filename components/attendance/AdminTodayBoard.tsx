@@ -21,9 +21,15 @@ import {
   postAttendanceAdminAction,
 } from '@/lib/api/attendance'
 import { formatTime, statusClass, statusLabel } from './statusStyles'
+import { karachiToday } from '@/lib/attendance/pakistanDate'
 
-export default function AdminTodayBoard() {
-  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
+type AdminTodayBoardProps = {
+  /** When true, hide page chrome (used inside AttendanceHub tabs). */
+  embedded?: boolean
+}
+
+export default function AdminTodayBoard({ embedded = false }: AdminTodayBoardProps) {
+  const [date, setDate] = useState(() => karachiToday())
   const [loading, setLoading] = useState(true)
   const [actingId, setActingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -98,38 +104,55 @@ export default function AdminTodayBoard() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">Staff Attendance</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Live campus board — verify GPS / other-device check-ins, mark leave, or mark absent.
-          </p>
+      {!embedded && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h1 className="font-josefin text-2xl font-bold text-gray-900 sm:text-3xl">
+              Staff Attendance
+            </h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Live campus board — verify GPS / other-device check-ins, mark leave, or mark absent.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/attendance?tab=settings"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm"
+            >
+              <Settings2 className="h-4 w-4" />
+              Settings
+            </Link>
+            <Link
+              href="/dashboard/attendance?tab=reports"
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm"
+            >
+              <BarChart3 className="h-4 w-4" />
+              Reports
+            </Link>
+            <button
+              type="button"
+              onClick={refresh}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary-700 px-3 py-2 text-sm font-semibold text-white"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </button>
+          </div>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link
-            href="/dashboard/attendance/settings"
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm"
-          >
-            <Settings2 className="h-4 w-4" />
-            Settings
-          </Link>
-          <Link
-            href="/dashboard/attendance/reports"
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-800 shadow-sm"
-          >
-            <BarChart3 className="h-4 w-4" />
-            Reports
-          </Link>
+      )}
+
+      {embedded && (
+        <div className="flex justify-end">
           <button
             type="button"
             onClick={refresh}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-emerald-700 px-3 py-2 text-sm font-semibold text-white"
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-primary-700 px-3 py-2 text-sm font-semibold text-white"
           >
             <RefreshCw className="h-4 w-4" />
-            Refresh
+            Refresh board
           </button>
         </div>
-      </div>
+      )}
 
       <div className="flex flex-col gap-3 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center">
         <label className="text-sm font-semibold text-gray-700">
@@ -153,25 +176,35 @@ export default function AdminTodayBoard() {
       </div>
 
       {summary && (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-          {[
-            { label: 'Staff', value: summary.total, tone: 'bg-slate-100 text-slate-800' },
-            { label: 'Present', value: summary.present, tone: 'bg-emerald-100 text-emerald-800' },
-            { label: 'Late', value: summary.late, tone: 'bg-amber-100 text-amber-900' },
-            { label: 'Absent', value: summary.absent, tone: 'bg-rose-100 text-rose-800' },
-            { label: 'Leave', value: summary.onLeave, tone: 'bg-sky-100 text-sky-800' },
-            { label: 'Pending', value: summary.pending, tone: 'bg-orange-100 text-orange-900' },
-          ].map((card) => (
-            <div
-              key={card.label}
-              className={`rounded-2xl border border-black/5 px-4 py-3 ${card.tone}`}
-            >
-              <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
-                {card.label}
-              </p>
-              <p className="mt-1 text-2xl font-bold">{card.value}</p>
+        <div className="space-y-3">
+          {summary.isWorkingDay === false && (
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+              Non-working day
+              {summary.offReason ? ` — ${summary.offReason}` : ''}. Staff without a record show as Off.
             </div>
-          ))}
+          )}
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+            {[
+              { label: 'Staff', value: summary.total, tone: 'bg-slate-100 text-slate-800' },
+              { label: 'Present', value: summary.present, tone: 'bg-emerald-100 text-emerald-800' },
+              { label: 'Late', value: summary.late, tone: 'bg-amber-100 text-amber-900' },
+              summary.isWorkingDay === false
+                ? { label: 'Off', value: summary.off ?? 0, tone: 'bg-slate-100 text-slate-600' }
+                : { label: 'Absent', value: summary.absent, tone: 'bg-rose-100 text-rose-800' },
+              { label: 'Leave', value: summary.onLeave, tone: 'bg-sky-100 text-sky-800' },
+              { label: 'Pending', value: summary.pending, tone: 'bg-orange-100 text-orange-900' },
+            ].map((card) => (
+              <div
+                key={card.label}
+                className={`rounded-2xl border border-black/5 px-4 py-3 ${card.tone}`}
+              >
+                <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
+                  {card.label}
+                </p>
+                <p className="mt-1 text-2xl font-bold">{card.value}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -187,11 +220,11 @@ export default function AdminTodayBoard() {
           <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-gray-700">
             <li>Add each campus with GPS coordinates and a radius (e.g. 100–150m).</li>
             <li>Confirm staff groups and grace time (Teaching / Clerical / Managerial).</li>
-            <li>Assign teachers and staff to a campus, then they can check in from My Attendance.</li>
+            <li>Assign teachers and staff to a campus — only then will My Attendance appear for them.</li>
           </ol>
           <Link
-            href="/dashboard/attendance/settings"
-            className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-emerald-700 px-5 text-sm font-bold text-white"
+            href="/dashboard/attendance?tab=settings"
+            className="mt-5 inline-flex min-h-[48px] items-center justify-center rounded-xl bg-primary-700 px-5 text-sm font-bold text-white"
           >
             Open attendance settings
           </Link>
@@ -200,7 +233,7 @@ export default function AdminTodayBoard() {
 
       {loading ? (
         <div className="rounded-2xl border bg-white p-10 text-center">
-          <Loader2 className="mx-auto h-8 w-8 animate-spin text-emerald-700" />
+          <Loader2 className="mx-auto h-8 w-8 animate-spin text-primary-700" />
         </div>
       ) : (
         <>
@@ -399,14 +432,16 @@ export default function AdminTodayBoard() {
                     >
                       Absent
                     </button>
-                    <button
-                      type="button"
-                      disabled={busy}
-                      onClick={() => act('Reject', row)}
-                      className="min-h-[44px] rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 disabled:opacity-50"
-                    >
-                      Reject
-                    </button>
+                    {row.status === 'PendingVerification' && (
+                      <button
+                        type="button"
+                        disabled={busy}
+                        onClick={() => act('Reject', row)}
+                        className="min-h-[44px] rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 disabled:opacity-50"
+                      >
+                        Reject
+                      </button>
+                    )}
                     {row.record?.id && (
                       <button
                         type="button"

@@ -64,7 +64,11 @@ const GROUP_KINDS: StaffGroupKind[] = [
   'Other',
 ]
 
-export default function AttendanceSettingsPanel() {
+type AttendanceSettingsPanelProps = {
+  embedded?: boolean
+}
+
+export default function AttendanceSettingsPanel({ embedded = false }: AttendanceSettingsPanelProps) {
   const [tab, setTab] = useState<Tab>('campuses')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -189,6 +193,7 @@ export default function AttendanceSettingsPanel() {
     try {
       const list = await getCampuses(true)
       let updated = 0
+      let skippedNoGeo = 0
       for (const c of list) {
         if (!c.name) continue
         // Sync existing school campus into attendance geofence fields (same SQL Campus row)
@@ -196,14 +201,19 @@ export default function AttendanceSettingsPanel() {
           typeof c.latitude === 'number' &&
           typeof c.longitude === 'number' &&
           Number.isFinite(c.latitude) &&
-          Number.isFinite(c.longitude)
+          Number.isFinite(c.longitude) &&
+          !(c.latitude === 0 && c.longitude === 0)
+        if (!hasGeo) {
+          skippedNoGeo += 1
+          continue
+        }
         await saveAttendanceCampus({
           id: String(c.id),
           name: c.name,
           address: c.address,
           externalCampusId: c.id,
-          latitude: hasGeo ? (c.latitude as number) : 34.05258,
-          longitude: hasGeo ? (c.longitude as number) : 73.15232,
+          latitude: c.latitude as number,
+          longitude: c.longitude as number,
           radiusMeters: c.radiusMeters || 120,
           isActive: c.isActive !== false,
         })
@@ -211,8 +221,14 @@ export default function AttendanceSettingsPanel() {
       }
       setOk(
         updated
-          ? `Synced ${updated} campus(es) from school database. Stand at each campus and use “Use my current location”, then Save.`
-          : 'No campuses found in school database.'
+          ? `Synced ${updated} campus(es) with GPS from school database.${
+              skippedNoGeo
+                ? ` Skipped ${skippedNoGeo} without coordinates — set location with “Use my current location”.`
+                : ''
+            }`
+          : skippedNoGeo
+            ? `Found ${skippedNoGeo} campus(es) but none have GPS yet. Open each campus and use “Use my current location”, then Save.`
+            : 'No campuses found in school database.'
       )
       await refresh()
     } catch (e) {
@@ -372,21 +388,23 @@ export default function AttendanceSettingsPanel() {
 
   return (
     <div className="space-y-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <Link
-            href="/dashboard/attendance"
-            className="mb-2 inline-flex items-center gap-1 text-sm font-semibold text-emerald-800"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to board
-          </Link>
-          <h1 className="text-2xl font-bold text-gray-900">Attendance settings</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Campuses, staff groups, roster, and academic calendar (off days, holidays, vacations).
-          </p>
+      {!embedded && (
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <Link
+              href="/dashboard/attendance?tab=today"
+              className="mb-2 inline-flex items-center gap-1 text-sm font-semibold text-primary-800"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to attendance hub
+            </Link>
+            <h1 className="font-josefin text-2xl font-bold text-gray-900">Attendance settings</h1>
+            <p className="mt-1 text-sm text-gray-600">
+              Campuses, staff groups, roster, and academic calendar (off days, holidays, vacations).
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
         {tabs.map((t) => (

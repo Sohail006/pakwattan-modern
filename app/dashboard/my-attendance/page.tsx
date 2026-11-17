@@ -1,41 +1,45 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import CheckInPanel from '@/components/attendance/CheckInPanel'
-import { getCurrentUser } from '@/lib/api/auth'
+import { canPerform, getUserRoles } from '@/lib/api/auth'
+import { PERMISSIONS } from '@/lib/types/permissions'
+import { pickDashboardPath, userHasAnyNormalizedRole } from '@/lib/roles'
+import { useAttendanceEnrollment } from '@/lib/hooks/useAttendanceEnrollment'
 
+/** Legacy route — enrolled users go to My Attendance; managers/reports to hub. */
 export default function MyAttendancePage() {
   const router = useRouter()
-  const [ready, setReady] = useState(false)
+  const { loading, enrolled } = useAttendanceEnrollment()
+  const roles = getUserRoles()
+  const canManage =
+    canPerform(PERMISSIONS.ATTENDANCE_MANAGE, ['Admin', 'Staff', 'ManagerialStaff']) ||
+    canPerform(PERMISSIONS.ATTENDANCE_VERIFY, ['Admin', 'Staff', 'ManagerialStaff']) ||
+    userHasAnyNormalizedRole(roles, 'admin', 'staff', 'managerialstaff')
+  const canReports =
+    canManage ||
+    canPerform(PERMISSIONS.ATTENDANCE_REPORTS, ['Admin', 'Staff', 'ManagerialStaff'])
 
   useEffect(() => {
-    const user = getCurrentUser()
-    if (!user) {
-      router.replace('/login')
+    if (loading) return
+    if (enrolled) {
+      router.replace('/dashboard/attendance?tab=me')
       return
     }
-    setReady(true)
-  }, [router])
-
-  if (!ready) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
-        Loading…
-      </div>
-    )
-  }
+    if (canManage) {
+      router.replace('/dashboard/attendance?tab=today')
+      return
+    }
+    if (canReports) {
+      router.replace('/dashboard/attendance?tab=reports')
+      return
+    }
+    router.replace(pickDashboardPath(roles))
+  }, [loading, enrolled, canManage, canReports, router, roles])
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">My Attendance</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Check in and check out only inside the campus GPS radius. Times use 12-hour Pakistan
-          format; late check-in and early check-out are shown in minutes, then hours.
-        </p>
-      </div>
-      <CheckInPanel />
+    <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
+      Opening attendance…
     </div>
   )
 }

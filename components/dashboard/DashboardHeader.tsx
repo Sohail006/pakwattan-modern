@@ -14,6 +14,8 @@ import {
   Shield,
 } from 'lucide-react'
 import { logout } from '@/lib/api/auth'
+import { pickDashboardPath, userHasAnyNormalizedRole } from '@/lib/roles'
+import { useAttendanceEnrollment } from '@/lib/hooks/useAttendanceEnrollment'
 
 interface DashboardHeaderProps {
   user: Record<string, unknown> | null
@@ -27,8 +29,8 @@ export default function DashboardHeader({
   mobileNavOpen = false,
 }: DashboardHeaderProps) {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
-  const [notifications] = useState(0)
   const menuRef = useRef<HTMLDivElement>(null)
+  const { loading: enrollmentLoading, enrolled } = useAttendanceEnrollment()
 
   // Get user details
   const firstName = (user?.firstName as string) || 'User'
@@ -38,6 +40,7 @@ export default function DashboardHeader({
   const profileImageUrl = user?.profileImageUrl as string | undefined
   const fullName = `${firstName} ${lastName}`.trim()
   const userInitials = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase()
+  const homePath = pickDashboardPath(roles)
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -60,13 +63,26 @@ export default function DashboardHeader({
     logout()
   }
 
-  const primaryRole = roles[0] || 'User'
+  const primaryRole = userHasAnyNormalizedRole(roles, 'admin')
+    ? 'Admin'
+    : userHasAnyNormalizedRole(roles, 'staff', 'managerialstaff')
+      ? userHasAnyNormalizedRole(roles, 'managerialstaff') && !userHasAnyNormalizedRole(roles, 'staff')
+        ? 'Managerial Staff'
+        : 'Staff'
+      : userHasAnyNormalizedRole(roles, 'teacher')
+        ? 'Teacher'
+        : userHasAnyNormalizedRole(roles, 'student')
+          ? 'Student'
+          : userHasAnyNormalizedRole(roles, 'parent')
+            ? 'Parent'
+            : roles[0] || 'User'
   const roleColors: Record<string, string> = {
-    Admin: 'bg-red-100 text-red-700',
-    Staff: 'bg-orange-100 text-orange-700',
-    Teacher: 'bg-blue-100 text-blue-700',
-    Student: 'bg-green-100 text-green-700',
-    Parent: 'bg-purple-100 text-purple-700',
+    Admin: 'bg-primary-100 text-primary-800',
+    Staff: 'bg-amber-100 text-amber-900',
+    'Managerial Staff': 'bg-amber-100 text-amber-900',
+    Teacher: 'bg-sky-100 text-sky-900',
+    Student: 'bg-emerald-100 text-emerald-800',
+    Parent: 'bg-slate-100 text-slate-800',
   }
   const roleColor = roleColors[primaryRole] || 'bg-gray-100 text-gray-700'
 
@@ -87,34 +103,24 @@ export default function DashboardHeader({
           </button>
 
           <div className="hidden sm:block min-w-0">
-            <h1 className="text-base sm:text-lg font-semibold text-gray-900 truncate">Dashboard</h1>
+            <Link
+              href={homePath}
+              className="font-josefin text-base font-semibold text-gray-900 truncate hover:text-primary-700 sm:text-lg"
+            >
+              Pak Wattan workspace
+            </Link>
           </div>
         </div>
 
-        {/* Right Side - Search, Notifications, User Menu */}
+        {/* Right Side - Notifications, User Menu */}
         <div className="flex items-center space-x-2 sm:space-x-3">
-          {/* Search (Optional - can be added later) */}
-          {/* <div className="hidden md:flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2">
-            <Search className="w-4 h-4 text-gray-500" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-transparent border-none outline-none text-sm w-32 focus:w-48 transition-all"
-            />
-          </div> */}
-
-          {/* Notifications */}
-          <button
-            className="relative p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 touch-target min-h-[44px] min-w-[44px] flex items-center justify-center"
+          <Link
+            href="/dashboard/notifications"
+            className="relative flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg p-2 transition-all hover:bg-gray-100 active:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
             aria-label="Notifications"
           >
-            <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
-            {notifications > 0 && (
-              <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
-                {notifications > 9 ? '9+' : notifications}
-              </span>
-            )}
-          </button>
+            <Bell className="h-4 w-4 text-gray-700 sm:h-5 sm:w-5" />
+          </Link>
 
           {/* User Menu */}
           <div className="relative" ref={menuRef}>
@@ -197,23 +203,24 @@ export default function DashboardHeader({
                   </div>
                 </div>
 
-                {/* Menu Items */}
                 <div className="py-2">
+                  {!enrollmentLoading && enrolled && (
+                    <Link
+                      href="/dashboard/attendance?tab=me"
+                      onClick={() => setIsUserMenuOpen(false)}
+                      className="flex min-h-[44px] items-center space-x-2 px-3 py-2 text-xs text-gray-700 transition-colors hover:bg-gray-50 sm:space-x-3 sm:px-4 sm:text-sm"
+                    >
+                      <User className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">My Attendance</span>
+                    </Link>
+                  )}
                   <Link
-                    href="/dashboard/profile"
+                    href="/dashboard/notifications"
                     onClick={() => setIsUserMenuOpen(false)}
-                    className="flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px]"
+                    className="flex min-h-[44px] items-center space-x-2 px-3 py-2 text-xs text-gray-700 transition-colors hover:bg-gray-50 sm:space-x-3 sm:px-4 sm:text-sm"
                   >
-                    <User className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">Profile Settings</span>
-                  </Link>
-                  <Link
-                    href="/dashboard/settings"
-                    onClick={() => setIsUserMenuOpen(false)}
-                    className="flex items-center space-x-2 sm:space-x-3 px-3 sm:px-4 py-2 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-target min-h-[44px]"
-                  >
-                    <Settings className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">Account Settings</span>
+                    <Settings className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">Notifications</span>
                   </Link>
                 </div>
 

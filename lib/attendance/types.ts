@@ -11,6 +11,7 @@ export type AttendanceStatus =
   | 'OnLeave'
   | 'PendingVerification'
   | 'Rejected'
+  | 'Off'
 
 export interface AttendanceCampus {
   id: string
@@ -67,7 +68,12 @@ export interface AttendanceRecord {
   userName: string
   assignmentId: string
   campusId: string
+  campusName?: string | null
   groupId: string
+  groupName?: string | null
+  shiftStart?: string | null
+  shiftEnd?: string | null
+  graceMinutes?: number | null
   /** YYYY-MM-DD in Asia/Karachi */
   date: string
   checkInAt?: string

@@ -1,40 +1,19 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import AttendanceSettingsPanel from '@/components/attendance/AttendanceSettingsPanel'
-import { canPerform, getCurrentUser, getUserRoles } from '@/lib/api/auth'
-import { PERMISSIONS } from '@/lib/types/permissions'
-import { userHasAnyNormalizedRole } from '@/lib/roles'
 
+/** Legacy route — redirects into the unified Attendance hub settings tab. */
 export default function AttendanceSettingsPage() {
   const router = useRouter()
-  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    const user = getCurrentUser()
-    if (!user) {
-      router.replace('/login')
-      return
-    }
-    const roles = getUserRoles()
-    const ok =
-      canPerform(PERMISSIONS.ATTENDANCE_MANAGE, ['Admin', 'Staff', 'ManagerialStaff']) ||
-      userHasAnyNormalizedRole(roles, 'admin', 'staff', 'managerialstaff')
-    if (!ok) {
-      router.replace('/dashboard/my-attendance')
-      return
-    }
-    setReady(true)
+    router.replace('/dashboard/attendance?tab=settings')
   }, [router])
 
-  if (!ready) {
-    return (
-      <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
-        Loading settings…
-      </div>
-    )
-  }
-
-  return <AttendanceSettingsPanel />
+  return (
+    <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
+      Opening attendance settings…
+    </div>
+  )
 }

@@ -79,7 +79,7 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-primary-50/30 to-amber-50/20">
       {/* Sidebar */}
       <Sidebar
         isOpen={sidebarOpen}
@@ -104,7 +104,7 @@ export default function DashboardLayout({
         />
         
         {/* Page Content */}
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>

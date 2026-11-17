@@ -88,12 +88,50 @@ export const PERMISSIONS = {
   NEWS_UPDATE: 'news.update',
   NEWS_DELETE: 'news.delete',
   NEWS_PUBLISH: 'news.publish',
+
+  // Video Gallery
+  VIDEO_GALLERY_VIEW: 'video_gallery.view',
+  VIDEO_GALLERY_CREATE: 'video_gallery.create',
+  VIDEO_GALLERY_UPDATE: 'video_gallery.update',
+  VIDEO_GALLERY_DELETE: 'video_gallery.delete',
+
+  // Photo Gallery
+  PHOTO_GALLERY_VIEW: 'photo_gallery.view',
+  PHOTO_GALLERY_MANAGE: 'photo_gallery.manage',
   
   // Events Management
   EVENTS_VIEW: 'events.view',
   EVENTS_CREATE: 'events.create',
   EVENTS_UPDATE: 'events.update',
   EVENTS_DELETE: 'events.delete',
+
+  // Notifications
+  NOTIFICATIONS_VIEW: 'notifications.view',
+  NOTIFICATIONS_MANAGE: 'notifications.manage',
+
+  // Courses & Grades
+  COURSES_VIEW: 'courses.view',
+  COURSES_MANAGE: 'courses.manage',
+
+  // Sections
+  SECTIONS_VIEW: 'sections.view',
+  SECTIONS_MANAGE: 'sections.manage',
+
+  // Fees & Payments
+  PAYMENTS_VIEW: 'payments.view',
+  PAYMENTS_MANAGE: 'payments.manage',
+
+  // Pakians Faculty
+  FACULTY_VIEW: 'faculty.view',
+  FACULTY_MANAGE: 'faculty.manage',
+
+  // Talent Hunt
+  TALENT_HUNT_VIEW: 'talent_hunt.view',
+  TALENT_HUNT_MANAGE: 'talent_hunt.manage',
+
+  // Campuses
+  CAMPUSES_VIEW: 'campuses.view',
+  CAMPUSES_MANAGE: 'campuses.manage',
   
   // Admissions Management
   ADMISSIONS_VIEW: 'admissions.view',
@@ -163,8 +201,18 @@ export const PERMISSION_CATEGORIES = {
   USERS: 'Users',
   STUDENTS: 'Students',
   GUARDIANS: 'Guardians',
+  TEACHERS: 'Teachers',
   NEWS: 'News',
+  VIDEO_GALLERY: 'Video Gallery',
+  PHOTO_GALLERY: 'Photo Gallery',
   EVENTS: 'Events',
+  NOTIFICATIONS: 'Notifications',
+  COURSES: 'Courses',
+  SECTIONS: 'Sections',
+  PAYMENTS: 'Payments',
+  FACULTY: 'Pakians Faculty',
+  TALENT_HUNT: 'Talent Hunt',
+  CAMPUSES: 'Campuses',
   ADMISSIONS: 'Admissions',
   REGISTRATIONS: 'Registrations',
   CONTACTS: 'Contacts',

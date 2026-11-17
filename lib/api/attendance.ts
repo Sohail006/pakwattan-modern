@@ -348,10 +348,13 @@ export async function getAttendanceBoard(date?: string) {
       Envelope<{
         summary: {
           date: string
+          isWorkingDay?: boolean
+          offReason?: string | null
           total: number
           present: number
           late: number
           absent: number
+          off?: number
           onLeave: number
           pending: number
         }
@@ -361,6 +364,8 @@ export async function getAttendanceBoard(date?: string) {
           group?: StaffGroup
           record: AttendanceRecord | null
           status: string
+          isWorkingDay?: boolean
+          offReason?: string | null
         }>
       }>
     >(`/api/attendance/board${q}`, h())
@@ -407,11 +412,26 @@ export async function getAttendanceReports(params: {
         from: string
         to: string
         totalRecords: number
+        matchedCount?: number
+        returnedCount?: number
+        truncated?: boolean
+        presentCount?: number
+        lateCount?: number
+        absentCount?: number
+        onLeaveCount?: number
+        pendingCount?: number
+        rejectedCount?: number
+        otherDeviceCount?: number
+        lateEventCount?: number
+        earlyEventCount?: number
+        expectedWorkingDaysInRange?: number
+        staffInScorecard?: number
+        averageAttendancePercent?: number | null
         records: AttendanceRecord[]
         lateMinutesTotal?: number
         earlyLeaveMinutesTotal?: number
-        lateTotalLabel?: string
-        earlyLeaveTotalLabel?: string
+        lateTotalLabel?: string | null
+        earlyLeaveTotalLabel?: string | null
         byUser: Array<{
           userId: string
           userName: string
@@ -420,16 +440,29 @@ export async function getAttendanceReports(params: {
           absent: number
           onLeave: number
           pending: number
+          rejected?: number
           days: number
+          lateDays?: number
+          earlyDays?: number
+          otherDeviceDays?: number
+          onTimeCheckIns?: number
+          expectedWorkingDays?: number
+          attendedDays?: number
+          noShowDays?: number
+          attendancePercent?: number | null
           lateMinutesTotal?: number
           earlyLeaveMinutesTotal?: number
-          lateTotalLabel?: string
-          earlyLeaveTotalLabel?: string
+          lateTotalLabel?: string | null
+          earlyLeaveTotalLabel?: string | null
+          avgLateMinutesWhenLate?: number
+          onTimeRate?: number | null
         }>
       }>
     >(`/api/attendance/reports?${q.toString()}`, h())
   )
 }
+
+export type AttendanceReportPayload = Awaited<ReturnType<typeof getAttendanceReports>>
 
 /** Browser geolocation with clear user-facing errors */
 export function requestDeviceLocation(

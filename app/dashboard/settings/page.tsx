@@ -1,90 +1,110 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { isAuthenticated, canPerform } from '@/lib/api/auth'
+import Link from 'next/link'
+import {
+  AlertCircle,
+  ClipboardCheck,
+  Loader2,
+  Shield,
+  Sliders,
+} from 'lucide-react'
+import { isAuthenticated, getUserRoles, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
-import { Settings, Loader2, AlertCircle } from 'lucide-react'
+import { userHasAnyNormalizedRole } from '@/lib/roles'
+import DashboardHero from '@/components/dashboard/DashboardHero'
 
 export default function SettingsPage() {
   const router = useRouter()
-  const [checkingAuth, setCheckingAuth] = useState(true)
-  const [authError, setAuthError] = useState<string | null>(null)
+  const [checking, setChecking] = useState(true)
+  const [denied, setDenied] = useState(false)
 
   useEffect(() => {
-    const checkAuth = () => {
-      try {
-        if (!isAuthenticated()) {
-          router.push('/login')
-          return
-        }
-
-        const hasAccess = canPerform(PERMISSIONS.SETTINGS_VIEW, ['Admin'])
-
-        if (!hasAccess) {
-          setAuthError('You do not have permission to access this page. Only Administrators can access settings.')
-          return
-        }
-      } catch {
-        setAuthError('Unable to verify authentication. Please try again.')
-      } finally {
-        setCheckingAuth(false)
-      }
+    if (!isAuthenticated()) {
+      router.push('/login')
+      return
     }
-
-    checkAuth()
+    const roles = getUserRoles()
+    const ok =
+      userHasAnyNormalizedRole(roles, 'admin', 'staff', 'managerialstaff') ||
+      canPerform(PERMISSIONS.SETTINGS_VIEW, ['Admin'])
+    if (!ok) {
+      setDenied(true)
+      setChecking(false)
+      return
+    }
+    setChecking(false)
   }, [router])
 
-  if (checkingAuth) {
+  if (checking) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
       </div>
     )
   }
 
-  if (authError) {
+  if (denied) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full">
-          <div className="flex items-center space-x-3 mb-4">
-            <AlertCircle className="w-8 h-8 text-red-500" />
-            <h2 className="text-xl font-bold text-gray-900">Access Denied</h2>
-          </div>
-          <p className="text-gray-600 mb-6">{authError}</p>
-          <button
-            onClick={() => router.push('/dashboard/admin')}
-            className="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-          >
-            Go to Dashboard
-          </button>
+      <div className="flex min-h-[40vh] items-center justify-center p-4">
+        <div className="max-w-md rounded-2xl border border-red-200 bg-white p-6 text-center shadow-sm">
+          <AlertCircle className="mx-auto mb-3 h-10 w-10 text-red-500" />
+          <p className="text-gray-700">You do not have access to settings.</p>
         </div>
       </div>
     )
   }
+
+  const links = [
+    {
+      href: '/dashboard/attendance?tab=settings',
+      title: 'Attendance settings',
+      description: 'Campuses, GPS radius, staff groups, roster, and academic calendar.',
+      icon: <ClipboardCheck className="h-5 w-5" />,
+    },
+    {
+      href: '/dashboard/admission-settings',
+      title: 'Admission settings',
+      description: 'Control admission windows and related school admission options.',
+      icon: <Sliders className="h-5 w-5" />,
+    },
+    {
+      href: '/dashboard/admin/permissions',
+      title: 'Permissions',
+      description: 'Assign module access for roles and individual users.',
+      icon: <Shield className="h-5 w-5" />,
+      adminOnly: true,
+    },
+  ]
+
+  const roles = getUserRoles()
+  const isAdmin = userHasAnyNormalizedRole(roles, 'admin')
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <Settings className="w-8 h-8 text-primary-600" />
-            Settings
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Manage system settings and configuration
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <DashboardHero
+        title="Settings"
+        subtitle="Jump straight into the settings you already use — no empty “coming soon” page."
+      />
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-        <Settings className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-        <h2 className="text-xl font-semibold text-gray-900 mb-2">Settings Coming Soon</h2>
-        <p className="text-gray-600">
-          The settings feature is under development. You will be able to configure system settings here.
-        </p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {links
+          .filter((l) => !l.adminOnly || isAdmin)
+          .map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:border-primary-300 hover:shadow-md"
+            >
+              <div className="mb-3 inline-flex rounded-xl bg-primary-50 p-2.5 text-primary-700">
+                {link.icon}
+              </div>
+              <h2 className="font-josefin text-lg font-bold text-gray-900">{link.title}</h2>
+              <p className="mt-1 text-sm text-gray-600">{link.description}</p>
+            </Link>
+          ))}
       </div>
     </div>
   )
 }
-

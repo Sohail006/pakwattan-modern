@@ -1,16 +1,13 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import AdminTodayBoard from '@/components/attendance/AdminTodayBoard'
-import { canPerform, getCurrentUser, getUserRoles } from '@/lib/api/auth'
-import { PERMISSIONS } from '@/lib/types/permissions'
-import { userHasAnyNormalizedRole } from '@/lib/roles'
+import AttendanceHub from '@/components/attendance/AttendanceHub'
+import { getCurrentUser } from '@/lib/api/auth'
 
-export default function AttendanceAdminPage() {
+function AttendancePageInner() {
   const router = useRouter()
   const [ready, setReady] = useState(false)
-  const [allowed, setAllowed] = useState(false)
 
   useEffect(() => {
     const user = getCurrentUser()
@@ -18,24 +15,30 @@ export default function AttendanceAdminPage() {
       router.replace('/login')
       return
     }
-    const roles = getUserRoles()
-    const ok =
-      canPerform(PERMISSIONS.ATTENDANCE_MANAGE, ['Admin', 'Staff', 'ManagerialStaff']) ||
-      userHasAnyNormalizedRole(roles, 'admin', 'staff', 'managerialstaff')
-    setAllowed(ok)
     setReady(true)
-    if (!ok) router.replace('/dashboard/my-attendance')
   }, [router])
 
   if (!ready) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
-        Checking access…
+        Loading attendance…
       </div>
     )
   }
 
-  if (!allowed) return null
+  return <AttendanceHub />
+}
 
-  return <AdminTodayBoard />
+export default function AttendancePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[40vh] items-center justify-center text-sm text-gray-600">
+          Loading attendance…
+        </div>
+      }
+    >
+      <AttendancePageInner />
+    </Suspense>
+  )
 }

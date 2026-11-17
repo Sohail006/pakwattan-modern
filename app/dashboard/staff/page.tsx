@@ -1,21 +1,18 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Users, 
-  ClipboardList, 
-  FileText, 
-  TrendingUp, 
-  ArrowRight, 
-  RefreshCw, 
+import {
+  Users,
+  ClipboardList,
+  FileText,
   AlertCircle,
   Newspaper,
   Mail,
-  CheckCircle,
+  Briefcase,
+  ClipboardCheck,
   Loader2,
-  LogIn
 } from 'lucide-react'
 import { getStudentsPaginated } from '@/lib/api/students'
 import { getJobApplicationsCount } from '@/lib/api/jobs'
@@ -24,119 +21,57 @@ import { getNews } from '@/lib/api/news'
 import { getContactsCount } from '@/lib/api/contact'
 import { isAuthenticated, getUserRoles, canPerform } from '@/lib/api/auth'
 import { PERMISSIONS } from '@/lib/types/permissions'
-import CheckInPanel from '@/components/attendance/CheckInPanel'
-import AttendanceManageDashboard from '@/components/attendance/AttendanceManageDashboard'
-
-type Kpi = { 
-  label: string
-  value: number
-  href?: string
-  icon: React.ReactNode
-  change?: string
-  changeType?: 'increase' | 'decrease'
-  loading?: boolean
-  error?: boolean
-}
+import { userHasAnyNormalizedRole } from '@/lib/roles'
+import DashboardHero from '@/components/dashboard/DashboardHero'
+import DashboardKpiGrid, { type DashboardKpi } from '@/components/dashboard/DashboardKpiGrid'
+import AttendanceHomeStrip from '@/components/attendance/AttendanceHomeStrip'
+import { useAttendanceEnrollment } from '@/lib/hooks/useAttendanceEnrollment'
 
 export default function StaffDashboardPage() {
   const router = useRouter()
+  const { loading: enrollmentLoading, enrolled } = useAttendanceEnrollment()
   const [checkingAuth, setCheckingAuth] = useState(true)
   const [authError, setAuthError] = useState<string | null>(null)
-  const [kpis, setKpis] = useState<Kpi[]>([
-    { 
-      label: 'Total Students', 
-      value: 0, 
-      href: '/dashboard/students',
-      icon: <Users className="w-5 h-5" />,
-      loading: true,
-    },
-    { 
-      label: 'New Registrations', 
-      value: 0,
-      href: '/dashboard/registrations',
-      icon: <ClipboardList className="w-5 h-5" />,
-      loading: true,
-    },
-    { 
-      label: 'News & Events', 
-      value: 0,
-      href: '/dashboard/news',
-      icon: <Newspaper className="w-5 h-5" />,
-      loading: true,
-    },
-    { 
-      label: 'Contact Messages', 
-      value: 0,
-      href: '/dashboard/contact-messages',
-      icon: <Mail className="w-5 h-5" />,
-      loading: true,
-    },
-    { 
-      label: 'Job Applications', 
-      value: 0,
-      href: '/dashboard/jobs',
-      icon: <FileText className="w-5 h-5" />,
-      loading: true,
-    },
+  const [kpis, setKpis] = useState<DashboardKpi[]>([
+    { label: 'Students', value: 0, href: '/dashboard/students', icon: <Users className="h-5 w-5" />, loading: true },
+    { label: 'Registrations', value: 0, href: '/dashboard/registrations', icon: <ClipboardList className="h-5 w-5" />, loading: true },
+    { label: 'News & Events', value: 0, href: '/dashboard/news', icon: <Newspaper className="h-5 w-5" />, loading: true },
+    { label: 'Messages', value: 0, href: '/dashboard/contact-messages', icon: <Mail className="h-5 w-5" />, loading: true },
+    { label: 'Jobs', value: 0, href: '/dashboard/jobs', icon: <Briefcase className="h-5 w-5" />, loading: true },
   ])
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
-    const checkAuth = () => {
-      setCheckingAuth(true)
-
-      // Check authentication
-      if (!isAuthenticated()) {
-        setAuthError('You must be logged in to access this page.')
-        setCheckingAuth(false)
-        setTimeout(() => {
-          router.push('/login')
-        }, 2000)
-        return
-      }
-
-      // Check authorization (Permission-based with role fallback)
-      // Staff dashboard access - check for any staff-related permission or role
-      const userRoles = getUserRoles()
-      const isStaff = canPerform(PERMISSIONS.REGISTRATIONS_VIEW, ['Admin', 'Staff']) ||
-                      canPerform(PERMISSIONS.ADMISSIONS_VIEW, ['Admin', 'Staff']) ||
-                      userRoles.includes('Staff') || 
-                      userRoles.includes('Admin')
-
-      if (!isStaff) {
-        setAuthError('You do not have permission to access this page. Only Staff members can access the staff dashboard.')
-        setCheckingAuth(false)
-        setTimeout(() => {
-          router.push('/dashboard')
-        }, 3000)
-        return
-      }
-
-      // All checks passed
+    if (!isAuthenticated()) {
+      setAuthError('You must be logged in to access this page.')
       setCheckingAuth(false)
-      setAuthError(null)
+      setTimeout(() => router.push('/login'), 2000)
+      return
     }
 
-    checkAuth()
+    const roles = getUserRoles()
+    const allowed =
+      canPerform(PERMISSIONS.REGISTRATIONS_VIEW, ['Admin', 'Staff']) ||
+      canPerform(PERMISSIONS.ADMISSIONS_VIEW, ['Admin', 'Staff']) ||
+      userHasAnyNormalizedRole(roles, 'admin', 'staff', 'managerialstaff')
+
+    if (!allowed) {
+      setAuthError('You do not have permission to access the staff workspace.')
+      setCheckingAuth(false)
+      setTimeout(() => router.push('/dashboard'), 3000)
+      return
+    }
+
+    setCheckingAuth(false)
+    setAuthError(null)
   }, [router])
 
   const loadKpis = useCallback(async (isRefresh = false) => {
-    if (isRefresh) {
-      setRefreshing(true)
-    } else {
-      setLoading(true)
-    }
+    if (isRefresh) setRefreshing(true)
     setError(null)
-
     try {
-      // Update all KPIs to loading state
-      setKpis(prev => prev.map(kpi => ({ ...kpi, loading: true, error: false })))
-
-      // Fetch all data in parallel using API client functions (with authentication)
-      // Use paginated endpoints to get total counts efficiently
-      const results = await Promise.allSettled([
+      const [studentsRes, regsCount, newsRes, contactsCount, jobsCount] = await Promise.all([
         getStudentsPaginated({ page: 1, pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
         getRegistrationsCount().catch(() => 0),
         getNews({ pageSize: 1 }).catch(() => ({ data: [], totalCount: 0 })),
@@ -144,296 +79,144 @@ export default function StaffDashboardPage() {
         getJobApplicationsCount().catch(() => 0),
       ])
 
-      const [studentsResult, regsResult, newsResult, contactsResult, jobsResult] = results
-
-      const studentsData = studentsResult.status === 'fulfilled' ? studentsResult.value : { data: [], totalCount: 0 }
-      const studentsCount = studentsData?.totalCount || 0
-      const regsCount = regsResult.status === 'fulfilled' ? Number(regsResult.value) || 0 : 0
-      const newsData = newsResult.status === 'fulfilled' ? newsResult.value : { data: [], totalCount: 0 }
-      const newsCount = newsData?.totalCount || 0
-      const contactsCount = contactsResult.status === 'fulfilled' ? Number(contactsResult.value) || 0 : 0
-      const jobsCount = jobsResult.status === 'fulfilled' ? Number(jobsResult.value) || 0 : 0
-
-      const studentsError = studentsResult.status === 'rejected'
-      const regsError = regsResult.status === 'rejected'
-      const newsError = newsResult.status === 'rejected'
-      const contactsError = contactsResult.status === 'rejected'
-      const jobsError = jobsResult.status === 'rejected'
-
       setKpis([
-        { 
-          label: 'Total Students',
-          value: studentsCount,
+        {
+          label: 'Students',
+          value: studentsRes.totalCount ?? 0,
           href: '/dashboard/students',
-          icon: <Users className="w-5 h-5" />,
-          loading: false,
-          error: studentsError,
+          icon: <Users className="h-5 w-5" />,
+          hint: 'Student records',
         },
-        { 
-          label: 'New Registrations',
+        {
+          label: 'Registrations',
           value: regsCount,
           href: '/dashboard/registrations',
-          icon: <ClipboardList className="w-5 h-5" />,
-          loading: false,
-          error: regsError,
+          icon: <ClipboardList className="h-5 w-5" />,
+          hint: 'New applications',
         },
-        { 
+        {
           label: 'News & Events',
-          value: newsCount,
+          value: newsRes.totalCount ?? 0,
           href: '/dashboard/news',
-          icon: <Newspaper className="w-5 h-5" />,
-          loading: false,
-          error: newsError,
+          icon: <Newspaper className="h-5 w-5" />,
+          hint: 'Published content',
         },
-        { 
-          label: 'Contact Messages',
+        {
+          label: 'Messages',
           value: contactsCount,
           href: '/dashboard/contact-messages',
-          icon: <Mail className="w-5 h-5" />,
-          loading: false,
-          error: contactsError,
+          icon: <Mail className="h-5 w-5" />,
+          hint: 'Contact inbox',
         },
-        { 
-          label: 'Job Applications',
+        {
+          label: 'Jobs',
           value: jobsCount,
           href: '/dashboard/jobs',
-          icon: <FileText className="w-5 h-5" />,
-          loading: false,
-          error: jobsError,
+          icon: <FileText className="h-5 w-5" />,
+          hint: 'Job applications',
         },
       ])
-    } catch (error) {
-      console.error('Failed to load KPIs:', error)
+    } catch {
       setError('Failed to load dashboard data. Please try again.')
-      setKpis(prev => prev.map(kpi => ({ ...kpi, loading: false, error: true })))
+      setKpis((prev) => prev.map((k) => ({ ...k, loading: false, error: true })))
     } finally {
-      setLoading(false)
       setRefreshing(false)
     }
   }, [])
 
   useEffect(() => {
-    if (!checkingAuth && !authError) {
-      loadKpis()
-    }
+    if (!checkingAuth && !authError) loadKpis()
   }, [checkingAuth, authError, loadKpis])
 
-  // Show loading state while checking authentication
   if (checkingAuth) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary-600 mx-auto mb-4" />
-          <p className="text-gray-600">Checking authentication...</p>
+      <div className="flex min-h-[40vh] items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary-600" />
+      </div>
+    )
+  }
+
+  if (authError) {
+    return (
+      <div className="flex min-h-[40vh] items-center justify-center p-4">
+        <div className="max-w-md rounded-2xl border border-red-200 bg-white p-6 text-center shadow-sm">
+          <AlertCircle className="mx-auto mb-3 h-10 w-10 text-red-500" />
+          <p className="text-gray-700">{authError}</p>
         </div>
       </div>
     )
   }
 
-  // Show error message if authentication/authorization failed
-  if (authError) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-6 text-center">
-          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600 mb-4">{authError}</p>
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <LogIn className="w-4 h-4" />
-            Go to Login
-          </Link>
-        </div>
-      </div>
-    )
-  }
+  const needsAttention = kpis.filter(
+    (k) =>
+      !k.loading &&
+      !k.error &&
+      typeof k.value === 'number' &&
+      k.value > 0 &&
+      (k.label === 'Registrations' || k.label === 'Messages' || k.label === 'Jobs')
+  )
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Staff Dashboard</h1>
-          <p className="text-gray-600 mt-1">Welcome back! Here&apos;s what needs your attention today.</p>
-        </div>
-        <button
-          onClick={() => loadKpis(true)}
-          disabled={refreshing || loading}
-          className="inline-flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 active:bg-primary-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          aria-label="Refresh dashboard data"
-        >
-          <RefreshCw className={`w-4 h-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
-          <span className="text-sm font-medium">Refresh</span>
-        </button>
-      </div>
+      <DashboardHero
+        title="Staff workspace"
+        subtitle="Check in, review today’s attendance, and clear admissions work from one screen."
+        onRefresh={() => loadKpis(true)}
+        refreshing={refreshing}
+      />
 
-      <AttendanceManageDashboard />
-
-      <CheckInPanel />
-
-      {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3" role="alert">
-          <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-          <div className="flex-1">
+        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-4" role="alert">
+          <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+          <div>
             <p className="text-sm font-medium text-red-800">{error}</p>
-            <button
-              onClick={() => loadKpis(true)}
-              className="text-sm text-red-600 hover:text-red-800 underline mt-1"
-            >
+            <button type="button" onClick={() => loadKpis(true)} className="mt-1 text-sm text-red-700 underline">
               Try again
             </button>
           </div>
         </div>
       )}
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {kpis.map((kpi) => (
-          <div
-            key={kpi.label}
-            className={`bg-white rounded-xl shadow-sm border p-6 transition-all duration-200 ${
-              kpi.error 
-                ? 'border-red-200 hover:shadow-md' 
-                : 'border-gray-200 hover:shadow-md hover:border-primary-200'
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-600 truncate">{kpi.label}</p>
-                {kpi.loading ? (
-                  <div className="h-8 w-20 bg-gray-200 rounded animate-pulse mt-2" aria-label="Loading" />
-                ) : kpi.error ? (
-                  <div className="flex items-center space-x-2 mt-2">
-                    <AlertCircle className="w-5 h-5 text-red-500" />
-                    <p className="text-sm text-red-600">Error loading</p>
-                  </div>
-                ) : (
-                  <p className="text-3xl font-bold text-gray-900 mt-2">{kpi.value.toLocaleString()}</p>
-                )}
-              </div>
-              <div className={`p-3 rounded-lg flex-shrink-0 ${
-                kpi.error ? 'bg-red-50' : 'bg-primary-50'
-              }`}>
-                <div className={kpi.error ? 'text-red-600' : 'text-primary-600'}>
-                  {kpi.icon}
-                </div>
-              </div>
-            </div>
-            {kpi.href && !kpi.loading && (
+      <AttendanceHomeStrip />
+
+      {needsAttention.length > 0 && (
+        <section aria-label="Needs attention" className="space-y-3">
+          <h2 className="font-josefin text-lg font-bold text-gray-900">Needs attention</h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {needsAttention.map((item) => (
               <Link
-                href={kpi.href}
-                className="inline-flex items-center mt-4 text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded"
-                aria-label={`View ${kpi.label} details`}
+                key={item.label}
+                href={item.href || '#'}
+                className="flex items-center justify-between rounded-xl border border-amber-200 bg-amber-50/80 px-4 py-3 transition hover:border-amber-300 hover:bg-amber-50"
               >
-                View Details
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <div>
+                  <p className="text-sm font-semibold text-amber-950">{item.label}</p>
+                  <p className="text-xs text-amber-800/80">{item.hint}</p>
+                </div>
+                <span className="font-josefin text-2xl font-bold text-amber-900">
+                  {typeof item.value === 'number' ? item.value.toLocaleString() : item.value}
+                </span>
               </Link>
-            )}
+            ))}
           </div>
-        ))}
-      </div>
+        </section>
+      )}
 
-      {/* Quick Actions & System Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {/* Quick Actions */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-2 gap-3">
+      <section aria-label="School totals" className="space-y-3">
+        <div className="flex items-end justify-between gap-3">
+          <h2 className="font-josefin text-lg font-bold text-gray-900">At a glance</h2>
+          {!enrollmentLoading && enrolled && (
             <Link
-              href="/dashboard/registrations"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="View registrations"
+              href="/dashboard/attendance?tab=me"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary-700 hover:text-primary-800"
             >
-              <ClipboardList className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Registrations</span>
+              <ClipboardCheck className="h-4 w-4" />
+              My Attendance
             </Link>
-            <Link
-              href="/dashboard/contact-messages"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="Manage contact messages"
-            >
-              <Mail className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Contact Messages</span>
-            </Link>
-            <Link
-              href="/dashboard/jobs"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="View job applications"
-            >
-              <FileText className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Job Applications</span>
-            </Link>
-            <Link
-              href="/dashboard/news"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="Manage news"
-            >
-              <Newspaper className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">News & Events</span>
-            </Link>
-            <Link
-              href="/dashboard/students"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="Manage students"
-            >
-              <Users className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Students</span>
-            </Link>
-            <Link
-              href="/dashboard/admissions"
-              className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 active:bg-primary-100 transition-all group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-              aria-label="Manage admissions"
-            >
-              <FileText className="w-6 h-6 text-gray-600 group-hover:text-primary-600 mb-2 transition-colors" />
-              <span className="text-sm font-medium text-gray-700 group-hover:text-primary-700 text-center">Admissions</span>
-            </Link>
-          </div>
+          )}
         </div>
-
-        {/* System Status */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">System Status</h2>
-          <div className="space-y-3">
-            <div className="flex items-start space-x-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <div className="p-2 bg-green-100 rounded-lg flex-shrink-0">
-                <CheckCircle className="w-4 h-4 text-green-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">System Operational</p>
-                <p className="text-xs text-gray-600 mt-1">All services are running normally</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                <TrendingUp className="w-4 h-4 text-blue-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900">Dashboard Updated</p>
-                <p className="text-xs text-gray-600 mt-1">
-                  Last refreshed:{' '}
-                  {new Date().toLocaleTimeString('en-US', {
-                    hour: 'numeric',
-                    minute: '2-digit',
-                    hour12: true,
-                    timeZone: 'Asia/Karachi',
-                  })}
-                </p>
-              </div>
-            </div>
-            {!loading && !error && (
-              <div className="pt-2">
-                <p className="text-xs text-gray-500 text-center">
-                  All systems are functioning properly
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+        <DashboardKpiGrid items={kpis} />
+      </section>
     </div>
   )
 }
-

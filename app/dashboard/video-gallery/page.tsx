@@ -25,7 +25,9 @@ export default function VideoGalleryDashboardPage() {
           router.push('/login')
           return
         }
-        const hasAccess = canPerform(PERMISSIONS.NEWS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
+        const hasAccess =
+          canPerform(PERMISSIONS.VIDEO_GALLERY_VIEW, ['Admin', 'Staff', 'ManagerialStaff']) ||
+          canPerform(PERMISSIONS.NEWS_VIEW, ['Admin', 'Staff', 'ManagerialStaff'])
         if (!hasAccess) {
           setAuthError('You do not have permission to manage the video gallery.')
         }

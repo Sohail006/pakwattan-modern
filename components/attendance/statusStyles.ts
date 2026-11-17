@@ -15,13 +15,15 @@ export function statusLabel(status: string) {
       return 'Needs review'
     case 'Rejected':
       return 'Rejected'
+    case 'Off':
+      return 'Off'
     default:
       return status
   }
 }
 
 export function statusClass(status: string) {
-  switch (status as AttendanceStatus | 'Absent') {
+  switch (status as AttendanceStatus | 'Absent' | 'Off') {
     case 'Present':
       return 'bg-emerald-100 text-emerald-800 border-emerald-200'
     case 'Late':
@@ -34,6 +36,8 @@ export function statusClass(status: string) {
       return 'bg-orange-100 text-orange-900 border-orange-200'
     case 'Rejected':
       return 'bg-gray-200 text-gray-700 border-gray-300'
+    case 'Off':
+      return 'bg-slate-100 text-slate-600 border-slate-200'
     default:
       return 'bg-gray-100 text-gray-700 border-gray-200'
   }

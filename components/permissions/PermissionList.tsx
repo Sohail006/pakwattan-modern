@@ -22,25 +22,10 @@ export default function PermissionList({
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
-  // Group permissions by category
-  const groupedPermissions = useMemo(() => {
-    const groups: Record<string, Permission[]> = {}
-    
-    permissions.forEach(permission => {
-      if (!groups[permission.category]) {
-        groups[permission.category] = []
-      }
-      groups[permission.category].push(permission)
-    })
-    
-    return groups
-  }, [permissions])
-
-  // Filter permissions
+  // Filter permissions (search + category)
   const filteredPermissions = useMemo(() => {
     let filtered = permissions
 
-    // Filter by search term
     if (searchTerm.trim()) {
       const searchLower = searchTerm.toLowerCase()
       filtered = filtered.filter(
@@ -52,7 +37,6 @@ export default function PermissionList({
       )
     }
 
-    // Filter by category
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(p => p.category === selectedCategory)
     }
@@ -60,9 +44,24 @@ export default function PermissionList({
     return filtered
   }, [permissions, searchTerm, selectedCategory])
 
-  // Get unique categories
+  // Group filtered permissions by category (so search works in "All Categories")
+  const groupedPermissions = useMemo(() => {
+    const groups: Record<string, Permission[]> = {}
+
+    filteredPermissions.forEach(permission => {
+      const category = permission.category || 'Other'
+      if (!groups[category]) {
+        groups[category] = []
+      }
+      groups[category].push(permission)
+    })
+
+    return groups
+  }, [filteredPermissions])
+
+  // Get unique categories from full list
   const categories = useMemo(() => {
-    return Array.from(new Set(permissions.map(p => p.category))).sort()
+    return Array.from(new Set(permissions.map(p => p.category).filter(Boolean))).sort()
   }, [permissions])
 
   const handleToggle = (permissionId: number) => {
@@ -106,62 +105,68 @@ export default function PermissionList({
       {selectedCategory === 'all' ? (
         // Grouped by category
         <div className="space-y-6">
-          {Object.entries(groupedPermissions)
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([category, categoryPermissions]) => (
-              <div key={category} className="border border-gray-200 rounded-lg p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
-                  <Shield className="w-5 h-5 mr-2 text-primary-600" />
-                  {category}
-                </h3>
-                <div className="space-y-2">
-                  {categoryPermissions.map(permission => {
-                    const isSelected = selectedPermissions.includes(permission.id)
-                    return (
-                      <div
-                        key={permission.id}
-                        className={`flex items-start p-3 rounded-lg border transition-colors ${
-                          isSelected
-                            ? 'bg-primary-50 border-primary-200'
-                            : 'bg-white border-gray-200 hover:bg-gray-50'
-                        } ${!readOnly && onPermissionToggle ? 'cursor-pointer' : ''}`}
-                        onClick={() => handleToggle(permission.id)}
-                      >
-                        {showCheckboxes && (
-                          <div className="mt-0.5 mr-3">
-                            {isSelected ? (
-                              <CheckCircle2 className="w-5 h-5 text-primary-600" />
-                            ) : (
-                              <XCircle className="w-5 h-5 text-gray-400" />
-                            )}
-                          </div>
-                        )}
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium text-gray-900">
-                              {permission.displayName}
-                            </span>
-                            {isSelected && (
-                              <span className="text-xs px-2 py-1 bg-primary-100 text-primary-700 rounded">
-                                Selected
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm text-gray-500 mt-1">
-                            {permission.name}
-                          </p>
-                          {permission.description && (
-                            <p className="text-xs text-gray-400 mt-1">
-                              {permission.description}
-                            </p>
+          {Object.keys(groupedPermissions).length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No permissions found matching your search.
+            </div>
+          ) : (
+            Object.entries(groupedPermissions)
+              .sort(([a], [b]) => a.localeCompare(b))
+              .map(([category, categoryPermissions]) => (
+                <div key={category} className="border border-gray-200 rounded-lg p-4">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center">
+                    <Shield className="w-5 h-5 mr-2 text-primary-600" />
+                    {category}
+                  </h3>
+                  <div className="space-y-2">
+                    {categoryPermissions.map(permission => {
+                      const isSelected = selectedPermissions.includes(permission.id)
+                      return (
+                        <div
+                          key={permission.id}
+                          className={`flex items-start p-3 rounded-lg border transition-colors ${
+                            isSelected
+                              ? 'bg-primary-50 border-primary-200'
+                              : 'bg-white border-gray-200 hover:bg-gray-50'
+                          } ${!readOnly && onPermissionToggle ? 'cursor-pointer' : ''}`}
+                          onClick={() => handleToggle(permission.id)}
+                        >
+                          {showCheckboxes && (
+                            <div className="mt-0.5 mr-3">
+                              {isSelected ? (
+                                <CheckCircle2 className="w-5 h-5 text-primary-600" />
+                              ) : (
+                                <XCircle className="w-5 h-5 text-gray-400" />
+                              )}
+                            </div>
                           )}
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-gray-900">
+                                {permission.displayName}
+                              </span>
+                              {isSelected && (
+                                <span className="text-xs px-2 py-1 bg-primary-100 text-primary-700 rounded">
+                                  Selected
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm text-gray-500 mt-1">
+                              {permission.name}
+                            </p>
+                            {permission.description && (
+                              <p className="text-xs text-gray-400 mt-1">
+                                {permission.description}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    )
-                  })}
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+          )}
         </div>
       ) : (
         // Filtered list
